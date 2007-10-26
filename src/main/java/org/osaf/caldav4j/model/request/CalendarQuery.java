@@ -80,7 +80,8 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
         } else if (propName){
             children.add(new SimpleDOMOutputtingObject(CalDAVConstants.NS_DAV,
                     webdavNamespaceQualifier, ELEM_PROPNAME));
-        } else if (properties != null && properties.size() > 0){
+        } else if ((properties != null && properties.size() > 0)
+                || calendarDataProp != null) {
             Prop prop = new Prop(webdavNamespaceQualifier, properties);
             children.add(prop);
             if (calendarDataProp != null){
