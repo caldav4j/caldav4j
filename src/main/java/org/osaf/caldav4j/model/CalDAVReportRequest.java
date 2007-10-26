@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osaf.caldav4j.xml;
 
-import org.osaf.caldav4j.DOMValidationException;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+package org.osaf.caldav4j.model;
 
-public interface OutputsDOM {
+import org.osaf.caldav4j.xml.OutputsDOM;
 
-    public Element outputDOM(Document document) throws DOMValidationException;
+/**
+ * Interface for elements used to query CalDAV servers like CalendarQuery (xml:
+ * calender-query) and CalendarMultiget (xml: calendar-multiget)
+ * 
+ * @author bobbyrullo
+ */
+public interface CalDAVReportRequest extends OutputsDOM{
 
-    public Document createNewDocument(DOMImplementation dom) throws DOMValidationException;
-    
-    public void validate() throws DOMValidationException;
 }

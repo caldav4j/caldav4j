@@ -23,6 +23,7 @@ import java.util.Map;
 import net.fortuna.ical4j.model.Date;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -159,7 +160,35 @@ public class CalendarData extends OutputsDOMBase {
         return null;
     }
 
-
+    /**
+     * <!ELEMENT calendar-data ((comp?, (expand-recurrence-set |
+     * limit-recurrence-set)?) | #PCDATA)?>
+     * 
+     * <!ATTLIST calendar-data content-type CDATA "text/calendar">
+     * 
+     * <!ATTLIST calendar-data version CDATA "2.0">
+     * 
+     * <!ELEMENT expand-recurrence-set EMPTY>
+     * 
+     * <!ATTLIST expand-recurrence-set start CDATA #REQUIRED end CDATA
+     * #REQUIRED>
+     * 
+     * <!ELEMENT limit-recurrence-set EMPTY>
+     * 
+     * <!ATTLIST limit-recurrence-set start CDATA #REQUIRED end CDATA #REQUIRED>
+     */
+    public void validate() throws DOMValidationException {
+        if (expandOrLimitRecurrenceSet != null
+                && (recurrenceSetStart == null || recurrenceSetEnd == null)) {
+            throwValidationException("If you specify expand-recurrence-set or " +
+                    "limit-recurrence-set you must specify a start and end date");
+        }
+        
+        if (comp != null){
+            comp.validate();
+        }
+        
+    }       
 
     
 }

@@ -23,6 +23,7 @@ import java.util.Map;
 import net.fortuna.ical4j.model.Date;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 /**
@@ -91,7 +92,17 @@ public class TimeRange extends OutputsDOMBase {
     public void setStart(Date start) {
         this.start = start;
     }
-
+    
+    /**
+     * <!ELEMENT time-range EMPTY>
+     * 
+     * <!ATTLIST time-range start CDATA end CDATA>
+     */
+    public void validate() throws DOMValidationException{
+        if (start == null || end == null){
+            throwValidationException("You must have a start end an end date");
+        }
+    }
 
 
 }
