@@ -24,7 +24,6 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.Summary;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -112,8 +111,6 @@ public class ICalendarUtils {
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
         calendar.setTimeZone(tz == null ? J_TZ_GMT : tz);
-        //calendar.
-        date.setTime(calendar.getTimeInMillis());
         if (date instanceof DateTime){
             if (utc) {
                ((DateTime)date).setUtc(utc);
@@ -125,6 +122,7 @@ public class ICalendarUtils {
             calendar.set(Calendar.SECOND, seconds);
             calendar.set(Calendar.MILLISECOND, milliseconds);
         }
+        date.setTime(calendar.getTimeInMillis());
     }
     
 }
