@@ -75,7 +75,6 @@ public class TimeRange extends OutputsDOMBase {
         Map<String, String> m =  new LinkedHashMap<String, String>();
         m.put(ATTR_START, start.toString());
         m.put(ATTR_END, end.toString());
-        m.put("poop", "oop");
         return m;
     }
 
