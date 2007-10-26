@@ -165,10 +165,13 @@ public class CalDAVCalendarCollection {
         CalendarQuery query = new CalendarQuery("C", "D");
         
         CalendarData calendarData = new CalendarData("C");
+        /*
+        TODO don't expand until we have more info...some ambiguity about spec!
+        
         calendarData.setExpandOrLimitRecurrenceSet(CalendarData.EXPAND);
         calendarData.setRecurrenceSetStart(beginDate);
         calendarData.setRecurrenceSetEnd(endDate);
-        
+        */
         query.setCalendarDataProp(calendarData);
         CompFilter vCalendarCompFilter = new CompFilter("C");
         vCalendarCompFilter.setName(Calendar.VCALENDAR);
