@@ -3,6 +3,8 @@ package org.osaf.caldav4j;
 import java.util.List;
 
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.VEvent;
 
@@ -27,6 +29,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         put(ICS_ALL_DAY_JAN1, COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
         put(ICS_NORMAL_PACIFIC_1PM, COLLECTION_PATH + "/" + ICS_NORMAL_PACIFIC_1PM);
         put(ICS_SINGLE_EVENT, COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
+        put(ICS_FLOATING_JAN2_7PM, COLLECTION_PATH + "/" + ICS_FLOATING_JAN2_7PM);
     }
 
     protected void tearDown() throws Exception {
@@ -86,10 +89,35 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     
     public void testGetEventResources() throws Exception{
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
-        Date beginDate = ICalendarUtils.createDate(2300, 0, 1, null, true);
-        Date endDate = ICalendarUtils.createDate(2300, 0, 9, null, true);
-        List l = calendarCollection.getEventResources(beginDate, endDate);
+        Date beginDate = ICalendarUtils.createDateTime(2006, 0, 1, null, true);
+        Date endDate = ICalendarUtils.createDateTime(2006, 0, 9, null, true);
+        List<Calendar> l = calendarCollection.getEventResources(beginDate, endDate);
         
+        //4 calendars - one for each resource (not including expanded recurrences)
+        assertEquals(4, l.size());
+        
+        for (Calendar calendar : l){
+            ComponentList vevents = calendar.getComponents().getComponents(
+                    Component.VEVENT);
+            VEvent ve = (VEvent) vevents.get(0);
+            String uid = ICalendarUtils.getUIDValue(ve);
+            int correctNumberOfEvents = -1;
+            if (ICS_DAILY_NY_5PM_UID.equals(uid)){
+                //one for each day
+                correctNumberOfEvents = 8;
+            } else if (ICS_ALL_DAY_JAN1_UID.equals(uid)){
+                correctNumberOfEvents = 1;
+            } else if (ICS_NORMAL_PACIFIC_1PM_UID.equals(uid)){
+                correctNumberOfEvents = 1;
+            } else if (ICS_FLOATING_JAN2_7PM_UID.equals(uid)){
+                correctNumberOfEvents = 1;
+            } else {
+                fail(uid + " is not the uid of any event that should have been returned");
+            }
+            
+            assertEquals(correctNumberOfEvents, vevents.size());
+        }
+       
     }
 
     private CalDAVCalendarCollection createCalDAVCalendarCollection(){

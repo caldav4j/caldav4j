@@ -54,7 +54,15 @@ public abstract class BaseTestCase
     public static final String ICS_DAILY_NY_5PM_SUMMARY = "Daily_NY_5pm";
 
     public static final String ICS_ALL_DAY_JAN1 = "All_Day_NY_JAN1.ics";
+    public static final String ICS_ALL_DAY_JAN1_UID = "C68DADAD-37CE-44F7-8A37-52E1D02E29CA";
+
     public static final String ICS_NORMAL_PACIFIC_1PM = "Normal_Pacific_1pm.ics";
+    public static final String ICS_NORMAL_PACIFIC_1PM_UID = "0F94FE7B-8E01-4B27-835E-CD1431FD6475";
+
+    public static final String ICS_FLOATING_JAN2_7PM = "Floating_Jan_2_7pm.ics";
+    public static final String ICS_FLOATING_JAN2_7PM_SUMMARY = "Floating_Jan_2_7pm";
+    public static final String ICS_FLOATING_JAN2_7PM_UID = "0870D1E0-B17E-4875-85C5-2ABB02E27609";
+    
     public static final String ICS_SINGLE_EVENT= "singleEvent.ics";
 
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
