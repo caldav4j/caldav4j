@@ -135,11 +135,13 @@ public class CalDAVResponse implements ResponseEntity {
             for (int j = 0; children != null && j < children.getLength();
                  j++) {
                 try {
-                    Element child = (Element) children.item(j);
+                    Node n = children.item(j);
+                    if (n.getNodeType() == Node.ELEMENT_NODE){
+                    Element child = (Element) n;
                     properties.put(new QName(child.getNamespaceURI(), child
                             .getLocalName()), PropertyFactory.create(this,
                             child));
-                   
+                    }
                 } catch (ClassCastException e) {
                     throw new RuntimeException(e);
                 }
