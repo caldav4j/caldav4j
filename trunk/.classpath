@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry sourcepath="/lib/java/src/ical4j-0.9.16-src.zip" kind="lib" path="/Users/bobbyrullo/.maven/repository/ical4j/jars/ical4j-0.9.16.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/json-rpc"/>
 	<classpathentry kind="lib" path="/Users/bobbyrullo/.maven/repository/commons-logging/jars/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="lib" path="/Users/bobbyrullo/.maven/repository/commons-id/jars/commons-id-0.1-dev.jar"/>
