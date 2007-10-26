@@ -40,8 +40,6 @@ import org.apache.commons.httpclient.HttpState;
 import org.osaf.caldav4j.CalDAVConstants;
 
 public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
-    private static final String HEADER_IF_NONE_MATCH = "If-None-Match";
-    private static final String HEADER_IF_MATCH = "If-Match";
     private Calendar calendar = null; 
     private String procID = CalDAVConstants.PROC_ID_DEFAULT;
     private CalendarOutputter calendarOutputter = null;
@@ -51,7 +49,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
     private boolean allEtags = false;
     
     public PutMethod (){
-
+        super();
     }
     
     public String getName() {
@@ -174,7 +172,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
     protected void addRequestHeaders(HttpState state, HttpConnection conn)
     throws IOException, HttpException {
         if (ifMatch || ifNoneMatch){
-            String name = ifMatch ? HEADER_IF_MATCH : HEADER_IF_NONE_MATCH;
+            String name = ifMatch ? CalDAVConstants.HEADER_IF_MATCH : CalDAVConstants.HEADER_IF_NONE_MATCH;
             String value = null;
             if (allEtags){
                 value = "*";
