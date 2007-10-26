@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.osaf.caldav4j.model;
+package org.osaf.caldav4j.model.request;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,35 +25,30 @@ import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 /**
- * <!ELEMENT prop EMPTY>
- * 
- * <!ATTLIST prop name CDATA #REQUIRED
- *                novalue (yes|no) "no">
- *                
+ *  <!ELEMENT text-match #PCDATA>
+ *
+ *  <!ATTLIST text-match caseless (yes|no)>
+ *  
  * @author bobbyrullo
  * 
  */
-public class CalDAVProp extends OutputsDOMBase {
+public class TextMatch extends OutputsDOMBase {
     
-    public static final String ELEMENT_NAME = "prop";
-    public static final String ATTR_NAME = "start";
-    public static final String ATTR_NOVALUE = "novalue";
-    public static final String ATTR_VAL_YES = "yes";
-    public static final String ATTR_VAL_NO = "no";
+    public static final String ELEMENT_NAME = "text-match";
+    public static final String ATTR_CASELESS = "caseless";
+    public static final String ATTR_VALUE_YES = "yes";
+    public static final String ATTR_VALUE_NO  = "no";
     
     private String caldavNamespaceQualifier = null;
-    private String name = null;
-    private boolean novalue = false;
+    private String textToMatch = null;
+    private Boolean caseless = null;
     
-    public CalDAVProp(String caldavNamespaceQualifier, String name, boolean novalue) {
+    public TextMatch(String caldavNamespaceQualifier, Boolean caseless,
+            String textToMatch) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.name = name;
-        this.novalue = novalue;
-    }
-    
-    public CalDAVProp(String caldavNamespaceQualifier, String name) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.name = name;
+        this.caseless = caseless;
+        this.textToMatch = textToMatch;
+
     }
 
     protected String getElementName() {
@@ -73,26 +68,42 @@ public class CalDAVProp extends OutputsDOMBase {
     }
 
     protected String getTextContent() {
-        return null;
+        return textToMatch;
     }
     
     protected Map getAttributes() {
-        Map m =  new HashMap();
-        m.put(ATTR_NAME, name);
-        m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
+        Map m = null;
+        if (caseless != null) {
+            m = new HashMap();
+            m.put(ATTR_CASELESS, caseless.booleanValue() ? ATTR_VALUE_YES
+                    : ATTR_VALUE_NO);
+
+        }
         return m;
+    }
+
+    public Boolean getCaseless() {
+        return caseless;
+    }
+
+    public void setCaseless(Boolean caseless) {
+        this.caseless = caseless;
+    }
+
+    public String getTextToMatch() {
+        return textToMatch;
+    }
+
+    public void setTextToMatch(String textToMatch) {
+        this.textToMatch = textToMatch;
     }
     
     /**
-     * <!ELEMENT prop EMPTY>
+     * <!ELEMENT text-match #PCDATA>
      * 
-     * <!ATTLIST prop name CDATA #REQUIRED
-     *                novalue (yes|no) "no">
+     * <!ATTLIST text-match caseless (yes|no)>
      */
-    public void validate() throws DOMValidationException {
-        if (name == null){
-            throwValidationException("name is a required property");
-        }
+    public void validate() throws DOMValidationException{
+        return;
     }
-
 }

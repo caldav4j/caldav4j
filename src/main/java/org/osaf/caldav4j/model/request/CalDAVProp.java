@@ -14,40 +14,46 @@
  * limitations under the License.
  */
 
-package org.osaf.caldav4j.model;
+package org.osaf.caldav4j.model.request;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.fortuna.ical4j.model.Date;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 /**
- *  <!ELEMENT time-range EMPTY>
- *
- *  <!ATTLIST time-range start CDATA
- *                       end CDATA>
+ * <!ELEMENT prop EMPTY>
+ * 
+ * <!ATTLIST prop name CDATA #REQUIRED
+ *                novalue (yes|no) "no">
+ *                
  * @author bobbyrullo
  * 
  */
-public class TimeRange extends OutputsDOMBase {
+public class CalDAVProp extends OutputsDOMBase {
     
-    public static final String ELEMENT_NAME = "time-range";
-    public static final String ATTR_START = "start";
-    public static final String ATTR_END = "end";
+    public static final String ELEMENT_NAME = "prop";
+    public static final String ATTR_NAME = "start";
+    public static final String ATTR_NOVALUE = "novalue";
+    public static final String ATTR_VAL_YES = "yes";
+    public static final String ATTR_VAL_NO = "no";
     
     private String caldavNamespaceQualifier = null;
-    private Date start = null;
-    private Date end = null;
+    private String name = null;
+    private boolean novalue = false;
     
-    public TimeRange(String caldavNamespaceQualifier, Date start, Date end) {
+    public CalDAVProp(String caldavNamespaceQualifier, String name, boolean novalue) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.start = start;
-        this.end = end;
+        this.name = name;
+        this.novalue = novalue;
+    }
+    
+    public CalDAVProp(String caldavNamespaceQualifier, String name) {
+        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+        this.name = name;
     }
 
     protected String getElementName() {
@@ -72,37 +78,21 @@ public class TimeRange extends OutputsDOMBase {
     
     protected Map getAttributes() {
         Map m =  new HashMap();
-        m.put(ATTR_START, start.toString());
-        m.put(ATTR_END, end.toString());
+        m.put(ATTR_NAME, name);
+        m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
         return m;
-    }
-
-    public Date getEnd() {
-        return end;
-    }
-
-    public void setEnd(Date end) {
-        this.end = end;
-    }
-
-    public Date getStart() {
-        return start;
-    }
-
-    public void setStart(Date start) {
-        this.start = start;
     }
     
     /**
-     * <!ELEMENT time-range EMPTY>
+     * <!ELEMENT prop EMPTY>
      * 
-     * <!ATTLIST time-range start CDATA end CDATA>
+     * <!ATTLIST prop name CDATA #REQUIRED
+     *                novalue (yes|no) "no">
      */
-    public void validate() throws DOMValidationException{
-        if (start == null || end == null){
-            throwValidationException("You must have a start end an end date");
+    public void validate() throws DOMValidationException {
+        if (name == null){
+            throwValidationException("name is a required property");
         }
     }
-
 
 }

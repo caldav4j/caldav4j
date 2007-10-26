@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.osaf.caldav4j.model;
+package org.osaf.caldav4j.model.request;
 
 import java.util.ArrayList;
 import java.util.Collection;

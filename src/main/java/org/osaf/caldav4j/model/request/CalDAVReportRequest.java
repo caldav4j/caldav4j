@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.osaf.caldav4j.model;
+package org.osaf.caldav4j.model.request;
 
 import org.osaf.caldav4j.xml.OutputsDOM;
 
