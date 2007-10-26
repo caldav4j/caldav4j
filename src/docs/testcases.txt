@@ -1,0 +1,8 @@
+MKCALENDAR
+
+create new resource
+	-use IF-none-match, make sure fails when one already exists
+
+update existing
+	use if match, make sure fails if wrong etag
+	
