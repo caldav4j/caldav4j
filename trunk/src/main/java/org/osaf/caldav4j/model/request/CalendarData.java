@@ -36,9 +36,9 @@ import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
  *
  *  <!ATTLIST calendar-data version CDATA "2.0">
  *  
- *  <!ELEMENT expand-recurrence-set EMPTY>
+ *  <!ELEMENT expand EMPTY>
  *  
- *  <!ATTLIST expand-recurrence-set start CDATA #REQUIRED
+ *  <!ATTLIST expand start CDATA #REQUIRED
  *                                  end CDATA #REQUIRED>
  *                                  
  *  <!ELEMENT limit-recurrence-set EMPTY>
@@ -61,7 +61,7 @@ import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 public class CalendarData extends OutputsDOMBase {
     
     public static final String ELEMENT_NAME = "calendar-data";
-    public static final String ELEM_EXPAND_RECURRENCE_SET = "expand-recurrence-set";
+    public static final String ELEM_EXPAND_RECURRENCE_SET = "expand";
     public static final String ELEM_LIMIT_RECURRENCE_SET = "limit-recurrence-set";
     public static final String ATTR_START = "start";
     public static final String ATTR_END = "end";
@@ -148,6 +148,7 @@ public class CalendarData extends OutputsDOMBase {
                     .toString());
             expandOrLimitElement.addAttribute(ATTR_END, recurrenceSetEnd
                     .toString());
+            children.add(expandOrLimitElement);
         }
         return children;
     }
