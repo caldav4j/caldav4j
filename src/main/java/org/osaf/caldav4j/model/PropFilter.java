@@ -94,6 +94,10 @@ public class PropFilter extends OutputsDOMBase {
         } else if (textMatch != null){
             children.add(textMatch);
         }
+        
+        if (paramFilters != null && paramFilters.size() > 0){
+            children.addAll(paramFilters);
+        }
         return children;
     }
     
@@ -154,6 +158,4 @@ public class PropFilter extends OutputsDOMBase {
     public void setTextMatch(TextMatch textMatch) {
         this.textMatch = textMatch;
     }
-    
-    
 }

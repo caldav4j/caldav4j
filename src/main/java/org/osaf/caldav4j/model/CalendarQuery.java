@@ -24,11 +24,15 @@ import java.util.Map;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
-import org.osaf.caldav4j.xml.XMLUtils;
 
 /**
+ * 
+ * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)?
+ *                            filter> 
+ *
  * <!ELEMENT filter comp-filter>
- *    <!ELEMENT comp-filter (is-defined | time-range)?
+ * 
+ * <!ELEMENT comp-filter (is-defined | time-range)?
  *                         comp-filter* prop-filter*>
  *
  *  <!ATTLIST comp-filter name CDATA #REQUIRED>
@@ -40,12 +44,15 @@ public class CalendarQuery extends OutputsDOMBase {
     public static final String ELEMENT_NAME = "calendar-query";
     public static final String ELEM_ALLPROP = "allprop";    
     public static final String ELEM_PROPNAME = "propname";
+    public static final String ELEM_FILTER = "filter";
     
     private String caldavNamespaceQualifier = null;
     private String webdavNamespaceQualifier = null;
     private boolean allProp = false;
     private boolean propName = false;
     private List properties = new ArrayList();
+    private CompFilter compFilter = null;
+    private CalendarData calendarDataProp = null;
     
     public CalendarQuery(String caldavNamespaceQualifier, String webdavNamespaceQualifer) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
@@ -75,8 +82,18 @@ public class CalendarQuery extends OutputsDOMBase {
         } else if (properties != null && properties.size() > 0){
             Prop prop = new Prop(webdavNamespaceQualifier, properties);
             children.add(prop);
+            if (calendarDataProp != null){
+                prop.getChildren().add(calendarDataProp);
+            }
         }
         
+        if (compFilter != null) {
+            SimpleDOMOutputtingObject filter = new SimpleDOMOutputtingObject(
+                    CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
+                    ELEM_FILTER);
+            filter.addChild(compFilter);
+            children.add(filter);
+        }
         return children;
     }
 
@@ -120,6 +137,22 @@ public class CalendarQuery extends OutputsDOMBase {
     }
     protected Map getAttributes() {
         return null;
+    }
+
+    public CompFilter getCompFilter() {
+        return compFilter;
+    }
+
+    public void setCompFilter(CompFilter compFilter) {
+        this.compFilter = compFilter;
+    }
+
+    public CalendarData getCalendarDataProp() {
+        return calendarDataProp;
+    }
+
+    public void setCalendarDataProp(CalendarData calendarDataProp) {
+        this.calendarDataProp = calendarDataProp;
     }
 
 }

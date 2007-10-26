@@ -16,43 +16,43 @@
 
 package org.osaf.caldav4j.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 /**
- *   <!ELEMENT filter comp-filter>
- *   
- *   <!ELEMENT comp-filter (is-defined | time-range)?
- *                        comp-filter* prop-filter*>
- *                        
- *   <!ATTLIST comp-filter name CDATA #REQUIRED> 
- *  
- *   <!ELEMENT prop-filter (is-defined | time-range | text-match)?
- *                          param-filter*>
- *
- *   <!ATTLIST prop-filter name CDATA #REQUIRED>
- *
- *   <!ELEMENT param-filter (is-defined | text-match) >
- *
- *   <!ATTLIST param-filter name CDATA #REQUIRED>
- *
- *   <!ELEMENT is-defined EMPTY>
+ * <!ELEMENT prop EMPTY>
  * 
+ * <!ATTLIST prop name CDATA #REQUIRED
+ *                novalue (yes|no) "no">
+ *                
  * @author bobbyrullo
  * 
  */
-public class Filter extends OutputsDOMBase {
+public class CalDAVProp extends OutputsDOMBase {
     
-    public static final String ELEMENT_NAME = "filter";
+    public static final String ELEMENT_NAME = "prop";
+    public static final String ATTR_NAME = "start";
+    public static final String ATTR_NOVALUE = "novalue";
+    public static final String ATTR_VAL_YES = "yes";
+    public static final String ATTR_VAL_NO = "no";
     
     private String caldavNamespaceQualifier = null;
+    private String name = null;
+    private boolean novalue = false;
     
-    public Filter(String caldavNamespaceQualifier) {
+    public CalDAVProp(String caldavNamespaceQualifier, String name, boolean novalue) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+        this.name = name;
+        this.novalue = novalue;
+    }
+    
+    public CalDAVProp(String caldavNamespaceQualifier, String name) {
+        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+        this.name = name;
     }
 
     protected String getElementName() {
@@ -68,17 +68,18 @@ public class Filter extends OutputsDOMBase {
     }
 
     protected Collection getChildren() {
-        ArrayList children = new ArrayList();
-        
-        return children;
+        return null;
     }
 
     protected String getTextContent() {
         return null;
     }
+    
     protected Map getAttributes() {
-        return null;
+        Map m =  new HashMap();
+        m.put(ATTR_NAME, name);
+        m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
+        return m;
     }
-
 
 }

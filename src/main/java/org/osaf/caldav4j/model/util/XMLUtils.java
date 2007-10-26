@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-package org.osaf.caldav4j.xml;
+package org.osaf.caldav4j.model.util;
 
+import java.io.StringWriter;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.DOMStringList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,6 +32,7 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
 public class XMLUtils {
+    private static final Log log = LogFactory.getLog(XMLUtils.class);
     
     private static DOMImplementation implementation = null;
     
@@ -65,20 +73,27 @@ public class XMLUtils {
         DOMImplementationLS domLS = (DOMImplementationLS) implementation;
         LSSerializer serializer = domLS.createLSSerializer();
         String s = serializer.writeToString(document);
+        
         return s;
     }    
+    
+    public static String toPrettyXML(Document document) {
+        StringWriter stringWriter = new StringWriter();
+        OutputFormat outputFormat = new OutputFormat(document, null, true);
+        XMLSerializer xmlSerializer = new XMLSerializer(stringWriter,
+                outputFormat);
+        xmlSerializer.setNamespaces(true);
+        try {
+            xmlSerializer.asDOMSerializer().serialize(document);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return stringWriter.toString();
+
+    }
     
     public static DOMImplementation getDOMImplementation(){
         return implementation;
     }
     
-    public static void main (String[] args){
-        Document d = createNewDocument("DAV:", "D:dude");
-        Node root = d.getFirstChild();
-        Element ele1 = d.createElement("NO");
-        Element ele2 = d.createElement("YES");
-
-        String s = toXML(d);
-        System.out.println(s);
-    }
 }

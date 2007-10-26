@@ -64,8 +64,14 @@ public class CompFilter extends OutputsDOMBase {
         if (start != null && end != null) {
             this.timeRange = new TimeRange(caldavNamespaceQualifier, start, end);
         }
-        this.propFilters = propFilters;
-        this.compFilters = compFilters;
+        
+        if (propFilters != null){
+            this.propFilters.addAll( propFilters);
+        }
+        
+        if (compFilters != null) {
+            this.compFilters.addAll(compFilters);
+        }
     }
 
     protected String getElementName() {

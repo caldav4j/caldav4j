@@ -17,11 +17,9 @@ package org.osaf.caldav4j.xml;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
 
 public class SimpleDOMOutputtingObject extends OutputsDOMBase{
     
@@ -30,7 +28,7 @@ public class SimpleDOMOutputtingObject extends OutputsDOMBase{
     private String namespaceURI = null;
     private String textContent = null;
     private List children = new ArrayList();
-    
+    private Map attributes = new HashMap();
     
     public SimpleDOMOutputtingObject(){
         
@@ -41,6 +39,14 @@ public class SimpleDOMOutputtingObject extends OutputsDOMBase{
         this.namespaceURI = namespaceURI;
         this.namespaceQualifier = namespaceQualifier;
         this.elementName = elementName;
+    }
+    
+    public SimpleDOMOutputtingObject(String namespaceURI,
+            String namespaceQualifier, String elementName, Map attributes) {
+        this.namespaceURI = namespaceURI;
+        this.namespaceQualifier = namespaceQualifier;
+        this.elementName = elementName;
+        this.attributes = attributes;
     }
     
     public Collection getChildren() {
@@ -95,8 +101,12 @@ public class SimpleDOMOutputtingObject extends OutputsDOMBase{
         this.elementName = localName;
     }
 
-    protected Map getAttributes() {
-        return null;
+    public Map getAttributes() {
+        return attributes;
+    }
+    
+    public void addAttribute(String key, String value){
+        attributes.put(key, value);
     }
 }
 
