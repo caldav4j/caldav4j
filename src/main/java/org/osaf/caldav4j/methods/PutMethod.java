@@ -16,18 +16,14 @@
 
 package org.osaf.caldav4j.methods;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.CalScale;
@@ -37,9 +33,13 @@ import net.fortuna.ical4j.model.property.Version;
 import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVConstants;
 
 public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
+    private static final Log log = LogFactory.getLog(PutMethod.class);
+   
     private Calendar calendar = null; 
     private String procID = CalDAVConstants.PROC_ID_DEFAULT;
     private CalendarOutputter calendarOutputter = null;
@@ -168,6 +168,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
             try{
                 calendarOutputter.output(calendar, writer);
             } catch (Exception e){
+                log.error("Problem generating calendar: ", e);
                 throw new RuntimeException("Problem generating calendar. ", e);
             }
             setRequestBody(writer.toString());
@@ -206,20 +207,5 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
         } else {
             return super.hasRequestContent();
         }
-    }
-    
-    public static void main (String args[]){
-        try {
-            File file = new File("src/test/resources/icalendar/Daily_NY_5pm.ics");
-            System.out.println(file.getAbsolutePath());
-            FileInputStream fis = new FileInputStream(file);
-            CalendarBuilder cb = new CalendarBuilder();
-            Calendar calendar = cb.build(fis);
-            ComponentList cl = calendar.getComponents();
-            System.out.println(cl.size());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
+    }    
 }
