@@ -50,6 +50,9 @@ public abstract class BaseTestCase
     public static final String CALDAV_SERVER_PASSWORD = "password";
 
     public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
+    public static final String ICS_DAILY_NY_5PM_UID = "DE916949-731D-4DAE-BA93-48A38B2B2030";
+    public static final String ICS_DAILY_NY_5PM_SUMMARY = "Daily_NY_5pm";
+
     public static final String ICS_ALL_DAY_JAN1 = "All_Day_NY_JAN1.ics";
     public static final String ICS_NORMAL_PACIFIC_1PM = "Normal_Pacific_1pm.ics";
     public static final String ICS_SINGLE_EVENT= "singleEvent.ics";
