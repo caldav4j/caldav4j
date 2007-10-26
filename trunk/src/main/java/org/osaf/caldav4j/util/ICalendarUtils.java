@@ -18,15 +18,19 @@ package org.osaf.caldav4j.util;
 
 import java.util.Calendar;
 
+import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Summary;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class DateUtils {
-    private static final Log log = LogFactory.getLog(DateUtils.class);
+public class ICalendarUtils {
+    private static final Log log = LogFactory.getLog(ICalendarUtils.class);
     
     private static java.util.TimeZone J_TZ_GMT = TimeZone.getTimeZone("GMT");
    
@@ -72,6 +76,16 @@ public class DateUtils {
         setFields(date, year, month, day, 0, 0, 0, 0, tz, utc);
         return date;
 
+    }
+    
+    public static VEvent getFirstEvent(net.fortuna.ical4j.model.Calendar calendar){
+        return (VEvent) calendar.getComponents().getComponent(Component.VEVENT);
+    }
+    
+    public static String getSummaryValue(VEvent event){
+        Summary summary = (Summary) event.getProperties().getProperty(
+                Property.SUMMARY);
+        return summary == null ? null : summary.getValue();
     }
     
     private static void setFields(Date date, int year, int month, int day,
