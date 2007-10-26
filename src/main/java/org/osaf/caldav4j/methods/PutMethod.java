@@ -43,7 +43,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
     private Calendar calendar = null; 
     private String procID = CalDAVConstants.PROC_ID_DEFAULT;
     private CalendarOutputter calendarOutputter = null;
-    private Set etags = new HashSet();
+    private Set<String> etags = new HashSet<String>();
     private boolean ifMatch = false;
     private boolean ifNoneMatch = false;
     private boolean allEtags = false;
@@ -65,7 +65,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
         return etags;
     }
 
-    public void setEtags(Set etags) {
+    public void setEtags(Set<String> etags) {
         this.etags = etags;
     }
     
@@ -205,7 +205,6 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
     
     public static void main (String args[]){
         try {
-            PutMethod p = new PutMethod();
             File file = new File("src/test/resources/icalendar/Daily_NY_5pm.ics");
             System.out.println(file.getAbsolutePath());
             FileInputStream fis = new FileInputStream(file);

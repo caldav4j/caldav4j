@@ -26,7 +26,7 @@ public class CalDAV4JMethodFactory {
     String procID = CalDAVConstants.PROC_ID_DEFAULT;
     private boolean validatingOutputter = false;
     
-    private ThreadLocal calendarBuilderThreadLocal = new ThreadLocal();
+    private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
     private CalendarOutputter calendarOutputter = null;
     
     public CalDAV4JMethodFactory(){
@@ -75,7 +75,7 @@ public class CalDAV4JMethodFactory {
     }
     
     private CalendarBuilder getCalendarBuilderInstance(){
-        CalendarBuilder builder = (CalendarBuilder) calendarBuilderThreadLocal.get();
+        CalendarBuilder builder = calendarBuilderThreadLocal.get();
         if (builder == null){
             builder = new CalendarBuilder();
             calendarBuilderThreadLocal.set(builder);
