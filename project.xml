@@ -16,7 +16,7 @@
 
 <project>
   <name>CalDav4j</name>
-  <groupId>caldav4j</groupId>
+  <groupId>org.osaf</groupId>
   <artifactId>caldav4j</artifactId>
   <currentVersion>0.1</currentVersion>
   <organization>
