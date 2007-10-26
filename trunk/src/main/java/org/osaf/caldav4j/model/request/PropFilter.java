@@ -26,6 +26,7 @@ import net.fortuna.ical4j.model.Date;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -50,7 +51,7 @@ public class PropFilter extends OutputsDOMBase {
     private boolean isDefined = false;
     private TimeRange timeRange = null;
     private TextMatch textMatch = null;
-    private List paramFilters = new ArrayList();
+    private List<ParamFilter> paramFilters = new ArrayList<ParamFilter>();
     
     public PropFilter(String caldavNamespaceQualifier) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
@@ -58,7 +59,7 @@ public class PropFilter extends OutputsDOMBase {
     
     public PropFilter(String caldavNamespaceQualifier, String name, 
             boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
-            Boolean textmatchCaseless, String textMatchString, List paramFilters){
+            Boolean textmatchCaseless, String textMatchString, List<ParamFilter> paramFilters){
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.name = name;
         this.isDefined = isDefined;
@@ -84,8 +85,8 @@ public class PropFilter extends OutputsDOMBase {
         return CalDAVConstants.NS_CALDAV;
     }
 
-    protected Collection getChildren() {
-        ArrayList children = new ArrayList();
+    protected Collection<OutputsDOM> getChildren() {
+        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
         if (isDefined){
             children.add(new SimpleDOMOutputtingObject(
                     CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
@@ -106,8 +107,8 @@ public class PropFilter extends OutputsDOMBase {
         return null;
     }
     
-    protected Map getAttributes() {
-        Map m = new HashMap();
+    protected Map<String, String> getAttributes() {
+        Map<String, String> m = new HashMap<String, String>();
         m.put(ATTR_NAME, name);
         return m;
     }
@@ -124,7 +125,7 @@ public class PropFilter extends OutputsDOMBase {
         return paramFilters;
     }
 
-    public void setParamFilters(List paramFilters) {
+    public void setParamFilters(List<ParamFilter> paramFilters) {
         this.paramFilters = paramFilters;
     }
     

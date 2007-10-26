@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 /**
@@ -63,7 +64,7 @@ public class TextMatch extends OutputsDOMBase {
         return CalDAVConstants.NS_CALDAV;
     }
 
-    protected Collection getChildren() {
+    protected Collection<OutputsDOM> getChildren() {
         return null;
     }
 
@@ -71,10 +72,10 @@ public class TextMatch extends OutputsDOMBase {
         return textToMatch;
     }
     
-    protected Map getAttributes() {
-        Map m = null;
+    protected Map<String, String> getAttributes() {
+        Map<String, String> m = null;
         if (caseless != null) {
-            m = new HashMap();
+            m = new HashMap<String, String>();
             m.put(ATTR_CASELESS, caseless.booleanValue() ? ATTR_VALUE_YES
                     : ATTR_VALUE_NO);
 

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 /**
@@ -68,7 +69,7 @@ public class CalDAVProp extends OutputsDOMBase {
         return CalDAVConstants.NS_CALDAV;
     }
 
-    protected Collection getChildren() {
+    protected Collection<OutputsDOM> getChildren() {
         return null;
     }
 
@@ -76,8 +77,8 @@ public class CalDAVProp extends OutputsDOMBase {
         return null;
     }
     
-    protected Map getAttributes() {
-        Map m =  new HashMap();
+    protected Map<String, String> getAttributes() {
+        Map<String, String> m =  new HashMap<String, String>();
         m.put(ATTR_NAME, name);
         m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
         return m;

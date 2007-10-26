@@ -26,6 +26,7 @@ import net.fortuna.ical4j.model.Date;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -48,8 +49,8 @@ public class CompFilter extends OutputsDOMBase {
 
     private boolean isDefined = false;
     private TimeRange timeRange = null;
-    private List compFilters = new ArrayList();
-    private List propFilters = new ArrayList();
+    private List<CompFilter> compFilters = new ArrayList<CompFilter>();
+    private List<PropFilter> propFilters = new ArrayList<PropFilter>();
     private String name = null;
     
     public CompFilter(String caldavNamespaceQualifier) {
@@ -57,8 +58,8 @@ public class CompFilter extends OutputsDOMBase {
     }
     
     public CompFilter(String caldavNamespaceQualifier, String name,
-            boolean isDefined, Date start, Date end, List compFilters,
-            List propFilters) {
+            boolean isDefined, Date start, Date end, List<CompFilter> compFilters,
+            List<PropFilter> propFilters) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.isDefined = isDefined;
         this.name = name;
@@ -87,8 +88,8 @@ public class CompFilter extends OutputsDOMBase {
         return CalDAVConstants.NS_CALDAV;
     }
 
-    protected Collection getChildren() {
-        ArrayList children = new ArrayList();
+    protected Collection<OutputsDOM> getChildren() {
+        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
         
         if (isDefined){
             children.add(new SimpleDOMOutputtingObject(
@@ -114,8 +115,8 @@ public class CompFilter extends OutputsDOMBase {
         return null;
     }
     
-    protected Map getAttributes() {
-        Map m = new HashMap();
+    protected Map<String, String> getAttributes() {
+        Map<String, String> m = new HashMap<String, String>();
         m.put(ATTR_NAME, name);
         return m;
     }
@@ -124,7 +125,7 @@ public class CompFilter extends OutputsDOMBase {
         return compFilters;
     }
 
-    public void setCompFilters(List compFilters) {
+    public void setCompFilters(List<CompFilter> compFilters) {
         this.compFilters = compFilters;
     }
     
@@ -144,7 +145,7 @@ public class CompFilter extends OutputsDOMBase {
         return propFilters;
     }
 
-    public void setPropFilters(List propFilters) {
+    public void setPropFilters(List<PropFilter> propFilters) {
         this.propFilters = propFilters;
     }
     

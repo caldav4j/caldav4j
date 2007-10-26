@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -51,7 +52,7 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
     private String webdavNamespaceQualifier = null;
     private boolean allProp = false;
     private boolean propName = false;
-    private List properties = new ArrayList();
+    private List<PropProperty> properties = new ArrayList<PropProperty>();
     private CompFilter compFilter = null;
     private CalendarData calendarDataProp = null;
     
@@ -72,8 +73,8 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
         return CalDAVConstants.NS_CALDAV;
     }
 
-    protected Collection getChildren() {
-        ArrayList children = new ArrayList();
+    protected Collection<OutputsDOM> getChildren() {
+        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
         if (allProp){
             children.add(new SimpleDOMOutputtingObject(CalDAVConstants.NS_DAV,
                     webdavNamespaceQualifier, ELEM_ALLPROP));
@@ -85,7 +86,7 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
             Prop prop = new Prop(webdavNamespaceQualifier, properties);
             children.add(prop);
             if (calendarDataProp != null){
-                prop.getChildren().add(calendarDataProp);
+              prop.getChildren().add(calendarDataProp);
             }
         }
         
@@ -96,7 +97,7 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
             filter.addChild(compFilter);
             children.add(filter);
         }
-        return children;
+       return children;
     }
 
     protected String getTextContent() {
@@ -119,11 +120,11 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
         this.propName = propName;
     }
 
-    public List getProperties() {
+    public List<PropProperty> getProperties() {
         return properties;
     }
 
-    public void setProperties(List properties) {
+    public void setProperties(List<PropProperty> properties) {
         this.properties = properties;
     }
     
@@ -137,7 +138,7 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
                 namespaceQualifier, propertyName);
         properties.add(propProperty);
     }
-    protected Map getAttributes() {
+    protected Map<String, String> getAttributes() {
         return null;
     }
 

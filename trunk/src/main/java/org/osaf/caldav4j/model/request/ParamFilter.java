@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -62,8 +63,8 @@ public class ParamFilter extends OutputsDOMBase {
         return CalDAVConstants.NS_CALDAV;
     }
 
-    protected Collection getChildren() {
-        ArrayList children = new ArrayList();
+    protected Collection<OutputsDOM> getChildren() {
+        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
         if (isDefined){
             children.add(new SimpleDOMOutputtingObject(
                     CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
@@ -79,8 +80,8 @@ public class ParamFilter extends OutputsDOMBase {
         return null;
     }
     
-    protected Map getAttributes() {
-        Map m = new HashMap();
+    protected Map<String, String> getAttributes() {
+        Map<String, String> m = new HashMap<String, String>();
         m.put(ATTR_NAME, name);
         return m;
     }
