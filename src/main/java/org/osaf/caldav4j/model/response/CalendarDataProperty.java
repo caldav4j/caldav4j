@@ -40,6 +40,7 @@ public class CalendarDataProperty extends BaseProperty{
         }
         
         String text = getElement().getTextContent();
+        text.trim();
         CalendarBuilder builder = new CalendarBuilder();
         StringReader stringReader = new StringReader(text);
         try {

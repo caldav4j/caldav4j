@@ -70,9 +70,16 @@ public class ICalendarUtils {
 
     }
     
-    public static Date createDate(int year, int month, int day,
-            TimeZone tz, boolean utc) {
+    public static Date createDate(int year, int month, int day) {
         Date date = new Date();
+        setFields(date, year, month, day, 0, 0, 0, 0, null, false);
+        return date;
+
+    }
+    
+    public static Date createDateTime(int year, int month, int day,
+            TimeZone tz, boolean utc) {
+        DateTime date = new DateTime();
         setFields(date, year, month, day, 0, 0, 0, 0, tz, utc);
         return date;
 
@@ -83,9 +90,16 @@ public class ICalendarUtils {
     }
     
     public static String getSummaryValue(VEvent event){
-        Summary summary = (Summary) event.getProperties().getProperty(
-                Property.SUMMARY);
-        return summary == null ? null : summary.getValue();
+        return getPropertyValue(event, Property.SUMMARY);
+    }
+
+    public static String getUIDValue(Component component){
+        return getPropertyValue(component, Property.UID);
+    }
+    
+    public static String getPropertyValue(Component component, String propertyName){
+        Property property = component.getProperties().getProperty(propertyName);
+        return property == null ? null : property.getValue();
     }
     
     private static void setFields(Date date, int year, int month, int day,
