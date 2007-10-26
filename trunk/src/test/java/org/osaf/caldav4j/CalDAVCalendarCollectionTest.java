@@ -37,7 +37,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         del(COLLECTION_PATH);
     }
     
-    public void testGetCalendar() throws Exception{
+    public void xtestGetCalendar() throws Exception{
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         Calendar calendar = null;
         try {
@@ -62,7 +62,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         assertNotNull(calDAV4JException);
     }
     
-    public void testGetCalendarByPath() throws Exception{
+    public void xtestGetCalendarByPath() throws Exception{
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         Calendar calendar = null;
         try {
@@ -87,7 +87,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         assertNotNull(calDAV4JException);
     }
     
-    public void testGetEventResources() throws Exception{
+    public void xtestGetEventResources1() throws Exception{
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         Date beginDate = ICalendarUtils.createDateTime(2006, 0, 1, null, true);
         Date endDate = ICalendarUtils.createDateTime(2006, 0, 9, null, true);
@@ -120,6 +120,35 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
        
     }
 
+    public void testGetEventResourcesFloatingIssues() throws Exception{
+        CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
+
+        //make sure our 7pm event gets returned
+        Date beginDate = ICalendarUtils.createDateTime(2006, 0, 2, 19, 0, 0, 0,  null, true);
+        Date endDate =   ICalendarUtils.createDateTime(2006, 0, 2, 20, 1, 0, 0, null, true);
+        List<Calendar> l = calendarCollection.getEventResources(beginDate, endDate);
+        assertTrue(hasEventWithUID(l, ICS_FLOATING_JAN2_7PM_UID));
+
+        beginDate = ICalendarUtils.createDateTime(2006, 0, 2, 20, 1, 0, 0,  null, true);
+        endDate =   ICalendarUtils.createDateTime(2006, 0, 2, 20, 2, 0, 0, null, true);
+        l = calendarCollection.getEventResources(beginDate, endDate);
+        assertFalse(hasEventWithUID(l, ICS_FLOATING_JAN2_7PM_UID));
+
+        
+    }
+    private boolean hasEventWithUID(List<Calendar> cals, String uid){
+        for (Calendar cal : cals){
+            ComponentList vEvents = cal.getComponents().getComponents(Component.VEVENT);
+            VEvent ve = (VEvent) vEvents.get(0);
+            String curUid = ICalendarUtils.getUIDValue(ve);
+            if (curUid != null && uid.equals(curUid)){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     private CalDAVCalendarCollection createCalDAVCalendarCollection(){
         CalDAVCalendarCollection calendarCollection = new CalDAVCalendarCollection(
                 COLLECTION_PATH, createHttpClient(), createHostConfiguration(),
