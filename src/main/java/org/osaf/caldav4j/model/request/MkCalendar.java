@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -56,8 +57,8 @@ public class MkCalendar extends OutputsDOMBase{
         return CalDAVConstants.NS_CALDAV;
     }
 
-    protected Collection getChildren() {
-        Collection c  = new ArrayList();
+    protected Collection<OutputsDOM> getChildren() {
+        Collection<OutputsDOM> c  = new ArrayList<OutputsDOM>();
         SimpleDOMOutputtingObject set = new SimpleDOMOutputtingObject();
         set.addChild(prop);
         set.setElementName(SET_ELEMENT_NAME);
@@ -70,7 +71,7 @@ public class MkCalendar extends OutputsDOMBase{
     protected String getTextContent() {
         return null;
     }
-    protected Map getAttributes() {
+    protected Map<String, String> getAttributes() {
         return null;
     }
 }

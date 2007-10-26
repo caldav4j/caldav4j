@@ -15,26 +15,29 @@
  */
 package org.osaf.caldav4j.model.request;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 public class Prop extends OutputsDOMBase{
     public static final String ELEMENT_NAME = "prop";
 
     private String namespaceQualifier;
-    private List children = null;
+    private List<OutputsDOM> children = null;
     
     public Prop(String namespaceQualifier){
         this.namespaceQualifier = namespaceQualifier;
     }
     
-    public Prop(String namespaceQualifier, List properties){
+    public Prop(String namespaceQualifier, List<PropProperty> properties){
         this.namespaceQualifier = namespaceQualifier;
-        this.children = properties;
+        children = new ArrayList<OutputsDOM>();
+        this.children.addAll(properties);
     }
     
     protected String getElementName() {
@@ -49,7 +52,7 @@ public class Prop extends OutputsDOMBase{
         return CalDAVConstants.NS_DAV;
     }
 
-    protected Collection getChildren() {
+    protected Collection<OutputsDOM> getChildren() {
         return children;
     }
 
@@ -57,7 +60,7 @@ public class Prop extends OutputsDOMBase{
         return null;
     }
     
-    protected Map getAttributes() {
+    protected Map<String, String> getAttributes() {
         return null;
     }
 }

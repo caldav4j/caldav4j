@@ -24,6 +24,7 @@ import net.fortuna.ical4j.model.Date;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -132,8 +133,8 @@ public class CalendarData extends OutputsDOMBase {
         return CalDAVConstants.NS_CALDAV;
     }
 
-    protected Collection getChildren() {
-        ArrayList children = new ArrayList();
+    protected Collection<OutputsDOM> getChildren() {
+        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
         if (comp != null) {
             children.add(comp);
         }
@@ -157,7 +158,7 @@ public class CalendarData extends OutputsDOMBase {
         return null;
     }
     
-    protected Map getAttributes() {
+    protected Map<String, String> getAttributes() {
         return null;
     }
 

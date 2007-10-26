@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -56,15 +57,15 @@ public class Comp extends OutputsDOMBase {
     
     private String caldavNamespaceQualifier = null;
 
-    private List comps = new ArrayList();
-    private List props = new ArrayList();
+    private List<Comp> comps = new ArrayList<Comp>();
+    private List<CalDAVProp> props = new ArrayList<CalDAVProp>();
     private boolean allComp = false;
     private boolean allProp = false;
     private String name = null;
     
     
     public Comp(String caldavNamespaceQualifier, String name, boolean allComp,
-            boolean allProp, List comps, List props) {
+            boolean allProp, List<Comp> comps, List<CalDAVProp> props) {
         
         this.name = name;
         
@@ -101,11 +102,11 @@ public class Comp extends OutputsDOMBase {
         this.allProp = allProp;
     }
 
-    public List getComps() {
+    public List<Comp> getComps() {
         return comps;
     }
 
-    public void setComps(List comps) {
+    public void setComps(List<Comp> comps) {
         this.comps = comps;
     }
 
@@ -121,7 +122,7 @@ public class Comp extends OutputsDOMBase {
         return props;
     }
 
-    public void setProps(List props) {
+    public void setProps(List<CalDAVProp> props) {
         this.props = props;
     }
 
@@ -137,8 +138,8 @@ public class Comp extends OutputsDOMBase {
         return CalDAVConstants.NS_CALDAV;
     }
 
-    protected Collection getChildren() {
-        ArrayList children = new ArrayList();
+    protected Collection<OutputsDOM> getChildren() {
+        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
         if (allComp){
             SimpleDOMOutputtingObject allcompElement = new SimpleDOMOutputtingObject(
                     CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
@@ -164,8 +165,8 @@ public class Comp extends OutputsDOMBase {
         return null;
     }
     
-    protected Map getAttributes() {
-        Map m = new HashMap();
+    protected Map<String, String> getAttributes() {
+        Map<String, String> m = new HashMap<String, String>();
         m.put(ATTR_NAME, name);
         return m;
     }
