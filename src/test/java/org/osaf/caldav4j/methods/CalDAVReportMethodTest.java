@@ -1,15 +1,24 @@
 package org.osaf.caldav4j.methods;
 
+import java.util.Enumeration;
+
+import net.fortuna.ical4j.model.Calendar;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.webdav.lib.Property;
+import org.apache.webdav.lib.ResponseEntity;
+import org.apache.webdav.lib.methods.XMLResponseMethodBase;
+import org.apache.webdav.lib.properties.LockDiscoveryProperty;
 import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.model.CalendarQuery;
-import org.osaf.caldav4j.model.CompFilter;
+import org.osaf.caldav4j.model.request.CalendarQuery;
+import org.osaf.caldav4j.model.request.CompFilter;
+import org.osaf.caldav4j.model.response.CalDAVResponse;
 
 public class CalDAVReportMethodTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(CalDAVReportMethodTest.class);
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
-     
+    
     
     public static final String COLLECTION      = "collection";
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
@@ -39,6 +48,20 @@ public class CalDAVReportMethodTest extends BaseTestCase {
                 COLLECTION_PATH, calendarQuery);
         
         createHttpClient().executeMethod(createHostConfiguration(), reportMethod);
+        Enumeration e = reportMethod.getResponses();
+        while (e.hasMoreElements()){
+            ResponseEntity response;
+            response = (ResponseEntity) e.nextElement();
+            CalDAVResponse cResponse = (CalDAVResponse) response;
+            Calendar calendar = cResponse.getCalendar();
+            String href = response.getHref();
+            log.debug("href: " + href);
+            Enumeration eProp = response.getProperties();
+            while (eProp.hasMoreElements()){
+                Property property = (Property) eProp.nextElement();
+                log.debug(property.getName() + ":" + property.getElement());
+            }
+        }
     }
 
 
