@@ -45,7 +45,7 @@ public abstract class BaseTestCase
     public static final String CALDAV_SERVER_HOST = "localhost";
     public static final int CALDAV_SERVER_PORT = 8080;
     public static final String CALDAV_SERVER_PROTOCOL = "http";
-    public static final String CALDAV_SERVER_WEBDAV_ROOT = "/home/test/";
+    public static final String CALDAV_SERVER_WEBDAV_ROOT = "/cosmo/home/test/";
     public static final String CALDAV_SERVER_USERNAME = "test";
     public static final String CALDAV_SERVER_PASSWORD = "password";
 
