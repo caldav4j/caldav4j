@@ -1,6 +1,7 @@
 package org.osaf.caldav4j.methods;
 
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.component.VEvent;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -9,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.DeleteMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class PutGetTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(PutGetTest.class);
@@ -56,7 +58,9 @@ public class PutGetTest extends BaseTestCase {
         
         //now let's make sure we can get the resource body as a calendar
         Calendar calendar = get.getResponseBodyAsCalendar();
-        
+        VEvent event = ICalendarUtils.getFirstEvent(calendar);
+        String uid = ICalendarUtils.getUIDValue(event);
+        assertEquals(ICS_DAILY_NY_5PM_UID, uid);
         
         //let's make sure that a subsequent put with "if-none-match: *" fails
         put = methodFactory.createPutMethod();
