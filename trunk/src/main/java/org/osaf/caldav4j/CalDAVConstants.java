@@ -19,7 +19,9 @@ package org.osaf.caldav4j;
 public interface CalDAVConstants {
 
     public static final String METHOD_MKCALENDAR = "MKCALENDAR";
+    public static final String METHOD_PUT = "PUT";
     public static final String NS_CALDAV = "urn:ietf:params:xml:ns:caldav";
     public static final String NS_DAV = "DAV";
+    public static final String PROC_ID_DEFAULT =  "-//Open Source Applications Foundation//NONSGML CalDAV4j Client//EN";
 
 }
