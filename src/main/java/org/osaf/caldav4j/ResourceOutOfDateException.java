@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.osaf.caldav4j;
 
-public interface CalDAVConstants {
+/**
+ * Thrown when trying to update a resource and the etags do not match
+ * 
+ * @author bobbyrullo
+ *
+ */
+public class ResourceOutOfDateException extends CalDAV4JException {
 
-    public static final String METHOD_MKCALENDAR = "MKCALENDAR";
-    public static final String METHOD_PUT = "PUT";
-    public static final String METHOD_REPORT = "REPORT";
+    public ResourceOutOfDateException(String message) {
+        super(message);
+    }
     
-    public static final String NS_CALDAV = "urn:ietf:params:xml:ns:caldav";
-    public static final String NS_DAV = "DAV:";
-    
-    public static final String PROC_ID_DEFAULT =  "-//OSAF//NONSGML CalDAV4j Client//EN";
-    
-    public static final String HEADER_IF_NONE_MATCH = "If-None-Match";
-    public static final String HEADER_IF_MATCH = "If-Match";
-    
-    public static final String PROP_GETETAG = "getetag";
-
+    public ResourceOutOfDateException(String message, Throwable cause){
+        super(message, cause);
+    }
 }

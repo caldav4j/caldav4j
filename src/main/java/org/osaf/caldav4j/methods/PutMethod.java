@@ -69,6 +69,12 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
         this.etags = etags;
     }
     
+    /**
+     * Add's the etag provided to the "if-none-match" or "if-match" header.
+     * 
+     * Note - You MUST provide a quoted string!
+     * @param etag
+     */
     public void addEtag(String etag){
         etags.add(etag);
     }
@@ -184,11 +190,10 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
                         buf.append(", ");
                     }
                     String etag = (String)i.next();
-                    buf.append("\"");
                     buf.append(etag);
-                    buf.append("\"");
                     x++;
                 }
+                value = buf.toString();
             }
             addRequestHeader(name, value);
         }

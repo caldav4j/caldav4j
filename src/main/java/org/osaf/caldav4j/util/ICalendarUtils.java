@@ -19,9 +19,11 @@ package org.osaf.caldav4j.util;
 import java.util.Calendar;
 
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.component.VEvent;
 
@@ -125,4 +127,36 @@ public class ICalendarUtils {
         date.setTime(calendar.getTimeInMillis());
     }
     
+    public static boolean hasProperty(Component c, String propName){
+        PropertyList l = c.getProperties().getProperties(propName);
+        return l != null && l.size() > 0;
+    }
+        
+    /**
+     * Returns the "master" VEvent - one that does not have a RECURRENCE-ID
+     * 
+     * @param uid
+     * @return
+     */
+    public static VEvent getMasterEvent(net.fortuna.ical4j.model.Calendar calendar, String uid){
+        ComponentList clist = calendar.getComponents().getComponents(Component.VEVENT);
+        for (Object o : clist){
+            VEvent curEvent = (VEvent) o;
+            String curUid = getUIDValue(curEvent);
+            if (uid.equals(curUid) && !hasProperty(curEvent, Property.RECURRENCE_ID) ){
+                return curEvent;
+            }
+        }
+        return null;
+    }
+    
+    public static void addOrReplaceProperty(Component component, Property property){
+        Property oldProp = component.getProperties().getProperty(property.getName());
+        if (oldProp != null){
+            component.getProperties().remove(oldProp);
+        }
+        
+        component.getProperties().add(property);
+    }
+
 }
