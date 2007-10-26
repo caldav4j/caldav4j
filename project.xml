@@ -111,12 +111,26 @@
     <sourceDirectory>src/main/java</sourceDirectory>
     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
     <resources>
+      <resource>
+        <directory>src/test/resources</directory>
+        <includes>
+          <include>test.properties</include>
+          <include>log4j.xml</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
     </resources>
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
       </includes>
       <resources>
+        <resource>
+          <directory>src/test/resources/icalendar</directory>
+          <includes>
+            <include>*.ics</include>
+          </includes>
+        </resource>
       </resources>
     </unitTest>
   </build>
