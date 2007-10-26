@@ -16,6 +16,7 @@
 
 package org.osaf.caldav4j.methods;
 
+import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 
 import org.osaf.caldav4j.CalDAVConstants;
@@ -25,6 +26,7 @@ public class CalDAV4JMethodFactory {
     String procID = CalDAVConstants.PROC_ID_DEFAULT;
     private boolean validatingOutputter = false;
     
+    private ThreadLocal calendarBuilderThreadLocal = new ThreadLocal();
     private CalendarOutputter calendarOutputter = null;
     
     public CalDAV4JMethodFactory(){
@@ -42,13 +44,19 @@ public class CalDAV4JMethodFactory {
     public PutMethod createPutMethod(){
         PutMethod putMethod = new PutMethod();
         putMethod.setProcID(procID);
-        putMethod.setCalendarOutputter(getCalendarOutputter());
+        putMethod.setCalendarOutputter(getCalendarOutputterInstance());
         return putMethod;
     }
     
     public MkCalendarMethod createMkCalendarMethod(){
         MkCalendarMethod mkCalendarMethod = new MkCalendarMethod();
         return mkCalendarMethod;
+    }
+    
+    public GetMethod createGetMethod(){
+        GetMethod getMethod = new GetMethod();
+        getMethod.setCalendarBuilder(getCalendarBuilderInstance());
+        return getMethod;
     }
     
     public boolean isCalendarValidatingOutputter() {
@@ -59,10 +67,19 @@ public class CalDAV4JMethodFactory {
         this.validatingOutputter = validatingOutputter;
     }
     
-    private CalendarOutputter getCalendarOutputter(){
+    private synchronized CalendarOutputter getCalendarOutputterInstance(){
         if (calendarOutputter == null){
             calendarOutputter = new CalendarOutputter(validatingOutputter);
         }
         return calendarOutputter;
+    }
+    
+    private CalendarBuilder getCalendarBuilderInstance(){
+        CalendarBuilder builder = (CalendarBuilder) calendarBuilderThreadLocal.get();
+        if (builder == null){
+            builder = new CalendarBuilder();
+            calendarBuilderThreadLocal.set(builder);
+        }
+        return builder;
     }
 }
