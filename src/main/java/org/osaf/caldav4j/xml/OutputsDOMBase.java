@@ -17,6 +17,7 @@ package org.osaf.caldav4j.xml;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
@@ -32,6 +33,8 @@ public abstract class OutputsDOMBase implements OutputsDOM{
     protected abstract String getNamespaceURI();
 
     protected abstract Collection getChildren();
+    
+    protected abstract Map getAttributes();
     
     protected String getQualifiedName() {
         return getNamespaceQualifier() + ":" + getElementName();
@@ -59,6 +62,10 @@ public abstract class OutputsDOMBase implements OutputsDOM{
     }
 
     protected void fillElement(Element e){
+
+        /*
+         * Add children elements 
+         */
         if (getChildren() != null && getChildren().size() != 0) {
             Iterator i = getChildren().iterator();
             while (i.hasNext()) {
@@ -70,6 +77,19 @@ public abstract class OutputsDOMBase implements OutputsDOM{
                
         if (getTextContent() != null){
             e.setTextContent(getTextContent());
+        }
+        
+        /*
+         * Add Attributes
+         */
+        Map attributes = getAttributes();
+        if (attributes != null && attributes.size() > 0){
+            Iterator i = attributes.keySet().iterator();
+            while (i.hasNext()){
+                Object key = i.next();
+                Object value = attributes.get(key);
+                e.setAttribute(key.toString(), value.toString());
+            }
         }
     }
 }

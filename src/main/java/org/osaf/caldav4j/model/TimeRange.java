@@ -13,37 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.osaf.caldav4j.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+
+import net.fortuna.ical4j.model.Date;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
+ *  <!ELEMENT time-range EMPTY>
  *
- *   <!ELEMENT mkcalendar (DAV:set)>
- *   <!ELEMENT set (prop) >
+ *  <!ATTLIST time-range start CDATA
+ *                       end CDATA>
  * @author bobbyrullo
- *
+ * 
  */
-public class MkCalendar extends OutputsDOMBase{
-    public static final String ELEMENT_NAME = "mkcalendar";
-    public static final String SET_ELEMENT_NAME = "set";
+public class TimeRange extends OutputsDOMBase {
+    
+    public static final String ELEMENT_NAME = "time-range";
+    public static final String ATTR_START = "start";
+    public static final String ATTR_END = "end";
     
     private String caldavNamespaceQualifier = null;
-    private String webdavNamespaceQualifier = null;
-    private Prop prop = null;
+    private Date start = null;
+    private Date end = null;
     
-    public MkCalendar(String caldavNamespaceQualifier, String webdavNamespaceQualifier, Prop prop){
+    public TimeRange(String caldavNamespaceQualifier, Date start, Date end) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.webdavNamespaceQualifier = webdavNamespaceQualifier;
-        this.prop = prop;
+        this.start = start;
+        this.end = end;
     }
-    
+
     protected String getElementName() {
         return ELEMENT_NAME;
     }
@@ -57,20 +62,36 @@ public class MkCalendar extends OutputsDOMBase{
     }
 
     protected Collection getChildren() {
-        Collection c  = new ArrayList();
-        SimpleDOMOutputtingObject set = new SimpleDOMOutputtingObject();
-        set.addChild(prop);
-        set.setElementName(SET_ELEMENT_NAME);
-        set.setNamespaceQualifier(webdavNamespaceQualifier);
-        set.setNamespaceURI(CalDAVConstants.NS_DAV);
-        c.add(set);
-        return c;
+        return null;
     }
 
     protected String getTextContent() {
         return null;
     }
+    
     protected Map getAttributes() {
-        return null;
+        Map m =  new HashMap();
+        m.put(ATTR_START, start.toString());
+        m.put(ATTR_END, end.toString());
+        return m;
     }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    public void setEnd(Date end) {
+        this.end = end;
+    }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+
+
 }

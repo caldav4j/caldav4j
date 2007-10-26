@@ -18,14 +18,30 @@ package org.osaf.caldav4j.xml;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 
 public class SimpleDOMOutputtingObject extends OutputsDOMBase{
     
-    private String elementName;
-    private String namespaceQualifier;
-    private String namespaceURI;
-    private String textContent;
+    private String elementName = null;
+    private String namespaceQualifier = null;
+    private String namespaceURI = null;
+    private String textContent = null;
     private List children = new ArrayList();
+    
+    
+    public SimpleDOMOutputtingObject(){
+        
+    }
+    
+    public SimpleDOMOutputtingObject(String namespaceURI,
+            String namespaceQualifier, String elementName) {
+        this.namespaceURI = namespaceURI;
+        this.namespaceQualifier = namespaceQualifier;
+        this.elementName = elementName;
+    }
     
     public Collection getChildren() {
         return children;
@@ -79,4 +95,9 @@ public class SimpleDOMOutputtingObject extends OutputsDOMBase{
         this.elementName = localName;
     }
 
+    protected Map getAttributes() {
+        return null;
+    }
 }
+
+

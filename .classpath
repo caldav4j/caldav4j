@@ -18,5 +18,6 @@
 	<classpathentry sourcepath="/lib/java/src/commons-httpclient-2.0.2-src.zip" kind="lib" path="/Users/bobbyrullo/.maven/repository/commons-httpclient/jars/commons-httpclient-2.0.2.jar"/>
 	<classpathentry kind="lib" path="/Users/bobbyrullo/.maven/repository/xerces/jars/xercesImpl-2.6.2.jar"/>
 	<classpathentry kind="lib" path="/Users/bobbyrullo/.maven/repository/junit/jars/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="/Users/bobbyrullo/.maven/repository/ical4j/jars/ical4j-0.9.17.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

@@ -16,27 +16,40 @@
 
 package org.osaf.caldav4j.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
+import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
+import org.osaf.caldav4j.xml.XMLUtils;
 
 /**
- * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)? filter>
- * 
- * @author bobbyrullo
+ * <!ELEMENT filter comp-filter>
+ *    <!ELEMENT comp-filter (is-defined | time-range)?
+ *                         comp-filter* prop-filter*>
+ *
+ *  <!ATTLIST comp-filter name CDATA #REQUIRED>
+ *  @author bobbyrullo
  * 
  */
 public class CalendarQuery extends OutputsDOMBase {
     
     public static final String ELEMENT_NAME = "calendar-query";
+    public static final String ELEM_ALLPROP = "allprop";    
+    public static final String ELEM_PROPNAME = "propname";
     
-    private String namespaceQualifier = null;
-
-    public CalendarQuery(String namespaceQualifier) {
-        this.namespaceQualifier = namespaceQualifier;
+    private String caldavNamespaceQualifier = null;
+    private String webdavNamespaceQualifier = null;
+    private boolean allProp = false;
+    private boolean propName = false;
+    private List properties = new ArrayList();
+    
+    public CalendarQuery(String caldavNamespaceQualifier, String webdavNamespaceQualifer) {
+        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+        this.webdavNamespaceQualifier = webdavNamespaceQualifer;
     }
 
     protected String getElementName() {
@@ -44,7 +57,7 @@ public class CalendarQuery extends OutputsDOMBase {
     }
 
     protected String getNamespaceQualifier() {
-        return namespaceQualifier;
+        return caldavNamespaceQualifier;
     }
 
     protected String getNamespaceURI() {
@@ -52,13 +65,61 @@ public class CalendarQuery extends OutputsDOMBase {
     }
 
     protected Collection getChildren() {
-        // TODO Auto-generated method stub
-        return null;
+        ArrayList children = new ArrayList();
+        if (allProp){
+            children.add(new SimpleDOMOutputtingObject(CalDAVConstants.NS_DAV,
+                    webdavNamespaceQualifier, ELEM_ALLPROP));
+        } else if (propName){
+            children.add(new SimpleDOMOutputtingObject(CalDAVConstants.NS_DAV,
+                    webdavNamespaceQualifier, ELEM_PROPNAME));
+        } else if (properties != null && properties.size() > 0){
+            Prop prop = new Prop(webdavNamespaceQualifier, properties);
+            children.add(prop);
+        }
+        
+        return children;
     }
 
     protected String getTextContent() {
         return null;
     }
 
+    public boolean isAllProp() {
+        return allProp;
+    }
+
+    public void setAllProp(boolean allProp) {
+        this.allProp = allProp;
+    }
+
+    public boolean isPropName() {
+        return propName;
+    }
+
+    public void setPropName(boolean propName) {
+        this.propName = propName;
+    }
+
+    public List getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List properties) {
+        this.properties = properties;
+    }
+    
+    public void addProperty(PropProperty propProperty){
+        properties.add(propProperty);
+    }
+    
+    public void addProperty(String namespaceURI, String namespaceQualifier,
+            String propertyName) {
+        PropProperty propProperty = new PropProperty(namespaceURI,
+                namespaceQualifier, propertyName);
+        properties.add(propProperty);
+    }
+    protected Map getAttributes() {
+        return null;
+    }
 
 }

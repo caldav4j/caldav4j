@@ -13,37 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.osaf.caldav4j.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
+ *  <!ELEMENT text-match #PCDATA>
  *
- *   <!ELEMENT mkcalendar (DAV:set)>
- *   <!ELEMENT set (prop) >
+ *  <!ATTLIST text-match caseless (yes|no)>
+ *  
  * @author bobbyrullo
- *
+ * 
  */
-public class MkCalendar extends OutputsDOMBase{
-    public static final String ELEMENT_NAME = "mkcalendar";
-    public static final String SET_ELEMENT_NAME = "set";
+public class TextMatch extends OutputsDOMBase {
+    
+    public static final String ELEMENT_NAME = "text-match";
+    public static final String ATTR_CASELESS = "caseless";
+    public static final String ATTR_VALUE_YES = "yes";
+    public static final String ATTR_VALUE_NO  = "no";
     
     private String caldavNamespaceQualifier = null;
-    private String webdavNamespaceQualifier = null;
-    private Prop prop = null;
+    private String textToMatch = null;
+    private Boolean caseless = null;
     
-    public MkCalendar(String caldavNamespaceQualifier, String webdavNamespaceQualifier, Prop prop){
+    public TextMatch(String caldavNamespaceQualifier, Boolean caseless,
+            String textToMatch) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.webdavNamespaceQualifier = webdavNamespaceQualifier;
-        this.prop = prop;
+        this.caseless = caseless;
+        this.textToMatch = textToMatch;
+
     }
-    
+
     protected String getElementName() {
         return ELEMENT_NAME;
     }
@@ -57,20 +63,37 @@ public class MkCalendar extends OutputsDOMBase{
     }
 
     protected Collection getChildren() {
-        Collection c  = new ArrayList();
-        SimpleDOMOutputtingObject set = new SimpleDOMOutputtingObject();
-        set.addChild(prop);
-        set.setElementName(SET_ELEMENT_NAME);
-        set.setNamespaceQualifier(webdavNamespaceQualifier);
-        set.setNamespaceURI(CalDAVConstants.NS_DAV);
-        c.add(set);
-        return c;
+        return null;
     }
 
     protected String getTextContent() {
-        return null;
+        return textToMatch;
     }
+    
     protected Map getAttributes() {
-        return null;
+        Map m = null;
+        if (caseless != null) {
+            m = new HashMap();
+            m.put(ATTR_CASELESS, caseless.booleanValue() ? ATTR_VALUE_YES
+                    : ATTR_VALUE_NO);
+
+        }
+        return m;
+    }
+
+    public Boolean getCaseless() {
+        return caseless;
+    }
+
+    public void setCaseless(Boolean caseless) {
+        this.caseless = caseless;
+    }
+
+    public String getTextToMatch() {
+        return textToMatch;
+    }
+
+    public void setTextToMatch(String textToMatch) {
+        this.textToMatch = textToMatch;
     }
 }

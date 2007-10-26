@@ -17,6 +17,7 @@ package org.osaf.caldav4j.model;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
@@ -55,5 +56,8 @@ public class Prop extends OutputsDOMBase{
     protected String getTextContent() {
         return null;
     }
-
+    
+    protected Map getAttributes() {
+        return null;
+    }
 }

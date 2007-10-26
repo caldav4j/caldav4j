@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.osaf.caldav4j.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
@@ -24,26 +26,29 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
+ * <!ELEMENT param-filter (is-defined | text-match) >
  *
- *   <!ELEMENT mkcalendar (DAV:set)>
- *   <!ELEMENT set (prop) >
+ * <!ATTLIST param-filter name CDATA #REQUIRED>
+ *  
  * @author bobbyrullo
- *
+ * 
  */
-public class MkCalendar extends OutputsDOMBase{
-    public static final String ELEMENT_NAME = "mkcalendar";
-    public static final String SET_ELEMENT_NAME = "set";
+public class ParamFilter extends OutputsDOMBase {
+    
+    public static final String ELEMENT_NAME = "param-filter";
+    public static final String ELEM_IS_DEFINED = "is-defined";
+    public static final String ATTR_NAME = "name";
     
     private String caldavNamespaceQualifier = null;
-    private String webdavNamespaceQualifier = null;
-    private Prop prop = null;
+
+    private boolean isDefined = false;
+    private TextMatch textMatch = null;
+    private String name = null;
     
-    public MkCalendar(String caldavNamespaceQualifier, String webdavNamespaceQualifier, Prop prop){
+    public ParamFilter(String caldavNamespaceQualifier) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.webdavNamespaceQualifier = webdavNamespaceQualifier;
-        this.prop = prop;
     }
-    
+
     protected String getElementName() {
         return ELEMENT_NAME;
     }
@@ -57,20 +62,43 @@ public class MkCalendar extends OutputsDOMBase{
     }
 
     protected Collection getChildren() {
-        Collection c  = new ArrayList();
-        SimpleDOMOutputtingObject set = new SimpleDOMOutputtingObject();
-        set.addChild(prop);
-        set.setElementName(SET_ELEMENT_NAME);
-        set.setNamespaceQualifier(webdavNamespaceQualifier);
-        set.setNamespaceURI(CalDAVConstants.NS_DAV);
-        c.add(set);
-        return c;
+        ArrayList children = new ArrayList();
+        if (isDefined){
+            children.add(new SimpleDOMOutputtingObject(
+                    CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
+                    ELEM_IS_DEFINED));
+        } else if (textMatch != null){
+            children.add(textMatch);
+        }
+        
+        return children;
     }
-
+    
     protected String getTextContent() {
         return null;
     }
+    
     protected Map getAttributes() {
-        return null;
+        Map m = new HashMap();
+        m.put(ATTR_NAME, name);
+        return m;
     }
+
+
+    public boolean isDefined() {
+        return isDefined;
+    }
+
+    public void setDefined(boolean isDefined) {
+        this.isDefined = isDefined;
+    }
+    
+    public TextMatch getTextMatch() {
+        return textMatch;
+    }
+
+    public void setTextMatch(TextMatch textMatch) {
+        this.textMatch = textMatch;
+    }
+    
 }
