@@ -13,37 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.osaf.caldav4j.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import net.fortuna.ical4j.model.Date;
+
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
+ *  <!ELEMENT calendar-data ((comp?, (expand-recurrence-set |
+ *                                    limit-recurrence-set)?) |
+ *                            #PCDATA)?>
  *
- *   <!ELEMENT mkcalendar (DAV:set)>
- *   <!ELEMENT set (prop) >
+ *  <!ATTLIST calendar-data content-type CDATA "text/calendar">
+ *
+ *  <!ATTLIST calendar-data version CDATA "2.0">
  * @author bobbyrullo
- *
+ * 
  */
-public class MkCalendar extends OutputsDOMBase{
-    public static final String ELEMENT_NAME = "mkcalendar";
-    public static final String SET_ELEMENT_NAME = "set";
+public class CalendarData extends OutputsDOMBase {
+    
+    public static final String ELEMENT_NAME = "calendar-data";
+    public static final String ELEM_EXPAND_RECURRENCE_SET = "expand-recurrence-set";
+    public static final String ELEM_LIMIT_RECURRENCE_SET = "limit-recurrence-set";
+    
+    public static final Integer EXPAND = new Integer(0);
+    public static final Integer LIMIT = new Integer(1);
     
     private String caldavNamespaceQualifier = null;
-    private String webdavNamespaceQualifier = null;
-    private Prop prop = null;
+    private Date recurrenceSetStart = null;
+    private Date recurrenceSetEnd   = null;
+    private Integer expandOrLimitRecurrenceSet;
+    private Comp comp = null;
     
-    public MkCalendar(String caldavNamespaceQualifier, String webdavNamespaceQualifier, Prop prop){
+    public CalendarData(String caldavNamespaceQualifier) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.webdavNamespaceQualifier = webdavNamespaceQualifier;
-        this.prop = prop;
     }
-    
+
     protected String getElementName() {
         return ELEMENT_NAME;
     }
@@ -57,20 +68,20 @@ public class MkCalendar extends OutputsDOMBase{
     }
 
     protected Collection getChildren() {
-        Collection c  = new ArrayList();
-        SimpleDOMOutputtingObject set = new SimpleDOMOutputtingObject();
-        set.addChild(prop);
-        set.setElementName(SET_ELEMENT_NAME);
-        set.setNamespaceQualifier(webdavNamespaceQualifier);
-        set.setNamespaceURI(CalDAVConstants.NS_DAV);
-        c.add(set);
-        return c;
+        ArrayList children = new ArrayList();
+        
+        return children;
     }
-
+    
     protected String getTextContent() {
         return null;
     }
+    
     protected Map getAttributes() {
         return null;
     }
+
+
+
+    
 }

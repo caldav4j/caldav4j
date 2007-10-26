@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.osaf.caldav4j.model;
 
 import java.util.ArrayList;
@@ -21,29 +22,39 @@ import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
+ *   <!ELEMENT filter comp-filter>
+ *   
+ *   <!ELEMENT comp-filter (is-defined | time-range)?
+ *                        comp-filter* prop-filter*>
+ *                        
+ *   <!ATTLIST comp-filter name CDATA #REQUIRED> 
+ *  
+ *   <!ELEMENT prop-filter (is-defined | time-range | text-match)?
+ *                          param-filter*>
  *
- *   <!ELEMENT mkcalendar (DAV:set)>
- *   <!ELEMENT set (prop) >
+ *   <!ATTLIST prop-filter name CDATA #REQUIRED>
+ *
+ *   <!ELEMENT param-filter (is-defined | text-match) >
+ *
+ *   <!ATTLIST param-filter name CDATA #REQUIRED>
+ *
+ *   <!ELEMENT is-defined EMPTY>
+ * 
  * @author bobbyrullo
- *
+ * 
  */
-public class MkCalendar extends OutputsDOMBase{
-    public static final String ELEMENT_NAME = "mkcalendar";
-    public static final String SET_ELEMENT_NAME = "set";
+public class Filter extends OutputsDOMBase {
+    
+    public static final String ELEMENT_NAME = "filter";
     
     private String caldavNamespaceQualifier = null;
-    private String webdavNamespaceQualifier = null;
-    private Prop prop = null;
     
-    public MkCalendar(String caldavNamespaceQualifier, String webdavNamespaceQualifier, Prop prop){
+    public Filter(String caldavNamespaceQualifier) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.webdavNamespaceQualifier = webdavNamespaceQualifier;
-        this.prop = prop;
     }
-    
+
     protected String getElementName() {
         return ELEMENT_NAME;
     }
@@ -57,14 +68,9 @@ public class MkCalendar extends OutputsDOMBase{
     }
 
     protected Collection getChildren() {
-        Collection c  = new ArrayList();
-        SimpleDOMOutputtingObject set = new SimpleDOMOutputtingObject();
-        set.addChild(prop);
-        set.setElementName(SET_ELEMENT_NAME);
-        set.setNamespaceQualifier(webdavNamespaceQualifier);
-        set.setNamespaceURI(CalDAVConstants.NS_DAV);
-        c.add(set);
-        return c;
+        ArrayList children = new ArrayList();
+        
+        return children;
     }
 
     protected String getTextContent() {
@@ -73,4 +79,6 @@ public class MkCalendar extends OutputsDOMBase{
     protected Map getAttributes() {
         return null;
     }
+
+
 }
