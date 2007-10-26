@@ -18,6 +18,7 @@ package org.osaf.caldav4j.xml;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.osaf.caldav4j.DOMValidationException;
 import org.w3c.dom.DOMException;
@@ -33,9 +34,9 @@ public abstract class OutputsDOMBase implements OutputsDOM{
 
     protected abstract String getNamespaceURI();
 
-    protected abstract Collection getChildren();
+    protected abstract Collection<? extends OutputsDOM> getChildren();
     
-    protected abstract Map getAttributes();
+    protected abstract Map<String, String> getAttributes();
     
     protected String getQualifiedName() {
         return getNamespaceQualifier() + ":" + getElementName();
@@ -90,12 +91,12 @@ public abstract class OutputsDOMBase implements OutputsDOM{
          * Add Attributes
          */
         Map attributes = getAttributes();
-        if (attributes != null && attributes.size() > 0){
-            Iterator i = attributes.keySet().iterator();
-            while (i.hasNext()){
-                Object key = i.next();
-                Object value = attributes.get(key);
-                e.setAttribute(key.toString(), value.toString());
+        if (attributes != null && attributes.size() > 0) {
+            Iterator<Entry> i = attributes.entrySet().iterator();
+            while (i.hasNext()) {
+                Entry entry = i.next();
+                e.setAttribute(entry.getKey().toString(), entry.getValue()
+                        .toString());
             }
         }
     }
