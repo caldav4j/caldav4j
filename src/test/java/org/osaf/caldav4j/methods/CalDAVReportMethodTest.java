@@ -59,7 +59,7 @@ public class CalDAVReportMethodTest extends BaseTestCase {
             Enumeration eProp = response.getProperties();
             while (eProp.hasMoreElements()){
                 Property property = (Property) eProp.nextElement();
-                log.debug(property.getName() + ":" + property.getElement());
+               // log.debug(property.getName() + ":" + property.getElement());
             }
         }
     }
