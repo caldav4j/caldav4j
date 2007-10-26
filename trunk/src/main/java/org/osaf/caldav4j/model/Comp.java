@@ -19,6 +19,7 @@ package org.osaf.caldav4j.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
@@ -26,27 +27,101 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
- * <!ELEMENT param-filter (is-defined | text-match) >
+ *  <!ELEMENT comp ((allcomp, (allprop | prop*)) |
+ *                  (comp*, (allprop | prop*)))>
  *
- * <!ATTLIST param-filter name CDATA #REQUIRED>
- *  
+ * <!ATTLIST comp name CDATA #REQUIRED>
+ * 
+ * <!ELEMENT allcomp EMPTY> 
+ * 
+ * <!ELEMENT allprop EMPTY>
+ * 
+ * <!ELEMENT prop EMPTY>
+ * 
+ * <!ATTLIST prop name CDATA #REQUIRED
+ *                novalue (yes|no) "no">
+ *                
  * @author bobbyrullo
  * 
  */
 public class Comp extends OutputsDOMBase {
     
-    public static final String ELEMENT_NAME = "param-filter";
-    public static final String ELEM_IS_DEFINED = "is-defined";
+    public static final String ELEMENT_NAME = "comp";
+    public static final String ELEM_ALLPROP = "allprop";
+    public static final String ELEM_PROP = "prop";
+    public static final String ELEM_ALLCOMP = "allcomp";
+   
     public static final String ATTR_NAME = "name";
     
     private String caldavNamespaceQualifier = null;
 
-    private boolean isDefined = false;
-    private TextMatch textMatch = null;
+    private List comps = new ArrayList();
+    private List props = new ArrayList();
+    private boolean allComp = false;
+    private boolean allProp = false;
     private String name = null;
+    
+    
+    public Comp(String caldavNamespaceQualifier, String name, boolean allComp,
+            boolean allProp, List comps, List props) {
+        
+        this.name = name;
+        
+        if (allComp){
+            this.allComp = true;
+        } else {
+            this.comps.addAll(comps);
+        }
+        
+        if (allProp){
+            this.allProp = true;
+        } else {
+            this.props.addAll(props);
+        }
+    }
     
     public Comp(String caldavNamespaceQualifier) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+    }
+
+    public boolean isAllComp() {
+        return allComp;
+    }
+
+    public void setAllComp(boolean allComp) {
+        this.allComp = allComp;
+    }
+
+    public boolean isAllProp() {
+        return allProp;
+    }
+
+    public void setAllProp(boolean allProp) {
+        this.allProp = allProp;
+    }
+
+    public List getComps() {
+        return comps;
+    }
+
+    public void setComps(List comps) {
+        this.comps = comps;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List getProps() {
+        return props;
+    }
+
+    public void setProps(List props) {
+        this.props = props;
     }
 
     protected String getElementName() {
@@ -63,14 +138,24 @@ public class Comp extends OutputsDOMBase {
 
     protected Collection getChildren() {
         ArrayList children = new ArrayList();
-        if (isDefined){
-            children.add(new SimpleDOMOutputtingObject(
+        if (allComp){
+            SimpleDOMOutputtingObject allcompElement = new SimpleDOMOutputtingObject(
                     CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
-                    ELEM_IS_DEFINED));
-        } else if (textMatch != null){
-            children.add(textMatch);
+                    ELEM_ALLCOMP);
+            children.add(allcompElement);
+        } else if (comps != null){
+            children.addAll(comps);
         }
         
+        if (allProp){
+            SimpleDOMOutputtingObject allpropElement = new SimpleDOMOutputtingObject(
+                    CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
+                    ELEM_ALLPROP);
+            children.add(allpropElement);
+            
+        } else if (props != null) {
+            children.addAll(props);
+        }
         return children;
     }
     
@@ -83,22 +168,16 @@ public class Comp extends OutputsDOMBase {
         m.put(ATTR_NAME, name);
         return m;
     }
-
-
-    public boolean isDefined() {
-        return isDefined;
-    }
-
-    public void setDefined(boolean isDefined) {
-        this.isDefined = isDefined;
+    
+    public void addProp(CalDAVProp prop){
+        props.add(prop);
     }
     
-    public TextMatch getTextMatch() {
-        return textMatch;
-    }
-
-    public void setTextMatch(TextMatch textMatch) {
-        this.textMatch = textMatch;
+    public void addProp(String propName, boolean novalue) {
+        props.add(new CalDAVProp(caldavNamespaceQualifier, propName, novalue));
     }
     
+    public void addProp(String propName) {
+        props.add(new CalDAVProp(caldavNamespaceQualifier, propName));
+    }
 }

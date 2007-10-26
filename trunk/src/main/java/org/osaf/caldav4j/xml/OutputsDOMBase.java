@@ -66,8 +66,9 @@ public abstract class OutputsDOMBase implements OutputsDOM{
         /*
          * Add children elements 
          */
-        if (getChildren() != null && getChildren().size() != 0) {
-            Iterator i = getChildren().iterator();
+        Collection children = getChildren();
+        if (children != null && children.size() != 0) {
+            Iterator i = children.iterator();
             while (i.hasNext()) {
                 OutputsDOM node = (OutputsDOM) i.next();
                 Element childNode = node.outputDOM(e.getOwnerDocument());

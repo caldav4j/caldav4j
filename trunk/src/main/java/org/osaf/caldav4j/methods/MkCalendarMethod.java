@@ -25,7 +25,7 @@ import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.MkCalendar;
 import org.osaf.caldav4j.model.Prop;
 import org.osaf.caldav4j.model.PropProperty;
-import org.osaf.caldav4j.xml.XMLUtils;
+import org.osaf.caldav4j.model.util.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
