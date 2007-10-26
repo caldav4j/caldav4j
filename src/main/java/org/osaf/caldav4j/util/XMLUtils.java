@@ -39,6 +39,9 @@ public class XMLUtils {
                     .newInstance();
             implementation = registry.getDOMImplementation("XML 3.0");
         } catch (Exception e) {
+            log.error("Could not instantiate a DOMImplementation! Make sure you have "
+                    + " a version of Xerces 2.7.0 or greater or a DOM impl that "
+                    + " implements DOM 3.0" );
             throw new RuntimeException(
                     "Could not instantiate a DOMImplementation!", e);
         }
