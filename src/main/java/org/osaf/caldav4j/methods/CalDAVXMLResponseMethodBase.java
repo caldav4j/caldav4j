@@ -9,7 +9,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.webdav.lib.ResponseEntity;
 import org.apache.webdav.lib.methods.XMLResponseMethodBase;
 import org.apache.webdav.lib.util.DOMUtils;
 import org.apache.webdav.lib.util.QName;
@@ -21,7 +20,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
-    private Hashtable<String, ResponseEntity> responseHashtable = null;
+    private Hashtable<String, CalDAVResponse> responseHashtable = null;
     private static Map<QName, Error> errorMap = null;
     private Error error = null;
     
@@ -69,7 +68,7 @@ public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
      * @return An enumeration containing objects implementing the
      * ResponseEntity interface
      */
-    public Enumeration getResponses() {
+    public Enumeration<CalDAVResponse> getResponses() {
         return getResponseHashtable().elements();
     }
     
@@ -77,7 +76,7 @@ public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
         return error;
     }
     
-    protected Hashtable getResponseHashtable() {
+    protected Hashtable<String, CalDAVResponse> getResponseHashtable() {
         checkUsed();
         if (responseHashtable == null) {
             initHashtable();
@@ -101,7 +100,7 @@ public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
      */
     @SuppressWarnings("unchecked")
     private void initHashtable(){
-        responseHashtable = new Hashtable<String, ResponseEntity>();
+        responseHashtable = new Hashtable<String, CalDAVResponse>();
         responseURLs = new Vector<String>();
         // Also accept OK sent by buggy servers in reply to a PROPFIND
         // or REPORT (Xythos, Catacomb, ...?).
@@ -126,7 +125,7 @@ public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
                             (child);
                         if (Response.TAG_NAME.equals(name) &&
                             "DAV:".equals(namespace)) {
-                            ResponseEntity response =
+                            CalDAVResponse response =
                                 new CalDAVResponse(child);
                             String href = response.getHref() ;
                             responseHashtable.put(href,response);

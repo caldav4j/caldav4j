@@ -19,6 +19,7 @@ package org.osaf.caldav4j.methods;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 
+import org.apache.webdav.lib.methods.ReportMethod;
 import org.osaf.caldav4j.CalDAVConstants;
 
 public class CalDAV4JMethodFactory {
@@ -59,6 +60,11 @@ public class CalDAV4JMethodFactory {
         return getMethod;
     }
     
+    public CalDAVReportMethod createCalDAVReportMethod(){
+        CalDAVReportMethod reportMethod = new CalDAVReportMethod();
+        return reportMethod;
+    }
+    
     public boolean isCalendarValidatingOutputter() {
         return validatingOutputter;
     }
@@ -66,6 +72,7 @@ public class CalDAV4JMethodFactory {
     public void setCalendarValidatingOutputter(boolean validatingOutputter) {
         this.validatingOutputter = validatingOutputter;
     }
+    
     
     private synchronized CalendarOutputter getCalendarOutputterInstance(){
         if (calendarOutputter == null){
