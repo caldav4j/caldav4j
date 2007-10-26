@@ -58,6 +58,7 @@ public abstract class BaseTestCase
 
     public static final String ICS_NORMAL_PACIFIC_1PM = "Normal_Pacific_1pm.ics";
     public static final String ICS_NORMAL_PACIFIC_1PM_UID = "0F94FE7B-8E01-4B27-835E-CD1431FD6475";
+    public static final String ICS_NORMAL_PACIFIC_1PM_SUMMARY = "Normal_Pacific_1pm";
 
     public static final String ICS_FLOATING_JAN2_7PM = "Floating_Jan_2_7pm.ics";
     public static final String ICS_FLOATING_JAN2_7PM_SUMMARY = "Floating_Jan_2_7pm";

@@ -77,15 +77,4 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
         return XMLUtils.toXML(d);
 
     }
-    
-    
-    public static void main (String args[]){
-        MkCalendarMethod mk = new MkCalendarMethod();
-        mk.setPath("/home/bobby/TESTY");
-        mk.addPropertyToSet("bobby:","B:funkyzeit", "frumpus");
-        mk.addPropertyToSet("bobby:","B:funkyzeit", "famishj");
-        mk.addPropertyToSet("crumpus:","CR:funkyzeit", "<CR:crack/>");
-        System.out.println(mk.generateRequestBody());
-        //XMLUtils.
-    }
 }

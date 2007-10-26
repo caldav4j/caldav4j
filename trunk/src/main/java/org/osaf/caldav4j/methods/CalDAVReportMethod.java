@@ -16,6 +16,8 @@
 
 package org.osaf.caldav4j.methods;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
@@ -23,6 +25,9 @@ import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
 
 public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase {
+    private static final Log log = LogFactory
+        .getLog(CalDAVReportMethod.class);
+    
     private CalDAVReportRequest reportRequest;
     
     public CalDAVReportMethod() {
@@ -55,6 +60,7 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase {
             doc = reportRequest.createNewDocument(XMLUtils
                     .getDOMImplementation());
         } catch (DOMValidationException domve) {
+            log.error("Error trying to create DOM from CalDAVReportRequest: ", domve);
             throw new RuntimeException(domve);
         }
         return XMLUtils.toPrettyXML(doc);

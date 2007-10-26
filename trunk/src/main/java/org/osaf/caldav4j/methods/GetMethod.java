@@ -24,11 +24,14 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAV4JProtocolException;
 
 
 public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
-
+    private static final Log log = LogFactory.getLog(GetMethod.class);
+    
     private CalendarBuilder calendarBuilder = null;
     
     public GetMethod (){
@@ -46,7 +49,10 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
     public Calendar getResponseBodyAsCalendar() throws IOException,
             ParserException, CalDAV4JProtocolException {
         Header header = getResponseHeader("Content-Type");
-        if (!header.getValue().startsWith("text/calendar")) {
+        String contentType = header.getValue();
+        if (!contentType.startsWith("text/calendar")) {
+            log.error("Content type must be \"text/calendar\" to parse as an " +
+                    "icalendar resource. Type was: " + contentType);
             throw new CalDAV4JProtocolException(
                     "Content type must be \"text/calendar\" to parse as an " +
                     "icalendar resource");
