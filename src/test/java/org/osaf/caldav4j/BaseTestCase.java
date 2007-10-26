@@ -52,7 +52,7 @@ public abstract class BaseTestCase
     public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
     public static final String ICS_ALL_DAY_JAN1 = "All_Day_NY_JAN1.ics";
     public static final String ICS_NORMAL_PACIFIC_1PM = "Normal_Pacific_1pm.ics";
-    public static final String ICS_SINGLE_EVENT= "single_Event.ics";
+    public static final String ICS_SINGLE_EVENT= "singleEvent.ics";
 
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     
