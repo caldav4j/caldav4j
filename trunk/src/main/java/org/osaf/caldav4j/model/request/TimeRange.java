@@ -14,41 +14,40 @@
  * limitations under the License.
  */
 
-package org.osaf.caldav4j.model;
+package org.osaf.caldav4j.model.request;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.fortuna.ical4j.model.Date;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 /**
- *  <!ELEMENT text-match #PCDATA>
+ *  <!ELEMENT time-range EMPTY>
  *
- *  <!ATTLIST text-match caseless (yes|no)>
- *  
+ *  <!ATTLIST time-range start CDATA
+ *                       end CDATA>
  * @author bobbyrullo
  * 
  */
-public class TextMatch extends OutputsDOMBase {
+public class TimeRange extends OutputsDOMBase {
     
-    public static final String ELEMENT_NAME = "text-match";
-    public static final String ATTR_CASELESS = "caseless";
-    public static final String ATTR_VALUE_YES = "yes";
-    public static final String ATTR_VALUE_NO  = "no";
+    public static final String ELEMENT_NAME = "time-range";
+    public static final String ATTR_START = "start";
+    public static final String ATTR_END = "end";
     
     private String caldavNamespaceQualifier = null;
-    private String textToMatch = null;
-    private Boolean caseless = null;
+    private Date start = null;
+    private Date end = null;
     
-    public TextMatch(String caldavNamespaceQualifier, Boolean caseless,
-            String textToMatch) {
+    public TimeRange(String caldavNamespaceQualifier, Date start, Date end) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.caseless = caseless;
-        this.textToMatch = textToMatch;
-
+        this.start = start;
+        this.end = end;
     }
 
     protected String getElementName() {
@@ -68,42 +67,42 @@ public class TextMatch extends OutputsDOMBase {
     }
 
     protected String getTextContent() {
-        return textToMatch;
+        return null;
     }
     
     protected Map getAttributes() {
-        Map m = null;
-        if (caseless != null) {
-            m = new HashMap();
-            m.put(ATTR_CASELESS, caseless.booleanValue() ? ATTR_VALUE_YES
-                    : ATTR_VALUE_NO);
-
-        }
+        Map m =  new HashMap();
+        m.put(ATTR_START, start.toString());
+        m.put(ATTR_END, end.toString());
         return m;
     }
 
-    public Boolean getCaseless() {
-        return caseless;
+    public Date getEnd() {
+        return end;
     }
 
-    public void setCaseless(Boolean caseless) {
-        this.caseless = caseless;
+    public void setEnd(Date end) {
+        this.end = end;
     }
 
-    public String getTextToMatch() {
-        return textToMatch;
+    public Date getStart() {
+        return start;
     }
 
-    public void setTextToMatch(String textToMatch) {
-        this.textToMatch = textToMatch;
+    public void setStart(Date start) {
+        this.start = start;
     }
     
     /**
-     * <!ELEMENT text-match #PCDATA>
+     * <!ELEMENT time-range EMPTY>
      * 
-     * <!ATTLIST text-match caseless (yes|no)>
+     * <!ATTLIST time-range start CDATA end CDATA>
      */
     public void validate() throws DOMValidationException{
-        return;
+        if (start == null || end == null){
+            throwValidationException("You must have a start end an end date");
+        }
     }
+
+
 }
