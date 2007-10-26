@@ -1,5 +1,5 @@
 BEGIN:VCALENDAR
-PRODID:-//Open Source Applications Foundation//NONSGML Scooby Server//ENVERSION:2.0
+PRODID:-//OSAF//NONSGML Scoooby Server//ENVERSION:2.0
 CALSCALE:GREGORIAN
 BEGIN:VTIMEZONE
 TZID:America/New_York
