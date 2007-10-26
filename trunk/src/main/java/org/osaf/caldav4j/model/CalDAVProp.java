@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 /**
@@ -80,6 +81,18 @@ public class CalDAVProp extends OutputsDOMBase {
         m.put(ATTR_NAME, name);
         m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
         return m;
+    }
+    
+    /**
+     * <!ELEMENT prop EMPTY>
+     * 
+     * <!ATTLIST prop name CDATA #REQUIRED
+     *                novalue (yes|no) "no">
+     */
+    public void validate() throws DOMValidationException {
+        if (name == null){
+            throwValidationException("name is a required property");
+        }
     }
 
 }

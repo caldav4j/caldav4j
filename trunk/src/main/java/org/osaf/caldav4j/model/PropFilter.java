@@ -25,6 +25,7 @@ import java.util.Map;
 import net.fortuna.ical4j.model.Date;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -157,5 +158,39 @@ public class PropFilter extends OutputsDOMBase {
 
     public void setTextMatch(TextMatch textMatch) {
         this.textMatch = textMatch;
+    }
+    
+    /**
+    *  <!ELEMENT prop-filter (is-defined | time-range | text-match)?
+    *                          param-filter*>
+    *
+    *  <!ATTLIST prop-filter name CDATA #REQUIRED>
+    *  
+    * @author bobbyrullo
+    * 
+    */
+    public void validate() throws DOMValidationException{
+        if (name == null){
+            throwValidationException("Name is a required property");
+        }
+        
+        if (isDefined && (timeRange != null || textMatch != null)){
+            throwValidationException("isDefined, timeRange and textMatch are mutually exclusive");
+        }
+        
+        if (timeRange != null) {
+            if (textMatch != null){
+                throwValidationException("isDefined, timeRange and textMatch are mutually exclusive");
+            } 
+            
+            timeRange.validate();
+        } else if (textMatch != null){
+            textMatch.validate();
+        }
+
+        if (paramFilters != null){
+            validate(paramFilters);
+        }
+
     }
 }

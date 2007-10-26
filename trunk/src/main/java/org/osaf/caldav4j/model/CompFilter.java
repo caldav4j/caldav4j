@@ -25,6 +25,7 @@ import java.util.Map;
 import net.fortuna.ical4j.model.Date;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -167,4 +168,31 @@ public class CompFilter extends OutputsDOMBase {
         this.name = name;
     }
     
+    /**
+     *   <!ELEMENT comp-filter (is-defined | time-range)?
+     *                        comp-filter* prop-filter*>
+     *                        
+     *   <!ATTLIST comp-filter name CDATA #REQUIRED> 
+     */
+    public void validate() throws DOMValidationException{
+        if (name == null){
+           throwValidationException("Name is a required property.");
+        }
+        
+       if (isDefined && timeRange != null){
+           throwValidationException("TimeRange and isDefined are mutually exclusive");
+       }
+       
+       if (timeRange != null){
+           timeRange.validate();
+       }
+       
+       if (compFilters != null){
+           validate(compFilters);
+       }
+       
+       if (propFilters != null){
+           validate(propFilters);
+       }
+    }
 }

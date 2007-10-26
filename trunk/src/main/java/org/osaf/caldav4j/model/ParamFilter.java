@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -99,6 +100,26 @@ public class ParamFilter extends OutputsDOMBase {
 
     public void setTextMatch(TextMatch textMatch) {
         this.textMatch = textMatch;
+    }
+    
+    /**
+     * <!ELEMENT param-filter (is-defined | text-match) >
+     * 
+     * <!ATTLIST param-filter name CDATA #REQUIRED>
+     * 
+     */
+    public void validate() throws DOMValidationException{
+       if (name == null){
+           throwValidationException("Name is a required property");
+       }
+        
+       if (isDefined && textMatch != null){
+           throwValidationException("isDefined and textMatch are mutually exclusive");
+       }
+       
+       if (textMatch != null){
+           textMatch.validate();
+       }
     }
     
 }

@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.osaf.caldav4j.DOMValidationException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -42,7 +43,11 @@ public abstract class OutputsDOMBase implements OutputsDOM{
     
     protected abstract String getTextContent();
     
-    public Element outputDOM(Document document) {
+    public void validate() throws DOMValidationException{
+        return;
+    }
+    
+    public Element outputDOM(Document document) throws DOMValidationException{
         Element e = document.createElementNS(getNamespaceURI(),
                 getQualifiedName());
         
@@ -51,7 +56,8 @@ public abstract class OutputsDOMBase implements OutputsDOM{
     }
     
     public Document createNewDocument(DOMImplementation domImplementation)
-            throws DOMException {
+            throws DOMException, DOMValidationException {
+        validate();
         Document d =  domImplementation.createDocument(getNamespaceURI(),
                 getQualifiedName(), null);
         
@@ -61,7 +67,7 @@ public abstract class OutputsDOMBase implements OutputsDOM{
         return d;
     }
 
-    protected void fillElement(Element e){
+    protected void fillElement(Element e) throws DOMValidationException{
 
         /*
          * Add children elements 
@@ -92,5 +98,22 @@ public abstract class OutputsDOMBase implements OutputsDOM{
                 e.setAttribute(key.toString(), value.toString());
             }
         }
+    }
+    
+    /**
+     * Convienience method for validating all the objects in a collection
+     * @param c
+     * @throws DOMValidationException
+     */
+    protected void validate(Collection c) throws DOMValidationException{
+        for (Iterator i = c.iterator(); i.hasNext(); ){
+            OutputsDOM o = (OutputsDOM) i.next();
+            o.validate();
+        }
+    }
+    
+    protected void throwValidationException(String m) throws DOMValidationException{
+        String message = getQualifiedName() + " - " + m;
+        throw new DOMValidationException(message);
     }
 }

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -179,5 +180,45 @@ public class Comp extends OutputsDOMBase {
     
     public void addProp(String propName) {
         props.add(new CalDAVProp(caldavNamespaceQualifier, propName));
+    }
+    
+    /**
+     *  <!ELEMENT comp ((allcomp, (allprop | prop*)) |
+     *                  (comp*, (allprop | prop*)))>
+     *
+     * <!ATTLIST comp name CDATA #REQUIRED>
+     * 
+     * <!ELEMENT allcomp EMPTY> 
+     * 
+     * <!ELEMENT allprop EMPTY>
+     * 
+     * <!ELEMENT prop EMPTY>
+     * 
+     * <!ATTLIST prop name CDATA #REQUIRED
+     *                novalue (yes|no) "no">
+     * 
+     */
+    public void validate() throws DOMValidationException{
+        if (name == null){
+            throwValidationException("Name is a required property");
+        }
+        
+        if (allComp && comps != null && comps.size() > 0 ){
+            throwValidationException("allComp and comp* are mutually exclusive");
+        }
+        
+        if (comps != null){
+            validate(comps);
+        }
+        
+        if (allProp && props != null && props.size() > 0){
+            throwValidationException("allProp and prop* are mutually exclusive");
+        }
+        
+        if (props != null){
+            validate(props);
+        }
+        
+        
     }
 }

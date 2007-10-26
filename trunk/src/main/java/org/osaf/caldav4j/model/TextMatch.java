@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 /**
@@ -95,5 +96,14 @@ public class TextMatch extends OutputsDOMBase {
 
     public void setTextToMatch(String textToMatch) {
         this.textToMatch = textToMatch;
+    }
+    
+    /**
+     * <!ELEMENT text-match #PCDATA>
+     * 
+     * <!ATTLIST text-match caseless (yes|no)>
+     */
+    public void validate() throws DOMValidationException{
+        return;
     }
 }

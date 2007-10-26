@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
@@ -39,7 +40,7 @@ import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
  *  @author bobbyrullo
  * 
  */
-public class CalendarQuery extends OutputsDOMBase {
+public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest{
     
     public static final String ELEMENT_NAME = "calendar-query";
     public static final String ELEM_ALLPROP = "allprop";    
@@ -153,6 +154,22 @@ public class CalendarQuery extends OutputsDOMBase {
 
     public void setCalendarDataProp(CalendarData calendarDataProp) {
         this.calendarDataProp = calendarDataProp;
+    }
+    
+    /**
+     * Validates that the object validates against the following dtd:
+     * 
+     * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)? filter>
+     */
+    public void validate() throws DOMValidationException{
+        if (calendarDataProp != null){
+            calendarDataProp.validate();
+        }
+        if (compFilter == null){
+            throwValidationException("CompFilter cannot be null.");
+        }
+        
+        compFilter.validate();
     }
 
 }
