@@ -16,17 +16,15 @@
 
 package org.osaf.caldav4j.methods;
 
-import org.apache.webdav.lib.methods.XMLResponseMethodBase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
-import org.osaf.caldav4j.model.CalDAVReportRequest;
-import org.osaf.caldav4j.model.util.XMLUtils;
+import org.osaf.caldav4j.model.request.CalDAVReportRequest;
+import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
 
-public class CalDAVReportMethod extends XMLResponseMethodBase {
-
+public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase {
     private CalDAVReportRequest reportRequest;
-
+    
     public CalDAVReportMethod() {
 
     }
@@ -47,7 +45,7 @@ public class CalDAVReportMethod extends XMLResponseMethodBase {
     public void setReportRequest(CalDAVReportRequest reportRequest) {
         this.reportRequest = reportRequest;
     }
-
+    
     /**
      * Generates a request body from the calendar query.
      */
@@ -59,7 +57,7 @@ public class CalDAVReportMethod extends XMLResponseMethodBase {
         } catch (DOMValidationException domve) {
             throw new RuntimeException(domve);
         }
-        return XMLUtils.toXML(doc);
+        return XMLUtils.toPrettyXML(doc);
     }
 
 }
