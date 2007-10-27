@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.DOMValidationException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
@@ -28,6 +30,8 @@ import org.w3c.dom.Element;
 
 public abstract class OutputsDOMBase implements OutputsDOM{
 
+    private static final Log log = LogFactory.getLog(OutputsDOMBase.class);
+    
     protected abstract String getElementName();
     
     protected abstract String getNamespaceQualifier() ;
@@ -59,19 +63,21 @@ public abstract class OutputsDOMBase implements OutputsDOM{
     public Document createNewDocument(DOMImplementation domImplementation)
             throws DOMException, DOMValidationException {
         validate();
-        Document d =  domImplementation.createDocument(getNamespaceURI(),
+
+        Document d = domImplementation.createDocument(getNamespaceURI(),
                 getQualifiedName(), null);
-        
-        Element root =(Element) d.getFirstChild();
-        
+
+        Element root = (Element) d.getFirstChild();
+
         fillElement(root);
+
         return d;
+
     }
 
     protected void fillElement(Element e) throws DOMValidationException{
-
         /*
-         * Add children elements 
+         * Add children elements
          */
         Collection children = getChildren();
         if (children != null && children.size() != 0) {

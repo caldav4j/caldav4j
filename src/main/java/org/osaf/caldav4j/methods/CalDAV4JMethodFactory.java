@@ -24,7 +24,7 @@ import org.osaf.caldav4j.CalDAVConstants;
 
 public class CalDAV4JMethodFactory {
 
-    String procID = CalDAVConstants.PROC_ID_DEFAULT;
+    String prodID = CalDAVConstants.PROC_ID_DEFAULT;
     private boolean validatingOutputter = false;
     
     private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
@@ -34,17 +34,17 @@ public class CalDAV4JMethodFactory {
         
     }
     
-    public String getProcID() {
-        return procID;
+    public String getProdID() {
+        return prodID;
     }
 
-    public void setProcID(String procID) {
-        this.procID = procID;
+    public void setProdID(String prodID) {
+        this.prodID = prodID;
     }
 
     public PutMethod createPutMethod(){
         PutMethod putMethod = new PutMethod();
-        putMethod.setProcID(procID);
+        putMethod.setProcID(prodID);
         putMethod.setCalendarOutputter(getCalendarOutputterInstance());
         return putMethod;
     }
@@ -52,6 +52,22 @@ public class CalDAV4JMethodFactory {
     public MkCalendarMethod createMkCalendarMethod(){
         MkCalendarMethod mkCalendarMethod = new MkCalendarMethod();
         return mkCalendarMethod;
+    }
+    
+    public MkTicketMethod createMkTicketMethod(){
+        MkTicketMethod mkTicketMethod = new MkTicketMethod();
+        return mkTicketMethod;
+    }
+    
+    public DelTicketMethod createDelTicketMethod(){
+        DelTicketMethod delTicketMethod = new DelTicketMethod();
+        return delTicketMethod;
+    }
+    
+    public PropFindMethod createPropFindMethod(){
+        PropFindMethod propFindMethod = new PropFindMethod();
+        return propFindMethod;
+        
     }
     
     public GetMethod createGetMethod(){

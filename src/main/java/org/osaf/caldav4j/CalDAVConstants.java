@@ -19,13 +19,18 @@ package org.osaf.caldav4j;
 import org.apache.webdav.lib.util.QName;
 
 public interface CalDAVConstants {
+    
+    public static final String TICKET_HEADER = "Ticket";
 
     public static final String METHOD_MKCALENDAR = "MKCALENDAR";
     public static final String METHOD_PUT = "PUT";
     public static final String METHOD_REPORT = "REPORT";
+    public static final String METHOD_MKTICKET = "MKTICKET";
+    public static final String METHOD_DELTICKET = "DELTICKET";
     
     public static final String NS_CALDAV = "urn:ietf:params:xml:ns:caldav";
     public static final String NS_DAV = "DAV:";
+    public static final String NS_XYTHOS = "http://www.xythos.com/namespaces/StorageServer";
     
     public static final String PROC_ID_DEFAULT =  "-//OSAF//NONSGML CalDAV4j Client//EN";
     
@@ -36,5 +41,27 @@ public interface CalDAVConstants {
     
     public static final QName QNAME_GETETAG 
         = new QName(NS_DAV, PROP_GETETAG);
+    
+    public static final String NS_QUAL_TICKET = "ticket";
+    public static final String NS_QUAL_DAV = "D";
+    
+    public static final String ELEM_TICKETDISCOVERY = "ticketdiscovery";
+    public static final String ELEM_TICKETINFO = "ticketinfo";
+    public static final String ELEM_TIMEOUT = "timeout";
+    public static final String ELEM_VISITS = "visits";
+    public static final String ELEM_PRIVILIGE = "privilege";
+    public static final String ELEM_READ = "read";
+    public static final String ELEM_WRITE = "write";
+    public static final String ELEM_ID = "id";
+    public static final String ELEM_OWNER = "owner";
+    public static final String ELEM_HREF = "href";
+   
+    public static final Integer INFINITY = -1;
+    public static final String  INFINITY_STRING = "infinity";
+    
+    public static final String TIMEOUT_UNITS_SECONDS = "Second-";
+
+    public static final String URL_APPENDER = "?ticket=";
+
 
 }

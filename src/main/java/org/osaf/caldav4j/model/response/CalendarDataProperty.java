@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Open Source Applications Foundation
+ * Copyright 2006 Open Source Applications Foundation
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,29 +25,30 @@ import org.apache.webdav.lib.ResponseEntity;
 import org.osaf.caldav4j.CalDAV4JException;
 import org.w3c.dom.Element;
 
-public class CalendarDataProperty extends BaseProperty{
+public class CalendarDataProperty extends BaseProperty {
 
-    public static final String ELEMENT_CALENDAR_DATA = "calendar-data";
-    private Calendar calendar = null;
-    
-    public CalendarDataProperty(ResponseEntity response, Element element) {
-        super(response, element);
-    }
-    
-    public Calendar getCalendar() throws CalDAV4JException{
-        if (calendar != null){
-            return calendar;
-        }
-        
-        String text = getElement().getTextContent();
-        text.trim();
-        CalendarBuilder builder = new CalendarBuilder();
-        StringReader stringReader = new StringReader(text);
-        try {
-            calendar = builder.build(stringReader);
-            return calendar;
-        } catch (Exception e){
-            throw new CalDAV4JException("Problem building calendar", e);
-        }
-    }
+	public static final String ELEMENT_CALENDAR_DATA = "calendar-data";
+
+	private Calendar calendar = null;
+
+	public CalendarDataProperty(ResponseEntity response, Element element) {
+		super(response, element);
+	}
+
+	public Calendar getCalendar() throws CalDAV4JException {
+		if (calendar != null) {
+			return calendar;
+		}
+
+		String text = getElement().getTextContent();
+		text.trim();
+		CalendarBuilder builder = new CalendarBuilder();
+		StringReader stringReader = new StringReader(text);
+		try {
+			calendar = builder.build(stringReader);
+			return calendar;
+		} catch (Exception e) {
+			throw new CalDAV4JException("Problem building calendar", e);
+		}
+	}
 }

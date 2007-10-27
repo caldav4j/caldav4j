@@ -19,10 +19,12 @@ package org.osaf.caldav4j;
 import static org.osaf.caldav4j.util.ICalendarUtils.getMasterEvent;
 import static org.osaf.caldav4j.util.ICalendarUtils.getUIDValue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -37,15 +39,20 @@ import net.fortuna.ical4j.model.property.Version;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.HeadMethod;
+import org.apache.webdav.lib.PropertyName;
 import org.apache.webdav.lib.methods.DeleteMethod;
+import org.apache.webdav.lib.methods.PropFindMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.NoOpResourceCache;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.CalDAVReportMethod;
+import org.osaf.caldav4j.methods.DelTicketMethod;
 import org.osaf.caldav4j.methods.GetMethod;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
+import org.osaf.caldav4j.methods.MkTicketMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.model.request.CalendarData;
 import org.osaf.caldav4j.model.request.CalendarQuery;
@@ -53,8 +60,11 @@ import org.osaf.caldav4j.model.request.CompFilter;
 import org.osaf.caldav4j.model.request.PropFilter;
 import org.osaf.caldav4j.model.request.PropProperty;
 import org.osaf.caldav4j.model.request.TextMatch;
+import org.osaf.caldav4j.model.request.TicketRequest;
 import org.osaf.caldav4j.model.request.TimeRange;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
+import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
+import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 /**
@@ -307,7 +317,149 @@ public class CalDAVCalendarCollection {
                 stripHost(resource.getResourceMetadata().getHref()),
                 resource.getResourceMetadata().getETag());
     }
-    
+    /**
+     * Creates a ticket for the specified resource and returns the ticket id.
+     * 
+     * @param httpClient
+     * @param path
+     * @param visits
+     * @param timeout
+     * @param read
+     * @param write
+     * @return
+     * @throws CalDAV4JException
+     *             Is thrown if the execution of the MkTicketMethod fails
+     */
+    public String createTicket(HttpClient httpClient, String path,
+            Integer visits, Integer timeout, boolean read, boolean write)
+            throws CalDAV4JException {
+        TicketRequest ticketRequest = new TicketRequest();
+        ticketRequest.setVisits(visits);
+        ticketRequest.setTimeout(timeout);
+        ticketRequest.setRead(read);
+        ticketRequest.setWrite(write);
+
+        // Make the ticket
+        MkTicketMethod mkTicketMethod = methodFactory.createMkTicketMethod();
+        mkTicketMethod.setPath(path);
+        mkTicketMethod.setTicketRequest(ticketRequest);
+        try {
+            httpClient.executeMethod(hostConfiguration, mkTicketMethod);
+            int statusCode = mkTicketMethod.getStatusCode();
+            if (statusCode != WebdavStatus.SC_OK) {
+                throw new CalDAV4JException("Create Ticket Failed with Status: "
+                        + statusCode + " and body: \n"
+                        + mkTicketMethod.getResponseBodyAsString());
+            }
+        } catch (Exception e) {
+            throw new CalDAV4JException("Trouble executing MKTicket", e);
+        }
+
+        TicketResponse ticketResponse = null;
+
+        try {
+            ticketResponse = mkTicketMethod.getResponseBodyAsTicketResponse();
+        } catch (Exception e) {
+            throw new CalDAV4JException("Trouble handling MkTicket Response", e);
+        }
+
+        return ticketResponse.getID();
+
+    }
+
+    /**
+     * Deletes the specified ticket on the specified resource.
+     * 
+     * @param httpClient
+     * @param path
+     * @param ticket
+     * @throws CalDAV4JException
+     *             Is thrown if the execution of the DelTicketMethod fails
+     */
+    public void deleteTicket(HttpClient httpClient, String path, String ticket)
+            throws CalDAV4JException {
+        DelTicketMethod delTicketMethod = methodFactory.createDelTicketMethod();
+        delTicketMethod.setPath(path);
+        delTicketMethod.setTicket(ticket);
+        try {
+            httpClient.executeMethod(hostConfiguration, delTicketMethod);
+            int statusCode = delTicketMethod.getStatusCode();
+            if (statusCode != WebdavStatus.SC_NO_CONTENT) {
+                throw new CalDAV4JException(
+                        "Delete Ticket Failed with Status: " + statusCode
+                                + " and body: \n"
+                                + delTicketMethod.getResponseBodyAsString());
+            }
+        } catch (Exception e) {
+            throw new CalDAV4JException("Trouble executing DelTicket", e);
+        }
+
+    }
+
+    /**
+     * Returns all the ticket ID's from all tickets the requesting user has
+     * permision to view on a resource.
+     * 
+     * @param httpClient
+     * @param path
+     * @return
+     * @throws CalDAV4JException
+     * @throws HttpException
+     * @throws IOException
+     */
+    public List<String> getTickets(HttpClient httpClient, String path)
+            throws CalDAV4JException, HttpException, IOException {
+
+        Vector<PropertyName> properties = new Vector<PropertyName>();
+
+        PropertyName propertyName = new PropertyName(CalDAVConstants.NS_XYTHOS,
+                CalDAVConstants.ELEM_TICKETDISCOVERY);
+        PropertyName propertyName2 = new PropertyName(CalDAVConstants.NS_DAV,
+                "owner");
+
+        properties.add(propertyName);
+        properties.add(propertyName2);
+
+        PropFindMethod propFindMethod = methodFactory.createPropFindMethod();
+
+        propFindMethod.setDepth(1);
+        propFindMethod.setType(0);
+        propFindMethod.setPath(path);
+        propFindMethod.setPropertyNames(properties.elements());
+        try {
+            httpClient.executeMethod(hostConfiguration, propFindMethod);
+
+            int statusCode = propFindMethod.getStatusCode();
+
+            if (statusCode != WebdavStatus.SC_MULTI_STATUS) {
+                throw new CalDAV4JException("PropFind Failed with Status: "
+                        + statusCode + " and body: \n"
+                        + propFindMethod.getResponseBodyAsString());
+            }
+
+            // Check to make sure we get the right number of tickets
+            Enumeration responses = propFindMethod
+                    .getResponseProperties(BaseTestCase.CALDAV_SERVER_PROTOCOL
+                            + "://" + BaseTestCase.CALDAV_SERVER_HOST + ":"
+                            + BaseTestCase.CALDAV_SERVER_PORT + path);
+
+            List<String> ticketIDList = new ArrayList<String>();
+            while (responses.hasMoreElements()) {
+                org.apache.webdav.lib.Property item = (org.apache.webdav.lib.Property) responses
+                        .nextElement();
+                if (item.getLocalName().equals(
+                        CalDAVConstants.ELEM_TICKETDISCOVERY)) {
+                    TicketDiscoveryProperty ticketDiscoveryProp = (TicketDiscoveryProperty) item;
+                    ticketIDList.addAll(ticketDiscoveryProp.getTicketIDs());
+                }
+            }
+            return ticketIDList;
+        } catch (Exception e) {
+            throw new CalDAV4JException("Trouble executing PropFind Method", e);
+        }
+    }
+
+
     /**
      * Returns the path to the resource that contains the VEVENT with the 
      * specified uid
