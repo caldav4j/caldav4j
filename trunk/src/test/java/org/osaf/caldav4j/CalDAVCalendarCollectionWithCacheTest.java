@@ -390,29 +390,4 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
         calendarCollection.setCache(cache);
         return calendarCollection;
     }
-
-    public static void main(String[] args) throws Exception {
-        // CalendarBuilder builder = new CalendarBuilder();
-        // builder.build(stream)
-
-        String newUid = "NEW_UID";
-        String newEvent = "NEW_EVENT";
-        VEvent ve = new VEvent();
-
-        DtStart dtStart = new DtStart(new Date());
-        Summary summary = new Summary(newEvent);
-        Uid uid = new Uid(newUid);
-
-        ve.getProperties().add(dtStart);
-        ve.getProperties().add(summary);
-        ve.getProperties().add(uid);
-        Calendar calendar = new Calendar();
-        calendar.getProperties().add(
-                new ProdId(CalDAVConstants.PROC_ID_DEFAULT));
-        calendar.getProperties().add(Version.VERSION_2_0);
-        calendar.getProperties().add(CalScale.GREGORIAN);
-        calendar.getComponents().add(ve);
-        calendar.validate();
-    }
-
 }

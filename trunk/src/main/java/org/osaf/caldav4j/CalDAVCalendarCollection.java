@@ -94,6 +94,13 @@ public class CalDAVCalendarCollection {
         
     }
     
+    /**
+     * Creates a new CalDAVCalendar collection with the specified paramters
+     * @param path The path to the collection 
+     * @param hostConfiguration Host information for the CalDAV Server 
+     * @param methodFactory methodFactory to obtail HTTP methods from
+     * @param prodId String identifying who creates the iCalendar objects
+     */
     public CalDAVCalendarCollection(String path, HostConfiguration hostConfiguration, CalDAV4JMethodFactory methodFactory, String prodId) {
         this.calendarCollectionRoot = path;
         this.hostConfiguration = hostConfiguration;
@@ -135,17 +142,46 @@ public class CalDAVCalendarCollection {
         this.cache = cache;
     }
     
-    //The interesting methods
-
-    public Calendar getCalendarForEventUID(HttpClient httpClient,String uid) throws CalDAV4JException {
+    /*  The interesting methods */
+    
+    /**
+     * Returns the icalendar object which contains the event with the specified
+     * UID.
+     * 
+     * @param httpClient the httpClient which will make the request
+     * @param uid The uniqueID of the event to find
+     * @return the Calendar object containing the event with this UID
+     * @throws CalDAV4JException if there was a problem, or if the resource could 
+     *         not be found.
+     */
+    public Calendar getCalendarForEventUID(HttpClient httpClient, String uid)
+            throws CalDAV4JException {
         return getCalDAVResourceForEventUID(httpClient, uid).getCalendar();
     }
     
+    /**
+     * Gets an icalendar object at the specified path, relative to the
+     * collection path
+     * @param httpClient the httpClient which will make the request
+     * @param relativePath the path, relative to the collection path
+     * @return the Calendar object at the specified path
+     * @throws CalDAV4JException
+     */
     public Calendar getCalendarByPath(HttpClient httpClient, String relativePath) throws CalDAV4JException{
         CalDAVResource resource = getCalDAVResource(httpClient, getAbsolutePath(relativePath));
         return resource.getCalendar();
     }
     
+    /**
+     * Returns all Calendars which contain events which have instances who fall within 
+     * the two dates. Note that recurring events are NOT expanded. 
+     * 
+     * @param httpClient the httpClient which will make the request
+     * @param beginDate the beginning of the date range. Must be a UTC date
+     * @param endDate the end of the date range. Must be a UTC date.
+     * @return a List of Calendars
+     * @throws CalDAV4JException if there was a problem
+     */
     public List<Calendar> getEventResources(HttpClient httpClient,
             Date beginDate, Date endDate)
             throws CalDAV4JException {
@@ -249,6 +285,20 @@ public class CalDAVCalendarCollection {
         }
     }
     
+    /**
+     * Adds a new Calendar with the given VEvent and VTimeZone to the collection.
+     * 
+     * Tries to use the event UID followed by ".ics" as the name of the 
+     * resource, otherwise will use the UID followed by a random number and 
+     * ".ics" 
+     * 
+     * @param httpClient the httpClient which will make the request
+     * @param vevent The VEvent to put in the Calendar
+     * 
+     * @param timezone The VTimeZone of the VEvent if it references one, 
+     *                 otherwise null
+     * @throws CalDAV4JException
+     */
     public void addEvent(HttpClient httpClient, VEvent vevent, VTimeZone timezone)
             throws CalDAV4JException {
         Calendar calendar = new Calendar();
@@ -294,11 +344,16 @@ public class CalDAVCalendarCollection {
     }
     
     /**
+     * Updates the resource containing the VEvent with the same UID as the given 
+     * VEvent with the given VEvent
+     * 
      *  TODO: Deal with SEQUENCE
      *  TODO: Handle timezone!!! Right now ignoring the param...
      *
-     * @param vevent
-     * @param timezone
+     * @param httpClient the httpClient which will make the request
+     * @param vevent the vevent to update
+     * @param timezone The VTimeZone of the VEvent if it references one, 
+     *                 otherwise null
      * @throws CalDAV4JException
      */
     public void udpateMasterEvent(HttpClient httpClient, VEvent vevent, VTimeZone timezone)
@@ -320,8 +375,9 @@ public class CalDAVCalendarCollection {
     /**
      * Creates a ticket for the specified resource and returns the ticket id.
      * 
-     * @param httpClient
-     * @param path
+     * @param httpClient the httpClient which will make the request
+     * @param relativePath the path, relative to the collection path for 
+     *                     which to grant the ticket on
      * @param visits
      * @param timeout
      * @param read
@@ -330,7 +386,7 @@ public class CalDAVCalendarCollection {
      * @throws CalDAV4JException
      *             Is thrown if the execution of the MkTicketMethod fails
      */
-    public String createTicket(HttpClient httpClient, String path,
+    public String createTicket(HttpClient httpClient, String relativePath,
             Integer visits, Integer timeout, boolean read, boolean write)
             throws CalDAV4JException {
         TicketRequest ticketRequest = new TicketRequest();
@@ -341,7 +397,7 @@ public class CalDAVCalendarCollection {
 
         // Make the ticket
         MkTicketMethod mkTicketMethod = methodFactory.createMkTicketMethod();
-        mkTicketMethod.setPath(path);
+        mkTicketMethod.setPath(getAbsolutePath(relativePath));
         mkTicketMethod.setTicketRequest(ticketRequest);
         try {
             httpClient.executeMethod(hostConfiguration, mkTicketMethod);
@@ -370,17 +426,18 @@ public class CalDAVCalendarCollection {
     /**
      * Deletes the specified ticket on the specified resource.
      * 
-     * @param httpClient
-     * @param path
-     * @param ticket
+     * @param httpClient the httpClient which will make the request
+     * @param relativePath the path, relative to the collection path for
+     *                     which to revoke the ticket 
+     * @param ticketID the ticketID which to revoke
      * @throws CalDAV4JException
      *             Is thrown if the execution of the DelTicketMethod fails
      */
-    public void deleteTicket(HttpClient httpClient, String path, String ticket)
+    public void deleteTicket(HttpClient httpClient, String relativePath, String ticketId)
             throws CalDAV4JException {
         DelTicketMethod delTicketMethod = methodFactory.createDelTicketMethod();
-        delTicketMethod.setPath(path);
-        delTicketMethod.setTicket(ticket);
+        delTicketMethod.setPath(getAbsolutePath(relativePath));
+        delTicketMethod.setTicket(ticketId);
         try {
             httpClient.executeMethod(hostConfiguration, delTicketMethod);
             int statusCode = delTicketMethod.getStatusCode();
@@ -400,73 +457,64 @@ public class CalDAVCalendarCollection {
      * Returns all the ticket ID's from all tickets the requesting user has
      * permision to view on a resource.
      * 
-     * @param httpClient
-     * @param path
+     * @param httpClient the httpClient which will make the request
+     * @param relativePath the path, relative to the collection path for which
+     *                     to get the tickets
      * @return
      * @throws CalDAV4JException
      * @throws HttpException
      * @throws IOException
      */
-    public List<String> getTickets(HttpClient httpClient, String path)
+    public List<String> getTicketsIDs(HttpClient httpClient, String relativePath)
             throws CalDAV4JException, HttpException, IOException {
 
         Vector<PropertyName> properties = new Vector<PropertyName>();
 
-        PropertyName propertyName = new PropertyName(CalDAVConstants.NS_XYTHOS,
+        PropertyName ticketDiscoveryProperty = new PropertyName(CalDAVConstants.NS_XYTHOS,
                 CalDAVConstants.ELEM_TICKETDISCOVERY);
-        PropertyName propertyName2 = new PropertyName(CalDAVConstants.NS_DAV,
+        PropertyName ownerProperty = new PropertyName(CalDAVConstants.NS_DAV,
                 "owner");
 
-        properties.add(propertyName);
-        properties.add(propertyName2);
+        properties.add(ticketDiscoveryProperty);
+        properties.add(ownerProperty);
 
         PropFindMethod propFindMethod = methodFactory.createPropFindMethod();
 
         propFindMethod.setDepth(1);
         propFindMethod.setType(0);
-        propFindMethod.setPath(path);
+        propFindMethod.setPath(getAbsolutePath(relativePath));
         propFindMethod.setPropertyNames(properties.elements());
-        try {
-            httpClient.executeMethod(hostConfiguration, propFindMethod);
+        httpClient.executeMethod(hostConfiguration, propFindMethod);
 
-            int statusCode = propFindMethod.getStatusCode();
+        int statusCode = propFindMethod.getStatusCode();
 
-            if (statusCode != WebdavStatus.SC_MULTI_STATUS) {
-                throw new CalDAV4JException("PropFind Failed with Status: "
-                        + statusCode + " and body: \n"
-                        + propFindMethod.getResponseBodyAsString());
-            }
-
-            // Check to make sure we get the right number of tickets
-            Enumeration responses = propFindMethod
-                    .getResponseProperties(BaseTestCase.CALDAV_SERVER_PROTOCOL
-                            + "://" + BaseTestCase.CALDAV_SERVER_HOST + ":"
-                            + BaseTestCase.CALDAV_SERVER_PORT + path);
-
-            List<String> ticketIDList = new ArrayList<String>();
-            while (responses.hasMoreElements()) {
-                org.apache.webdav.lib.Property item = (org.apache.webdav.lib.Property) responses
-                        .nextElement();
-                if (item.getLocalName().equals(
-                        CalDAVConstants.ELEM_TICKETDISCOVERY)) {
-                    TicketDiscoveryProperty ticketDiscoveryProp = (TicketDiscoveryProperty) item;
-                    ticketIDList.addAll(ticketDiscoveryProp.getTicketIDs());
-                }
-            }
-            return ticketIDList;
-        } catch (Exception e) {
-            throw new CalDAV4JException("Trouble executing PropFind Method", e);
+        if (statusCode != WebdavStatus.SC_MULTI_STATUS) {
+            throw new CalDAV4JException("PropFind Failed with Status: "
+                    + statusCode + " and body: \n"
+                    + propFindMethod.getResponseBodyAsString());
         }
+        String href = getHref(getAbsolutePath(relativePath));
+        Enumeration responses = propFindMethod.getResponseProperties(href);
+
+        List<String> ticketIDList = new ArrayList<String>();
+        while (responses.hasMoreElements()) {
+            org.apache.webdav.lib.Property item = (org.apache.webdav.lib.Property) responses
+                    .nextElement();
+            if (item.getLocalName()
+                    .equals(CalDAVConstants.ELEM_TICKETDISCOVERY)) {
+                TicketDiscoveryProperty ticketDiscoveryProp = (TicketDiscoveryProperty) item;
+                ticketIDList.addAll(ticketDiscoveryProp.getTicketIDs());
+            }
+        }
+        return ticketIDList;
     }
 
 
     /**
-     * Returns the path to the resource that contains the VEVENT with the 
+     * Returns the path to the resource that contains the VEVENT with the
      * specified uid
      * 
-     * TODO a nice optimization would be a cache of uids --> resource paths
-     *
-     * @param uid 
+     * @param uid
      */
     protected String getPathToResourceForEventId(HttpClient httpClient, String uid) throws CalDAV4JException{
         // first create the calendar query
