@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Open Source Applications Foundation
+ * Copyright 2006 Open Source Applications Foundation
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,31 +22,36 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.model.response.TicketResponse;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
 public class XMLUtils {
     private static final Log log = LogFactory.getLog(XMLUtils.class);
-    
+
     private static DOMImplementation implementation = null;
-    
+
     static {
         try {
             DOMImplementationRegistry registry = DOMImplementationRegistry
                     .newInstance();
             implementation = registry.getDOMImplementation("XML 3.0");
         } catch (Exception e) {
-            log.error("Could not instantiate a DOMImplementation! Make sure you have "
-                    + " a version of Xerces 2.7.0 or greater or a DOM impl that "
-                    + " implements DOM 3.0" );
+            log
+                    .error("Could not instantiate a DOMImplementation! Make sure you have "
+                            + " a version of Xerces 2.7.0 or greater or a DOM impl that "
+                            + " implements DOM 3.0");
             throw new RuntimeException(
                     "Could not instantiate a DOMImplementation!", e);
         }
     }
-    
+
     /**
      * Creates a new xml DOM Document using a DOM 3.0 DOM Implementation
      * 
@@ -63,20 +68,22 @@ public class XMLUtils {
                 qualifiedName, null);
         return document;
     }
-    
+
     /**
-     * Serializes a DOM Document to XML 
-     * @param document a DOM document
+     * Serializes a DOM Document to XML
+     * 
+     * @param document
+     *            a DOM document
      * @return the Document serialized to XML
      */
-    public static String toXML(Document document){
+    public static String toXML(Document document) {
         DOMImplementationLS domLS = (DOMImplementationLS) implementation;
         LSSerializer serializer = domLS.createLSSerializer();
         String s = serializer.writeToString(document);
-        
+
         return s;
-    }    
-    
+    }
+
     public static String toPrettyXML(Document document) {
         StringWriter stringWriter = new StringWriter();
         OutputFormat outputFormat = new OutputFormat(document, null, true);
@@ -91,9 +98,70 @@ public class XMLUtils {
         return stringWriter.toString();
 
     }
-    
-    public static DOMImplementation getDOMImplementation(){
+
+    public static DOMImplementation getDOMImplementation() {
         return implementation;
     }
-    
+
+    /**
+     * Takes a ticketinfo element and creates/returns it as a TicketResponse
+     * Object
+     * 
+     * @param element
+     * @return
+     */
+    public static TicketResponse createTicketResponseFromDOM(Element element) {
+        TicketResponse tr = new TicketResponse();
+
+        NodeList list = element.getElementsByTagNameNS(
+                CalDAVConstants.NS_XYTHOS, CalDAVConstants.ELEM_ID);
+        Element temp = (Element) list.item(0);
+        tr.setID(temp.getTextContent());
+
+        list = element.getElementsByTagNameNS(CalDAVConstants.NS_DAV,
+                CalDAVConstants.ELEM_HREF);
+        temp = (Element) list.item(0);
+        tr.setOwner(temp.getTextContent());
+
+        list = element.getElementsByTagNameNS(CalDAVConstants.NS_XYTHOS,
+                CalDAVConstants.ELEM_TIMEOUT);
+        temp = (Element) list.item(0);
+        String tempTO = temp.getTextContent();
+
+        // Parses the timeout element's value into units and value
+        String[] array = tempTO.split("-");
+
+        // Store the Parsed Values
+        tr.setUnits(array[0]);
+        tr.setTimeout(new Integer(array[1]));
+
+        list = element.getElementsByTagNameNS(CalDAVConstants.NS_XYTHOS,
+                CalDAVConstants.ELEM_VISITS);
+        temp = (Element) list.item(0);
+        String visits = temp.getTextContent();
+        Integer visitsInt = null;
+        if (visits.equals(CalDAVConstants.INFINITY_STRING)) {
+            visitsInt = CalDAVConstants.INFINITY;
+        } else {
+            visitsInt = new Integer(visits);
+        }
+        tr.setVisits(visitsInt);
+
+        if (element.getElementsByTagNameNS(CalDAVConstants.NS_DAV,
+                CalDAVConstants.ELEM_READ) != null) {
+            tr.setRead(true);
+        } else {
+            tr.setRead(false);
+        }
+
+        if (element.getElementsByTagNameNS(CalDAVConstants.NS_DAV,
+                CalDAVConstants.ELEM_WRITE) != null) {
+            tr.setWrite(true);
+        } else {
+            tr.setWrite(false);
+        }
+
+        return tr;
+    }
+
 }
