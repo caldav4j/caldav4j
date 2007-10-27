@@ -101,6 +101,8 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements D
             break;
         }
 
+        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.TEXT_XML_CONTENT_TYPE);
+
     }
 
     /**

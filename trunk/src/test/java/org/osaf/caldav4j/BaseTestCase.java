@@ -46,7 +46,7 @@ public abstract class BaseTestCase
     public static final String CALDAV_SERVER_HOST = "localhost";
     public static final int CALDAV_SERVER_PORT = 8080;
     public static final String CALDAV_SERVER_PROTOCOL = "http";
-    public static final String CALDAV_SERVER_WEBDAV_ROOT = "/cosmo/dav/test/";
+    public static final String CALDAV_SERVER_WEBDAV_ROOT = "/chandler/dav/test/";
     public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
     public static final String CALDAV_SERVER_USERNAME = "test";
     public static final String CALDAV_SERVER_PASSWORD = "password";
@@ -103,11 +103,9 @@ public abstract class BaseTestCase
         return http;
     }
     
-    public HttpClient createBadHttpClient(){
-        HttpClient http = new HttpClient();
+    public HttpClient createHttpClientWithNoCredentials(){
 
-        Credentials credentials = new UsernamePasswordCredentials(CALDAV_SERVER_BAD_USERNAME, CALDAV_SERVER_PASSWORD);
-        http.getState().setCredentials(null, null, credentials);
+        HttpClient http = new HttpClient();
         http.getState().setAuthenticationPreemptive(true);
         return http;
     }

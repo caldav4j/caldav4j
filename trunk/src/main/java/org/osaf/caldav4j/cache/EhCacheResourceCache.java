@@ -1,5 +1,6 @@
 package org.osaf.caldav4j.cache;
 
+import static org.osaf.caldav4j.util.UrlUtils.stripHost;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.sf.ehcache.Cache;
@@ -53,6 +54,9 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         Element e = null;
         try {
             e = hrefToResourceCache.get(href);
+            if (e == null){
+                e = hrefToResourceCache.get(stripHost(href));
+            }
         } catch (CacheException ce) {
             throw new org.osaf.caldav4j.CacheException(
                     "Problem with the hrefToResourceCache", ce);

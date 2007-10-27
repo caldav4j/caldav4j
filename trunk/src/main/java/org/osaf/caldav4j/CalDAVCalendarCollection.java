@@ -18,6 +18,7 @@ package org.osaf.caldav4j;
 
 import static org.osaf.caldav4j.util.ICalendarUtils.getMasterEvent;
 import static org.osaf.caldav4j.util.ICalendarUtils.getUIDValue;
+import static org.osaf.caldav4j.util.UrlUtils.stripHost;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -484,7 +485,7 @@ public class CalDAVCalendarCollection {
 
         PropFindMethod propFindMethod = methodFactory.createPropFindMethod();
 
-        propFindMethod.setDepth(1);
+        propFindMethod.setDepth(0);
         propFindMethod.setType(0);
         propFindMethod.setPath(getAbsolutePath(relativePath));
         propFindMethod.setPropertyNames(properties.elements());
@@ -499,7 +500,7 @@ public class CalDAVCalendarCollection {
         }
         String href = getHref(getAbsolutePath(relativePath));
         Enumeration responses = propFindMethod.getResponseProperties(href);
-
+        
         List<String> ticketIDList = new ArrayList<String>();
         while (responses.hasMoreElements()) {
             org.apache.webdav.lib.Property item = (org.apache.webdav.lib.Property) responses
@@ -768,11 +769,7 @@ public class CalDAVCalendarCollection {
         return   calendarCollectionRoot + "/" + relativePath;
     }
     
-    protected static String stripHost(String href){
-        int indexOfColon = href.indexOf(":");
-        int index = href.indexOf("/", indexOfColon + 3);
-        return href.substring(index);
-    }
+
     
     protected String getETag(HttpClient httpClient, String path) throws CalDAV4JException{
         HeadMethod headMethod = new HeadMethod(path);

@@ -15,7 +15,10 @@
  */
 package org.osaf.caldav4j.methods;
 
+import static org.osaf.caldav4j.util.UrlUtils.stripHost;
+
 import java.util.Enumeration;
+import java.util.Vector;
 
 import org.apache.webdav.lib.properties.PropertyFactory;
 import org.osaf.caldav4j.CalDAVConstants;
@@ -29,27 +32,45 @@ import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
  * 
  */
 public class PropFindMethod extends
-		org.apache.webdav.lib.methods.PropFindMethod {
+        org.apache.webdav.lib.methods.PropFindMethod {
 
-	/**
-	 * Registers the TicketDiscoveryProperty with the PropertyFactory
-	 */
-	static {
-		try {
-			PropertyFactory.register(CalDAVConstants.NS_XYTHOS,
-					CalDAVConstants.ELEM_TICKETDISCOVERY,
-					TicketDiscoveryProperty.class);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					"Could not register TicketDiscoveryProperty!", e);
-		}
-	}
-	
-	public PropFindMethod() {
-		super();
-	}
-	
-	public PropFindMethod(String path, Enumeration propertyNames) {
-		super(path, propertyNames);
-	}
+    /**
+     * Registers the TicketDiscoveryProperty with the PropertyFactory
+     */
+    static {
+        try {
+            PropertyFactory.register(CalDAVConstants.NS_XYTHOS,
+                    CalDAVConstants.ELEM_TICKETDISCOVERY,
+                    TicketDiscoveryProperty.class);
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Could not register TicketDiscoveryProperty!", e);
+        }
+    }
+    
+    public PropFindMethod() {
+        super();
+    }
+    
+    public PropFindMethod(String path, Enumeration propertyNames) {
+        super(path, propertyNames);
+    }
+    
+    /**
+     * Returns an enumeration of <code>Property</code> objects.
+     */
+    public Enumeration getResponseProperties(String urlPath) {
+        checkUsed();
+
+        Response response = (Response) getResponseHashtable().get(urlPath);
+        if (response == null){
+            response = (Response) getResponseHashtable().get(stripHost(urlPath));
+        }
+        if (response != null) {
+            return response.getProperties();
+        } else {
+            return (new Vector()).elements();
+        }
+
+    }
 }

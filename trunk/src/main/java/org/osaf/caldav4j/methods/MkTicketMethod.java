@@ -49,141 +49,150 @@ import org.xml.sax.SAXException;
  * 
  */
 public class MkTicketMethod extends HttpRequestBodyMethodBase {
-	private static final Log log = LogFactory.getLog(CalDAVReportMethod.class);
+    private static final Log log = LogFactory.getLog(CalDAVReportMethod.class);
 
-	private TicketRequest ticketRequest;
+    private TicketRequest ticketRequest;
 
-	private Document responseDocument = null;
+    private Document responseDocument = null;
 
-	protected Vector<String> responseNames = null;
+    protected Vector<String> responseNames = null;
 
-	protected DocumentBuilder builder = null;
+    protected DocumentBuilder builder = null;
 
-	public MkTicketMethod(){
-		
-	}
-	
-	/**
-	 * 
-	 * @param path
-	 * @param ticketRequest
-	 */
-	public MkTicketMethod(String path, TicketRequest ticketRequest) {
-		this.ticketRequest = ticketRequest;
-		setPath(path);
-	}
+    public MkTicketMethod(){
+        
+    }
+    
+    /**
+     * 
+     * @param path
+     * @param ticketRequest
+     */
+    public MkTicketMethod(String path, TicketRequest ticketRequest) {
+        this.ticketRequest = ticketRequest;
+        setPath(path);
+    }
 
-	public String getName() {
-		return CalDAVConstants.METHOD_MKTICKET;
-	}
+    public String getName() {
+        return CalDAVConstants.METHOD_MKTICKET;
+    }
 
-	public TicketRequest getTicketRequest() {
-		return ticketRequest;
-	}
+    public TicketRequest getTicketRequest() {
+        return ticketRequest;
+    }
 
-	public void setTicketRequest(TicketRequest ticketRequest) {
-		this.ticketRequest = ticketRequest;
-	}
+    public void setTicketRequest(TicketRequest ticketRequest) {
+        this.ticketRequest = ticketRequest;
+    }
 
-	public Document getResponseDocument() {
-		return this.responseDocument;
-	}
+    public Document getResponseDocument() {
+        return this.responseDocument;
+    }
 
-	/**
-	 * Creates a DOM Representation of the TicketRequest, turns into XML and
-	 * returns it in a string
-	 * 
-	 * @return
-	 */
-	protected String generateRequestBody() {
-		Document doc = null;
-		try {
-			doc = ticketRequest.createNewDocument(XMLUtils
-					.getDOMImplementation());
-		} catch (DOMValidationException domve) {
-			log
-					.error("Error trying to create DOM from MkTicketMethod: ",
-							domve);
-			throw new RuntimeException(domve);
-		}
+    /**
+     * Creates a DOM Representation of the TicketRequest, turns into XML and
+     * returns it in a string
+     * 
+     * @return
+     */
+    protected String generateRequestBody() {
+        Document doc = null;
+        try {
+            doc = ticketRequest.createNewDocument(XMLUtils
+                    .getDOMImplementation());
+        } catch (DOMValidationException domve) {
+            log
+                    .error("Error trying to create DOM from MkTicketMethod: ",
+                            domve);
+            throw new RuntimeException(domve);
+        }
 
-		return XMLUtils.toPrettyXML(doc);
-	}
+        return XMLUtils.toPrettyXML(doc);
+    }
 
-	/**
-	 * Returns a TicketResponse from the response body.
-	 * 
-	 * @return
-	 * @throws IOException
-	 * @throws SAXException
-	 * @throws CalDAV4JProtocolException -
-	 *             If the Response Body is not XML
-	 * @throws CalDAV4JException -
-	 *             if the Response Body is unavailable
-	 */
-	public TicketResponse getResponseBodyAsTicketResponse() throws IOException,
-			SAXException, CalDAV4JProtocolException, CalDAV4JException {
-		Header header = getResponseHeader("Content-Type");
-		String contentType = (header != null) ? header.getValue() : ""; 
-		if (!contentType.startsWith("text/xml")) {
-			log.error("Content type must be \"text/xml\" to parse as an "
-					+ "xml resource. Type was: " + contentType);
-			throw new CalDAV4JProtocolException(
-					"Content type must be \"text/xml\" to parse as an "
-							+ "xml resource");
-		}
-		InputStream inStream = getResponseBodyAsStream();
-		if (inStream != null) {
+    /**
+     * Returns a TicketResponse from the response body.
+     * 
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     * @throws CalDAV4JProtocolException -
+     *             If the Response Body is not XML
+     * @throws CalDAV4JException -
+     *             if the Response Body is unavailable
+     */
+    public TicketResponse getResponseBodyAsTicketResponse() throws IOException,
+            SAXException, CalDAV4JProtocolException, CalDAV4JException {
+        Header header = getResponseHeader("Content-Type");
+        String contentType = (header != null) ? header.getValue() : ""; 
+        if (!contentType.startsWith("text/xml")) {
+            log.error("Content type must be \"text/xml\" to parse as an "
+                    + "xml resource. Type was: " + contentType);
+            throw new CalDAV4JProtocolException(
+                    "Content type must be \"text/xml\" to parse as an "
+                            + "xml resource");
+        }
+        InputStream inStream = getResponseBodyAsStream();
+        if (inStream != null) {
 
-			if (builder == null) {
-				try {
-					// TODO: avoid the newInstance call for each method
-					// instance for performance reasons.
-					DocumentBuilderFactory factory = DocumentBuilderFactory
-							.newInstance();
-					factory.setNamespaceAware(true);
-					builder = factory.newDocumentBuilder();
-				} catch (ParserConfigurationException e) {
-					throw new HttpException("XML Parser Configuration error: "
-							+ e.getMessage());
-				}
-			}
-			this.responseDocument = builder.parse(inStream);
+            if (builder == null) {
+                try {
+                    // TODO: avoid the newInstance call for each method
+                    // instance for performance reasons.
+                    DocumentBuilderFactory factory = DocumentBuilderFactory
+                            .newInstance();
+                    factory.setNamespaceAware(true);
+                    builder = factory.newDocumentBuilder();
+                } catch (ParserConfigurationException e) {
+                    throw new HttpException("XML Parser Configuration error: "
+                            + e.getMessage());
+                }
+            }
+            this.responseDocument = builder.parse(inStream);
 
-			inStream.close();
-		} else {
-			throw new CalDAV4JException(
-					"Response Body is not Available, Status Code: "
-							+ getStatusCode());
-		}
+            inStream.close();
+        } else {
+            throw new CalDAV4JException(
+                    "Response Body is not Available, Status Code: "
+                            + getStatusCode());
+        }
 
-		int statusCode = getStatusCode();
+        int statusCode = getStatusCode();
 
-		if (WebdavStatus.SC_OK == statusCode) {
-			Element docElement = this.responseDocument.getDocumentElement();
+        if (WebdavStatus.SC_OK == statusCode) {
+            Element docElement = this.responseDocument.getDocumentElement();
 
-			TicketResponse tr = XMLUtils
-					.createTicketResponseFromDOM(docElement);
+            TicketResponse tr = XMLUtils
+                    .createTicketResponseFromDOM(docElement);
 
-			return tr;
-		}
-		return null;
+            return tr;
+        }
+        return null;
 
-	}
+    }
+    
+    public void addRequestHeaders(HttpState state, HttpConnection conn)
+    throws IOException, HttpException {
 
-	/**
-	 * Handles the authoring of the Request Body
-	 */
-	protected void writeRequest(HttpState state, HttpConnection conn)
-			throws IOException, HttpException {
-		String contents = generateRequestBody();
-		// be nice - allow overriding functions to return null or empty
-		// strings for no content.
-		if (contents == null) {
-			contents = "";
-		}
-		setRequestBody(contents);
-		super.writeRequest(state, conn);
-	}
+        super.addRequestHeaders(state, conn);
+        
+        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.TEXT_XML_CONTENT_TYPE);
+
+    }
+    
+    /**
+     * Handles the authoring of the Request Body
+     */
+    protected void writeRequest(HttpState state, HttpConnection conn)
+            throws IOException, HttpException {
+        String contents = generateRequestBody();
+        // be nice - allow overriding functions to return null or empty
+        // strings for no content.
+        if (contents == null) {
+            contents = "";
+        }
+        setRequestBody(contents);
+        super.writeRequest(state, conn);
+    }
 
 }
