@@ -442,7 +442,7 @@ public class CalDAVCalendarCollection {
             String path, String currentEtag) throws CalDAV4JException {
         
         //first try getting from the cache
-        CalDAVResource calDAVResource = cache.getResource(getHref("path"));
+        CalDAVResource calDAVResource = cache.getResource(getHref(path));
         
         //ok, so we got the resource...but has it been changed recently?
         if (calDAVResource != null){
@@ -561,7 +561,14 @@ public class CalDAVCalendarCollection {
         
         try {
             httpClient.executeMethod(hostConfiguration, headMethod);
-            if (headMethod.getStatusCode() != WebdavStatus.SC_OK){
+            int statusCode = headMethod.getStatusCode();
+            
+            if (statusCode == WebdavStatus.SC_NOT_FOUND) {
+                throw new ResourceNotFoundException(
+                        ResourceNotFoundException.IdentifierType.PATH, path);
+            }
+            
+            if (statusCode != WebdavStatus.SC_OK){
                 throw new CalDAV4JException(
                         "Unexpected Status returned from Server: "
                                 + headMethod.getStatusCode());

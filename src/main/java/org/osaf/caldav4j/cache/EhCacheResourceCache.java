@@ -37,7 +37,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         this.uidToHrefCache = uidToPathCache;
     }
 
-    public String getHrefForEventUID(String uid) throws org.osaf.caldav4j.CacheException {
+    public synchronized String getHrefForEventUID(String uid) throws org.osaf.caldav4j.CacheException {
         Element e = null;
         try {
             e = uidToHrefCache.get(uid);
@@ -49,7 +49,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         
     }
 
-    public CalDAVResource getResource(String href) throws org.osaf.caldav4j.CacheException {
+    public synchronized CalDAVResource getResource(String href) throws org.osaf.caldav4j.CacheException {
         Element e = null;
         try {
             e = hrefToResourceCache.get(href);
@@ -61,7 +61,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         return e == null ? null : (CalDAVResource) e.getValue();
     }
 
-    public void putResource(CalDAVResource calDAVResource)
+    public synchronized void putResource(CalDAVResource calDAVResource)
             throws org.osaf.caldav4j.CacheException {
         String href = calDAVResource.getResourceMetadata().getHref();
         Element resourceElement = new Element(href, calDAVResource);
@@ -74,7 +74,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         }
     }
 
-    public void removeResource(String href) throws org.osaf.caldav4j.CacheException {
+    public synchronized void removeResource(String href) throws org.osaf.caldav4j.CacheException {
         CalDAVResource resource = getResource(href);
         if (resource != null){
             hrefToResourceCache.remove(href);
@@ -85,7 +85,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         }
     }
     
-    private String getEventUID(CalDAVResource calDAVResource){
+    private synchronized String getEventUID(CalDAVResource calDAVResource){
         Calendar calendar = calDAVResource.getCalendar();
         VEvent vevent = ICalendarUtils.getFirstEvent(calendar);
         if (vevent != null){
