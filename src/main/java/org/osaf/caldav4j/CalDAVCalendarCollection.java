@@ -37,6 +37,7 @@ import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -126,8 +127,7 @@ public class CalDAVCalendarCollection {
     }
 
     public void setMethodFactory(CalDAV4JMethodFactory methodFactory) {
-        this.methodFactory = methodFactory;
-    }
+        this.methodFactory = methodFactory; }
 
     public String getCalendarCollectionRoot() {
         return calendarCollectionRoot;
@@ -360,7 +360,7 @@ public class CalDAVCalendarCollection {
      *                 otherwise null
      * @throws CalDAV4JException
      */
-    public void udpateMasterEvent(HttpClient httpClient, VEvent vevent, VTimeZone timezone)
+    public void updateMasterEvent(HttpClient httpClient, VEvent vevent, VTimeZone timezone)
         throws CalDAV4JException{
         String uid = getUIDValue(vevent);
         CalDAVResource resource = getCalDAVResourceForEventUID(httpClient, uid);
@@ -754,9 +754,14 @@ public class CalDAVCalendarCollection {
             throw new CalDAV4JException("Problem executing put method",e);
         }
 
-        String newEtag = putMethod.getResponseHeader("ETag").getValue();
+        Header h = putMethod.getResponseHeader("ETag");
 
-        cache.putResource(new CalDAVResource(calendar, newEtag, getHref(path)));
+        if (h != null) {
+            String newEtag = h.getValue();
+            cache.putResource(new CalDAVResource(calendar, newEtag, getHref(path)));
+        }
+        
+
     }
     
     protected String getAbsolutePath(String relativePath){
@@ -790,7 +795,11 @@ public class CalDAVCalendarCollection {
             throw new CalDAV4JException("Problem executing get method",e);
         }
         
-        String etag = headMethod.getResponseHeader("ETag").getValue();
+        Header h = headMethod.getResponseHeader("ETag");
+        String etag = null;
+        if (h != null) {
+         etag = h.getValue();
+        }
         return etag;
     }
     
