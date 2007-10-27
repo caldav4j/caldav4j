@@ -41,9 +41,9 @@
       <version>2.1.1</version>
     </dependency>
     <dependency>
-      <groupId>ical4j</groupId>
-      <artifactId>ical4j</artifactId>
-      <version>0.9.17</version>
+            <groupId>net.fortuna</groupId>
+            <artifactId>ical4j</artifactId>
+            <version>1.0-beta4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
