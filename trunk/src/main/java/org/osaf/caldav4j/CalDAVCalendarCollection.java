@@ -96,12 +96,15 @@ public class CalDAVCalendarCollection {
     
     /**
      * Creates a new CalDAVCalendar collection with the specified paramters
+     * 
      * @param path The path to the collection 
      * @param hostConfiguration Host information for the CalDAV Server 
      * @param methodFactory methodFactory to obtail HTTP methods from
      * @param prodId String identifying who creates the iCalendar objects
      */
-    public CalDAVCalendarCollection(String path, HostConfiguration hostConfiguration, CalDAV4JMethodFactory methodFactory, String prodId) {
+    public CalDAVCalendarCollection(String path,
+            HostConfiguration hostConfiguration,
+            CalDAV4JMethodFactory methodFactory, String prodId) {
         this.calendarCollectionRoot = path;
         this.hostConfiguration = hostConfiguration;
         this.methodFactory = methodFactory;
@@ -162,6 +165,7 @@ public class CalDAVCalendarCollection {
     /**
      * Gets an icalendar object at the specified path, relative to the
      * collection path
+     * 
      * @param httpClient the httpClient which will make the request
      * @param relativePath the path, relative to the collection path
      * @return the Calendar object at the specified path
@@ -382,7 +386,7 @@ public class CalDAVCalendarCollection {
      * @param timeout
      * @param read
      * @param write
-     * @return
+     * @return The id of the created ticket
      * @throws CalDAV4JException
      *             Is thrown if the execution of the MkTicketMethod fails
      */

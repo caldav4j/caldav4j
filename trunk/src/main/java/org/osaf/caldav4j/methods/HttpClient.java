@@ -59,9 +59,7 @@ public class HttpClient extends org.apache.commons.httpclient.HttpClient {
     }
 
     public HttpClient(HttpConnectionManager httpConnectionManager) {
-
         super();
-
     }
 
     public void setTicket(String ticket) {
