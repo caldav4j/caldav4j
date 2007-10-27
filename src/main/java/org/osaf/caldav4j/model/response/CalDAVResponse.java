@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 Open Source Applications Foundation
+ * Copyright 2005 Open Source Applications Foundation
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,16 +77,6 @@ public class CalDAVResponse implements ResponseEntity {
             return "";
         }
 
-    }
-    
-    public String getETag(){
-        Property eTagProperty = getProperty(CalDAVConstants.QNAME_GETETAG);
-
-        if (eTagProperty != null) {
-            return eTagProperty.getElement().getTextContent();
-        }
-        
-        return null;
     }
 
     public Enumeration getHistories(){

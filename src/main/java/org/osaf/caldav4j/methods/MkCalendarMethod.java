@@ -74,7 +74,7 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
         } catch (DOMValidationException domve) {
             throw new RuntimeException(domve);
         }
-        return XMLUtils.toPrettyXML(d);
+        return XMLUtils.toXML(d);
 
     }
 }
