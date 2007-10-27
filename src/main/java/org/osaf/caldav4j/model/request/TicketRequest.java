@@ -73,7 +73,7 @@ public class TicketRequest extends OutputsDOMBase {
 	 * The value for infinity is stored in
 	 * org.osaf.caldav4j.CalDAVConstants.INFINITY
 	 * 
-	 * @return
+	 * @return 
 	 */
 	public Integer getVisits() {
 		return this.visits;
