@@ -15,11 +15,13 @@
  */
 package org.osaf.caldav4j;
 
+import java.io.Serializable;
+
 import net.fortuna.ical4j.model.Calendar;
 
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 
-public class CalDAVResource {
+public class CalDAVResource implements Serializable{
     private ResourceMetadata resourceMetadata = null;
     private Calendar calendar = null;
     

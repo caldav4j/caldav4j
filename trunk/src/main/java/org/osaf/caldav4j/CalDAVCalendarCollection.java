@@ -40,6 +40,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.webdav.lib.methods.DeleteMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
+import org.osaf.caldav4j.cache.CalDAVResourceCache;
+import org.osaf.caldav4j.cache.NoOpResourceCache;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.CalDAVReportMethod;
 import org.osaf.caldav4j.methods.GetMethod;
@@ -481,11 +483,7 @@ public class CalDAVCalendarCollection {
             throw new CalDAV4JException("Problem executing get method",e);
         }
 
-        String href = hostConfiguration.getProtocol().getScheme() + ":"
-             + hostConfiguration.getHost()
-             + (hostConfiguration.getPort() != 80 ? "" + hostConfiguration.getPort() : "")
-             + "/"
-             + path;
+        String href = getHref(path);
         String etag = getMethod.getResponseHeader("ETag").getValue();
         Calendar calendar = null;
         try {
@@ -588,11 +586,19 @@ public class CalDAVCalendarCollection {
     }
     
     private String getHref(String path){
-        String href = hostConfiguration.getProtocol().getScheme() + ":"
+        String href = hostConfiguration.getProtocol().getScheme() + "://"
         + hostConfiguration.getHost()
-        + (hostConfiguration.getPort() != 80 ? "" + hostConfiguration.getPort() : "")
-        + "/"
+        + (hostConfiguration.getPort() != 80 ? ":" + hostConfiguration.getPort() : "")
+        + ""
         + path;
         return href;
+    }
+
+    public CalDAVResourceCache getCache() {
+        return cache;
+    }
+
+    public void setCache(CalDAVResourceCache cache) {
+        this.cache = cache;
     }
 }
