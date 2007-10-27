@@ -1,19 +1,8 @@
 package org.osaf.caldav4j.methods;
 
-import java.util.Enumeration;
-
-import net.fortuna.ical4j.model.Calendar;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Property;
-import org.apache.webdav.lib.ResponseEntity;
-import org.apache.webdav.lib.methods.XMLResponseMethodBase;
-import org.apache.webdav.lib.properties.LockDiscoveryProperty;
 import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.model.request.CalendarQuery;
-import org.osaf.caldav4j.model.request.CompFilter;
-import org.osaf.caldav4j.model.response.CalDAVResponse;
 
 public class CalDAVReportMethodTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(CalDAVReportMethodTest.class);
