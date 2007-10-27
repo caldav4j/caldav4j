@@ -146,6 +146,29 @@
             </plugins>
         </pluginManagement>
     </build>
+    <repositories>
+        <repository>
+            <id>osafoundation.org</id>
+            <name>OSAF's repository</name>
+            <layout>default</layout>
+            <url>http://builds.osafoundation.org/maven2</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>osaf-m2</id>
+            <name>OSAF M2 Repository</name>
+            <url>scpexe://paniolo.osafoundation.org/www/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>osaf-m2</id>
+            <name>OSAF M2 Repository</name>
+            <url>scpexe://paniolo.osafoundation.org/www/maven2</url>
+        </snapshotRepository>
+    </distributionManagement>
 <!--  <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
