@@ -297,7 +297,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
 
         ICalendarUtils.addOrReplaceProperty(ve, new Summary("NEW"));
 
-        calendarCollection.updateMasterEvent(httpClient, ve, null);
+        calendarCollection.udpateMasterEvent(httpClient, ve, null);
 
         calendar = calendarCollection.getCalendarForEventUID(httpClient,
                 ICS_NORMAL_PACIFIC_1PM_UID);
