@@ -124,7 +124,7 @@ public class MkTicketMethod extends HttpRequestBodyMethodBase {
 	public TicketResponse getResponseBodyAsTicketResponse() throws IOException,
 			SAXException, CalDAV4JProtocolException, CalDAV4JException {
 		Header header = getResponseHeader("Content-Type");
-		String contentType = header.getValue();
+		String contentType = (header != null) ? header.getValue() : ""; 
 		if (!contentType.startsWith("text/xml")) {
 			log.error("Content type must be \"text/xml\" to parse as an "
 					+ "xml resource. Type was: " + contentType);
