@@ -18,7 +18,7 @@
   <name>CalDav4j</name>
   <groupId>org.osaf</groupId>
   <artifactId>caldav4j</artifactId>
-  <currentVersion>0.2rc1</currentVersion>
+  <currentVersion>0.2rc2</currentVersion>
   <organization>
     <name>OSAF</name>
     <url>http://osafoundation.org/</url>

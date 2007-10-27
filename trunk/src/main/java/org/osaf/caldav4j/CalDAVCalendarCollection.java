@@ -116,7 +116,15 @@ public class CalDAVCalendarCollection {
     public void setCalendarCollectionRoot(String path) {
         this.calendarCollectionRoot = path;
     }
+    
+    public CalDAVResourceCache getCache() {
+        return cache;
+    }
 
+    public void setCache(CalDAVResourceCache cache) {
+        this.cache = cache;
+    }
+    
     //The interesting methods
 
     public Calendar getCalendarForEventUID(HttpClient httpClient,String uid) throws CalDAV4JException {
@@ -160,7 +168,8 @@ public class CalDAVCalendarCollection {
         while (e.hasMoreElements()){
             CalDAVResponse response  = e.nextElement();
             String etag = response.getETag();
-            CalDAVResource resource = getCalDAVResource(httpClient, response.getHref(), etag);
+            CalDAVResource resource = getCalDAVResource(httpClient,
+                    stripHost(response.getHref()), etag);
             list.add(resource.getCalendar());
         }
         
@@ -550,7 +559,7 @@ public class CalDAVCalendarCollection {
         return   calendarCollectionRoot + "/" + relativePath;
     }
     
-    protected String stripHost(String href){
+    protected static String stripHost(String href){
         int indexOfColon = href.indexOf(":");
         int index = href.indexOf("/", indexOfColon + 3);
         return href.substring(index);
@@ -599,13 +608,5 @@ public class CalDAVCalendarCollection {
         + ""
         + path;
         return href;
-    }
-
-    public CalDAVResourceCache getCache() {
-        return cache;
-    }
-
-    public void setCache(CalDAVResourceCache cache) {
-        this.cache = cache;
     }
 }
