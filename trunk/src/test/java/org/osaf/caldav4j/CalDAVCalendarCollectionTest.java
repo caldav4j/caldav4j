@@ -8,12 +8,9 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.DtStart;
-import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
-import net.fortuna.ical4j.model.property.Version;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -223,30 +220,6 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 
 	}
 
-	private boolean hasEventWithUID(List<Calendar> cals, String uid) {
-		for (Calendar cal : cals) {
-			ComponentList vEvents = cal.getComponents().getComponents(
-					Component.VEVENT);
-			if (vEvents.size() == 0) {
-				return false;
-			}
-			VEvent ve = (VEvent) vEvents.get(0);
-			String curUid = ICalendarUtils.getUIDValue(ve);
-			if (curUid != null && uid.equals(curUid)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private CalDAVCalendarCollection createCalDAVCalendarCollection() {
-		CalDAVCalendarCollection calendarCollection = new CalDAVCalendarCollection(
-				COLLECTION_PATH, createHostConfiguration(), methodFactory,
-				CalDAVConstants.PROC_ID_DEFAULT);
-		return calendarCollection;
-	}
-
 	public void testTicket() throws Exception {
 
 		CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
@@ -296,28 +269,28 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 
 	}
 
-	public static void main(String[] args) throws Exception {
-		// CalendarBuilder builder = new CalendarBuilder();
-		// builder.build(stream)
+    private boolean hasEventWithUID(List<Calendar> cals, String uid) {
+        for (Calendar cal : cals) {
+            ComponentList vEvents = cal.getComponents().getComponents(
+                    Component.VEVENT);
+            if (vEvents.size() == 0) {
+                return false;
+            }
+            VEvent ve = (VEvent) vEvents.get(0);
+            String curUid = ICalendarUtils.getUIDValue(ve);
+            if (curUid != null && uid.equals(curUid)) {
+                return true;
+            }
+        }
 
-		String newUid = "NEW_UID";
-		String newEvent = "NEW_EVENT";
-		VEvent ve = new VEvent();
+        return false;
+    }
 
-		DtStart dtStart = new DtStart(new Date());
-		Summary summary = new Summary(newEvent);
-		Uid uid = new Uid(newUid);
-
-		ve.getProperties().add(dtStart);
-		ve.getProperties().add(summary);
-		ve.getProperties().add(uid);
-		Calendar calendar = new Calendar();
-		calendar.getProperties().add(
-				new ProdId(CalDAVConstants.PROC_ID_DEFAULT));
-		calendar.getProperties().add(Version.VERSION_2_0);
-		calendar.getProperties().add(CalScale.GREGORIAN);
-		calendar.getComponents().add(ve);
-		calendar.validate();
-	}
+    private CalDAVCalendarCollection createCalDAVCalendarCollection() {
+        CalDAVCalendarCollection calendarCollection = new CalDAVCalendarCollection(
+                COLLECTION_PATH, createHostConfiguration(), methodFactory,
+                CalDAVConstants.PROC_ID_DEFAULT);
+        return calendarCollection;
+    }
 
 }
