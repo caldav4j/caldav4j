@@ -2,14 +2,11 @@ package org.osaf.caldav4j;
 
 import java.util.List;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.DtStart;
@@ -18,19 +15,11 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 
-import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
-import org.osaf.caldav4j.methods.GetMethod;
-import org.osaf.caldav4j.methods.MkTicketMethod;
-import org.osaf.caldav4j.model.request.TicketRequest;
-import org.osaf.caldav4j.model.response.TicketResponse;
-import org.osaf.caldav4j.util.ICalendarUtils;
 import org.osaf.caldav4j.methods.HttpClient;
-
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
+import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class CalDAVCalendarCollectionTest extends BaseTestCase {
 	private static final Log log = LogFactory
@@ -44,7 +33,13 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 
 	public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
 			+ COLLECTION;
-
+    
+    public static final Integer TEST_TIMEOUT = 3600;
+    public static final boolean TEST_READ = true;
+    public static final boolean TEST_WRITE = true;
+    public static final Integer TEST_VISITS = CalDAVConstants.INFINITY;
+    
+    public static final String  TEST_TIMEOUT_UNITS = "Second";
 	protected void setUp() throws Exception {
 		super.setUp();
 		mkdir(COLLECTION_PATH);
@@ -53,10 +48,6 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 		put(ICS_NORMAL_PACIFIC_1PM, COLLECTION_PATH + "/"
 				+ ICS_NORMAL_PACIFIC_1PM);
 		put(ICS_SINGLE_EVENT, COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
-		/***********************************************************************
-		 * put(ICS_FLOATING_JAN2_7PM, COLLECTION_PATH + "/" +
-		 * ICS_FLOATING_JAN2_7PM);
-		 **********************************************************************/
 	}
 
 	protected void tearDown() throws Exception {
@@ -262,16 +253,16 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 
 		// Create the Ticket
 		String ticketID = calendarCollection.createTicket(httpClient,
-				COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM,
-				CalDAVConstants.INFINITY, CalDAVConstants.TEST_TIMEOUT,
-				CalDAVConstants.TEST_READ, CalDAVConstants.TEST_WRITE);
+				BaseTestCase.ICS_DAILY_NY_5PM,
+				CalDAVConstants.INFINITY, TEST_TIMEOUT,
+				TEST_READ, TEST_WRITE);
 
 		assertNotNull(ticketID);
 
 		// Make sure ticket is there
 		
-		List<String> ticketIDs = calendarCollection.getTickets(httpClient,
-				COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+		List<String> ticketIDs = calendarCollection.getTicketsIDs(httpClient,
+				BaseTestCase.ICS_DAILY_NY_5PM);
 
 		assertEquals("Number of IDs Returned from getTickets:", ticketIDs
 				.size(), 1);
@@ -289,8 +280,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 		assertNotNull(calendar);
 
 		// Attempt to delete the Tickets
-		calendarCollection.deleteTicket(httpClient, COLLECTION_PATH + "/"
-				+ BaseTestCase.ICS_DAILY_NY_5PM, ticketID);
+		calendarCollection.deleteTicket(httpClient, BaseTestCase.ICS_DAILY_NY_5PM, ticketID);
 
 		// Make sure ticket is gone
 		
