@@ -17,6 +17,8 @@ package org.osaf.caldav4j;
 
 import net.fortuna.ical4j.model.Calendar;
 
+import org.apache.webdav.lib.Property;
+import org.apache.webdav.lib.util.QName;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 
 public class CalDAVResource {
@@ -26,16 +28,15 @@ public class CalDAVResource {
     public CalDAVResource(CalDAVResponse response) throws CalDAV4JException{
         this.calendar = response.getCalendar();
         this.resourceMetadata = new ResourceMetadata();
-        this.resourceMetadata.setETag(response.getETag());
+        QName etagQname = new QName(CalDAVConstants.NS_DAV, CalDAVConstants.PROP_GETETAG);
+        Property eTagProperty = response.getProperty(etagQname);
+
+        if (eTagProperty != null) {
+            this.resourceMetadata.setETag(eTagProperty.getElement()
+                    .getTextContent());
+        }
         this.resourceMetadata.setHref(response.getHref());
-    }
-    
-    public CalDAVResource(Calendar calendar, String etag, String href){
-        this.calendar = calendar;
-        ResourceMetadata rm = new ResourceMetadata();
-        rm.setETag(etag);
-        rm.setHref(href);
-        this.resourceMetadata = rm;
+        
     }
 
     public CalDAVResource(){
@@ -53,4 +54,5 @@ public class CalDAVResource {
     public ResourceMetadata getResourceMetadata() {
         return resourceMetadata;
     }
+    
 }

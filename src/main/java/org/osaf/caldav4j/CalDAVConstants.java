@@ -16,8 +16,6 @@
 
 package org.osaf.caldav4j;
 
-import org.apache.webdav.lib.util.QName;
-
 public interface CalDAVConstants {
 
     public static final String METHOD_MKCALENDAR = "MKCALENDAR";
@@ -33,8 +31,5 @@ public interface CalDAVConstants {
     public static final String HEADER_IF_MATCH = "If-Match";
     
     public static final String PROP_GETETAG = "getetag";
-    
-    public static final QName QNAME_GETETAG 
-        = new QName(NS_DAV, PROP_GETETAG);
 
 }
