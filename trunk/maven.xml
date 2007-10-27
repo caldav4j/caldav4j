@@ -17,6 +17,22 @@
 <project xmlns:j="jelly:core" 
          xmlns:ant="jelly:ant"
          xmlns:define="jelly:define">
-         
+    
+    <goal name="dist:copyEndorsed">
+        <mkdir dir="${caldav4j.dist.version}" />
+        <mkdir dir="${caldav4j.dist.version}/endorsed" />
+        <j:forEach var="lib" items="${pom.artifacts}">
+          <j:choose>    
+            <j:when test="${lib.dependency.type == 'jar'}">
+              <j:choose>
+                <j:when test="${lib.dependency.getProperty('jar.endorsed')=='true'}">
+                  <copy todir="${caldav4j.dist.version}/endorsed"
+                      file="${lib.path}"/>
+                </j:when>
+              </j:choose>
+            </j:when>
+          </j:choose>
+        </j:forEach>    
+    </goal>
 
 </project>
