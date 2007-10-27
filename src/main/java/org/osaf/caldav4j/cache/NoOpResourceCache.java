@@ -1,4 +1,6 @@
-package org.osaf.caldav4j;
+package org.osaf.caldav4j.cache;
+
+import org.osaf.caldav4j.CalDAVResource;
 
 /**
  * Does nothing, but is very fast.

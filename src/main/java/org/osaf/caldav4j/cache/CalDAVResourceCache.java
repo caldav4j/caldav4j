@@ -1,4 +1,7 @@
-package org.osaf.caldav4j;
+package org.osaf.caldav4j.cache;
+
+import org.osaf.caldav4j.CacheException;
+import org.osaf.caldav4j.CalDAVResource;
 
 /**
  * Implementations allow for caching of CalDAVResources based on path, and also for
@@ -15,7 +18,7 @@ public interface CalDAVResourceCache {
      * @param href the href to use to lookup the CalDAVResource
      * @return
      */
-    CalDAVResource getResource(String href);
+    public CalDAVResource getResource(String href) throws CacheException;
 
     /**
      * Adds the given resource to the cache, retrievable its href.
@@ -25,7 +28,7 @@ public interface CalDAVResourceCache {
      * 
      * @param calDAVResource the resource to cache
      */
-    void putResource(CalDAVResource calDAVResource);
+    public void putResource(CalDAVResource calDAVResource) throws CacheException;
 
     /**
      * Returns the href for which the resource with the event with the given 
@@ -33,12 +36,12 @@ public interface CalDAVResourceCache {
      * @param uid the uid for the resource whose href you want
      * @return
      */
-    String getHrefForEventUID(String uid);
+    public String getHrefForEventUID(String uid) throws CacheException;
 
     /**
      * Removes a resource from the cache
      * @param href
      */
-    void removeResource(String href);
+    public void removeResource(String href) throws CacheException;
 
 }

@@ -15,27 +15,18 @@
  */
 package org.osaf.caldav4j;
 
-import java.io.Serializable;
+/**
+ * Thrown by CalDAVResourceCache implementations when there is a problem with the cache.
+ * @author bobbyrullo
+ *
+ */
+public class CacheException extends CalDAV4JException {
 
-public class ResourceMetadata implements Serializable {
-    private String eTag = null;
-    private String href = null;
-    
-    
-    public String getETag() {
-        return eTag;
+    public CacheException(String message) {
+        super(message);
     }
     
-    public void setETag(String tag) {
-        eTag = tag;
+    public CacheException(String message, Throwable cause){
+        super(message, cause);
     }
-    
-    public String getHref() {
-        return href;
-    }
-    
-    public void setHref(String href) {
-        this.href = href;
-    }
-    
 }
