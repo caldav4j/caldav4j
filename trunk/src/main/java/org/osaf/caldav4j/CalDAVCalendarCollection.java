@@ -69,8 +69,6 @@ public class CalDAVCalendarCollection {
 
     private String calendarCollectionRoot = null;
 
-    private HttpClient httpClient = null;
-
     private HostConfiguration hostConfiguration = null;
 
     private String prodId = null;
@@ -81,10 +79,8 @@ public class CalDAVCalendarCollection {
         
     }
     
-    public CalDAVCalendarCollection(String path, HttpClient httpClient,
-            HostConfiguration hostConfiguration, CalDAV4JMethodFactory methodFactory, String prodId) {
+    public CalDAVCalendarCollection(String path, HostConfiguration hostConfiguration, CalDAV4JMethodFactory methodFactory, String prodId) {
         this.calendarCollectionRoot = path;
-        this.httpClient = httpClient;
         this.hostConfiguration = hostConfiguration;
         this.methodFactory = methodFactory;
         this.prodId = prodId;
@@ -98,14 +94,6 @@ public class CalDAVCalendarCollection {
 
     public void setHostConfiguration(HostConfiguration hostConfiguration) {
         this.hostConfiguration = hostConfiguration;
-    }
-
-    public HttpClient getHttpClient() {
-        return httpClient;
-    }
-
-    public void setHttpClient(HttpClient httpClient) {
-        this.httpClient = httpClient;
     }
 
     public CalDAV4JMethodFactory getMethodFactory() {
@@ -126,11 +114,11 @@ public class CalDAVCalendarCollection {
 
     //The interesting methods
 
-    public Calendar getCalendarForEventUID(String uid) throws CalDAV4JException {
-        return getCalDAVResourceForEventUID(uid).getCalendar();
+    public Calendar getCalendarForEventUID(HttpClient httpClient,String uid) throws CalDAV4JException {
+        return getCalDAVResourceForEventUID(httpClient, uid).getCalendar();
     }
-
-    public Calendar getCalendarByPath(String relativePath) throws CalDAV4JException{
+    
+    public Calendar getCalendarByPath(HttpClient httpClient, String relativePath) throws CalDAV4JException{
         GetMethod getMethod = methodFactory.createGetMethod();
         getMethod.setPath(calendarCollectionRoot + "/" + relativePath);
         
@@ -159,7 +147,8 @@ public class CalDAVCalendarCollection {
         }
     }
     
-    public List<Calendar> getEventResources(Date beginDate, Date endDate)
+    public List<Calendar> getEventResources(HttpClient httpClient,
+            Date beginDate, Date endDate)
             throws CalDAV4JException {
         // first create the calendar query
         CalendarQuery query = new CalendarQuery("C", "D");
@@ -212,8 +201,8 @@ public class CalDAVCalendarCollection {
      * 
      * @param uid
      */
-    public void deleteEvent(String uid) throws CalDAV4JException{
-        CalDAVResource resource = getCalDAVResourceForEventUID(uid);
+    public void deleteEvent(HttpClient httpClient,String uid) throws CalDAV4JException{
+        CalDAVResource resource = getCalDAVResourceForEventUID(httpClient, uid);
         Calendar calendar = resource.getCalendar();
         ComponentList eventList = calendar.getComponents().getComponents(Component.VEVENT);
         List<Component> componentsToRemove = new ArrayList<Component>();
@@ -237,11 +226,11 @@ public class CalDAVCalendarCollection {
             for (Component removeMe : componentsToRemove){
                 calendar.getComponents().remove(removeMe);
             }
-            put(calendar, stripHost(resource.getResourceMetadata().getHref()),
+            put(httpClient, calendar, stripHost(resource.getResourceMetadata().getHref()),
                     resource.getResourceMetadata().getETag());
             return;
         } else {
-            delete(stripHost(resource.getResourceMetadata().getHref()));
+            delete(httpClient, stripHost(resource.getResourceMetadata().getHref()));
         }
     }
 
@@ -249,7 +238,7 @@ public class CalDAVCalendarCollection {
      * Creates a calendar at the specified path 
      *
      */
-    public void createCalendar() throws CalDAV4JException{
+    public void createCalendar(HttpClient httpClient) throws CalDAV4JException{
         MkCalendarMethod mkCalendarMethod = new MkCalendarMethod();
         mkCalendarMethod.setPath(calendarCollectionRoot);
         try {
@@ -265,7 +254,7 @@ public class CalDAVCalendarCollection {
         }
     }
     
-    public void addEvent(VEvent vevent, VTimeZone timezone)
+    public void addEvent(HttpClient httpClient, VEvent vevent, VTimeZone timezone)
             throws CalDAV4JException {
         Calendar calendar = new Calendar();
         calendar.getProperties().add(new ProdId(prodId));
@@ -313,10 +302,10 @@ public class CalDAVCalendarCollection {
      * @param timezone
      * @throws CalDAV4JException
      */
-    public void udpateMasterEvent(VEvent vevent, VTimeZone timezone)
+    public void udpateMasterEvent(HttpClient httpClient, VEvent vevent, VTimeZone timezone)
         throws CalDAV4JException{
         String uid = getUIDValue(vevent);
-        CalDAVResource resource = getCalDAVResourceForEventUID(uid);
+        CalDAVResource resource = getCalDAVResourceForEventUID(httpClient, uid);
         Calendar calendar = resource.getCalendar();
         
         //let's find the master event first!
@@ -325,7 +314,7 @@ public class CalDAVCalendarCollection {
         calendar.getComponents().remove(originalVEvent);
         calendar.getComponents().add(vevent);
         
-        put(calendar,
+        put(httpClient, calendar,
                 stripHost(resource.getResourceMetadata().getHref()),
                 resource.getResourceMetadata().getETag());
     }
@@ -338,7 +327,7 @@ public class CalDAVCalendarCollection {
      *
      * @param uid 
      */
-    protected String getPathToResourceForEventId(String uid) throws CalDAV4JException{
+    protected String getPathToResourceForEventId(HttpClient httpClient, String uid) throws CalDAV4JException{
         // first create the calendar query
         CalendarQuery query = new CalendarQuery("C", "D");
         
@@ -389,7 +378,7 @@ public class CalDAVCalendarCollection {
         return href.substring(start + calendarCollectionRoot.length() + 1);
     }
     
-    protected CalDAVResource getCalDAVResourceForEventUID(String uid) throws CalDAV4JException {
+    protected CalDAVResource getCalDAVResourceForEventUID(HttpClient httpClient, String uid) throws CalDAV4JException {
         // first create the calendar query
         CalendarQuery query = new CalendarQuery("C", "D");
         query.setCalendarDataProp(new CalendarData("C"));
@@ -428,7 +417,8 @@ public class CalDAVCalendarCollection {
         return new CalDAVResource(e.nextElement());
     }
 
-    protected CalDAVResource getCalDAVResource(String path) throws CalDAV4JException {
+    protected CalDAVResource getCalDAVResource(HttpClient httpClient,
+            String path) throws CalDAV4JException {
         GetMethod getMethod = getMethodFactory().createGetMethod();
         getMethod.setPath(path);
         try {
@@ -463,7 +453,8 @@ public class CalDAVCalendarCollection {
         return resource;
     }
     
-    protected void delete(String path) throws CalDAV4JException {
+    protected void delete(HttpClient httpClient, String path)
+            throws CalDAV4JException {
         DeleteMethod deleteMethod = new DeleteMethod(path);
         try {
             httpClient.executeMethod(hostConfiguration, deleteMethod);
@@ -477,7 +468,8 @@ public class CalDAVCalendarCollection {
         }
     }
     
-    protected void put(Calendar calendar, String path, String etag)
+    protected void put(HttpClient httpClient, Calendar calendar, String path,
+            String etag)
             throws CalDAV4JException {
         PutMethod putMethod = methodFactory.createPutMethod();
         putMethod.addEtag(etag);
