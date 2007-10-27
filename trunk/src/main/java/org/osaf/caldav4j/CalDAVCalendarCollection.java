@@ -37,6 +37,7 @@ import net.fortuna.ical4j.model.property.Version;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.webdav.lib.methods.DeleteMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
@@ -74,6 +75,8 @@ public class CalDAVCalendarCollection {
     private String prodId = null;
 
     private Random random = new Random();
+    
+    private CalDAVResourceCache cache = NoOpResourceCache.SINGLETON;
     
     public CalDAVCalendarCollection(){
         
@@ -119,32 +122,8 @@ public class CalDAVCalendarCollection {
     }
     
     public Calendar getCalendarByPath(HttpClient httpClient, String relativePath) throws CalDAV4JException{
-        GetMethod getMethod = methodFactory.createGetMethod();
-        getMethod.setPath(calendarCollectionRoot + "/" + relativePath);
-        
-        try {
-            httpClient.executeMethod(hostConfiguration, getMethod);
-        } catch (Exception e) {
-            throw new CalDAV4JException("Problem executing method", e);
-        }
-        
-        if (getMethod.getStatusCode() == WebdavStatus.SC_NOT_FOUND){
-            throw new ResourceNotFoundException(
-                    ResourceNotFoundException.IdentifierType.PATH, relativePath);
-            
-        }
-        
-        if (getMethod.getStatusCode() != WebdavStatus.SC_OK){
-            throw new CalDAV4JProtocolException("Bad Status Code: "
-                    + getMethod.getStatusCode());
-        }
-        
-        try {
-            return getMethod.getResponseBodyAsCalendar();
-        } catch (Exception e){
-            throw new CalDAV4JException(
-                    "Problem parsing response body as an iCalendar", e);
-        }
+        CalDAVResource resource = getCalDAVResource(httpClient, getAbsolutePath(relativePath));
+        return resource.getCalendar();
     }
     
     public List<Calendar> getEventResources(HttpClient httpClient,
@@ -153,15 +132,7 @@ public class CalDAVCalendarCollection {
         // first create the calendar query
         CalendarQuery query = new CalendarQuery("C", "D");
         
-        CalendarData calendarData = new CalendarData("C");
-        /*
-        TODO don't expand until we have more info...some ambiguity about spec!
-        
-        calendarData.setExpandOrLimitRecurrenceSet(CalendarData.EXPAND);
-        calendarData.setRecurrenceSetStart(beginDate);
-        calendarData.setRecurrenceSetEnd(endDate);
-        */
-        query.setCalendarDataProp(calendarData);
+        query.addProperty(PROP_ETAG);
         CompFilter vCalendarCompFilter = new CompFilter("C");
         vCalendarCompFilter.setName(Calendar.VCALENDAR);
 
@@ -185,7 +156,10 @@ public class CalDAVCalendarCollection {
         Enumeration<CalDAVResponse> e = reportMethod.getResponses();
         List<Calendar> list = new ArrayList<Calendar>();
         while (e.hasMoreElements()){
-            list.add(e.nextElement().getCalendar());
+            CalDAVResponse response  = e.nextElement();
+            String etag = response.getETag();
+            CalDAVResource resource = getCalDAVResource(httpClient, response.getHref(), etag);
+            list.add(resource.getCalendar());
         }
         
         return list;
@@ -278,6 +252,10 @@ public class CalDAVCalendarCollection {
                     calendar);
             try {
                 httpClient.executeMethod(getHostConfiguration(), putMethod);
+                String etag = putMethod.getResponseHeader("ETag").getValue();
+                CalDAVResource calDAVResource = new CalDAVResource(calendar,
+                        etag, getHref((putMethod.getPath())));
+                cache.putResource(calDAVResource);
             } catch (Exception e) {
                 throw new CalDAV4JException("Trouble executing PUT", e);
             }
@@ -378,7 +356,21 @@ public class CalDAVCalendarCollection {
         return href.substring(start + calendarCollectionRoot.length() + 1);
     }
     
-    protected CalDAVResource getCalDAVResourceForEventUID(HttpClient httpClient, String uid) throws CalDAV4JException {
+    protected CalDAVResource getCalDAVResourceForEventUID(
+            HttpClient httpClient, String uid) throws CalDAV4JException {
+        
+        //first check the cache!
+        String href = cache.getHrefForEventUID(uid);
+        CalDAVResource calDAVResource = null;
+        
+        if (href != null) {
+            calDAVResource = getCalDAVResource(httpClient, stripHost(href));
+
+            if (calDAVResource != null) {
+                return calDAVResource;
+            }
+        }
+        
         // first create the calendar query
         CalendarQuery query = new CalendarQuery("C", "D");
         query.setCalendarDataProp(new CalendarData("C"));
@@ -413,12 +405,69 @@ public class CalDAVCalendarCollection {
             throw new ResourceNotFoundException(
                     ResourceNotFoundException.IdentifierType.UID, uid);
         }
-        
-        return new CalDAVResource(e.nextElement());
-    }
 
+        calDAVResource = new CalDAVResource(e.nextElement());
+        cache.putResource(calDAVResource);
+        return calDAVResource;
+    }
+    
+    /**
+     * Gets the resource at the given path. Will check the cache first, and compare that to the
+     * latest etag obtained using a HEAD request.
+     * @param httpClient
+     * @param path
+     * @return
+     * @throws CalDAV4JException
+     */
     protected CalDAVResource getCalDAVResource(HttpClient httpClient,
             String path) throws CalDAV4JException {
+        String currentEtag = getETag(httpClient, path);
+        return getCalDAVResource(httpClient, path, currentEtag);
+    }
+    
+    /**
+     * Gets the resource for the given href. Will check the cache first, and if a cached
+     * version exists that has the etag provided it will be returned. Otherwise, it goes
+     * to the server for the resource.
+     * 
+     * @param httpClient
+     * @param path
+     * @param currentEtag
+     * @return
+     * @throws CalDAV4JException
+     */
+    protected CalDAVResource getCalDAVResource(HttpClient httpClient,
+            String path, String currentEtag) throws CalDAV4JException {
+        
+        //first try getting from the cache
+        CalDAVResource calDAVResource = cache.getResource(getHref("path"));
+        
+        //ok, so we got the resource...but has it been changed recently?
+        if (calDAVResource != null){
+            String cachedEtag = calDAVResource.getResourceMetadata().getETag();
+            if (cachedEtag.equals(currentEtag)){
+                return calDAVResource;
+            }
+        }
+        
+        //either the etag was old, or it wasn't in the cache so let's get it
+        //from the server       
+        return getCalDAVResourceFromServer(httpClient, path);
+        
+    }
+    
+    /**
+     * Gets a CalDAVResource from the server - in other words DOES NOT check the cache.
+     * Adds the new resource to the cache, replacing any preexisting version.
+     * 
+     * @param httpClient
+     * @param path
+     * @return
+     * @throws CalDAV4JException
+     */
+    protected CalDAVResource getCalDAVResourceFromServer(HttpClient httpClient,
+            String path) throws CalDAV4JException {
+        CalDAVResource calDAVResource = null;
         GetMethod getMethod = getMethodFactory().createGetMethod();
         getMethod.setPath(path);
         try {
@@ -431,7 +480,7 @@ public class CalDAVCalendarCollection {
         } catch (Exception e){
             throw new CalDAV4JException("Problem executing get method",e);
         }
-        
+
         String href = hostConfiguration.getProtocol().getScheme() + ":"
              + hostConfiguration.getHost()
              + (hostConfiguration.getPort() != 80 ? "" + hostConfiguration.getPort() : "")
@@ -445,14 +494,15 @@ public class CalDAVCalendarCollection {
             throw new CalDAV4JException("Malformed calendar resource returned.", e);
         }
         
-        CalDAVResource resource = new CalDAVResource();
-        resource.setCalendar(calendar);
-        resource.getResourceMetadata().setETag(etag);
-        resource.getResourceMetadata().setHref(href);
+        calDAVResource = new CalDAVResource();
+        calDAVResource.setCalendar(calendar);
+        calDAVResource.getResourceMetadata().setETag(etag);
+        calDAVResource.getResourceMetadata().setHref(href);
         
-        return resource;
+        cache.putResource(calDAVResource);
+        return calDAVResource;
+        
     }
-    
     protected void delete(HttpClient httpClient, String path)
             throws CalDAV4JException {
         DeleteMethod deleteMethod = new DeleteMethod(path);
@@ -466,6 +516,8 @@ public class CalDAVCalendarCollection {
         } catch (Exception e){
             throw new CalDAV4JException("Problem executing delete method",e);
         }
+        
+        cache.removeResource((getHref(path)));
     }
     
     protected void put(HttpClient httpClient, Calendar calendar, String path,
@@ -490,6 +542,10 @@ public class CalDAVCalendarCollection {
         } catch (Exception e){
             throw new CalDAV4JException("Problem executing put method",e);
         }
+
+        String newEtag = putMethod.getResponseHeader("ETag").getValue();
+
+        cache.putResource(new CalDAVResource(calendar, newEtag, getHref(path)));
     }
     
     protected String getAbsolutePath(String relativePath){
@@ -500,6 +556,24 @@ public class CalDAVCalendarCollection {
         int indexOfColon = href.indexOf(":");
         int index = href.indexOf("/", indexOfColon + 3);
         return href.substring(index);
+    }
+    
+    protected String getETag(HttpClient httpClient, String path) throws CalDAV4JException{
+        HeadMethod headMethod = new HeadMethod(path);
+        
+        try {
+            httpClient.executeMethod(hostConfiguration, headMethod);
+            if (headMethod.getStatusCode() != WebdavStatus.SC_OK){
+                throw new CalDAV4JException(
+                        "Unexpected Status returned from Server: "
+                                + headMethod.getStatusCode());
+            }
+        } catch (Exception e){
+            throw new CalDAV4JException("Problem executing get method",e);
+        }
+        
+        String etag = headMethod.getResponseHeader("ETag").getValue();
+        return etag;
     }
     
     private PutMethod createPutMethodForNewResource(String resourceName,
@@ -513,4 +587,12 @@ public class CalDAVCalendarCollection {
         return putMethod;
     }
     
+    private String getHref(String path){
+        String href = hostConfiguration.getProtocol().getScheme() + ":"
+        + hostConfiguration.getHost()
+        + (hostConfiguration.getPort() != 80 ? "" + hostConfiguration.getPort() : "")
+        + "/"
+        + path;
+        return href;
+    }
 }
