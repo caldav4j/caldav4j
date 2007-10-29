@@ -29,6 +29,7 @@ Among the things not supported yet are:
    * High level API for accessing anything other than VEVENTS (like VTODO's for example)
    * ... ?
 
+More information [Status here].
 == Building == 
 
 CalDAV4j uses [http://maven.apache.org/ Maven 2.x] as its build system. [BuildingCalDAV4j Here] is some more information on building CalDAV4j
@@ -39,7 +40,7 @@ Download the latest JAR file and make sure it's in your classpath. The unit test
 
 == What's Next ==
 
-Exactly what's next is up in the air right - there are some outstanding issues (have better documentation, user newer version of Slide library, etc) but exactly what happens in what order will largely depend on demand from users, so make sure to make your voice heard on the discussion group!
+Exactly what's next is up in the air right - there are some outstanding issues (have better documentation, use newer version of Slide library, etc) but exactly what happens in what order will largely depend on demand from users, so make sure to make your voice heard on the discussion group!
 
 The [Roadmap roadmap] will be updated as things flesh out more.  
 
