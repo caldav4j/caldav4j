@@ -3,8 +3,6 @@
 
 CalDAV4j is a protocol library that extends the Slide project's [http://jakarta.apache.org/slide/webdav-client.html WebDAV client library] (which itself is an extension of the Apache's [http://jakarta.apache.org/commons/httpclient/ HttpClient] library) to allow high level manipulation of CalDAV calendar collections as well as lower level CalDAV protocol interactions.
 
-The impetus for this project is Scooby's need for a CalDAV library to communicate with Cosmo. 
-
 == Goals ==
 
    * A high level API: This API works at the level of ical4j objects, and allows for high level operations like querying for events in a given date range, and updating master events and recurrence instances. All the "hard" protocol work that you need to do to make this happen is hidden from the end user.
@@ -13,7 +11,7 @@ The impetus for this project is Scooby's need for a CalDAV library to communicat
 
    * Performance: When possible caches (such as caches of etags and icalendar resources) are maintained so that network chatter and parsing of icalender files is minimized.
 
-   * Compliance: We aim to be implement the entire [http://ietfreport.isoc.org/idref/draft-dusseault-caldav/ CalDAV spec] as well as the [http://www.sharemation.com/~milele/public/dav/draft-ito-dav-ticket-00.txt WebDAV tickets spec]. 
+   * Compliance: We aim to be implement the entire [http://www.ietf.org/rfc/rfc4791.txt CalDAV spec] as well as the [http://www.sharemation.com/~milele/public/dav/draft-ito-dav-ticket-00.txt WebDAV tickets spec]. 
 
 == Status ==
 
