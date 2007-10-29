@@ -1,8 +1,7 @@
 == CalDAV4j Overview ==
 
----
 
-CalDAV4j is a protocol library that extends the Slide project's [[http://jakarta.apache.org/slide/webdav-client.html][WebDAV client library]] (which itself is an extension of the Apache's [[http://jakarta.apache.org/commons/httpclient/][HttpClient]] library) to allow high level manipulation of CalDAV calendar collections as well as lower level CalDAV protocol interactions.
+CalDAV4j is a protocol library that extends the Slide project's [http://jakarta.apache.org/slide/webdav-client.html WebDAV client library] (which itself is an extension of the Apache's [http://jakarta.apache.org/commons/httpclient/ HttpClient] library) to allow high level manipulation of CalDAV calendar collections as well as lower level CalDAV protocol interactions.
 
 The impetus for this project is Scooby's need for a CalDAV library to communicate with Cosmo. 
 
@@ -14,7 +13,7 @@ The impetus for this project is Scooby's need for a CalDAV library to communicat
 
    * Performance: When possible caches (such as caches of etags and icalendar resources) are maintained so that network chatter and parsing of icalender files is minimized.
 
-   * Compliance: We aim to be implement the entire [[http://ietfreport.isoc.org/idref/draft-dusseault-caldav/][CalDAV spec]] as well as the [[http://www.sharemation.com/~milele/public/dav/draft-ito-dav-ticket-00.txt][WebDAV tickets spec]]. 
+   * Compliance: We aim to be implement the entire [http://ietfreport.isoc.org/idref/draft-dusseault-caldav/ CalDAV spec] as well as the [http://www.sharemation.com/~milele/public/dav/draft-ito-dav-ticket-00.txt WebDAV tickets spec]. 
 
 == Status ==
 
@@ -31,15 +30,7 @@ Among the things not supported yet are:
    * High level API for accessing anything other than VEVENTS (like VTODO's for example)
    * Ticket support
 
-== Documentation ==
 
-Here is a [[Documentation.CalDAV4jTutorial][tutorial]] to get you started using CalDAV4j.
+== License ==
 
-The code is also fairly well !JavaDoc'd. 
-
-   * CalDAV4j [[http://wiki.osafoundation.org/bin/view/Projects/CalDAV4jReleaseSteps][Release Steps]]
-   * [[http://svn.osafoundation.org/docs/trunk/docs/specs/scooby/rel0_1/CalDAV4J-0.1.html][CalDAV4j Spec]] _(Dated 12/6/05)_
-
-== Source Code and License ==
-
-CalDAV4j source is available under the [[http://www.apache.org/licenses/LICENSE-2.0][Apache 2.0 License]] in OSAF's subversion repository: http://svn.osafoundation.org/server/caldav/trunk/
+CalDAV4j source is Licensed under the [http://www.apache.org/licenses/LICENSE-2.0 Apache 2.0 License] 
