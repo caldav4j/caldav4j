@@ -15,20 +15,34 @@ CalDAV4j is a protocol library that extends the Slide project's [http://jakarta.
 
 == Status ==
 
-CalDAV4j 0.2 is the current release.
+CalDAV4j 0.3 is the current release.
 
-The 0.1 release features include:
+The 0.3 release features include:
    * Support for <calendar-query> reports
    * Protocol level support for MKCALENDAR, GET, REPORT, PUT 
    * High level API for accessing events within a calendar collection
    * Caching of CalDAV resources
+   * Ticket Support
 
 Among the things not supported yet are:
    * Free Busy reports
    * High level API for accessing anything other than VEVENTS (like VTODO's for example)
-   * Ticket support
+   * ... ?
 
+== Building == 
 
-== License ==
+CalDAV4j uses [http://maven.apache.org/ Maven 2.x] as its build system. [BuildingCalDAV4j Here] is some more information on building CalDAV4j
 
-CalDAV4j source is Licensed under the [http://www.apache.org/licenses/LICENSE-2.0 Apache 2.0 License] 
+== Using == 
+
+Download the latest JAR file and make sure it's in your classpath. The unit tests are the best place right now to see how to use CalDAV4j. Tutorials and more documentation are forthcoming.
+
+== What's Next ==
+
+Exactly what's next is up in the air right - there are some outstanding issues (have better documentation, user newer version of Slide library, etc) but exactly what happens in what order will largely depend on demand from users, so make sure to make your voice heard on the discussion group!
+
+The [Roadmap roadmap] will be updated as things flesh out more.  
+
+== License & Copyright==
+
+CalDAV4j is licensed under the [http://www.apache.org/licenses/LICENSE-2.0 Apache 2.0 License] and copyright 2007 Open Source Application Foundation
