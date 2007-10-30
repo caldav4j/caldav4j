@@ -14,3 +14,19 @@ From within the source tree run:
 {{{
 mvn -Dmaven.test.skip=true package
 }}}
+
+== Build With Tests ==
+
+The reason I mentioned building without the tests first is because building with the tests is harder than it should be right now, but if you are developing CalDAV4j you should really be running the tests.
+
+=== Get Chandler Server ===
+
+[http://chandlerproject.org/Developers/DownloadChandlerServer Download] and install Chandler Server (aka Cosmo)
+
+=== Create The Test User === 
+After starting the server, create a user on the server called "test" with a password of "password"
+
+=== Build ===
+{{{
+mvn package
+}}}
