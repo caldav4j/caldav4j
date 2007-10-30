@@ -1,7 +1,5 @@
 #summary More info on building CalDAV4j
 
-=Building CalDAV4j=
-
 == Get Maven 2.x ==
 
 [http://maven.apache.org/download.html Download] and install the latest version of the Maven build tool.
@@ -13,5 +11,6 @@ Checkout the CalDAV4j [http://code.google.com/p/caldav4j/source source] code.
 == Build without Tests ==
 
 From within the source tree run:
-
+{{{
 mvn -Dmaven.test.skip=true package
+}}}
