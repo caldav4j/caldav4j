@@ -341,9 +341,17 @@ public class CalDAVCalendarCollection {
                 didIt = true;
             } else if (WebdavStatus.SC_PRECONDITION_FAILED != statusCode){
                 //must be some other problem, throw an exception
-                throw new CalDAV4JException("Unexpected status code: "
-                        + statusCode + "\n"
-                        + putMethod.getResponseBodyAsString());
+		try {
+	                throw new CalDAV4JException("Unexpected status code: "
+        	                + statusCode + "\n"
+                	        + putMethod.getResponseBodyAsString());
+		} catch (IOException e) {
+                        // TODO here if there's some problem in getResponseBodyAsString
+                        e.printStackTrace();
+	                throw new CalDAV4JException("Unexpected status code: "
+        	                + statusCode + "\n"
+				+ "error in getResponseBodyAsString()");
+                }
             }
         }
     }

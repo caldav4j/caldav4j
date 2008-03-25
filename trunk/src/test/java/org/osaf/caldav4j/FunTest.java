@@ -25,8 +25,6 @@ public class FunTest extends BaseTestCase {
 
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
-    public static final String COLLECTION = "collection";
-
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
             + COLLECTION;
 
@@ -44,6 +42,11 @@ public class FunTest extends BaseTestCase {
 
     protected void tearDown() throws Exception {
         super.tearDown();
+        del(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
+        del(COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
+        del(COLLECTION_PATH + "/" + ICS_NORMAL_PACIFIC_1PM);
+        del(COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
+        del(COLLECTION_PATH + "/" + ICS_FLOATING_JAN2_7PM);
         del(COLLECTION_PATH);
     }
 
@@ -54,7 +57,7 @@ public class FunTest extends BaseTestCase {
         PropFindMethod propFindMethod = new PropFindMethod();
         PropertyName propName = new PropertyName(CalDAVConstants.NS_DAV, "resourcetype");
         propFindMethod.setDepth(DepthSupport.DEPTH_INFINITY);
-        propFindMethod.setPath("/cosmo/home/test");
+        propFindMethod.setPath(CALDAV_SERVER_WEBDAV_ROOT);
         propFindMethod.setType(PropFindMethod.BY_NAME);
         Vector v = new Vector();
         v.add(propName);

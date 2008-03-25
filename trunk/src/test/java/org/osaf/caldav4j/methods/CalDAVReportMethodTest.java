@@ -9,7 +9,6 @@ public class CalDAVReportMethodTest extends BaseTestCase {
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     
     
-    public static final String COLLECTION      = "collection";
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
             + COLLECTION;
     
@@ -24,6 +23,10 @@ public class CalDAVReportMethodTest extends BaseTestCase {
 
     protected void tearDown() throws Exception {
         super.tearDown();
+        del(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
+        del(COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
+        del(COLLECTION_PATH + "/" + ICS_NORMAL_PACIFIC_1PM);
+        del(COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
         del(COLLECTION_PATH);
     }
     

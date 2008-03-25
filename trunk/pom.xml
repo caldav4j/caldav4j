@@ -54,13 +54,13 @@
     </dependency>
     <dependency>
       <groupId>slide</groupId>
-      <artifactId>slide-webdavlib</artifactId>
-      <version>2.1</version>
+      <artifactId>jakarta-slide-webdavlib</artifactId>
+      <version>2.2pre1-httpclient-3.0</version>
     </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
-      <version>2.0.2</version>
+      <version>3.0</version>
     </dependency>
     <dependency>
       <groupId>castor</groupId>
@@ -138,6 +138,17 @@
     </pluginManagement>
   </build>
   <repositories>
+      <repository>
+          <id>caldav4j</id>
+          <name>Caldav4j repos</name>
+          <url>http://caldav4j.googlecode.com/svn/trunk/maven/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+              <enabled>true</enabled>
+          </snapshots>
+      </repository>
       <repository>
           <id>osafoundation.org</id>
           <name>OSAF's repository</name>

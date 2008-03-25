@@ -47,8 +47,6 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
 
     private HttpClient httpClient = createHttpClient();
 
-    public static final String COLLECTION = "collection";
-
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
             + COLLECTION;
 
@@ -136,6 +134,11 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
         CacheManager cacheManager = CacheManager.create();
         cacheManager.removeCache(UID_TO_HREF_CACHE);
         cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
+        
+        del(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
+        del(COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
+        del(COLLECTION_PATH + "/" + ICS_NORMAL_PACIFIC_1PM);
+        del(COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
         del(COLLECTION_PATH);
     }
 

@@ -14,7 +14,7 @@ public class MkCalendarTest extends BaseTestCase {
     
     public void testCreateRemoveCalendarCollection() throws Exception{
         MkCalendarMethod mk = new MkCalendarMethod();
-        mk.setPath(CALDAV_SERVER_WEBDAV_ROOT + "collection");
+        mk.setPath(CALDAV_SERVER_WEBDAV_ROOT + COLLECTION);
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
         http.executeMethod(hostConfig, mk);
@@ -24,14 +24,14 @@ public class MkCalendarTest extends BaseTestCase {
         
         //now let's try and get it, make sure it's there
         GetMethod get = new GetMethod();
-        get.setPath(CALDAV_SERVER_WEBDAV_ROOT + "collection");
+        get.setPath(CALDAV_SERVER_WEBDAV_ROOT + COLLECTION);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
         assertEquals("Status code for get:", WebdavStatus.SC_OK, statusCode);
         
         
         DeleteMethod delete = new DeleteMethod();
-        delete.setPath(CALDAV_SERVER_WEBDAV_ROOT + "collection");
+        delete.setPath(CALDAV_SERVER_WEBDAV_ROOT + COLLECTION);
         http.executeMethod(hostConfig, delete);
         
         statusCode = delete.getStatusCode();
@@ -39,7 +39,7 @@ public class MkCalendarTest extends BaseTestCase {
 
         //Now make sure that it goes away
         get = new GetMethod();
-        get.setPath(CALDAV_SERVER_WEBDAV_ROOT + "collection");
+        get.setPath(CALDAV_SERVER_WEBDAV_ROOT + COLLECTION);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
         assertEquals("Status code for get:", WebdavStatus.SC_NOT_FOUND, statusCode);
