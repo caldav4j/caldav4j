@@ -17,7 +17,6 @@ public class PutGetTest extends BaseTestCase {
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
      
     
-    public static final String COLLECTION      = "collection";
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
             + COLLECTION;
     
@@ -28,11 +27,8 @@ public class PutGetTest extends BaseTestCase {
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        HttpClient http = createHttpClient();
-        HostConfiguration hostConfig = createHostConfiguration();
-        DeleteMethod delete = new DeleteMethod();
-        delete.setPath(COLLECTION_PATH);
-        http.executeMethod(hostConfig, delete);
+        del(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+        del(COLLECTION_PATH);
     }
 
     public void testAddRemoveCalendarResource() throws Exception{

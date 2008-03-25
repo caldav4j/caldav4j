@@ -26,6 +26,8 @@ import org.apache.commons.httpclient.HostConfiguration;
 //import org.apache.commons.httpclient.HttpClient;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.DeleteMethod;
@@ -47,9 +49,10 @@ public abstract class BaseTestCase
     public static final int CALDAV_SERVER_PORT = 8080;
     public static final String CALDAV_SERVER_PROTOCOL = "http";
     public static final String CALDAV_SERVER_WEBDAV_ROOT = "/chandler/dav/test/";
-    public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
     public static final String CALDAV_SERVER_USERNAME = "test";
     public static final String CALDAV_SERVER_PASSWORD = "password";
+    public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
+    public static final String COLLECTION      = "collection";
 
     public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
     public static final String ICS_DAILY_NY_5PM_UID = "DE916949-731D-4DAE-BA93-48A38B2B2030";
@@ -98,15 +101,17 @@ public abstract class BaseTestCase
         HttpClient http = new HttpClient();
 
         Credentials credentials = new UsernamePasswordCredentials(CALDAV_SERVER_USERNAME, CALDAV_SERVER_PASSWORD);
-        http.getState().setCredentials(null, null, credentials);
-        http.getState().setAuthenticationPreemptive(true);
+        http.getState().setCredentials(
+        		new AuthScope(this.getCalDAVServerHost(), this.getCalDAVServerPort()),
+        		credentials);
+        http.getParams().setAuthenticationPreemptive(true);
         return http;
     }
     
     public HttpClient createHttpClientWithNoCredentials(){
 
         HttpClient http = new HttpClient();
-        http.getState().setAuthenticationPreemptive(true);
+        http.getParams().setAuthenticationPreemptive(true);
         return http;
     }
     
@@ -136,7 +141,7 @@ public abstract class BaseTestCase
         PutMethod put = methodFactory.createPutMethod();
         InputStream stream = this.getClass().getClassLoader()
         .getResourceAsStream(resourceFileName);
-        put.setRequestBody(stream);
+        put.setRequestEntity(new InputStreamRequestEntity(stream));
         put.setPath(path);
         try {
             http.executeMethod(hostConfig, put);
