@@ -59,6 +59,7 @@ public interface CalDAVConstants {
     public static final String ELEM_ID = "id";
     public static final String ELEM_OWNER = "owner";
     public static final String ELEM_HREF = "href";
+    public static final String ELEM_ALLPROP = "allprop";
    
     public static final Integer INFINITY = -1;
     public static final String  INFINITY_STRING = "infinity";

@@ -7,9 +7,8 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.methods.DeleteMethod;
-import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class PutGetTest extends BaseTestCase {
@@ -18,7 +17,7 @@ public class PutGetTest extends BaseTestCase {
      
     
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-            + COLLECTION;
+            + "/" + COLLECTION;
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -43,14 +42,14 @@ public class PutGetTest extends BaseTestCase {
         put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();
-        assertEquals("Status code for put:", WebdavStatus.SC_CREATED, statusCode);
+        assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
 
         //ok, so we created it...let's make sure it's there!
         GetMethod get = methodFactory.createGetMethod();
         get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
-        assertEquals("Status code for get: ", WebdavStatus.SC_OK, statusCode);
+        assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
         
         //now let's make sure we can get the resource body as a calendar
         Calendar calendar = get.getResponseBodyAsCalendar();
@@ -67,7 +66,7 @@ public class PutGetTest extends BaseTestCase {
         http.executeMethod(hostConfig, put);
         statusCode = put.getStatusCode();
         assertEquals("Status code for put:",
-                WebdavStatus.SC_PRECONDITION_FAILED, statusCode);
+                CaldavStatus.SC_PRECONDITION_FAILED, statusCode);
    }
     
 

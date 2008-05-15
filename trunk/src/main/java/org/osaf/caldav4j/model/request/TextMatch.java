@@ -40,14 +40,20 @@ public class TextMatch extends OutputsDOMBase {
     public static final String ATTR_VALUE_YES = "yes";
     public static final String ATTR_VALUE_NO  = "no";
     
+    public static final String ATTR_COLLATION = "collation";
+    private String collation = null;
+    
     private String caldavNamespaceQualifier = null;
     private String textToMatch = null;
     private Boolean caseless = null;
+
     
     public TextMatch(String caldavNamespaceQualifier, Boolean caseless,
             String textToMatch) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.caseless = caseless;
+        // this.collation = "i;octet";
+        this.collation = "i;ascii-casemap";
         this.textToMatch = textToMatch;
 
     }
@@ -74,11 +80,15 @@ public class TextMatch extends OutputsDOMBase {
     
     protected Map<String, String> getAttributes() {
         Map<String, String> m = null;
+        m = new HashMap<String, String>();
+
         if (caseless != null) {
-            m = new HashMap<String, String>();
             m.put(ATTR_CASELESS, caseless.booleanValue() ? ATTR_VALUE_YES
                     : ATTR_VALUE_NO);
-
+        }
+        
+        if (collation != null) {
+        	m.put(ATTR_COLLATION, collation);
         }
         return m;
     }

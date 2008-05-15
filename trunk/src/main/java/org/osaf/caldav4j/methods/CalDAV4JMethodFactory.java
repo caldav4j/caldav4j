@@ -19,7 +19,6 @@ package org.osaf.caldav4j.methods;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 
-import org.apache.webdav.lib.methods.ReportMethod;
 import org.osaf.caldav4j.CalDAVConstants;
 
 public class CalDAV4JMethodFactory {
