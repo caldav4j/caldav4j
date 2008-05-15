@@ -42,9 +42,22 @@ public class CalDAVProp extends OutputsDOMBase {
     public static final String ATTR_VAL_YES = "yes";
     public static final String ATTR_VAL_NO = "no";
     
+    private boolean attrNoValueEnabled = true; //XXX used to disable the view on ATTR_NOVALUE
+    private String attrName = ATTR_NAME;
+    
     private String caldavNamespaceQualifier = null;
     private String name = null;
     private boolean novalue = false;
+    
+    
+    public CalDAVProp(String caldavNamespaceQualifier, String attrName, String name, boolean novalue, boolean attrNoValueEnabled) {
+        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+        this.name = name;
+        this.novalue = novalue;
+        
+        this.attrName = attrName; //XXX see if it's ok there or if whe should use another Class
+        this.attrNoValueEnabled = attrNoValueEnabled;
+    }
     
     public CalDAVProp(String caldavNamespaceQualifier, String name, boolean novalue) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
@@ -79,8 +92,12 @@ public class CalDAVProp extends OutputsDOMBase {
     
     protected Map<String, String> getAttributes() {
         Map<String, String> m =  new HashMap<String, String>();
-        m.put(ATTR_NAME, name);
-        m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
+        m.put(attrName, name); // XXX 
+        
+        if (attrNoValueEnabled) {
+        	m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
+        }
+        
         return m;
     }
     

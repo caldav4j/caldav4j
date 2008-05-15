@@ -73,8 +73,12 @@ public class TimeRange extends OutputsDOMBase {
     
     protected Map<String, String> getAttributes() {
         Map<String, String> m =  new LinkedHashMap<String, String>();
-        m.put(ATTR_START, start.toString());
-        m.put(ATTR_END, end.toString());
+        if (start != null) {
+        	m.put(ATTR_START, start.toString());
+        }
+        if (end != null) {
+        	m.put(ATTR_END, end.toString());
+        }
         return m;
     }
 
@@ -98,10 +102,14 @@ public class TimeRange extends OutputsDOMBase {
      * <!ELEMENT time-range EMPTY>
      * 
      * <!ATTLIST time-range start CDATA end CDATA>
+     * @see http://tools.ietf.org/html/rfc4791#section-9.9
+     * Time ranges open at one end can be specified by
+      including only one attribute; however, at least one attribute MUST
+      always be present in the CALDAV:time-range element. 
      */
     public void validate() throws DOMValidationException{
-        if (start == null || end == null){
-            throwValidationException("You must have a start end an end date");
+        if (start == null && end == null){
+            throwValidationException("You must have a start or an end date");
         }
     }
 
