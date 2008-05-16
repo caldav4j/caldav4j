@@ -46,12 +46,11 @@ public abstract class BaseTestCase
     private HostConfiguration hostConfig = createHostConfiguration();
 
     public static final String CALDAV_SERVER_HOST = "localhost";
-    public static final int CALDAV_SERVER_PORT = 28080;
+    public static final int CALDAV_SERVER_PORT = 8080;
     public static final String CALDAV_SERVER_PROTOCOL = "http";
-//    public static final String CALDAV_SERVER_WEBDAV_ROOT = "/chandler/dav/test/";
-    public static final String CALDAV_SERVER_WEBDAV_ROOT = "/ucaldav/user/r@inca.it/";
-    public static final String CALDAV_SERVER_USERNAME = "r@inca.it";
-    public static final String CALDAV_SERVER_PASSWORD = "r";
+    public static final String CALDAV_SERVER_WEBDAV_ROOT = "/chandler/dav/test/";
+    public static final String CALDAV_SERVER_USERNAME = "test";
+    public static final String CALDAV_SERVER_PASSWORD = "password";
     public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
     public static final String COLLECTION      = "collection";
 
