@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * 
  */
 
 package org.osaf.caldav4j;
@@ -75,7 +77,7 @@ import org.osaf.caldav4j.util.ICalendarUtils;
  * This class provides a high level API to a calendar collection on a CalDAV server.
  * 
  * @author bobbyrullo
- *
+ * @author ptr.ventura_at_gmail.com changed addEvent
  */
 public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 
@@ -260,15 +262,18 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 				resourceName = ICalendarUtils.getUIDValue(vevent) + "-"
 				+ random.nextInt() + ".ics";
 			}
+			
 			PutMethod putMethod = createPutMethodForNewResource(resourceName,
 					calendar);
 			try {
-				httpClient.executeMethod(getHostConfiguration(), putMethod);                
-//				String etag = ( putMethod.getResponseHeader("ETag") != null) ? putMethod.getResponseHeader("ETag").getValue() :  null; // rpolli
-				String etag = putMethod.getResponseHeader("ETag").getValue();
+				httpClient.executeMethod(getHostConfiguration(), putMethod);
+				//fixed for nullpointerexception
+				String etag = ( putMethod.getResponseHeader("ETag") != null) ? putMethod.getResponseHeader("ETag").getValue() :  ""; 
 				CalDAVResource calDAVResource = new CalDAVResource(calendar,
 						etag, getHref((putMethod.getPath())));
+			
 				cache.putResource(calDAVResource);
+				
 			} catch (Exception e) {
 				throw new CalDAV4JException("Trouble executing PUT", e);
 			}
@@ -1028,7 +1033,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 
 		while (e.hasMoreElements()){
 			CalDAVResponse response  = e.nextElement();
-			//PV
+			
 			if (response.getStatusCode()==CaldavStatus.SC_OK){
 				list.add(response.getCalendar());
 			}
