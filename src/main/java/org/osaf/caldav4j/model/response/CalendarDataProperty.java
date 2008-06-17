@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * 
  */
 package org.osaf.caldav4j.model.response;
 
@@ -24,7 +26,11 @@ import org.apache.webdav.lib.BaseProperty;
 import org.apache.webdav.lib.ResponseEntity;
 import org.osaf.caldav4j.CalDAV4JException;
 import org.w3c.dom.Element;
-
+/**
+ * 
+ * @author pventura_at_babel.it changed getCalendar
+ *
+ */
 public class CalendarDataProperty extends BaseProperty {
 
 	public static final String ELEMENT_CALENDAR_DATA = "calendar-data";
@@ -42,6 +48,10 @@ public class CalendarDataProperty extends BaseProperty {
 
 		String text = getElement().getTextContent();
 		text.trim();
+		//text might contain lines breaked only with \n. RFC states that long lines must be delimited by CRLF.
+		//@see{http://www.apps.ietf.org/rfc/rfc2445.html#sec-4.1 }
+		//this fix the problem occurred when lines are breaked only with \n 
+		text=text.replaceAll("\n","\r\n").replaceAll("\r\r\n", "\r\n");
 		CalendarBuilder builder = new CalendarBuilder();
 		StringReader stringReader = new StringReader(text);
 		try {
