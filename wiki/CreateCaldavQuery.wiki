@@ -1,0 +1,23 @@
+#summary Here we discuss on a language to describe caldav query
+#labels Phase-Requirements
+
+= Introduction =
+
+As CalDAVCollectionManager class is full of redundant code about creating tonns of different queries, we start discussing about a language to describe caldav query.
+
+The target is about REPORT, PROPFIND and maybe MULTIGET methods, as CReate-Update-Delete methods works well enough in this implementation.
+
+
+= Target =
+
+Here we list some kind of queries that should be done, in compliance of RFC4791
+
+ # first 
+ # second
+ # third
+
+
+
+= Results =
+
+Here we write the query of the former paragraph in our new descriptive language
