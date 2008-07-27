@@ -10,10 +10,15 @@ The target is about REPORT, PROPFIND and maybe MULTIGET methods, as CReate-Updat
 
 = Target =
 
-Here we list some kind of queries that should be done, in compliance of RFC4791
+Here we list some kind of calendar-query that should be done, in compliance of RFC4791
 
- # first 
- # second
+ # Query Components (VEVENT,VTODO) 
+ * by time-range
+ * selecting properties to retrieve (so you have to specify vcalendar.vevent)
+ * filtering by component.property value
+
+ # Query Components filtering for subcomponents properties
+ * VTODO.VALARM.time-range=interval
  # third
 
 
