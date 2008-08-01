@@ -49,6 +49,7 @@ public class PropFilter extends OutputsDOMBase {
 
     private String name = null;
     private boolean isDefined = false;
+    private boolean negateCondition = false;
     private TimeRange timeRange = null;
     private TextMatch textMatch = null;
     private List<ParamFilter> paramFilters = new ArrayList<ParamFilter>();
@@ -59,10 +60,11 @@ public class PropFilter extends OutputsDOMBase {
     
     public PropFilter(String caldavNamespaceQualifier, String name, 
             boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
-            Boolean textmatchCaseless, String textMatchString, List<ParamFilter> paramFilters){
+            Boolean textmatchCaseless, String textMatchString, boolean negateCondition, List<ParamFilter> paramFilters){
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.name = name;
         this.isDefined = isDefined;
+        this.negateCondition = negateCondition;
         if (timeRangeStart != null && timeRangeEnd != null){
             this.timeRange = new TimeRange(caldavNamespaceQualifier, timeRangeStart, timeRangeEnd);
         } else if (textMatchString != null){
@@ -72,6 +74,25 @@ public class PropFilter extends OutputsDOMBase {
             this.paramFilters = paramFilters;
         }
     }
+    
+    public PropFilter(String caldavNamespaceQualifier, String name, 
+            boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
+            Boolean textmatchCaseless, String textMatchString, List<ParamFilter> paramFilters){
+        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+        this.name = name;
+        this.isDefined = isDefined;
+        this.negateCondition = false;
+        if (timeRangeStart != null && timeRangeEnd != null){
+            this.timeRange = new TimeRange(caldavNamespaceQualifier, timeRangeStart, timeRangeEnd);
+        } else if (textMatchString != null){
+            this.textMatch = new TextMatch(caldavNamespaceQualifier, textmatchCaseless, textMatchString);
+        }
+        if (paramFilters != null){
+            this.paramFilters = paramFilters;
+        }    	
+
+    }
+     
 
     protected String getElementName() {
         return ELEMENT_NAME;

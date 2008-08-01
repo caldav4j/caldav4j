@@ -63,7 +63,7 @@ public class CompFilter extends OutputsDOMBase {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.isDefined = isDefined;
         this.name = name;
-        if (start != null && end != null) {
+        if (start != null || end != null) { // XXX test the || instead of && (open interval)
             this.timeRange = new TimeRange(caldavNamespaceQualifier, start, end);
         }
         
