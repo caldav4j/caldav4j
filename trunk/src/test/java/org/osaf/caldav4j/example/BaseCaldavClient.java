@@ -67,7 +67,7 @@ import org.osaf.caldav4j.methods.PutMethod;
 	    	
 	    	try {
 	    		setCredentials(serverUserName, serverPassword);
-	    		hostConfig.setHost(this.serverHost, this.serverPort);
+	    		hostConfig.setHost(this.serverHost, this.serverPort, this.serverProtocol);
 	    	} catch (Exception e) {
 	    		e.printStackTrace();
 	    		System.out.println("can't create BaseCaldavClient");
@@ -216,9 +216,9 @@ import org.osaf.caldav4j.methods.PutMethod;
 	    // ************* test *****************
 		public static void main(String[] args) throws CalDAV4JException, SocketException, URISyntaxException {
 			
-			BaseCaldavClient cli = new BaseCaldavClient("localhost", "28080",
-					"http",
-					"/ucaldav/user/", "caluser1", "bedework");
+			BaseCaldavClient cli = new BaseCaldavClient("www.google.com", "443",
+					"https",
+					"/calendar/dav/", "robipolli@gmail.com", "igdmi80g");
 			
 	}
 }
