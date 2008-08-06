@@ -271,7 +271,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 				String etag = ( putMethod.getResponseHeader("ETag") != null) ? putMethod.getResponseHeader("ETag").getValue() :  ""; 
 				CalDAVResource calDAVResource = new CalDAVResource(calendar,
 						etag, getHref((putMethod.getPath())));
-			
+				
 				cache.putResource(calDAVResource);
 				
 			} catch (Exception e) {
@@ -485,7 +485,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 
 		PropFilter propFilter = new PropFilter("C");
 		propFilter.setName(Property.UID);
-		propFilter.setTextMatch(new TextMatch("C", false, uid));
+		propFilter.setTextMatch(new TextMatch("C", false,null,null, uid));
 		vEventCompFilter.addPropFilter(propFilter);
 
 		vCalendarCompFilter.addCompFilter(vEventCompFilter);
@@ -539,7 +539,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 
 		PropFilter propFilter = new PropFilter("C");
 		propFilter.setName(Property.UID);
-		propFilter.setTextMatch(new TextMatch("C", null, uid)); // rpolli s/false/null/
+		propFilter.setTextMatch(new TextMatch("C", null, null, null, uid)); // rpolli s/false/null/
 		vEventCompFilter.addPropFilter(propFilter);
 
 		vCalendarCompFilter.addCompFilter(vEventCompFilter);

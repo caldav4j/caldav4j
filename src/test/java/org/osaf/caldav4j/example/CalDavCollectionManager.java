@@ -29,6 +29,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVCalendarCollection;
+import org.osaf.caldav4j.CaldavCredential;
 import org.osaf.caldav4j.ResourceNotFoundException;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.GetMethod;
@@ -337,19 +338,19 @@ public class CalDavCollectionManager extends CalDAVCalendarCollection {
      */
 		public static void main(String[] args) throws CalDAV4JException, SocketException, URISyntaxException {
 			
-			final String CALDAV_SERVER = "localhost";
-			final String CALDAV_PORT = "28080"; 
-			final String CALDAV_USER = "caluser1"; 
-			final String CALDAV_PASS = "bedework";
+			final String CALDAV_SERVER = CaldavCredential.CALDAV_SERVER_HOST;
+			final String CALDAV_PORT = String.valueOf(CaldavCredential.CALDAV_SERVER_PORT); 
+			final String CALDAV_USER = CaldavCredential.CALDAV_SERVER_USERNAME; 
+			final String CALDAV_PASS = CaldavCredential.CALDAV_SERVER_PASSWORD;
 			
 			System.out.println("Creating Caldav Client..");
 			BaseCaldavClient cli = new BaseCaldavClient(CALDAV_SERVER, CALDAV_PORT,
-					"http",
-					"/ucaldav/user/", CALDAV_USER, CALDAV_PASS);
+					CaldavCredential.CALDAV_SERVER_PROTOCOL,
+					CaldavCredential.CALDAV_SERVER_WEBDAV_ROOT, CALDAV_USER, CALDAV_PASS);
 			
 			System.out.println("Opening a collection..");
         	CalDavCollectionManager cdm = new CalDavCollectionManager(cli);
-        	cdm.setRelativePath("/calendar");
+        	cdm.setRelativePath("events");
         	
         	Random r = new Random();
         	int newDay = r.nextInt(30);

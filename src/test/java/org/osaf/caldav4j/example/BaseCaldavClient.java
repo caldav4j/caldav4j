@@ -16,6 +16,7 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVCalendarCollection;
+import org.osaf.caldav4j.CaldavCredential;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
@@ -34,15 +35,25 @@ import org.osaf.caldav4j.methods.PutMethod;
 	public class BaseCaldavClient extends HttpClient {
 	    protected HostConfiguration hostConfig = new HostConfiguration();
 	    
-	    private String serverHost = "localhost";
-	    private int serverPort = 28080;
-	    private String serverProtocol = "http";
-	    private String serverWebDavRoot = "/ucaldav/user/";
-	    private String serverUserName = "caluser1";
-	    private String serverPassword = "bedework";
+	    private String serverHost = CaldavCredential.CALDAV_SERVER_HOST;
+	    private int serverPort = CaldavCredential.CALDAV_SERVER_PORT;
+	    private String serverProtocol = CaldavCredential.CALDAV_SERVER_PROTOCOL;
+	    private String serverWebDavRoot = CaldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
+	    private String serverUserName = CaldavCredential.CALDAV_SERVER_USERNAME;
+	    private String serverPassword = CaldavCredential.CALDAV_SERVER_PASSWORD;
 	    
 	    public CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
+	    public BaseCaldavClient() {
+	    	super();
+	    	try {
+	    		setCredentials(serverUserName, serverPassword);
+	    		hostConfig.setHost(this.serverHost, this.serverPort, this.serverProtocol);
+	    	} catch (Exception e) {
+	    		e.printStackTrace();
+	    		System.out.println("can't create BaseCaldavClient");
+	    	}
+	    }
 	    /**
 	     * connect with credentials
 	     * @param serverHost
@@ -216,9 +227,7 @@ import org.osaf.caldav4j.methods.PutMethod;
 	    // ************* test *****************
 		public static void main(String[] args) throws CalDAV4JException, SocketException, URISyntaxException {
 			
-			BaseCaldavClient cli = new BaseCaldavClient("www.google.com", "443",
-					"https",
-					"/calendar/dav/", "robipolli@gmail.com", "igdmi80g");
+			BaseCaldavClient cli = new BaseCaldavClient();
 			
 	}
 }
