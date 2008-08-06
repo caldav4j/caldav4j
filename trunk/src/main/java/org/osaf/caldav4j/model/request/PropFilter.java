@@ -43,12 +43,13 @@ public class PropFilter extends OutputsDOMBase {
     
     public static final String ELEMENT_NAME = "prop-filter";
     public static final String ELEM_IS_DEFINED = "is-defined";
+    public static final String ELEM_IS_NOT_DEFINED = "is-not-defined";
     public static final String ATTR_NAME = "name";
     
     private String caldavNamespaceQualifier = null;
 
     private String name = null;
-    private boolean isDefined = false;
+    private Boolean isDefined = null;
     private boolean negateCondition = false;
     private TimeRange timeRange = null;
     private TextMatch textMatch = null;
@@ -59,16 +60,21 @@ public class PropFilter extends OutputsDOMBase {
     }
     
     public PropFilter(String caldavNamespaceQualifier, String name, 
-            boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
-            Boolean textmatchCaseless, String textMatchString, boolean negateCondition, List<ParamFilter> paramFilters){
+            Boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
+            Boolean textmatchCaseless, boolean negateCondition, String textMatchString, List<ParamFilter> paramFilters){
+    	
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.name = name;
-        this.isDefined = isDefined;
         this.negateCondition = negateCondition;
-        if (timeRangeStart != null && timeRangeEnd != null){
+        
+        if (isDefined != null) {
+            this.isDefined = isDefined;
+        } else if (timeRangeStart != null || timeRangeEnd != null){
             this.timeRange = new TimeRange(caldavNamespaceQualifier, timeRangeStart, timeRangeEnd);
         } else if (textMatchString != null){
-            this.textMatch = new TextMatch(caldavNamespaceQualifier, textmatchCaseless, textMatchString);
+            this.textMatch = new TextMatch(caldavNamespaceQualifier,
+            		textmatchCaseless, this.negateCondition, null, 
+            		textMatchString);
         }
         if (paramFilters != null){
             this.paramFilters = paramFilters;
@@ -78,6 +84,7 @@ public class PropFilter extends OutputsDOMBase {
     public PropFilter(String caldavNamespaceQualifier, String name, 
             boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
             Boolean textmatchCaseless, String textMatchString, List<ParamFilter> paramFilters){
+    	
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.name = name;
         this.isDefined = isDefined;
@@ -85,7 +92,7 @@ public class PropFilter extends OutputsDOMBase {
         if (timeRangeStart != null && timeRangeEnd != null){
             this.timeRange = new TimeRange(caldavNamespaceQualifier, timeRangeStart, timeRangeEnd);
         } else if (textMatchString != null){
-            this.textMatch = new TextMatch(caldavNamespaceQualifier, textmatchCaseless, textMatchString);
+            this.textMatch = new TextMatch(caldavNamespaceQualifier, textmatchCaseless, negateCondition, null, textMatchString);
         }
         if (paramFilters != null){
             this.paramFilters = paramFilters;
@@ -108,10 +115,11 @@ public class PropFilter extends OutputsDOMBase {
 
     protected Collection<OutputsDOM> getChildren() {
         ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
-        if (isDefined){
+        
+        if (isDefined != null) {
             children.add(new SimpleDOMOutputtingObject(
                     CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
-                    ELEM_IS_DEFINED)); 
+                    isDefined ? ELEM_IS_DEFINED :  ELEM_IS_NOT_DEFINED)); 
         } else if (timeRange != null){
             children.add(timeRange);
         } else if (textMatch != null){
@@ -134,11 +142,11 @@ public class PropFilter extends OutputsDOMBase {
         return m;
     }
 
-    public boolean isDefined() {
+    public Boolean isDefined() {
         return isDefined;
     }
 
-    public void setIsDefined(boolean isDefined) {
+    public void setIsDefined(Boolean isDefined) {
         this.isDefined = isDefined;
     }
 
@@ -196,7 +204,7 @@ public class PropFilter extends OutputsDOMBase {
             throwValidationException("Name is a required property");
         }
         
-        if (isDefined && (timeRange != null || textMatch != null)){
+        if ( (isDefined != null) && (timeRange != null || textMatch != null)){
             throwValidationException("isDefined, timeRange and textMatch are mutually exclusive");
         }
         

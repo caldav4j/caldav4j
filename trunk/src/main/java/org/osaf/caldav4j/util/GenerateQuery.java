@@ -21,7 +21,7 @@ import org.osaf.caldav4j.model.request.PropFilter;
 
 /** 
  * 
- *Copyright 2008 Roberto Polli
+ * Copyright 2008 Roberto Polli
  * this class is an helper for creating Calendar-Query REPORTs
  * 
  * because of the complexity of iCalendar object and relative queries,
@@ -32,14 +32,14 @@ import org.osaf.caldav4j.model.request.PropFilter;
  * 
  * QueryGenerator qg = new QueryGenerator();
  * qg.setComponent("VEVENT"); // retrieve the whole VEVENT
- * qg.setComponent("VEVENT", {'UID', 'ATTENDEE', 'DTSTART', 'DTEND'}); // retrieve the whole VEVENT
+ * qg.setComponent("VEVENT", {'UID', 'ATTENDEE', 'DTSTART', 'DTEND'}); // retrieve the given propertiesT
  * 
  * qg.setFilter("VEVENT"); //request on VEVENT
  * qg.setFilterTimeRange(start,end);
  * 
  * query for property value
  * VEVENT.UID == VALUE (by collation)
- * could be: 
+ * will be: 
  * { 'UID==VALUE','DTSTART==[a,b]', 'DESCRIPTION==UNDEF'  }
  */
 
@@ -129,49 +129,63 @@ public class GenerateQuery  {
 	 */
 	public void setFilter(String filterComponent, List<String> props) {
 		this.filterComponent = filterComponent;
-		this.requestedComponentProperties = props;
+		this.filterComponentProperties = props;
 	}	
 	
 	/** 
 	 * transform filterComponentProperties in a List of PropFilter
+	 * this method parses 
 	 * @throws ParseException 
 	 */ 
 	private List<PropFilter> getPropFilters() 
 	throws ParseException {
 		List<PropFilter> pf = new ArrayList<PropFilter>();
-		Pattern timePattern = Pattern.compile("[(.*),(.*)]");
-		Pattern filter = Pattern.compile("(.*?)([!=]=)(.*)");
+		Pattern filter = Pattern.compile("(.+?)([!=]=)(\\[(.*?),(.*?)\\]|([^\\]].+))");
+
 
 		
 		for (String p : this.filterComponentProperties) {
 			String name = null;
-			boolean isDefined = true;
+			Boolean isDefined = null;
+			boolean negateCondition = false;
 			Date timeRangeStart = null, timeRangeEnd = null; 
 			Boolean  textmatchcaseless = true;
 			String textmatchString = null;
 			
 			//
-			// parse UID==3oij312po3214432 and DESCRIPTION!=Spada
+			// parse: UID==3oij312po3214432 ; DESCRIPTION!=Spada ; DTSTART==[b,e]
 			//
 			Matcher str = filter.matcher(p);
 			
-			if (str.matches() && (str.groupCount()==3 )) {
+			if (str.matches() && (str.group(3) != null ) ) {
 				name = str.group(1);
+				negateCondition = "!=".equals(str.group(2));				
 				
-				Matcher matchTime = timePattern.matcher(str.group(3));
-				if (matchTime.matches()) {
-					timeRangeStart = new Date(matchTime.group(1));
-					timeRangeEnd   = new Date(matchTime.group(2));
-				} else if ( "UNDEF".equals(str.group(3)) ) {
-					isDefined = false;
-				} else {
-					textmatchString = str.group(3);
+				if (str.group(4) == null ) {
+					// standard filter
+					if ("UNDEF".equals(str.group(3))) {
+						isDefined = false;
+					} else {
+						textmatchString = str.group(3);						
+					}					
+				} else if (str.group(5) != null ) {
+					// a time-range filter
+					if (!"".equals(str.group(4))) {
+						timeRangeStart = new Date(str.group(4));
+					}
+
+					if (!"".equals(str.group(5))) {
+						timeRangeEnd = new Date(str.group(5));
+					}
 				}
-				
 				pf.add(new PropFilter(caldavNameSpaceQualifier, name, isDefined,
-						timeRangeStart, timeRangeEnd, 
-						textmatchcaseless, textmatchString, "!=".equals(str.group(2)), null));
-			}
+					timeRangeStart, timeRangeEnd, 
+					textmatchcaseless, negateCondition, textmatchString,  null));
+	
+				} else {
+					// not a valid filter
+				}
+
 			
 		}
 		return pf;
@@ -179,15 +193,18 @@ public class GenerateQuery  {
 	
 	/** 
 	 * transform filters in a CompFilter
+	 * @throws ParseException 
 	 */ 
-	private CompFilter getFilter() {
+	private CompFilter getFilter() throws ParseException {
 		// search for VCALENDAR matching...
 		CompFilter vCalendarCompFilter = new CompFilter("C");
 		vCalendarCompFilter.setName(Calendar.VCALENDAR);
 
-		CompFilter vEventCompFilter = new CompFilter("C");
-		vEventCompFilter.setName(this.filterComponent);
-
+		CompFilter vEventCompFilter = new CompFilter("C", this.filterComponent,
+				false, null,null,
+				null,getPropFilters().size()==0 ? null : getPropFilters());
+		
+		
 		// TODO check the support from the caldav server. bedework is ok
 		// XXX if endDate is undefined, set it one year later
 		// set the filter name Property.LAST_MODIFIED
@@ -211,15 +228,16 @@ public class GenerateQuery  {
 	/**
 	 * this should parse QueryGenerator attributes
 	 * and create the CalendarQuery
+	 * @throws ParseException 
 	 */
-	public CalendarQuery generateQuery() {
+	public CalendarQuery generateQuery() throws ParseException {
 //		//first create the calendar query
 		CalendarQuery query = new CalendarQuery("C", "D");		
 //		
 //		query.addProperty(PROP_ETAG);
 //
-//		// create the query fields 
-//		CalendarData calendarData = new CalendarData("C");
+		// create the query fields 
+		CalendarData calendarData = new CalendarData("C");
 //
 //		Comp vCalendarComp = new Comp("C");
 //		vCalendarComp.setName(Calendar.VCALENDAR);
@@ -235,8 +253,8 @@ public class GenerateQuery  {
 //		List <Comp> comps = new ArrayList<Comp> ();
 //		comps.add(vEventComp);
 //		vCalendarComp.setComps(comps);
-//		calendarData.setComp(vCalendarComp);
-//		query.setCalendarDataProp(calendarData);
+		calendarData.setComp(getComp());
+		query.setCalendarDataProp(calendarData);
 //
 //		// search for events matching...
 //		CompFilter vCalendarCompFilter = new CompFilter("C");
@@ -258,7 +276,7 @@ public class GenerateQuery  {
 //
 //		vEventCompFilter.addPropFilter(pFilter);
 //		vCalendarCompFilter.addCompFilter(vEventCompFilter);
-//		query.setCompFilter(vCalendarCompFilter);
+		query.setCompFilter(getFilter());
 
 		
 		return query;

@@ -19,7 +19,7 @@
  <name>CalDav4j</name>
   <groupId>org.osaf</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.5-SNAPSHOT</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
@@ -99,6 +99,7 @@
             <scope>test</scope>
         </dependency>  
     </dependencies>
+  <url>http://code.google.com/p/caldav4j/</url>
   <build>
     <testResources>
         <testResource>

@@ -29,6 +29,8 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
  *  <!ELEMENT text-match #PCDATA>
  *
  *  <!ATTLIST text-match caseless (yes|no)>
+ *  <!ATTLIST text-match negate-conditon (yes|no)>
+ *  <!ATTLIST text-match collation (i;octet|i;ascii-casemap)>
  *  
  * @author bobbyrullo
  * 
@@ -37,26 +39,36 @@ public class TextMatch extends OutputsDOMBase {
     
     public static final String ELEMENT_NAME = "text-match";
     public static final String ATTR_CASELESS = "caseless";
+    public static final String ATTR_NEGATE_CONDITION = "negate-condition";
+    public static final String ATTR_COLLATION = "collation";
+    
     public static final String ATTR_VALUE_YES = "yes";
     public static final String ATTR_VALUE_NO  = "no";
     
-    public static final String ATTR_COLLATION = "collation";
+    
     private String collation = null;
     
     private String caldavNamespaceQualifier = null;
     private String textToMatch = null;
     private Boolean caseless = null;
+    private Boolean negateCondition = null;
 
     
-    public TextMatch(String caldavNamespaceQualifier, Boolean caseless,
+    public TextMatch(String caldavNamespaceQualifier, Boolean caseless, Boolean negateCondition, String collation,
             String textToMatch) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.caseless = caseless;
-        // this.collation = "i;octet";
-        this.collation = "i;ascii-casemap";
+        this.negateCondition = negateCondition;
         this.textToMatch = textToMatch;
+        
+        // this.collation = "i;octet";
+        // RFC states default collation is i;ascii-casemap
+        if (collation == null) {        	
+            this.collation = "i;ascii-casemap";        	
+        }
 
     }
+    
 
     protected String getElementName() {
         return ELEMENT_NAME;
@@ -84,6 +96,10 @@ public class TextMatch extends OutputsDOMBase {
 
         if (caseless != null) {
             m.put(ATTR_CASELESS, caseless.booleanValue() ? ATTR_VALUE_YES
+                    : ATTR_VALUE_NO);
+        }
+        if ((negateCondition != null) &&  negateCondition ) {
+            m.put(ATTR_NEGATE_CONDITION, negateCondition.booleanValue() ? ATTR_VALUE_YES
                     : ATTR_VALUE_NO);
         }
         

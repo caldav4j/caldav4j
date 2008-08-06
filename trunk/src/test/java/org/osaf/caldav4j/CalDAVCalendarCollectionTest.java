@@ -17,7 +17,6 @@ import net.fortuna.ical4j.model.property.Uid;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osaf.caldav4j.example.BaseCaldavClient;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.util.ICalendarUtils;

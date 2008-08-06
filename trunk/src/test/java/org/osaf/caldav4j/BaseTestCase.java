@@ -45,14 +45,14 @@ public abstract class BaseTestCase
     private HttpClient http = createHttpClient();
     private HostConfiguration hostConfig = createHostConfiguration();
 
-    public static final String CALDAV_SERVER_HOST = "localhost";
-    public static final int CALDAV_SERVER_PORT = 8080;
-    public static final String CALDAV_SERVER_PROTOCOL = "http";
-    public static final String CALDAV_SERVER_WEBDAV_ROOT = "/chandler/dav/test/";
-    public static final String CALDAV_SERVER_USERNAME = "test";
-    public static final String CALDAV_SERVER_PASSWORD = "password";
+    public static final String CALDAV_SERVER_HOST = CaldavCredential.CALDAV_SERVER_HOST;
+    public static final int CALDAV_SERVER_PORT = CaldavCredential.CALDAV_SERVER_PORT;
+    public static final String CALDAV_SERVER_PROTOCOL = CaldavCredential.CALDAV_SERVER_PROTOCOL;
+    public static final String CALDAV_SERVER_WEBDAV_ROOT = CaldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
+    public static final String CALDAV_SERVER_USERNAME = CaldavCredential.CALDAV_SERVER_USERNAME;
+    public static final String CALDAV_SERVER_PASSWORD = CaldavCredential.CALDAV_SERVER_PASSWORD;    
+    public static final String COLLECTION      = CaldavCredential.COLLECTION;
     public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
-    public static final String COLLECTION      = "collection";
 
     public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
     public static final String ICS_DAILY_NY_5PM_UID = "DE916949-731D-4DAE-BA93-48A38B2B2030";
@@ -68,6 +68,23 @@ public abstract class BaseTestCase
     public static final String ICS_FLOATING_JAN2_7PM = "Floating_Jan_2_7pm.ics";
     public static final String ICS_FLOATING_JAN2_7PM_SUMMARY = "Floating_Jan_2_7pm";
     public static final String ICS_FLOATING_JAN2_7PM_UID = "0870D1E0-B17E-4875-85C5-2ABB02E27609";
+    
+    // google caldav server requires event file name == UID
+    public static final String ICS_GOOGLE_DAILY_NY_5PM_UID = "DE916949-731D-4DAE-BA93-48A38B2B2030";
+    public static final String ICS_GOOGLE_DAILY_NY_5PM = ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics";
+    public static final String ICS_GOOGLE_DAILY_NY_5PM_SUMMARY = "Daily_NY_5pm";
+   
+    public static final String ICS_GOOGLE_ALL_DAY_JAN1_UID = "C68DADAD-37CE-44F7-8A37-52E1D02E29CA";
+    public static final String ICS_GOOGLE_ALL_DAY_JAN1 = ICS_GOOGLE_ALL_DAY_JAN1_UID + ".ics";
+
+    public static final String ICS_GOOGLE_NORMAL_PACIFIC_1PM_UID = "0F94FE7B-8E01-4B27-835E-CD1431FD6475";
+    public static final String ICS_GOOGLE_NORMAL_PACIFIC_1PM = ICS_GOOGLE_NORMAL_PACIFIC_1PM_UID + ".ics";
+    public static final String ICS_GOOGLE_NORMAL_PACIFIC_1PM_SUMMARY = "Normal_Pacific_1pm";
+
+    public static final String ICS_GOOGLE_FLOATING_JAN2_7PM_UID = "0870D1E0-B17E-4875-85C5-2ABB02E27609";
+    public static final String ICS_GOOGLE_FLOATING_JAN2_7PM_SUMMARY = "Floating_Jan_2_7pm";
+    public static final String ICS_GOOGLE_FLOATING_JAN2_7PM = "Floating_Jan_2_7pm.ics";
+
     
     public static final String ICS_SINGLE_EVENT= "singleEvent.ics";
 
@@ -117,7 +134,7 @@ public abstract class BaseTestCase
     
     public HostConfiguration createHostConfiguration(){
         HostConfiguration hostConfig = new HostConfiguration();
-        hostConfig.setHost(getCalDAVServerHost(), getCalDAVServerPort());
+        hostConfig.setHost(getCalDAVServerHost(), getCalDAVServerPort(), getCalDavSeverProtocol());
         return hostConfig;
     }
     
@@ -130,8 +147,8 @@ public abstract class BaseTestCase
         
         try {
             cal = cb.build(stream);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {        	
+            throw new RuntimeException("Problems opening file:" + resourceName +  e);
         }
         
         return cal;
@@ -145,6 +162,10 @@ public abstract class BaseTestCase
         put.setPath(path);
         try {
             http.executeMethod(hostConfig, put);
+            if (put.getStatusCode() != 204) {
+                System.out.println(put.getResponseBodyAsString());
+            	throw new Exception("trouble executing PUT" + put.getResponseBodyAsString());
+            }
         } catch (Exception e){
             throw new RuntimeException(e);
         }
