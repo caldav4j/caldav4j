@@ -1,6 +1,5 @@
 package org.osaf.caldav4j;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,16 +13,20 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osaf.caldav4j.cache.CalDAVResourceCache;
+import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
-public class CalDAVCalendarCollectionTest extends BaseTestCase {
+public class CalDAVCollectionTest extends BaseTestCase {
     private static final Log log = LogFactory
-            .getLog(CalDAVCalendarCollectionTest.class);
+            .getLog(CalDAVCollectionTest.class);
 
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
@@ -31,6 +34,12 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
             + COLLECTION;
+    
+
+    // cache
+    private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";
+    private static final String UID_TO_HREF_CACHE = "uidToHrefCache";
+    private EhCacheResourceCache myCache = null;
     
     public static final Integer TEST_TIMEOUT = 3600;
     public static final boolean TEST_READ = true;
@@ -40,24 +49,40 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     public static final String  TEST_TIMEOUT_UNITS = "Second";
     protected void setUp() throws Exception {
         super.setUp();
-        mkdir(COLLECTION_PATH);
-        put(ICS_DAILY_NY_5PM, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
-        put(ICS_ALL_DAY_JAN1, COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
-        put(ICS_NORMAL_PACIFIC_1PM, COLLECTION_PATH + "/" + ICS_NORMAL_PACIFIC_1PM);
-        put(ICS_SINGLE_EVENT, COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
+       // mkdir(COLLECTION_PATH); gcalendar won't create dirs
+        caldavPut(ICS_GOOGLE_DAILY_NY_5PM_PATH);
+        caldavPut(ICS_GOOGLE_ALL_DAY_JAN1_PATH);
+        caldavPut(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
+        caldavPut(ICS_GOOGLE_SINGLE_EVENT_PATH);
+        
+        //initialize cache
+        CacheManager cacheManager = CacheManager.create();
+        myCache = new EhCacheResourceCache();
+        Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, false, false,
+                600, 300, false, 0);
+        Cache hrefToResourceCache = new Cache(HREF_TO_RESOURCE_CACHE, 1000,
+                false, false, 600, 300, false, 0);
+        myCache.setHrefToResourceCache(hrefToResourceCache);
+        myCache.setUidToHrefCache(uidToHrefCache);
+        cacheManager.addCache(uidToHrefCache);
+        cacheManager.addCache(hrefToResourceCache);
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        del(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
-        del(COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
-        del(COLLECTION_PATH + "/" + ICS_NORMAL_PACIFIC_1PM);
-        del(COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
-        del(COLLECTION_PATH);
+        CacheManager cacheManager = CacheManager.create();
+        cacheManager.removeCache(UID_TO_HREF_CACHE);
+        cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
+        
+        caldavDel(ICS_GOOGLE_DAILY_NY_5PM_PATH);
+        caldavDel(ICS_GOOGLE_ALL_DAY_JAN1_PATH);
+        caldavDel(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
+        caldavDel(ICS_GOOGLE_SINGLE_EVENT_PATH);
+      //  del(COLLECTION_PATH); gcalendar won't create dirs
     }
 
     public void testGetCalendar() throws Exception {
-        CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
+        CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();        
         Calendar calendar = null;
         try {
             calendar = calendarCollection.getCalendarForEventUID(httpClient,
@@ -84,11 +109,11 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     }
 
     public void testGetCalendarByPath() throws Exception {
-        CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
+        CalDAVCollection calendarCollection = createCalDAVCollection();
         Calendar calendar = null;
         try {
-            calendar = calendarCollection.getCalendarByPath(httpClient,
-                    ICS_DAILY_NY_5PM);
+            calendar = calendarCollection.getCalendar(httpClient,
+                    ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics");
         } catch (CalDAV4JException ce) {
             assertNull(ce);
         }
@@ -101,7 +126,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 
         CalDAV4JException calDAV4JException = null;
         try {
-            calendar = calendarCollection.getCalendarByPath(httpClient,
+            calendar = calendarCollection.getCalendar(httpClient,
                     "NON_EXISTENT_RESOURCE");
         } catch (CalDAV4JException ce) {
             calDAV4JException = ce;
@@ -111,12 +136,14 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     }
 
     /**
+     * uses getCalendar(httpclient, query)
+     * 
      * @throws Exception
      */
     public void testGetEventResources() throws Exception {
-        CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
+        CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();
         Date beginDate = ICalendarUtils.createDateTime(2006, 0, 1, null, true);
-        Date endDate = ICalendarUtils.createDateTime(2006, 0, 9, null, true);
+        Date endDate = ICalendarUtils.createDateTime(2006, 11, 9, null, true);
         List<Calendar> l = calendarCollection.getEventResources(httpClient,
                 beginDate, endDate);
 
@@ -153,8 +180,8 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     /**
      * @throws Exception
      */
-    public void donttestGetEventResourcesFloatingIssues() throws Exception {
-        CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
+    public void _testGetEventResourcesFloatingIssues() throws Exception {
+        CalDAVCollection calendarCollection = createCalDAVCollection();
 
         // make sure our 7pm event gets returned
         Date beginDate = ICalendarUtils.createDateTime(2006, 0, 2, 19, 0, 0, 0,
@@ -190,20 +217,24 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         ve.getProperties().add(summary);
         ve.getProperties().add(uid);
 
-        CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
-        calendarCollection.addEvent(httpClient, ve, null);
+        CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();        
+        
+        calendarCollection.add(httpClient, ve, null);
 
         Calendar calendar = calendarCollection.getCalendarForEventUID(
                 httpClient, newUid);
         assertNotNull(calendar);
 
+        log.info("Delete event with uid" + newUid);
         calendarCollection.deleteEvent(httpClient, newUid);
+        
+        log.info("Check if event is still on server");
         calendar = null;
         try {
             calendar = calendarCollection.getCalendarForEventUID(httpClient,
                     newUid);
         } catch (ResourceNotFoundException e) {
-
+        	
         }
         assertNull(calendar);
     }
@@ -212,7 +243,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
      * @throws Exception
      */
     public void testUpdateEvent() throws Exception {
-        CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
+        CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();
 
         Calendar calendar = calendarCollection.getCalendarForEventUID(
                 httpClient, ICS_NORMAL_PACIFIC_1PM_UID);
@@ -240,14 +271,14 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
      * do a calendar-multiget with a valid event and an invalid one
      */
     public void testMultigetCalendar() throws Exception {
-    	CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
+    	CalDAVCollection calendarCollection = createCalDAVCollection();
     	
     	final String baseUri = BaseTestCase.CALDAV_SERVER_PROTOCOL +"://" 
     			+ BaseTestCase.CALDAV_SERVER_HOST+":" +BaseTestCase.CALDAV_SERVER_PORT 
     			+COLLECTION_PATH;
     	
     	List <String> calendarUris =  new ArrayList<String>();
-    	calendarUris.add( baseUri +"/"+BaseTestCase.ICS_ALL_DAY_JAN1);
+    	calendarUris.add( baseUri +"/"+BaseTestCase.ICS_ALL_DAY_JAN1_UID+".ics");
     	calendarUris.add( baseUri +"/"+BaseTestCase.CALDAV_SERVER_BAD_USERNAME);
     	
     	List<Calendar> calendarList = calendarCollection.multigetCalendarUris(httpClient,
@@ -259,58 +290,6 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     	
     }
     
-    /**
-     * @throws Exception
-     */
-    public void testTicket() throws Exception {
-
-        CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
-
-        // Create the Ticket
-        String ticketID = calendarCollection.createTicket(httpClient,
-                BaseTestCase.ICS_DAILY_NY_5PM,
-                CalDAVConstants.INFINITY, TEST_TIMEOUT,
-                TEST_READ, TEST_WRITE);
-
-        assertNotNull(ticketID);
-
-        // Make sure ticket is there
-        
-        List<String> ticketIDs = calendarCollection.getTicketsIDs(httpClient,
-                BaseTestCase.ICS_DAILY_NY_5PM);
-
-        assertEquals("Number of IDs Returned from getTickets:", ticketIDs
-                .size(), 1);
-
-        // Setup a HttpClient with no username or password
-        HttpClient badHttpClient = createHttpClientWithNoCredentials();
-
-        // Set the ticket
-        badHttpClient.setTicket(ticketID);
-
-        // Attempt to get the Calendar
-        Calendar calendar = calendarCollection.getCalendarByPath(badHttpClient,
-                ICS_DAILY_NY_5PM);
-
-        assertNotNull(calendar);
-
-        // Attempt to delete the Tickets
-        calendarCollection.deleteTicket(httpClient, BaseTestCase.ICS_DAILY_NY_5PM, ticketID);
-
-        // Make sure ticket is gone
-        
-        CalDAV4JException calDAV4JException = null;
-        try {
-            calendar = calendarCollection.getCalendarByPath(badHttpClient,
-                    ICS_DAILY_NY_5PM);
-        } catch (CalDAV4JException ce) {
-            calDAV4JException = ce;
-        }
-
-        assertNotNull(calDAV4JException);
-
-    }
-
     private boolean hasEventWithUID(List<Calendar> cals, String uid) {
         for (Calendar cal : cals) {
             ComponentList vEvents = cal.getComponents().getComponents(
@@ -328,11 +307,40 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         return false;
     }
 
-    private CalDAVCalendarCollection createCalDAVCalendarCollection() {
-        CalDAVCalendarCollection calendarCollection = new CalDAVCalendarCollection(
+    private CalDAVCollection createCalDAVCollection() {
+        CalDAVCollection calendarCollection = new CalDAVCollection(
                 COLLECTION_PATH, createHostConfiguration(), methodFactory,
                 CalDAVConstants.PROC_ID_DEFAULT);
         return calendarCollection;
+    }
+    
+    private CalDAVCollection createCalDAVCollectionWithCache() {
+
+        
+        CalDAVCollection calendarCollection = createCalDAVCollection();
+        calendarCollection.setCache(myCache);
+        return calendarCollection;
+    }
+    
+    /**
+     * put an event on a caldav store using UID.ics
+     */
+    protected void caldavPut(String s) {    	 
+        Calendar cal = getCalendarResource(s);
+        String resPath = COLLECTION_PATH + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
+        put (s, resPath );
+
+    }
+    
+    /**
+     * remove an event on a caldav store using UID.ics
+     */
+    protected void caldavDel(String s) {
+        Calendar cal = getCalendarResource(s);
+        String delPath = COLLECTION_PATH + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
+        log.debug("DEL " + delPath);
+        del(delPath);
+
     }
 
 }
