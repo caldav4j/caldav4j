@@ -50,7 +50,7 @@ public class PropFilter extends OutputsDOMBase {
 
     private String name = null;
     private Boolean isDefined = null;
-    private boolean negateCondition = false;
+
     private TimeRange timeRange = null;
     private TextMatch textMatch = null;
     private List<ParamFilter> paramFilters = new ArrayList<ParamFilter>();
@@ -61,11 +61,12 @@ public class PropFilter extends OutputsDOMBase {
     
     public PropFilter(String caldavNamespaceQualifier, String name, 
             Boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
-            Boolean textmatchCaseless, boolean negateCondition, String textMatchString, List<ParamFilter> paramFilters){
+            Boolean textmatchCaseless, boolean negateCondition,
+            String textMatchCollation, String textMatchString, List<ParamFilter> paramFilters){
     	
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.name = name;
-        this.negateCondition = negateCondition;
+
         
         if (isDefined != null) {
             this.isDefined = isDefined;
@@ -73,7 +74,7 @@ public class PropFilter extends OutputsDOMBase {
             this.timeRange = new TimeRange(caldavNamespaceQualifier, timeRangeStart, timeRangeEnd);
         } else if (textMatchString != null){
             this.textMatch = new TextMatch(caldavNamespaceQualifier,
-            		textmatchCaseless, this.negateCondition, null, 
+            		textmatchCaseless, negateCondition, textMatchCollation, 
             		textMatchString);
         }
         if (paramFilters != null){
@@ -81,6 +82,17 @@ public class PropFilter extends OutputsDOMBase {
         }
     }
     
+    /**
+     * @deprecated The Full constructor should be used
+     * @param caldavNamespaceQualifier
+     * @param name
+     * @param isDefined
+     * @param timeRangeStart
+     * @param timeRangeEnd
+     * @param textmatchCaseless
+     * @param textMatchString
+     * @param paramFilters
+     */
     public PropFilter(String caldavNamespaceQualifier, String name, 
             boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
             Boolean textmatchCaseless, String textMatchString, List<ParamFilter> paramFilters){
@@ -88,11 +100,12 @@ public class PropFilter extends OutputsDOMBase {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.name = name;
         this.isDefined = isDefined;
-        this.negateCondition = false;
         if (timeRangeStart != null && timeRangeEnd != null){
             this.timeRange = new TimeRange(caldavNamespaceQualifier, timeRangeStart, timeRangeEnd);
         } else if (textMatchString != null){
-            this.textMatch = new TextMatch(caldavNamespaceQualifier, textmatchCaseless, negateCondition, null, textMatchString);
+            this.textMatch = new TextMatch(caldavNamespaceQualifier,
+            		textmatchCaseless, false, null, 
+            		textMatchString);
         }
         if (paramFilters != null){
             this.paramFilters = paramFilters;
@@ -150,7 +163,7 @@ public class PropFilter extends OutputsDOMBase {
         this.isDefined = isDefined;
     }
 
-    public List getParamFilters() {
+    public List<ParamFilter> getParamFilters() {
         return paramFilters;
     }
 

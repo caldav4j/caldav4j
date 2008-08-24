@@ -202,6 +202,11 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
         super.addRequestHeaders(state, conn);
     }
 
+    // remove double slashes
+    public void setPath(String path) {
+    	super.setPath(path.replaceAll("/+", "/"));
+    }
+    
     protected boolean hasRequestContent() {
         if (calendar != null) {
             return true;

@@ -23,18 +23,18 @@ import static org.osaf.caldav4j.util.ICalendarUtils.getUIDValue;
 import static org.osaf.caldav4j.util.UrlUtils.stripHost;
 
 import java.io.IOException;
-import java.net.URI;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import net.fortuna.ical4j.filter.HasPropertyRule;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
-import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.component.CalendarComponent;
@@ -43,17 +43,21 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
-import net.fortuna.ical4j.util.UidGenerator;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.HeadMethod;
+import org.apache.commons.httpclient.util.URIUtil;
+import org.apache.commons.logging.Log;
 import org.apache.webdav.lib.PropertyName;
 import org.apache.webdav.lib.methods.DeleteMethod;
 import org.apache.webdav.lib.methods.PropFindMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
+import org.osaf.caldav4j.cache.EhCacheResourceCache;
+import org.osaf.caldav4j.cache.NoOpResourceCache;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.CalDAVReportMethod;
 import org.osaf.caldav4j.methods.DelTicketMethod;
@@ -61,11 +65,9 @@ import org.osaf.caldav4j.methods.GetMethod;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.MkTicketMethod;
 import org.osaf.caldav4j.methods.PutMethod;
-import org.osaf.caldav4j.model.request.CalDAVProp;
 import org.osaf.caldav4j.model.request.CalendarData;
 import org.osaf.caldav4j.model.request.CalendarMultiget;
 import org.osaf.caldav4j.model.request.CalendarQuery;
-import org.osaf.caldav4j.model.request.Comp;
 import org.osaf.caldav4j.model.request.CompFilter;
 import org.osaf.caldav4j.model.request.PropFilter;
 import org.osaf.caldav4j.model.request.TextMatch;
@@ -75,19 +77,30 @@ import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.util.CaldavStatus;
+import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 /**
  * This class provides a high level API to a calendar collection on a CalDAV server.
  * 
- * @author bobbyrullo
- * @author ptr.ventura_at_gmail.com changed addEvent
+ * @author robipolli@gmail.com
+ * 
+ * implements methods for
+ * - create
+ * - retrieve
+ * - update
+ * - delete
+ * 
+ * calendars are retrieved in two ways
+ *  - by path
+ *  - by custom query
+ * no customized queries should be public in this class
  */
-public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
+public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 	
 
-	public CalDAVCalendarCollection(){
+	public CalDAVCollection(){
 
 	}
 
@@ -99,7 +112,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 * @param methodFactory methodFactory to obtail HTTP methods from
 	 * @param prodId String identifying who creates the iCalendar objects
 	 */
-	public CalDAVCalendarCollection(String path,
+	public CalDAVCollection(String path,
 			HostConfiguration hostConfiguration,
 			CalDAV4JMethodFactory methodFactory, String prodId) {
 		this.calendarCollectionRoot = path;
@@ -119,24 +132,26 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 * @return the Calendar object containing the event with this UID
 	 * @throws CalDAV4JException if there was a problem, or if the resource could 
 	 *         not be found.
+	 *  @deprecated use a less-specialized query
 	 */
 	public Calendar getCalendarForEventUID(HttpClient httpClient, String uid)
 	throws CalDAV4JException, ResourceNotFoundException {
+		// implement it using a simplequery: here we don't need meta-data/tags
+		
 		return getCalDAVResourceForEventUID(httpClient, uid).getCalendar();
 	}
 
 	/**
-	 * Gets an icalendar object at the specified path, relative to the
-	 * collection path
+	 * Gets an icalendar object by GET
 	 * 
 	 * @param httpClient the httpClient which will make the request
-	 * @param relativePath the path, relative to the collection path
+	 * @param icsRelativePath the path, relative to the collection path
 	 * @return the Calendar object at the specified path
 	 * @throws CalDAV4JException
 	 */
-	public Calendar getCalendarByPath(HttpClient httpClient, String relativePath) throws CalDAV4JException{
-		CalDAVResource resource = getCalDAVResource(httpClient, getAbsolutePath(relativePath));
-		return resource.getCalendar();
+	public Calendar getCalendar(HttpClient httpClient, String icsRelativePath) 
+			throws CalDAV4JException{
+		return getCalDAVResource(httpClient, getAbsolutePath(icsRelativePath)).getCalendar();
 	}
 
 	/**
@@ -148,25 +163,17 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 * @param endDate the end of the date range. Must be a UTC date.
 	 * @return a List of Calendars
 	 * @throws CalDAV4JException if there was a problem
+	 * 
+	 * @deprecated should be implemented by query 
 	 */
 	public List<Calendar> getEventResources(HttpClient httpClient,
 			Date beginDate, Date endDate)
 			throws CalDAV4JException {
-		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
 
-		query.addProperty(PROP_ETAG);
-		CompFilter vCalendarCompFilter = new CompFilter("C");
-		vCalendarCompFilter.setName(Calendar.VCALENDAR);
-
-		CompFilter vEventCompFilter = new CompFilter("C");
-		vEventCompFilter.setName(Component.VEVENT);
-		vEventCompFilter.setTimeRange(new TimeRange("C", beginDate, endDate));
-
-		vCalendarCompFilter.addCompFilter(vEventCompFilter);
-		query.setCompFilter(vCalendarCompFilter);
-
-		return getComponentByQuery(httpClient, Component.VEVENT, query);
+		GenerateQuery gq = new GenerateQuery();
+		gq.setFilter("VEVENT");
+		gq.setTimeRange(beginDate, endDate);		
+		return getCalendar(httpClient,  gq.generateQuery());
 	}
 
 	/**
@@ -177,15 +184,35 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 * be deleted
 	 * 
 	 * @param uid
+	 * 
+	 * @deprecated should delete a given component
 	 */
 	public void deleteEvent(HttpClient httpClient,String uid) throws CalDAV4JException{
-		CalDAVResource resource = getCalDAVResourceForEventUID(httpClient, uid);
+		delete(httpClient, Component.VEVENT, uid);
+	}
+
+	/**
+	 * delete a component with the given UID
+	 * 
+	 * @param httpClient
+	 * @param uid
+	 * @throws CalDAV4JException
+	 * 
+	 * TODO testme
+	 */
+	public void delete(HttpClient httpClient,String component, String uid) 
+			throws CalDAV4JException{
+		
+
+		CalDAVResource resource = getCalDAVResourceByUID(httpClient, component, uid);
 		Calendar calendar = resource.getCalendar();
-		ComponentList eventList = calendar.getComponents().getComponents(Component.VEVENT);
+		ComponentList eventList = calendar.getComponents().getComponents(component);
+		 
+		// get a list of components to remove
 		List<Component> componentsToRemove = new ArrayList<Component>();
 		boolean hasOtherEvents = false;
 		for (Object o : eventList){
-			VEvent event = (VEvent) o;
+			CalendarComponent event = (CalendarComponent) o;
 			String curUID = ICalendarUtils.getUIDValue(event);
 			if (!uid.equals(curUID)){
 				hasOtherEvents = true;
@@ -193,7 +220,11 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 				componentsToRemove.add(event);
 			}
 		}
-
+		
+		//
+		// remove from calendar the components with the given UID
+		// and PUT the calendar
+		//
 		if (hasOtherEvents){
 			if (componentsToRemove.size() == 0){
 				throw new ResourceNotFoundException(
@@ -211,6 +242,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		}
 	}
 
+	
 	/**
 	 * Creates a calendar at the specified path 
 	 *
@@ -246,7 +278,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 * @throws CalDAV4JException
 	 * @todo specify somewhere the kind of caldav error...
 	 */
-	public void addEvent(HttpClient httpClient, VEvent vevent, VTimeZone timezone)
+	public void add(HttpClient httpClient, CalendarComponent vevent, VTimeZone timezone)
 	throws CalDAV4JException {
 		Calendar calendar = new Calendar();
 		calendar.getProperties().add(new ProdId(prodId));
@@ -256,7 +288,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 			calendar.getComponents().add(timezone);
 		}
 		calendar.getComponents().add(vevent);
-
+	
 		boolean didIt = false;
 		for (int x = 0; x < 3 && !didIt; x++) {
 			String resourceName = null;
@@ -282,11 +314,18 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 				throw new CalDAV4JException("Trouble executing PUT", e);
 			}
 			int statusCode = putMethod.getStatusCode();
-
-			if ((WebdavStatus.SC_CREATED == statusCode) || 
-					(WebdavStatus.SC_NO_CONTENT == statusCode)){
+			
+			switch (statusCode) {
+			case WebdavStatus.SC_CREATED:
 				didIt = true;
-			} else if (WebdavStatus.SC_PRECONDITION_FAILED != statusCode){
+				break;
+			case WebdavStatus.SC_NO_CONTENT:
+				didIt = true;
+				break;
+			case WebdavStatus.SC_PRECONDITION_FAILED:
+				// event not added, retry
+				break;				
+			default:
 				//must be some other problem, throw an exception
 				try {
 					throw new CalDAV4JException("Unexpected status code: "
@@ -299,16 +338,19 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 							+ statusCode + "\n"
 							+ "error in getResponseBodyAsString()");
 				}
-			}
+			} // switch
+	
+	
 		}
 	}
+
 	/**
 	 * adds a calendar object to caldav collection using UID.ics as file name
 	 * @param httpClient
 	 * @param c
 	 * @throws CalDAV4JException
 	 */
-	public void addCalendar(HttpClient httpClient, Calendar c) 
+	public void add(HttpClient httpClient, Calendar c) 
 		throws CalDAV4JException {
 		
 		String uid = null;
@@ -392,7 +434,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	public void updateMasterEvent(HttpClient httpClient, VEvent vevent, VTimeZone timezone)
 	throws CalDAV4JException{
 		String uid = getUIDValue(vevent);
-		CalDAVResource resource = getCalDAVResourceForEventUID(httpClient, uid);
+		CalDAVResource resource = getCalDAVResourceByUID(httpClient, Component.VEVENT, uid);
 		Calendar calendar = resource.getCalendar();
 
 		//let's find the master event first!
@@ -590,73 +632,90 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 
 
 	/**
-	 * get a calendar by UID
+	 * get a CalDAVResource by UID
 	 * it tries
 	 *  - first by a REPORT
 	 *  - then by GET /path
 	 * @param httpClient
 	 * @param uid
 	 * @return
-	 * @throws CalDAV4JException
-	 * @throws ResourceNotFoundException
+	 * @throws Exception 
+	 * @deprecated this query is too specialized @see getCalDAVResourceByUID
 	 */
 	protected CalDAVResource getCalDAVResourceForEventUID(
-			HttpClient httpClient, String uid) throws CalDAV4JException, ResourceNotFoundException {
+			HttpClient httpClient, String uid) throws CalDAV4JException {
+
+		return getCalDAVResourceByUID(httpClient, Component.VEVENT, uid);
+	}
+	
+	/**
+	 *  
+	 * it tries
+	 *  - first by a REPORT
+	 *  - then by GET /path 
+	 * @param httpClient
+	 * @param component
+	 * @param uid
+	 * @return a Caldav resource containing the component type with the given uid 
+	 * @throws Exception
+	 */
+	protected CalDAVResource getCalDAVResourceByUID(
+			HttpClient httpClient, String component, String uid) 
+		throws CalDAV4JException, ResourceNotFoundException {
 
 		//first check the cache!
 		String href = cache.getHrefForEventUID(uid);
-		CalDAVResource calDAVResource = null;
+		CalDAVResource resource = null;
 
 		if (href != null) {
-			calDAVResource = getCalDAVResource(httpClient, stripHost(href));
+			resource = getCalDAVResource(httpClient, stripHost(href));
 
-			if (calDAVResource != null) {
-				return calDAVResource;
+			if (resource != null) {
+				return resource;
 			}
+		} else {
+			// check if there's an event with the standard caldav url
+			// XXX this method retrieves a VTIMEZONE :(
+			
+			resource = getCalDAVResource(httpClient, getAbsolutePath(uid+".ics") );
+			try {
+				if (uid.equals(getUIDValue(ICalendarUtils.getFirstComponent(resource, component)))) {
+					return resource;
+				}
+			} catch (Exception e){
+				// resource not found: continue...
+				resource = null;
+			}			
 		}
 
-		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
-		query.setCalendarDataProp(new CalendarData("C"));
-		query.addProperty(PROP_ETAG);
+		// then check by calendar query
+		GenerateQuery gq;		
+		gq = new GenerateQuery(null, component + " : UID=="+uid );
+		
 
-		CompFilter vCalendarCompFilter = new CompFilter("C");
-		vCalendarCompFilter.setName(Calendar.VCALENDAR);
-
-		CompFilter vEventCompFilter = new CompFilter("C");
-		vEventCompFilter.setName(Component.VEVENT);
-
-		PropFilter propFilter = new PropFilter("C");
-		propFilter.setName(Property.UID);
-		propFilter.setTextMatch(new TextMatch("C", null, null, null, uid)); // rpolli s/false/null/
-		vEventCompFilter.addPropFilter(propFilter);
-
-		vCalendarCompFilter.addCompFilter(vEventCompFilter);
-		query.setCompFilter(vCalendarCompFilter);
-
-		CalDAVReportMethod reportMethod = methodFactory
-		.createCalDAVReportMethod();
-		reportMethod.setPath(calendarCollectionRoot);
-		reportMethod.setReportRequest(query);
+		List<CalDAVResource> cr;
+		cr = getCalDAVResources(httpClient, gq.generateQuery());
 		try {
-			httpClient.executeMethod(hostConfiguration, reportMethod);
-		} catch (Exception he) {
-			throw new CalDAV4JException("Problem executing method", he);
-		}
-
-		Enumeration<CalDAVResponse> e = reportMethod.getResponses();
-		if (!e.hasMoreElements()) {
+			resource = cr.get(0);
+			if (uid.equals(getUIDValue(ICalendarUtils.getFirstComponent(resource, component)))) {
+				cache.putResource(resource);
+				return resource;
+			} else {
+				throw new Exception();
+			}
+		} catch (Exception e) {			
 			throw new ResourceNotFoundException(
 					ResourceNotFoundException.IdentifierType.UID, uid);
-		}
 
-		calDAVResource = new CalDAVResource(e.nextElement());
-		cache.putResource(calDAVResource);
-		return calDAVResource;
+		}
+		
 	}
+		
+	
+	
 
 	/**
-	 * Gets the resource at the given path. Will check the cache first, and compare that to the
+	 * GET the resource at the given path. Will check the cache first, and compare that to the
 	 * latest etag obtained using a HEAD request.
 	 * @param httpClient
 	 * @param path
@@ -701,7 +760,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	}
 
 	/**
-	 * Gets a CalDAVResource from the server - in other words DOES NOT check the cache.
+	 * Gets a CalDAVResource (not a timezone) from the server - in other words DOES NOT check the cache.
 	 * Adds the new resource to the cache, replacing any preexisting version.
 	 * 
 	 * @param httpClient
@@ -734,15 +793,20 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 			throw new CalDAV4JException("Malformed calendar resource returned.", e);
 		}
 
-		calDAVResource = new CalDAVResource();
-		calDAVResource.setCalendar(calendar);
-		calDAVResource.getResourceMetadata().setETag(etag);
-		calDAVResource.getResourceMetadata().setHref(href);
-
+		// XXX if calendar is more than a single timezone (this kludge is needed for google calendar)
+		if ( ! ( calendar.getComponents().size()==1 &&
+				(calendar.getProductId().getValue().matches("Google Calendar")) &&
+				(calendar.getComponents().get(0) instanceof VTimeZone ))) {
+			calDAVResource = new CalDAVResource();
+			calDAVResource.setCalendar(calendar);
+			calDAVResource.getResourceMetadata().setETag(etag);
+			calDAVResource.getResourceMetadata().setHref(href);
+		}
 		cache.putResource(calDAVResource);
-		return calDAVResource;
-
+		return calDAVResource;			
 	}
+	
+	
 	protected void delete(HttpClient httpClient, String path)
 	throws CalDAV4JException {
 		DeleteMethod deleteMethod = new DeleteMethod(path);
@@ -757,7 +821,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 			throw new CalDAV4JException("Problem executing delete method",e);
 		}
 
-		cache.removeResource((getHref(path)));
+		cache.removeResource(getHref(path));
 	}
 
 	protected String getAbsolutePath(String relativePath){
@@ -765,7 +829,14 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	}
 
 
-
+	/**
+	 * retrieve etags using HEAD /path/to/resource.ics
+	 * 
+	 * @param httpClient
+	 * @param path
+	 * @return
+	 * @throws CalDAV4JException
+	 */
 	protected String getETag(HttpClient httpClient, String path) throws CalDAV4JException{
 		HeadMethod headMethod = new HeadMethod(path);
 
@@ -795,45 +866,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		return etag;
 	}
 
-	/**
-	 * Returns all Calendars (VCALENDAR/VEVENTS) which contain events with DTSTAMP between beginDate - endDate
-	 * TODO Note that recurring events are NOT expanded. 
-	 * 
-	 * @param httpClient the httpClient which will make the request
-	 * @param beginDate the beginning of the date range. Must be a UTC date
-	 * @param endDate the end of the date range. Must be a UTC date.
-	 * @return a List of Calendars
-	 * @throws CalDAV4JException if there was a problem
-	 */
-	public List<Calendar> getEventResourcesByTimestamp(HttpClient httpClient,
-			Date beginDate, Date endDate)
-			throws CalDAV4JException {
-		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
 
-		query.addProperty(PROP_ETAG);
-		CompFilter vCalendarCompFilter = new CompFilter("C");
-		vCalendarCompFilter.setName(Calendar.VCALENDAR);
-
-		CompFilter vEventCompFilter = new CompFilter("C");
-		vEventCompFilter.setName(Component.VEVENT);
-		//       vEventCompFilter.setTimeRange(new TimeRange("C", beginDate, endDate));
-
-		/* TODO check the support from the caldav server. bedework may not work..
-		 * 
-		 */
-		PropFilter pFilter = new PropFilter("C");
-		pFilter.setName("DTSTAMP");
-		pFilter.setTimeRange(beginDate, endDate);
-
-		vEventCompFilter.addPropFilter(pFilter);
-		vCalendarCompFilter.addCompFilter(vEventCompFilter);
-		query.setCompFilter(vCalendarCompFilter);
-
-
-		return getComponentByQuery(httpClient,Component.VEVENT, query); 
-
-	}
 	/**
 	 * Returns all Calendars (VCALENDAR/VEVENTS) which contain events with DTSTAMP between beginDate - endDate
 	 * TODO Note that recurring events are NOT expanded. 
@@ -869,56 +902,13 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 * @param endDate the end of the date range. Must be a UTC date.
 	 * @return a List of Property values (eg. a List of VEVENT UIDs
 	 * @throws CalDAV4JException if there was a problem
+	 * @deprecated this query is too specialized. use component property by timestamp instead
 	 */
 	public List<String> getEventPropertyByTimestamp(HttpClient httpClient, String propertyName,
 			Date beginDate, Date endDate)
 			throws CalDAV4JException {
-		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
 
-		query.addProperty(PROP_ETAG);
-
-		// create the query fields 
-		CalendarData calendarData = new CalendarData("C");
-
-		Comp vCalendarComp = new Comp("C");
-		vCalendarComp.setName(Calendar.VCALENDAR);
-
-		Comp vEventComp = new Comp("C");
-		vEventComp.setName(Component.VEVENT);
-		vEventComp.addProp(new CalDAVProp("C", "name", propertyName, false, false)); // @see modification to CalDAVProp  
-
-		List <Comp> comps = new ArrayList<Comp> ();
-		comps.add(vEventComp);
-		vCalendarComp.setComps(comps);
-		calendarData.setComp(vCalendarComp);
-		query.setCalendarDataProp(calendarData);
-
-		// search for events matching...
-		CompFilter vCalendarCompFilter = new CompFilter("C");
-		vCalendarCompFilter.setName(Calendar.VCALENDAR);
-
-		CompFilter vEventCompFilter = new CompFilter("C");
-		vEventCompFilter.setName(Component.VEVENT);
-
-		// TODO check the support from the caldav server. bedework is ok
-		// XXX if endDate is undefined, check into ine year
-		PropFilter pFilter = new PropFilter("C");
-		pFilter.setName("DTSTAMP");
-		if (endDate == null) {
-			endDate = new DateTime(beginDate.getTime()+86400*364);
-			((DateTime)endDate).setUtc(true);
-		}
-		pFilter.setTimeRange(beginDate, endDate);
-
-		vEventCompFilter.addPropFilter(pFilter);
-		vCalendarCompFilter.addCompFilter(vEventCompFilter);
-		query.setCompFilter(vCalendarCompFilter);
-
-		CalDAVReportMethod reportMethod = methodFactory.createCalDAVReportMethod();
-		reportMethod.setPath(getCalendarCollectionRoot());
-		reportMethod.setReportRequest(query);
-		return getComponentPropertyByQuery(httpClient, Component.VEVENT, propertyName, query);
+		return getComponentPropertyByTimestamp(httpClient, Component.VEVENT, propertyName, beginDate, endDate);
 	}
 
 	/**
@@ -958,87 +948,187 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 * @return a List of Property values (eg. a List of VEVENT UIDs
 	 * @throws CalDAV4JException if there was a problem
 	 * XXX check if you must cast Date to DateTime
+	 * 
+	 * @deprecated
 	 */
-	public List<String> getComponentPropertyByTimestamp(HttpClient httpClient, String componentName, String propertyName, String propertyFilter,
+	public List<String> getComponentPropertyByTimestamp(HttpClient httpClient, String componentName, String propertyName, 
 			Date beginDate, Date endDate)
 			throws CalDAV4JException {
-		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
+		GenerateQuery gq = new GenerateQuery();
+		String cquery = componentName + " : " + propertyName;
+		String fquery = componentName + " : " +"DTSTAMP=["+beginDate.toString() +","+ endDate.toString()+"]";
 
-		query.addProperty(PROP_ETAG);
+		gq.setComponent(cquery);
+		gq.setFilter(fquery);
+		CalendarQuery query = null;				
+		query = gq.generateQuery();
+		
+		return getComponentProperty(httpClient, componentName, propertyName, query );
 
-		// create the query fields 
-		CalendarData calendarData = new CalendarData("C");
-
-		Comp vCalendarComp = new Comp("C");
-		vCalendarComp.setName(Calendar.VCALENDAR);
-
-		Comp vEventComp = new Comp("C");
-		vEventComp.setName(componentName);
-		vEventComp.addProp(new CalDAVProp("C", "name", propertyName, false, false)); // @see modification to CalDAVProp  
-
-		List <Comp> comps = new ArrayList<Comp> ();
-		comps.add(vEventComp);
-		vCalendarComp.setComps(comps);
-		calendarData.setComp(vCalendarComp);
-		query.setCalendarDataProp(calendarData);
-
-		// search for events matching...
-		CompFilter vCalendarCompFilter = new CompFilter("C");
-		vCalendarCompFilter.setName(Calendar.VCALENDAR);
-
-		CompFilter vEventCompFilter = new CompFilter("C");
-		vEventCompFilter.setName(componentName);
-
-		// TODO check the support from the caldav server. bedework is ok
-		// XXX if endDate is undefined, set it one year later
-		// set the filter name Property.LAST_MODIFIED
-		PropFilter pFilter = new PropFilter("C");
-		pFilter.setName(propertyFilter);
-		if (endDate == null) {
-			endDate = new DateTime(beginDate.getTime()+86400*364);
-			((DateTime)endDate).setUtc(true);
-		}
-		pFilter.setTimeRange(beginDate, endDate);
-
-		vEventCompFilter.addPropFilter(pFilter);
-		vCalendarCompFilter.addCompFilter(vEventCompFilter);
-		query.setCompFilter(vCalendarCompFilter);
-
-		return getComponentPropertyByQuery(httpClient, componentName, propertyName, query);
 	}
 
-	protected List <String> getComponentPropertyByQuery(HttpClient httpClient, String componentName, String propertyName, CalendarQuery query) throws CalDAV4JException 
+	/**
+	 * Useful for retrieving a list of UIDs of all events
+	 * 
+	 * @param httpClient
+	 * @param componentName
+	 * @param propertyName
+	 * @param query
+	 * @return a list of property values of events. 
+	 * @throws CalDAV4JException
+	 * 
+	 * @deprecated maybe create a method in ICalendarUtils or an "asString()" method
+	 */
+	protected List <String> getComponentProperty(HttpClient httpClient, String componentName, String propertyName, CalendarQuery query) 
+		throws CalDAV4JException 
 	{
+		
+
+		List<String> propertyList = new ArrayList<String>();
+		List<Calendar> calendarList = getCalendar(httpClient, query);
+		
+		for (Calendar cal : calendarList){
+			propertyList.add (
+					ICalendarUtils.getPropertyValue(
+							cal.getComponent(componentName), propertyName
+							)
+				);
+		}
+
+		return propertyList;
+	}
+
+	
+
+	/**
+	 * return a list of components using REPORT
+	 * @param httpClient
+	 * @param query
+	 * @return
+	 * @throws CalDAV4JException
+	 */
+	public List<Calendar> getCalendar(HttpClient httpClient, CalendarQuery query) throws CalDAV4JException 
+	{
+		List <Calendar> list = new ArrayList<Calendar>();
+		for (CalDAVResource cr: getCalDAVResources(httpClient, query)) {
+			list.add(cr.getCalendar());
+		}
+
+		return list;
+	}
+	/**
+	 * return a list of caldav resources. 
+	 * All other methods should use this
+	 * @param httpClient
+	 * @param componentName
+	 * @param query
+	 * @return
+	 * @throws CalDAV4JException
+	 */
+	protected List<CalDAVResource> getCalDAVResources(HttpClient httpClient, CalendarQuery query)
+		throws CalDAV4JException 
+	{
+		if (isCacheEnabled()) {
+			query.setCalendarDataProp(null);
+		}
 		CalDAVReportMethod reportMethod = methodFactory.createCalDAVReportMethod();
 		reportMethod.setPath(getCalendarCollectionRoot());
 		reportMethod.setReportRequest(query);
 		try {
 			httpClient.executeMethod(getHostConfiguration(), reportMethod);
 		} catch (Exception he) {
-			he.printStackTrace();
 			throw new CalDAV4JException("Problem executing method", he);
 		}
 
-		List<String> propertyList = new ArrayList<String>();
 		Enumeration<CalDAVResponse> e = reportMethod.getResponses();
+		List<CalDAVResource> list = new ArrayList<CalDAVResource>();
 		while (e.hasMoreElements()){
 			CalDAVResponse response  = e.nextElement();
-			Calendar cal =  response.getCalendar();
-			if (cal.getComponent(componentName) != null) {
-				propertyList.add( cal.getComponent(componentName)
-						.getProperty(propertyName).getValue() );
-			}
-//			former code with cache
-//			String etag = response.getETag();
-//			CalDAVResource resource = getCalDAVResource(httpClient,
-//			stripHost(response.getHref()), etag);
-//			list.add(resource.getCalendar());
+			String etag = response.getETag();
+			
+			if (isCacheEnabled()) {
+				CalDAVResource resource = getCalDAVResource(httpClient,
+						stripHost(response.getHref()), etag);
+				if (resource.getCalendar().getComponents().getComponent("VEVENT") != null) {
+					list.add(resource);
+					
+					// XXX check if getCalDAVResource does its caching job
+					cache.putResource(resource);
+				}				
+			} else {
+				if (response.getCalendarDataProperty() != null) {
+					list.add(new CalDAVResource(response));
+				}
+			}			
 		}
 
-		return propertyList;
+		return list;
 	}
+	
+	
+	
+	
+	
+	
+	
+	//
+	// MultiGet queries
+	//
+	
+	
+	/**
+	 * 
+	 * @param httpClient
+	 * @param componentName
+	 * @param query
+	 * @return a list of Calendar (?)
+	 * @throws CalDAV4JException
+	 */
+	protected List<Calendar> getComponentByMultiget(HttpClient httpClient, String componentName,CalendarMultiget query) throws CalDAV4JException 
+	{
+		if (isCacheEnabled()) {
+			query.setCalendarDataProp(null);
+		}
+		CalDAVReportMethod reportMethod = methodFactory.createCalDAVReportMethod();
+		reportMethod.setPath(getCalendarCollectionRoot());
+		reportMethod.setReportRequest(query);
+		try {
+			httpClient.executeMethod(getHostConfiguration(), reportMethod);
+		} catch (Exception he) {
+			throw new CalDAV4JException("Problem executing method", he);
+		}
 
+		Enumeration<CalDAVResponse> e = reportMethod.getResponses();
+		List<Calendar> list = new ArrayList<Calendar>();
+
+		while (e.hasMoreElements()){
+			CalDAVResponse response  = e.nextElement();
+			
+			if (response.getStatusCode()==CaldavStatus.SC_OK){
+				CalDAVResource resource = null;
+				
+				if (isCacheEnabled()) {
+					String etag = response.getETag();
+					try{
+						resource = 
+							getCalDAVResource(httpClient, stripHost(response.getHref()), etag);
+
+						list.add(resource.getCalendar());
+					} catch(Exception e1) {
+						// TODO
+						e1.printStackTrace();
+					}						
+				} else {
+					list.add(response.getCalendar());
+				}
+				
+			}
+
+		}
+
+		return list;
+	}
+	
 	/**
 	 * implementing calendar multiget
 	 * @link { http://tools.ietf.org/html/rfc4791#section-7.9 }
@@ -1074,69 +1164,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	} 
 
 
-
-	public List<Calendar> getComponentByQuery(HttpClient httpClient, String componentName,CalendarQuery query) throws CalDAV4JException 
-	{
-		CalDAVReportMethod reportMethod = methodFactory.createCalDAVReportMethod();
-		reportMethod.setPath(getCalendarCollectionRoot());
-		reportMethod.setReportRequest(query);
-		try {
-			httpClient.executeMethod(getHostConfiguration(), reportMethod);
-		} catch (Exception he) {
-			throw new CalDAV4JException("Problem executing method", he);
-		}
-
-		Enumeration<CalDAVResponse> e = reportMethod.getResponses();
-		List<Calendar> list = new ArrayList<Calendar>();
-		while (e.hasMoreElements()){
-			CalDAVResponse response  = e.nextElement();
-			String etag = response.getETag();
-			CalDAVResource resource = getCalDAVResource(httpClient,
-					stripHost(response.getHref()), etag);
-			list.add(resource.getCalendar());
-		}
-
-		return list;
-	}
-
-	/**
-	 * 
-	 * @param httpClient
-	 * @param componentName
-	 * @param query
-	 * @return a list of Calendar (?)
-	 * @throws CalDAV4JException
-	 */
-	protected List<Calendar> getComponentByMultiget(HttpClient httpClient, String componentName,CalendarMultiget query) throws CalDAV4JException 
-	{
-		CalDAVReportMethod reportMethod = methodFactory.createCalDAVReportMethod();
-		reportMethod.setPath(getCalendarCollectionRoot());
-		reportMethod.setReportRequest(query);
-		try {
-			httpClient.executeMethod(getHostConfiguration(), reportMethod);
-		} catch (Exception he) {
-			throw new CalDAV4JException("Problem executing method", he);
-		}
-
-		Enumeration<CalDAVResponse> e = reportMethod.getResponses();
-		List<Calendar> list = new ArrayList<Calendar>();
-
-		while (e.hasMoreElements()){
-			CalDAVResponse response  = e.nextElement();
-			
-			if (response.getStatusCode()==CaldavStatus.SC_OK){
-				list.add(response.getCalendar());
-			}
-//			String etag = response.getETag();
-//			try{
-//			CalDAVResource resource = getCalDAVResource(httpClient,
-//			stripHost(response.getHref()), etag);
-
-//			list.add(resource.getCalendar());
-//			}catch(Exception e1){}
-
-		}
-
-		return list;
+	private boolean isCacheEnabled() {
+		return  (this.cache instanceof NoOpResourceCache) ? false : true;
 	}
 } //end of class

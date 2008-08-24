@@ -22,7 +22,7 @@ import org.osaf.caldav4j.model.request.PropProperty;
 public abstract class CalDAVCalendarCollectionBase {
 
 	public static final PropProperty PROP_ETAG = new PropProperty(
-			CalDAVConstants.NS_DAV, "D", CalDAVConstants.PROP_GETETAG);
+			CalDAVConstants.NS_DAV, "D", CalDAVConstants.PROP_GETETAG);	
 	 CalDAV4JMethodFactory methodFactory = null;
 	 String calendarCollectionRoot = null;
 	 HostConfiguration hostConfiguration = null;
@@ -47,12 +47,20 @@ public abstract class CalDAVCalendarCollectionBase {
 	public void setMethodFactory(CalDAV4JMethodFactory methodFactory) {
 	this.methodFactory = methodFactory; }
 
-	protected String getCalendarCollectionRoot() {
-	    return calendarCollectionRoot;
+	/**
+	 * remove double slashes
+	 * @return
+	 */
+	public String getCalendarCollectionRoot() {
+	    return calendarCollectionRoot.replaceAll("/+", "/");
 	}
 
+	/**
+	 * set base path removing multiple "/"
+	 * @param path
+	 */
 	public void setCalendarCollectionRoot(String path) {
-	    this.calendarCollectionRoot = path;
+	    this.calendarCollectionRoot = path.replaceAll("/+", "/");
 	}
 
 	public CalDAVResourceCache getCache() {
@@ -78,7 +86,7 @@ public abstract class CalDAVCalendarCollectionBase {
 	        Calendar calendar) {
 	    PutMethod putMethod = methodFactory.createPutMethod();
 	    putMethod.setPath(calendarCollectionRoot + "/"
-	            + resourceName);
+	    		+ resourceName);
 	    putMethod.setAllEtags(true);
 	    putMethod.setIfNoneMatch(true);
 	    putMethod.setRequestBody(calendar);

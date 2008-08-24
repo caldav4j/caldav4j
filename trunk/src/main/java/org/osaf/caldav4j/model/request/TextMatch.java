@@ -45,6 +45,8 @@ public class TextMatch extends OutputsDOMBase {
     public static final String ATTR_VALUE_YES = "yes";
     public static final String ATTR_VALUE_NO  = "no";
     
+    public static final String ATTR_VALUE_COLLATION_ASCII = "i;ascii-casemap"; 
+    public static final String ATTR_VALUE_COLLATION_OCT = "i;octet";
     
     private String collation = null;
     
@@ -54,7 +56,9 @@ public class TextMatch extends OutputsDOMBase {
     private Boolean negateCondition = null;
 
     
-    public TextMatch(String caldavNamespaceQualifier, Boolean caseless, Boolean negateCondition, String collation,
+    public TextMatch(String caldavNamespaceQualifier, 
+    		Boolean caseless, Boolean negateCondition, 
+    		String collation,
             String textToMatch) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.caseless = caseless;
@@ -64,7 +68,7 @@ public class TextMatch extends OutputsDOMBase {
         // this.collation = "i;octet";
         // RFC states default collation is i;ascii-casemap
         if (collation == null) {        	
-            this.collation = "i;ascii-casemap";        	
+            this.collation = ATTR_VALUE_COLLATION_ASCII;        	
         }
 
     }
