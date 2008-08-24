@@ -25,10 +25,12 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osaf.caldav4j.CalDAVResource;
 
 public class ICalendarUtils {
     private static final Log log = LogFactory.getLog(ICalendarUtils.class);
@@ -90,6 +92,15 @@ public class ICalendarUtils {
         return (VEvent) calendar.getComponents().getComponent(Component.VEVENT);
     }
     
+    /**
+     * get first non-timezone component
+     * @param event
+     * @return
+     */
+    public static Component getFirstComponent( CalDAVResource resource, String component) {
+    	return resource.getCalendar().getComponent(component);
+    }
+    
     public static String getSummaryValue(VEvent event){
         return getPropertyValue(event, Property.SUMMARY);
     }
@@ -102,6 +113,7 @@ public class ICalendarUtils {
         Property property = component.getProperties().getProperty(propertyName);
         return property == null ? null : property.getValue();
     }
+    
     
     private static void setFields(Date date, int year, int month, int day,
             int hour, int minutes, int seconds, int milliseconds, TimeZone tz,

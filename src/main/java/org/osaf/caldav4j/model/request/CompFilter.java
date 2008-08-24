@@ -57,18 +57,29 @@ public class CompFilter extends OutputsDOMBase {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
     }
     
+    /**
+     * Create a CompFilter
+     * @param caldavNamespaceQualifier
+     * @param name
+     * @param isDefined
+     * @param start
+     * @param end
+     * @param compFilters
+     * @param propFilters
+     */
     public CompFilter(String caldavNamespaceQualifier, String name,
             boolean isDefined, Date start, Date end, List<CompFilter> compFilters,
             List<PropFilter> propFilters) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         this.isDefined = isDefined;
         this.name = name;
+        
         if (start != null || end != null) { // XXX test the || instead of && (open interval)
             this.timeRange = new TimeRange(caldavNamespaceQualifier, start, end);
         }
         
         if (propFilters != null){
-            this.propFilters.addAll( propFilters);
+            this.propFilters.addAll(propFilters);
         }
         
         if (compFilters != null) {
@@ -121,7 +132,7 @@ public class CompFilter extends OutputsDOMBase {
         return m;
     }
 
-    public List getCompFilters() {
+    public List<CompFilter> getCompFilters() {
         return compFilters;
     }
 
@@ -141,7 +152,7 @@ public class CompFilter extends OutputsDOMBase {
         this.isDefined = isDefined;
     }
 
-    public List getPropFilters() {
+    public List<PropFilter> getPropFilters() {
         return propFilters;
     }
 

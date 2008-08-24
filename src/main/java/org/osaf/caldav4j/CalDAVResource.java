@@ -22,7 +22,8 @@ import net.fortuna.ical4j.model.Calendar;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 
 public class CalDAVResource implements Serializable{
-    private ResourceMetadata resourceMetadata = null;
+	private static final long serialVersionUID = -2607152240683030192L;
+	private ResourceMetadata resourceMetadata = null;
     private Calendar calendar = null;
     
     public CalDAVResource(CalDAVResponse response) throws CalDAV4JException{

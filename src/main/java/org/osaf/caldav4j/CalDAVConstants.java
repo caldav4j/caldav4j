@@ -17,6 +17,7 @@
 package org.osaf.caldav4j;
 
 import org.apache.webdav.lib.util.QName;
+import org.osaf.caldav4j.model.request.PropProperty;
 
 public interface CalDAVConstants {
     
@@ -68,5 +69,6 @@ public interface CalDAVConstants {
 
     public static final String URL_APPENDER = "?ticket=";
 
-
+	public static final PropProperty PROP_ETAG = new PropProperty(
+			CalDAVConstants.NS_DAV, "D", CalDAVConstants.PROP_GETETAG);
 }
