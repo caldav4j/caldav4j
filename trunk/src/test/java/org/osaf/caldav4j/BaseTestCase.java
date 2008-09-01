@@ -53,13 +53,13 @@ public abstract class BaseTestCase
     private HttpClient http = createHttpClient();
     private HostConfiguration hostConfig = createHostConfiguration();
 
-    public static final String CALDAV_SERVER_HOST = GCaldavCredential.CALDAV_SERVER_HOST;
-    public static final int CALDAV_SERVER_PORT = GCaldavCredential.CALDAV_SERVER_PORT;
-    public static final String CALDAV_SERVER_PROTOCOL = GCaldavCredential.CALDAV_SERVER_PROTOCOL;
-    public static final String CALDAV_SERVER_WEBDAV_ROOT = GCaldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
-    public static final String CALDAV_SERVER_USERNAME = GCaldavCredential.CALDAV_SERVER_USERNAME;
-    public static final String CALDAV_SERVER_PASSWORD = GCaldavCredential.CALDAV_SERVER_PASSWORD;    
-    public static final String COLLECTION      = GCaldavCredential.COLLECTION;
+    public static final String CALDAV_SERVER_HOST = CaldavCredential.CALDAV_SERVER_HOST;
+    public static final int CALDAV_SERVER_PORT = CaldavCredential.CALDAV_SERVER_PORT;
+    public static final String CALDAV_SERVER_PROTOCOL = CaldavCredential.CALDAV_SERVER_PROTOCOL;
+    public static final String CALDAV_SERVER_WEBDAV_ROOT = CaldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
+    public static final String CALDAV_SERVER_USERNAME = CaldavCredential.CALDAV_SERVER_USERNAME;
+    public static final String CALDAV_SERVER_PASSWORD = CaldavCredential.CALDAV_SERVER_PASSWORD;    
+    public static final String COLLECTION      = CaldavCredential.COLLECTION;
     public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
 
     public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
