@@ -27,9 +27,12 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VTimeZone;
+import net.fortuna.ical4j.model.property.Uid;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVResource;
 
 public class ICalendarUtils {
@@ -95,12 +98,64 @@ public class ICalendarUtils {
     /**
      * get first non-timezone component
      * @param event
-     * @return
+     * @return null if not present
      */
-    public static Component getFirstComponent( CalDAVResource resource, String component) {
+    public static Component getFirstComponent(CalDAVResource resource, String component) {
     	return resource.getCalendar().getComponent(component);
     }
+
+    /**
+     * return the first non-tz component of a calendar:
+     *  exception if calendar contains different types of event
+     * @param calendar
+     * @return
+     */
+    public static Component getFirstComponent(net.fortuna.ical4j.model
+    		.Calendar calendar) throws CalDAV4JException {
+    	// XXX this works only if the ics is a caldav resource
+    	Component ret = null;
+    	String compType = null;
+    	
+    	for (Object component : calendar.getComponents()) {
+    		// skip timezones
+    		if (! (component instanceof VTimeZone)) {
+    			if (ret == null) {
+    				ret = (Component) component;
+    				compType = ret.getClass().getName();
+    			} else if (! compType.equals(component.getClass().getName()) ) {
+    				throw new CalDAV4JException("Can't get first component: "
+    						+ "Calendar contains different kinds of component");
+    			}
+				
+			}
+    	}
+    	return ret;
+    } 
     
+    /**
+     * get a Calendar UID value: as in Caldav, a Caldav Calendar Resource should have an unique UID value 
+     * @param calendar
+     * @return
+     */
+    public static String getUIDValue(net.fortuna.ical4j.model
+    		.Calendar calendar) throws CalDAV4JException {
+    	return getUIDValue(getFirstComponent(calendar));
+    }
+    
+    /**
+     * set a Calendar UID value: as 
+     *  in Caldav, a Caldav Calendar Resource should have an unique UID value
+     *  for a flexible method, @see  addOrReplaceProperty
+     * @param calendar
+     * @param uid
+     */
+    public static void setUIDValue(net.fortuna.ical4j.model.Calendar calendar,
+    		String uid) throws CalDAV4JException{
+    	Component component = getFirstComponent(calendar);
+    	if (component != null) {
+    		addOrReplaceProperty(component, new Uid(uid));
+    	}
+    }
     public static String getSummaryValue(VEvent event){
         return getPropertyValue(event, Property.SUMMARY);
     }
@@ -161,6 +216,8 @@ public class ICalendarUtils {
         }
         return null;
     }
+    
+    // TODO Returns the "master" Component - one that does not have a RECURRENCE-ID
     
     public static void addOrReplaceProperty(Component component, Property property){
         Property oldProp = component.getProperties().getProperty(property.getName());

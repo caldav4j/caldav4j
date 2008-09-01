@@ -18,8 +18,7 @@ public class PutGetTestGoogle extends BaseTestCase {
     private static final Log log = LogFactory.getLog(PutGetTestGoogle.class);
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
      
-    
-    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
+    public  String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
             + "/" + COLLECTION;
     
     protected void setUp() throws Exception {
@@ -37,18 +36,24 @@ public class PutGetTestGoogle extends BaseTestCase {
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
 
-        Calendar cal = getCalendarResource(BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
+        Calendar cal = getCalendarResource(BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_PATH);
         if (cal == null) {
-        	throw new Exception ("can't find resource " + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
+        	throw new Exception("can't find in CLASSPATH:" 
+        			+ BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_PATH);
         }
         PutMethod put = methodFactory.createPutMethod();
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
+        COLLECTION_PATH = COLLECTION_PATH.replaceAll("/+", "/");
+        
+        System.out.println("putting " + COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();
-        assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
+        // google uses SC_NO_CONTENT instead of SC_CREATED
+        assertEquals("Status code for put:", CaldavStatus.SC_NO_CONTENT, statusCode);
+
 
         //ok, so we created it...let's make sure it's there!
         GetMethod get = methodFactory.createGetMethod();
@@ -71,8 +76,10 @@ public class PutGetTestGoogle extends BaseTestCase {
         put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         statusCode = put.getStatusCode();
+
+      //was CaldavStatus.SC_PRECONDITION_FAILED but gcalendar doesn't support if-tag and preconditions
         assertEquals("Status code for put:",
-                CaldavStatus.SC_PRECONDITION_FAILED, statusCode);
+                CaldavStatus.SC_CONFLICT, statusCode);  
    }
     
 

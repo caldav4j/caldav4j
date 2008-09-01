@@ -30,8 +30,13 @@ public class FunTest extends BaseTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        del(COLLECTION_PATH);
-        mkdir(COLLECTION_PATH);
+        try {
+        	mkdir(COLLECTION_PATH);
+        } catch (Exception e) {
+			// TODO: handle exception
+        	e.printStackTrace();
+        	log.warn("MKCAL not supported?");
+		}
         put(ICS_DAILY_NY_5PM, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
         put(ICS_ALL_DAY_JAN1, COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
         put(ICS_NORMAL_PACIFIC_1PM, COLLECTION_PATH + "/"
