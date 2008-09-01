@@ -198,7 +198,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param uid
 	 * @throws CalDAV4JException
 	 * 
-	 * TODO testme
+	 * FIXME this method removes Calendars with multiple UID on server
+	 *  but (maybe) this shouldn't happen, as of RFC
 	 */
 	public void delete(HttpClient httpClient,String component, String uid) 
 			throws CalDAV4JException{
@@ -264,7 +265,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	}
 
 	/**
-	 * Adds a new Calendar with the given VEvent and VTimeZone to the collection.
+	 * Adds a new Calendar with the given Component and VTimeZone to the collection.
 	 * 
 	 * Tries to use the event UID followed by ".ics" as the name of the 
 	 * resource, otherwise will use the UID followed by a random number and 
@@ -289,15 +290,20 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		}
 		calendar.getComponents().add(vevent);
 	
+		//
+		// retry 3 times while caldav server returns PRECONDITION_FAILED
+		//
 		boolean didIt = false;
 		for (int x = 0; x < 3 && !didIt; x++) {
 			String resourceName = null;
-			if (x == 0) {
-				resourceName = ICalendarUtils.getUIDValue(vevent) + ".ics";
-			} else {
-				resourceName = ICalendarUtils.getUIDValue(vevent) + "-"
-				+ random.nextInt() + ".ics";
+			String uid = ICalendarUtils.getUIDValue(vevent);
+			
+			// change UID at second attempt
+			if (x > 0) {
+				uid += "-"+random.nextInt();				
+				ICalendarUtils.setUIDValue(calendar, uid);
 			}
+			resourceName = uid + ".ics";
 			
 			PutMethod putMethod = createPutMethodForNewResource(resourceName,
 					calendar);
@@ -353,26 +359,27 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	public void add(HttpClient httpClient, Calendar c) 
 		throws CalDAV4JException {
 		
-		String uid = null;
+		String uid = ICalendarUtils.getUIDValue(c);
 		
-		ComponentList cl = c.getComponents();
-		
-		// get uid from first non VTIMEZONE event
-		Iterator it = cl.iterator();
-		while((uid==null) && it.hasNext()) {
-			Object comp = it.next();
-			if (!(comp instanceof TimeZone)) {
-				CalendarComponent cc = (CalendarComponent) comp;
-				try {
-					uid = cc.getProperty(Property.UID).getValue();
-				} catch (NullPointerException  e) {
-					// TODO log missing uid
-				}				
-			} 					
-		}
-		
+//		ComponentList cl = c.getComponents();
+//		
+//		// get uid from first non VTIMEZONE event
+//		Iterator it = cl.iterator();
+//		while((uid==null) && it.hasNext()) {
+//			Object comp = it.next();
+//			if (!(comp instanceof VTimeZone)) {
+//				CalendarComponent cc = (CalendarComponent) comp;
+//				try {
+//					uid = cc.getProperty(Property.UID).getValue();
+//				} catch (NullPointerException  e) {
+//					// TODO log missing uid
+//				}				
+//			} 					
+//		}
+
 		if (uid == null) {
-			uid = random.nextLong() + "-" + random.nextLong() ; 
+			uid = random.nextLong() + "-" + random.nextLong();
+			ICalendarUtils.setUIDValue(c, uid);
 		}
 		
 		PutMethod putMethod = createPutMethodForNewResource(uid + ".ics", c);
@@ -676,9 +683,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		} else {
 			// check if there's an event with the standard caldav url
 			// XXX this method retrieves a VTIMEZONE :(
-			
-			resource = getCalDAVResource(httpClient, getAbsolutePath(uid+".ics") );
-			try {
+			try {		
+				resource = getCalDAVResource(httpClient, getAbsolutePath(uid+".ics") );
 				if (uid.equals(getUIDValue(ICalendarUtils.getFirstComponent(resource, component)))) {
 					return resource;
 				}

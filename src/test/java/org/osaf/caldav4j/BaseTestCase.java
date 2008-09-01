@@ -53,13 +53,13 @@ public abstract class BaseTestCase
     private HttpClient http = createHttpClient();
     private HostConfiguration hostConfig = createHostConfiguration();
 
-    public static final String CALDAV_SERVER_HOST = CaldavCredential.CALDAV_SERVER_HOST;
-    public static final int CALDAV_SERVER_PORT = CaldavCredential.CALDAV_SERVER_PORT;
-    public static final String CALDAV_SERVER_PROTOCOL = CaldavCredential.CALDAV_SERVER_PROTOCOL;
-    public static final String CALDAV_SERVER_WEBDAV_ROOT = CaldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
-    public static final String CALDAV_SERVER_USERNAME = CaldavCredential.CALDAV_SERVER_USERNAME;
-    public static final String CALDAV_SERVER_PASSWORD = CaldavCredential.CALDAV_SERVER_PASSWORD;    
-    public static final String COLLECTION      = CaldavCredential.COLLECTION;
+    public static final String CALDAV_SERVER_HOST = GCaldavCredential.CALDAV_SERVER_HOST;
+    public static final int CALDAV_SERVER_PORT = GCaldavCredential.CALDAV_SERVER_PORT;
+    public static final String CALDAV_SERVER_PROTOCOL = GCaldavCredential.CALDAV_SERVER_PROTOCOL;
+    public static final String CALDAV_SERVER_WEBDAV_ROOT = GCaldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
+    public static final String CALDAV_SERVER_USERNAME = GCaldavCredential.CALDAV_SERVER_USERNAME;
+    public static final String CALDAV_SERVER_PASSWORD = GCaldavCredential.CALDAV_SERVER_PASSWORD;    
+    public static final String COLLECTION      = GCaldavCredential.COLLECTION;
     public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
 
     public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
@@ -97,8 +97,9 @@ public abstract class BaseTestCase
     public static final String ICS_GOOGLE_FLOATING_JAN2_7PM = ICS_GOOGLE_FLOATING_JAN2_7PM_UID + ".ics";
     public static final String ICS_GOOGLE_FLOATING_JAN2_7PM_PATH = "Google_Floating_Jan_2_7pm.ics";
 
-    public static final String ICS_GOOGLE_SINGLE_EVENT_PATH= "Google_singleEvent.ics";
-    
+    public static final String ICS_GOOGLE_SINGLE_EVENT_PATH = "Google_singleEvent.ics";
+    public static final String ICS_GOOGLE_SINGLE_EVENT_UID = "66be2585-327b-4cc1-93a7-d0e6de648183";
+    public static final String ICS_GOOGLE_SINGLE_EVENT = "66be2585-327b-4cc1-93a7-d0e6de648183" + ".ics";
     public static final String ICS_SINGLE_EVENT= "singleEvent.ics";
 
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();

@@ -65,6 +65,11 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         return e == null ? null : (CalDAVResource) e.getValue();
     }
 
+    /**
+     * put a CalDAVResource in the cache, indexing by uid
+     * 
+     * XXX works only with VEVENT
+     */
     public synchronized void putResource(CalDAVResource calDAVResource)
             throws org.osaf.caldav4j.CacheException {
         String href = calDAVResource.getResourceMetadata().getHref();

@@ -1,5 +1,6 @@
 package org.osaf.caldav4j;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,11 @@ import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.webdav.lib.methods.OptionsMethod;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.util.ICalendarUtils;
@@ -40,20 +44,30 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     public static final String  TEST_TIMEOUT_UNITS = "Second";
     protected void setUp() throws Exception {
         super.setUp();
-        mkdir(COLLECTION_PATH);
-        put(ICS_DAILY_NY_5PM, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
-        put(ICS_ALL_DAY_JAN1, COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
-        put(ICS_NORMAL_PACIFIC_1PM, COLLECTION_PATH + "/" + ICS_NORMAL_PACIFIC_1PM);
-        put(ICS_SINGLE_EVENT, COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
+        try {
+        	mkdir(COLLECTION_PATH); 
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	log.info("MKCOL unsupported?", e);
+        }
+        put(ICS_GOOGLE_DAILY_NY_5PM_PATH, COLLECTION_PATH + "/" + ICS_GOOGLE_DAILY_NY_5PM);
+        put(ICS_GOOGLE_ALL_DAY_JAN1_PATH, COLLECTION_PATH + "/" + ICS_GOOGLE_ALL_DAY_JAN1);
+        put(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH, COLLECTION_PATH + "/" + ICS_GOOGLE_NORMAL_PACIFIC_1PM);
+        put(ICS_GOOGLE_SINGLE_EVENT_PATH, COLLECTION_PATH + "/" + ICS_GOOGLE_SINGLE_EVENT);
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        del(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
-        del(COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
-        del(COLLECTION_PATH + "/" + ICS_NORMAL_PACIFIC_1PM);
-        del(COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
-        del(COLLECTION_PATH);
+        del(COLLECTION_PATH + "/" + ICS_GOOGLE_DAILY_NY_5PM);
+        del(COLLECTION_PATH + "/" + ICS_GOOGLE_ALL_DAY_JAN1);
+        del(COLLECTION_PATH + "/" + ICS_GOOGLE_NORMAL_PACIFIC_1PM);
+        del(COLLECTION_PATH + "/" + ICS_GOOGLE_SINGLE_EVENT);
+        try {
+        	del(COLLECTION_PATH);
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	log.info("DELETE unsupported?", e);
+        }
     }
 
     public void testGetCalendar() throws Exception {
@@ -61,7 +75,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         Calendar calendar = null;
         try {
             calendar = calendarCollection.getCalendarForEventUID(httpClient,
-                    ICS_DAILY_NY_5PM_UID);
+                    ICS_GOOGLE_DAILY_NY_5PM_UID);
         } catch (CalDAV4JException ce) {
             assertNull(ce);
         }
@@ -70,7 +84,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         VEvent vevent = ICalendarUtils.getFirstEvent(calendar);
         assertNotNull(vevent);
         String summary = ICalendarUtils.getSummaryValue(vevent);
-        assertEquals(ICS_DAILY_NY_5PM_SUMMARY, summary);
+        assertEquals(ICS_GOOGLE_DAILY_NY_5PM_SUMMARY, summary);
 
         CalDAV4JException calDAV4JException = null;
         try {
@@ -88,7 +102,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         Calendar calendar = null;
         try {
             calendar = calendarCollection.getCalendarByPath(httpClient,
-                    ICS_DAILY_NY_5PM);
+                    ICS_GOOGLE_DAILY_NY_5PM);
         } catch (CalDAV4JException ce) {
             assertNull(ce);
         }
@@ -97,7 +111,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         VEvent vevent = ICalendarUtils.getFirstEvent(calendar);
         assertNotNull(vevent);
         String summary = ICalendarUtils.getSummaryValue(vevent);
-        assertEquals(ICS_DAILY_NY_5PM_SUMMARY, summary);
+        assertEquals(ICS_GOOGLE_DAILY_NY_5PM_SUMMARY, summary);
 
         CalDAV4JException calDAV4JException = null;
         try {
@@ -126,14 +140,14 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
             VEvent ve = (VEvent) vevents.get(0);
             String uid = ICalendarUtils.getUIDValue(ve);
             int correctNumberOfEvents = -1;
-            if (ICS_DAILY_NY_5PM_UID.equals(uid)) {
+            if (ICS_GOOGLE_DAILY_NY_5PM_UID.equals(uid)) {
                 // one for each day
                 correctNumberOfEvents = 1;
-            } else if (ICS_ALL_DAY_JAN1_UID.equals(uid)) {
+            } else if (ICS_GOOGLE_ALL_DAY_JAN1_UID.equals(uid)) {
                 correctNumberOfEvents = 1;
-            } else if (ICS_NORMAL_PACIFIC_1PM_UID.equals(uid)) {
+            } else if (ICS_GOOGLE_NORMAL_PACIFIC_1PM_UID.equals(uid)) {
                 correctNumberOfEvents = 1;
-            } else if (ICS_FLOATING_JAN2_7PM_UID.equals(uid)) {
+            } else if (ICS_GOOGLE_FLOATING_JAN2_7PM_UID.equals(uid)) {
                 correctNumberOfEvents = 0;
             } else {
                 fail(uid
@@ -163,7 +177,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
                 null, true);
         List<Calendar> l = calendarCollection.getEventResources(httpClient,
                 beginDate, endDate);
-        assertTrue(hasEventWithUID(l, ICS_FLOATING_JAN2_7PM_UID));
+        assertTrue(hasEventWithUID(l, ICS_GOOGLE_FLOATING_JAN2_7PM_UID));
 
         beginDate = ICalendarUtils.createDateTime(2006, 0, 2, 20, 1, 0, 0,
                 null, true);
@@ -171,7 +185,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
                 true);
         l = calendarCollection
                 .getEventResources(httpClient, beginDate, endDate);
-        assertFalse(hasEventWithUID(l, ICS_FLOATING_JAN2_7PM_UID));
+        assertFalse(hasEventWithUID(l, ICS_GOOGLE_FLOATING_JAN2_7PM_UID));
     }
 
     /**
@@ -215,13 +229,13 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
 
         Calendar calendar = calendarCollection.getCalendarForEventUID(
-                httpClient, ICS_NORMAL_PACIFIC_1PM_UID);
+                httpClient, ICS_GOOGLE_NORMAL_PACIFIC_1PM_UID);
 
         VEvent ve = ICalendarUtils.getFirstEvent(calendar);
 
         // sanity!
         assertNotNull(calendar);
-        assertEquals(ICS_NORMAL_PACIFIC_1PM_SUMMARY, ICalendarUtils
+        assertEquals(ICS_GOOGLE_NORMAL_PACIFIC_1PM_SUMMARY, ICalendarUtils
                 .getSummaryValue(ve));
 
         ICalendarUtils.addOrReplaceProperty(ve, new Summary("NEW"));
@@ -229,7 +243,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         calendarCollection.updateMasterEvent(httpClient, ve, null);
 
         calendar = calendarCollection.getCalendarForEventUID(httpClient,
-                ICS_NORMAL_PACIFIC_1PM_UID);
+                ICS_GOOGLE_NORMAL_PACIFIC_1PM_UID);
 
         ve = ICalendarUtils.getFirstEvent(calendar);
         assertEquals("NEW", ICalendarUtils.getSummaryValue(ve));
@@ -247,7 +261,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     			+COLLECTION_PATH;
     	
     	List <String> calendarUris =  new ArrayList<String>();
-    	calendarUris.add( baseUri +"/"+BaseTestCase.ICS_ALL_DAY_JAN1);
+    	calendarUris.add( baseUri +"/"+BaseTestCase.ICS_GOOGLE_ALL_DAY_JAN1);
     	calendarUris.add( baseUri +"/"+BaseTestCase.CALDAV_SERVER_BAD_USERNAME);
     	
     	List<Calendar> calendarList = calendarCollection.multigetCalendarUris(httpClient,
@@ -255,7 +269,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     	
     	// sanity
     	assertNotNull(calendarList);
-    	assertEquals( ICS_ALL_DAY_JAN1_UID, ICalendarUtils.getUIDValue(calendarList.get(0).getComponent(CalendarComponent.VEVENT)) );
+    	assertEquals( ICS_GOOGLE_ALL_DAY_JAN1_UID, ICalendarUtils.getUIDValue(calendarList.get(0).getComponent(CalendarComponent.VEVENT)) );
     	
     }
     
@@ -268,7 +282,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 
         // Create the Ticket
         String ticketID = calendarCollection.createTicket(httpClient,
-                BaseTestCase.ICS_DAILY_NY_5PM,
+                BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM,
                 CalDAVConstants.INFINITY, TEST_TIMEOUT,
                 TEST_READ, TEST_WRITE);
 
@@ -277,7 +291,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         // Make sure ticket is there
         
         List<String> ticketIDs = calendarCollection.getTicketsIDs(httpClient,
-                BaseTestCase.ICS_DAILY_NY_5PM);
+                BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
 
         assertEquals("Number of IDs Returned from getTickets:", ticketIDs
                 .size(), 1);
@@ -290,19 +304,19 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 
         // Attempt to get the Calendar
         Calendar calendar = calendarCollection.getCalendarByPath(badHttpClient,
-                ICS_DAILY_NY_5PM);
+                ICS_GOOGLE_DAILY_NY_5PM);
 
         assertNotNull(calendar);
 
         // Attempt to delete the Tickets
-        calendarCollection.deleteTicket(httpClient, BaseTestCase.ICS_DAILY_NY_5PM, ticketID);
+        calendarCollection.deleteTicket(httpClient, BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM, ticketID);
 
         // Make sure ticket is gone
         
         CalDAV4JException calDAV4JException = null;
         try {
             calendar = calendarCollection.getCalendarByPath(badHttpClient,
-                    ICS_DAILY_NY_5PM);
+                    ICS_GOOGLE_DAILY_NY_5PM);
         } catch (CalDAV4JException ce) {
             calDAV4JException = ce;
         }
@@ -333,6 +347,28 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
                 COLLECTION_PATH, createHostConfiguration(), methodFactory,
                 CalDAVConstants.PROC_ID_DEFAULT);
         return calendarCollection;
+    }
+    
+    public void testGetOptions() {
+    	CalDAVCalendarCollection  cal =  createCalDAVCalendarCollection();
+    	OptionsMethod options = new org.apache.webdav.lib.methods.OptionsMethod();
+    	options.setPath(CaldavCredential.CALDAV_SERVER_WEBDAV_ROOT+CaldavCredential.COLLECTION);
+    	options.setRequestHeader("Host", cal.hostConfiguration.getHost());
+		try {
+			httpClient.executeMethod(cal.hostConfiguration, options);
+			for (Header h: options.getResponseHeaders("Allow")) {
+				log.info(h.getName() + ":" + h.getValue());
+			}
+			log.info( options.getResponseHeaders() );
+		} catch (HttpException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    	
     }
 
 }
