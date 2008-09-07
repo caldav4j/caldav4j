@@ -68,6 +68,7 @@ public class Comp extends OutputsDOMBase {
             boolean allProp, List<Comp> comps, List<CalDAVProp> props) {
         
         this.name = name;
+        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
         
         if (allComp){
             this.allComp = true;
