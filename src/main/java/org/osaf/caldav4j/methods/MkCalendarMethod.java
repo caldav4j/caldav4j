@@ -37,6 +37,11 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
 
     // --------------------------------------------------------- Public Methods
 
+    public MkCalendarMethod() {
+		// Add Headers Content-Type: text/xml
+    	
+    	addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.TEXT_XML_CONTENT_TYPE);
+	}
 
     /**
      * 
