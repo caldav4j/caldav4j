@@ -69,5 +69,15 @@ public class PutGetTest extends BaseTestCase {
                 CaldavStatus.SC_PRECONDITION_FAILED, statusCode);
    }
     
+    /**
+     * TODO test PUT with non-latin characters
+     */
+    public void testPutNonLatin()
+    throws Exception {
+    	// load an ICS with non-latin chars
+    	// create a PUT request with the given ICS
+    	// test for exceptions
+    	// moreover: try a GET to see if event is changed
+    }
 
 }
