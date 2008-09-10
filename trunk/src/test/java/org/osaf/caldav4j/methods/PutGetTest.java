@@ -1,7 +1,15 @@
 package org.osaf.caldav4j.methods;
 
+import java.util.Locale;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
+
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Summary;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -14,7 +22,7 @@ import org.osaf.caldav4j.util.ICalendarUtils;
 public class PutGetTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(PutGetTest.class);
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
-     
+    private ResourceBundle messages;
     
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
             + "/" + COLLECTION;
@@ -74,8 +82,61 @@ public class PutGetTest extends BaseTestCase {
      */
     public void testPutNonLatin()
     throws Exception {
-    	// load an ICS with non-latin chars
+    	
+        HttpClient http = createHttpClient();
+        HostConfiguration hostConfig = createHostConfiguration();
+    	
+    	// load an ICS and substitute summary with non-latin chars
+    	Locale.setDefault(new Locale("ru","RU"));
+    	messages = PropertyResourceBundle.getBundle("messages");
+    	String myLocalSummary = messages.getString("summary"); 
+
+        Calendar cal = getCalendarResource(BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_PATH);
+        Component calendarComponent =  cal.getComponent(Component.VEVENT);
+        ICalendarUtils.addOrReplaceProperty(calendarComponent, 
+        		new Summary(myLocalSummary));
+        assertEquals(myLocalSummary, 
+        		ICalendarUtils.getPropertyValue(calendarComponent, Property.SUMMARY));
+
     	// create a PUT request with the given ICS
+        PutMethod put = methodFactory.createPutMethod();
+        put.setIfNoneMatch(true);
+        put.setAllEtags(true);
+        put.setRequestBody(cal);
+        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+        http.executeMethod(hostConfig, put);
+        int statusCode = put.getStatusCode();
+        assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
+
+        //ok, so we created it...let's make sure it's there!
+        GetMethod get = methodFactory.createGetMethod();
+        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+        http.executeMethod(hostConfig, get);
+        statusCode = get.getStatusCode();
+        assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
+        
+        //now let's make sure we can get the resource body as a calendar
+        Calendar calendar = get.getResponseBodyAsCalendar();
+        VEvent event = ICalendarUtils.getFirstEvent(calendar);
+        String uid = ICalendarUtils.getUIDValue(event);
+        String summary = ICalendarUtils.getPropertyValue(event, Property.SUMMARY);
+        assertEquals(ICS_DAILY_NY_5PM_UID, uid);
+        assertEquals(myLocalSummary, summary);
+
+        
+        //let's make sure that a subsequent put with "if-none-match: *" fails
+        put = methodFactory.createPutMethod();
+        put.setIfNoneMatch(true);
+        put.setAllEtags(true);
+        put.setRequestBody(cal);
+        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+        http.executeMethod(hostConfig, put);
+        statusCode = put.getStatusCode();
+        assertEquals("Status code for put:",
+                CaldavStatus.SC_PRECONDITION_FAILED, statusCode);
+
+
+        
     	// test for exceptions
     	// moreover: try a GET to see if event is changed
     }
