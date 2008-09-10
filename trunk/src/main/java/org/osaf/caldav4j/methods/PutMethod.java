@@ -18,6 +18,8 @@ package org.osaf.caldav4j.methods;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -33,6 +35,8 @@ import net.fortuna.ical4j.model.property.Version;
 import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVConstants;
@@ -162,16 +166,23 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
         this.calendarOutputter = calendarOutputter;
     }
 
-    protected byte[] generateRequestBody() {
+    protected byte[] generateRequestBody()  {
         if (calendar != null){
             StringWriter writer = new StringWriter();
             try{
                 calendarOutputter.output(calendar, writer);
+                
+                RequestEntity requestEntity = new StringRequestEntity(writer.toString(),
+						CalDAVConstants.CALENDAR_CONTENT_TYPE, 
+						Charset.defaultCharset().toString());
+                setRequestEntity(requestEntity);                                
+            } catch (UnsupportedEncodingException e) {
+            	 log.error("Unsupported encoding in event" + writer.toString());
+            	 throw new RuntimeException("Problem generating calendar. ", e);
             } catch (Exception e){
                 log.error("Problem generating calendar: ", e);
                 throw new RuntimeException("Problem generating calendar. ", e);
             }
-            setRequestBody(writer.toString());
         }
         return super.generateRequestBody();
     }
