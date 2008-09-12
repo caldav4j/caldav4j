@@ -128,13 +128,15 @@ public class XMLUtils {
         temp = (Element) list.item(0);
         String tempTO = temp.getTextContent();
 
-        // Parses the timeout element's value into units and value
-        String[] array = tempTO.split("-");
-
-        // Store the Parsed Values
-        tr.setUnits(array[0]);
-        tr.setTimeout(new Integer(array[1]));
-
+        // Parses the timeout element's value into units and value in form Second-99999, otherwise no timeout (Infinite)
+        int idx=tempTO.indexOf('-');
+        if (idx!=-1)
+        {
+        	// Store the Parsed Values
+        	//  default timeout is Integer("")
+        	tr.setUnits(tempTO.substring(0,idx));
+       		tr.setTimeout(new Integer(tempTO.substring(idx+1)));
+        }
         list = element.getElementsByTagNameNS(CalDAVConstants.NS_XYTHOS,
                 CalDAVConstants.ELEM_VISITS);
         temp = (Element) list.item(0);
