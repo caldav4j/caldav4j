@@ -1,5 +1,9 @@
 #summary More info on building CalDAV4j
 
+== Get Java 1.6 ==
+
+Caldav4j requires Java 1.6
+
 == Get Maven 2.x ==
 
 [http://maven.apache.org/download.html Download] and install the latest version of the Maven build tool.
