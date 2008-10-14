@@ -5,9 +5,7 @@ package org.osaf.caldav4j;
  * 
  * @author rpolli
  * */
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -16,11 +14,12 @@ import net.fortuna.ical4j.model.Calendar;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
-import org.osaf.caldav4j.methods.OptionsMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
+import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.cache.NoOpResourceCache;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
+import org.osaf.caldav4j.methods.OptionsMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.model.request.PropProperty;
 
@@ -75,6 +74,11 @@ public abstract class CalDAVCalendarCollectionBase {
 	public void setCache(CalDAVResourceCache cache) {
 	    this.cache = cache;
 	}
+	
+	public boolean isCacheEnabled() {
+		return  (this.cache instanceof NoOpResourceCache) ? false : true;
+	}
+	
 
 	/**
 	 * Returns the path relative to the calendars path given an href
@@ -106,6 +110,27 @@ public abstract class CalDAVCalendarCollectionBase {
 	    + path;
 	    return href;
 	}
+	 
+		
+
+		/**
+		 * create cache resources: UID_TO_HREF, HREF_TO_RESOURCE
+		 * XXX test it
+		 */
+		public void enableSimpleCache() throws CalDAV4JException {	        
+	        this.setCache(EhCacheResourceCache.createSimpleCache());
+		}
+		
+		/**
+		 * set cache to NoOpResourceCache
+		 * XXX test it
+		 */
+		public void disableSimpleCache() {
+			EhCacheResourceCache.removeSimpleCache();	        
+	        this.setCache(NoOpResourceCache.SINGLETON);
+		}
+
+	 
 
 	void put(HttpClient httpClient, Calendar calendar, String path,
 	        String etag)
@@ -136,8 +161,7 @@ public abstract class CalDAVCalendarCollectionBase {
 	        String newEtag = h.getValue();
 	        cache.putResource(new CalDAVResource(calendar, newEtag, getHref(path)));
 	    }
-	    
-	
+	    	
 	}
 
 	/**
