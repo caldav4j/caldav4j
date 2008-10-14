@@ -5,8 +5,11 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheException;
+import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.ObjectExistsException;
 
+import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVResource;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
@@ -18,9 +21,52 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
     private Cache uidToHrefCache = null;
     private Cache hrefToResourceCache = null;
         
+	// cache names
+    private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";
+    private static final String UID_TO_HREF_CACHE = "uidToHrefCache";
+    
+    
     public EhCacheResourceCache(){
         
     }
+    
+    
+    /**
+     * create a simple/dummy cache
+     * @return a simple EhCacheResourceCache
+     */
+    public static EhCacheResourceCache createSimpleCache()
+    	throws CalDAV4JException
+    {	    
+
+    	CacheManager cacheManager = CacheManager.create();
+        EhCacheResourceCache myCache = new EhCacheResourceCache();
+        Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, false, false,
+                600, 300, false, 0);
+        Cache hrefToResourceCache = new Cache(HREF_TO_RESOURCE_CACHE, 1000,
+                false, false, 600, 300, false, 0);
+        myCache.setHrefToResourceCache(hrefToResourceCache);
+        myCache.setUidToHrefCache(uidToHrefCache);
+        try {
+	        cacheManager.addCache(uidToHrefCache);
+	        cacheManager.addCache(hrefToResourceCache);
+        } catch (ObjectExistsException e) {
+        	// FIXME check if it's ok
+        	e.printStackTrace();
+        	throw new CalDAV4JException("Cache exists",e);
+        }
+        return myCache;
+    }
+    
+    /**
+     * remove simple cache
+     */
+    public static void removeSimpleCache() {
+        CacheManager cacheManager = CacheManager.create();
+        cacheManager.removeCache(UID_TO_HREF_CACHE);
+        cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
+    }
+    
     
     public Cache getHrefToResourceCache() {
         return hrefToResourceCache;
