@@ -1,1 +1,12 @@
 #summary What's next for CalDAV4j?
+
+for 0.6
+ * basic scheduling support
+ * basic ACL management
+
+for 0.7
+ * better code
+ * profiling
+
+for 1.0
+ * documentation
