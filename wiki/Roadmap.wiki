@@ -9,4 +9,11 @@ for 0.7
  * profiling
 
 for 1.0
- * documentation
+ * documentation: example code shows very well how to use caldav4j. As I've no time for documentation, people are welcome to contribute posting it to mailing list and I'll put it into the wiki. 
+
+I'd like to ear from you:
+  * is jackrabbit a priority for caldav4j?
+  * can you contribute in profiling and benchmarking code?
+  * if you or your organization use caldav4j you're welcome to post a mail to start a "success stories" page!
+
+Peace, R.
