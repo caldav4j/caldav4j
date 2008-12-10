@@ -6,7 +6,7 @@ import org.osaf.caldav4j.BaseTestCase;
 
 public class CalDAVReportMethodTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(CalDAVReportMethodTest.class);
-    private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+   // private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     
     
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT

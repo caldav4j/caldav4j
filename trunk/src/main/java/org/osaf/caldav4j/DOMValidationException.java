@@ -22,7 +22,12 @@ package org.osaf.caldav4j;
  */
 public class DOMValidationException extends CalDAV4JException {
 
-    public DOMValidationException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6661253484687262767L;
+
+	public DOMValidationException(String message) {
         super(message);
     }
     

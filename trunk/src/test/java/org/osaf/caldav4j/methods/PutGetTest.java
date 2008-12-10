@@ -21,7 +21,7 @@ import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class PutGetTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(PutGetTest.class);
-    private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+    //private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     private ResourceBundle messages;
     
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT

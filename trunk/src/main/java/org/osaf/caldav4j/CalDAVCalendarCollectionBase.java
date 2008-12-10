@@ -24,15 +24,13 @@ import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.model.request.PropProperty;
 
 public abstract class CalDAVCalendarCollectionBase {
-
-	public static final PropProperty PROP_ETAG = new PropProperty(
-			CalDAVConstants.NS_DAV, "D", CalDAVConstants.PROP_GETETAG);	
+	
 	 CalDAV4JMethodFactory methodFactory = null;
 	 String calendarCollectionRoot = null;
 	 HostConfiguration hostConfiguration = null;
 	 String prodId = null;
 	 Random random = new Random();
-	 CalDAVResourceCache cache = NoOpResourceCache.SINGLETON;
+	 protected CalDAVResourceCache cache = NoOpResourceCache.SINGLETON;
 
 	//Configuration Methods
 	
@@ -76,7 +74,8 @@ public abstract class CalDAVCalendarCollectionBase {
 	}
 	
 	public boolean isCacheEnabled() {
-		return  (this.cache instanceof NoOpResourceCache) ? false : true;
+		boolean p =  (this.cache instanceof NoOpResourceCache);
+		return !p;
 	}
 	
 

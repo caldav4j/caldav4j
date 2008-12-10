@@ -13,6 +13,7 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,7 +63,7 @@ public class ICalendarUtilTest extends BaseTestCase{
      *  as .ics is not a valid caldav one
      * @throws Exception
      */
-    public void testSetIcsUid() throws Exception {
+    public void _testSetIcsUid() throws Exception {
     	// test variable
     	Component component = null; 
     	
@@ -82,6 +83,16 @@ public class ICalendarUtilTest extends BaseTestCase{
 		}
 		assertNull(component);
 
+    }
+    
+    public void testParseStrangeICs() throws Exception {
+		//	CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, false);
+		//CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
+		//CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
+		//CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
+
+    	Calendar strangeIcs =  this.parseICS("Recurrent_with_timezone.ics");
+    	log.warn(strangeIcs);
     }
     
 	/**
@@ -121,7 +132,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 	/**
 	 * append an uid to a Component from an one-component calendar
 	 */
-	public void testSetCalendarUid() throws Exception {
+	public void _testSetCalendarUid() throws Exception {
 		// get a calendar from file  
 		// or create one
 		String resource = "Google_NOUID_Daily_NY_5pm.ics";
@@ -157,7 +168,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 	/**
 	 * replace an uid to a Component from an one-component calendar
 	 */
-	public void testReplaceCalendarUid() throws Exception{
+	public void _testReplaceCalendarUid() throws Exception{
 		// get a calendar from file  
 		// or create one
 		String resource = "Google_Daily_NY_5pm.ics";
