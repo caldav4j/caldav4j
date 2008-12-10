@@ -23,7 +23,12 @@ package org.osaf.caldav4j;
  */
 public class ResourceOutOfDateException extends CalDAV4JException {
 
-    public ResourceOutOfDateException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7814395605221751094L;
+
+	public ResourceOutOfDateException(String message) {
         super(message);
     }
     

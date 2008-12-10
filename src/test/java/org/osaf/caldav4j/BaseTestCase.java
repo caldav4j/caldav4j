@@ -61,6 +61,8 @@ public abstract class BaseTestCase
     public static final String CALDAV_SERVER_PASSWORD = CaldavCredential.CALDAV_SERVER_PASSWORD;    
     public static final String COLLECTION      = CaldavCredential.COLLECTION;
     public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
+    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
+    + COLLECTION;
 
     public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
     public static final String ICS_DAILY_NY_5PM_UID = "DE916949-731D-4DAE-BA93-48A38B2B2030";
@@ -102,7 +104,7 @@ public abstract class BaseTestCase
     public static final String ICS_GOOGLE_SINGLE_EVENT = "66be2585-327b-4cc1-93a7-d0e6de648183" + ".ics";
     public static final String ICS_SINGLE_EVENT= "singleEvent.ics";
 
-    private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+    protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     
     public String getCalDAVServerHost() {
         return CALDAV_SERVER_HOST;

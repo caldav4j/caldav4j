@@ -22,7 +22,12 @@ package org.osaf.caldav4j;
  */
 public class CacheException extends CalDAV4JException {
 
-    public CacheException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1543727714287441815L;
+
+	public CacheException(String message) {
         super(message);
     }
     

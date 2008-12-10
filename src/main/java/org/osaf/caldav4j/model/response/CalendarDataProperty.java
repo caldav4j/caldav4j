@@ -18,6 +18,8 @@
 package org.osaf.caldav4j.model.response;
 
 import java.io.StringReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
@@ -48,14 +50,25 @@ public class CalendarDataProperty extends BaseProperty {
 
 		String text = getElement().getTextContent();
 		text.trim();
+		
+		
 		//text might contain lines breaked only with \n. RFC states that long lines must be delimited by CRLF.
 		//@see{http://www.apps.ietf.org/rfc/rfc2445.html#sec-4.1 }
 		//this fix the problem occurred when lines are breaked only with \n 
 		text=text.replaceAll("\n","\r\n").replaceAll("\r\r\n", "\r\n");
+		
+		// FIXME
+		
+//		Pattern noDayLight = Pattern.compile("BEGIN:VTIMEZONE.*END:VTIMEZONE", Pattern.DOTALL);
+//		Matcher m = noDayLight.matcher(text);
+//		text = m.replaceAll("");
 		CalendarBuilder builder = new CalendarBuilder();
 		StringReader stringReader = new StringReader(text);
+		//System.out.println(text); // FIXME debug
 		try {
 			calendar = builder.build(stringReader);
+			builder = null;
+			stringReader = null;
 			return calendar;
 		} catch (Exception e) {
 			throw new CalDAV4JException("Problem building calendar", e);

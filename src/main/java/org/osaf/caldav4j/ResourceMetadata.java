@@ -18,7 +18,11 @@ package org.osaf.caldav4j;
 import java.io.Serializable;
 
 public class ResourceMetadata implements Serializable {
-    private String eTag = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3385356629201926900L;
+	private String eTag = null;
     private String href = null;
     
     
