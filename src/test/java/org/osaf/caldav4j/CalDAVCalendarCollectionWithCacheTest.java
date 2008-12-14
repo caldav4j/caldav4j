@@ -20,7 +20,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.event.CacheEventListener;
 
-import org.apache.commons.httpclient.HttpClient;
+import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;

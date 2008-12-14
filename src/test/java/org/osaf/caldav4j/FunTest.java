@@ -9,7 +9,7 @@ import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.parameter.Value;
 
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
+import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.Property;
