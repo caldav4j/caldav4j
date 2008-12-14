@@ -9,6 +9,7 @@ package org.osaf.caldav4j.scheduling.util;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.AbstractCollection;
 import java.util.TimeZone;
 
 import net.fortuna.ical4j.data.ParserException;
@@ -31,6 +32,12 @@ public class ITipUtils {
 	private static final Log log = LogFactory.getLog(ITipUtils.class);    
 	private static java.util.TimeZone J_TZ_GMT = TimeZone.getTimeZone("GMT");
 
+	
+	public static Calendar ReplyInvitation(Calendar invite, Attendee mySelf, PartStat replyPartStat ) throws CalDAV4JException {
+		return ManageInvitation(  invite,   mySelf, Method.REPLY, replyPartStat);
+	}
+	
+	
 	/**
 	 * Manage an invitation to a meeting (VCOMPONENT), setting
 	 *  METHOD:REPLY
@@ -43,67 +50,73 @@ public class ITipUtils {
 	 * @throws ParseException 
 	 * @throws CalDAV4JException 
 	 */
-	public static Calendar ManageInvitation(Calendar invite, Attendee mySelf, String action) 
-	throws ParseException, IOException, URISyntaxException, CalDAV4JException 
+	public static Calendar ManageInvitation(Calendar invite, Attendee mySelf, Method responseMethod, PartStat responsePartStat) 
+		throws CalDAV4JException 
 	{
-		Calendar reply = new Calendar(invite);
-		//  if it's not a REQUEST, throw Exception
-		if (reply.getProperty(Property.METHOD) != null ) {
-			if (checkMethod(Method.REQUEST,reply) ) {
-				if (Method.REPLY.getValue().equals(action)) {
-					// use REPLY to event
-					reply.getProperties().remove(Method.REQUEST);
-					reply.getProperties().add(Method.REPLY);
+		Calendar reply;
+		try {
+			reply = new Calendar(invite);
 
-					// Except if I'm not invited
-					if (processAttendees(reply, mySelf, action)<1)
-						throw new CalDAV4JException("Attendee " + mySelf + "not invited to event");
-
-
-
-					// set the right PartStat
-
-
+			//  if it's not a REQUEST, throw Exception
+			if (reply.getProperty(Property.METHOD) != null ) {
+				if (compareMethod(Method.REQUEST,reply.getMethod()) ) {
+					
+					// if REPLY
+					if (compareMethod(Method.REPLY, responseMethod)) {
+						// use REPLY to event
+						reply.getProperties().remove(Method.REQUEST);
+						reply.getProperties().add(Method.REPLY);
+						
+						processAttendees(reply, mySelf, responsePartStat);
+					
+					}
 				}
 			}
-		} 
-
-		// if I'm not an ATTENDEE throw Exception
-		// if action is not valid, throw Exception
-
+			return reply; 
+		} catch (Exception e) {
+			log.warn("Calendar " + invite + "malformed");
+			throw new CalDAV4JException("Calendar " + invite + "malformed", new Throwable("Bad calendar REQUEST"));
+		}
 	}
 
 	// check if Calendar contains the given method, in a faster way (string comparison)
-	private static boolean checkMethod(Method m, Calendar c) {
+	private static boolean compareMethod(Method m, Method n) {
 		try {
-			return m.getValue().equals(c.getProperty(Property.METHOD).getValue());
+			return m.getValue().equals(n.getValue());
 		} catch (NullPointerException e) {
 			return false;
 		}
 	}
 
 	// remove attendees, returning number of attendees matching user
-	private static int processAttendees(Calendar c, Attendee user, String action) {
-		PropertyList attendees = null;
+	private static void processAttendees(Calendar c, Attendee user, PartStat action)
+		throws CalDAV4JException 
+	{
+		int numAttendees=0;
 		for (Object o : c.getComponents()) {
 			if (! (o instanceof VTimeZone)) {
 
 				CalendarComponent cc = (CalendarComponent) o;
-				attendees = cc.getProperties(Property.ATTENDEE);
+				PropertyList attendees = cc.getProperties(Property.ATTENDEE);
+				cc.getProperties().removeAll(attendees);
 
 				//remove attendees unmatching user
-				for (int i=0; i<attendees.size(); i++) {
-					Attendee a = (Attendee) attendees.get(i);
+				while (attendees.size()>numAttendees) {
+					Attendee a = (Attendee) attendees.get(numAttendees);
 					if (! a.getValue().equals(user.getValue())) {
-						attendees.remove(i);
+						attendees.remove(numAttendees);
 					}  else {
 						a.getParameters().remove(a.getParameter(Parameter.PARTSTAT));
-						a.getParameters().add(new PartStat(action));
+						a.getParameters().add(action);
+						numAttendees++;
 					}
 				} // attendees
-
+				
+				cc.getProperties().addAll(attendees);
 			}
 		} // for
-		return attendees.size();
+		
+		if (numAttendees<1)		
+			throw new CalDAV4JException("Attendee " + user + "not invited to event", new Throwable("Missing attendee"));
 	}
 }
