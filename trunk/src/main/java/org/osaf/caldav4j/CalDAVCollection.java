@@ -23,6 +23,7 @@ import static org.osaf.caldav4j.util.ICalendarUtils.getUIDValue;
 import static org.osaf.caldav4j.util.UrlUtils.stripHost;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -41,27 +42,22 @@ import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.webdav.lib.PropertyName;
-import org.osaf.caldav4j.methods.DeleteMethod;
-import org.osaf.caldav4j.methods.PropFindMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
-import org.omg.CosNaming.IstringHelper;
-import org.osaf.caldav4j.cache.EhCacheResourceCache;
-import org.osaf.caldav4j.cache.NoOpResourceCache;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.CalDAVReportMethod;
 import org.osaf.caldav4j.methods.DelTicketMethod;
+import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.methods.GetMethod;
+import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.MkTicketMethod;
+import org.osaf.caldav4j.methods.PropFindMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.model.request.CalendarData;
 import org.osaf.caldav4j.model.request.CalendarMultiget;
@@ -1155,7 +1151,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @return
 	 * @throws CalDAV4JException
 	 */
-	protected List<CalDAVResource> getCalDAVResources(HttpClient httpClient, CalendarQuery query)
+	protected List<CalDAVResource> getCalDAVResources(org.osaf.caldav4j.methods.HttpClient httpClient, CalendarQuery query)
 		throws CalDAV4JException 
 	{
 		if (isCacheEnabled()) {
@@ -1166,6 +1162,10 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		reportMethod.setReportRequest(query);
 		try {
 			httpClient.executeMethod(getHostConfiguration(), reportMethod);
+		} catch (ConnectException connEx) {
+			// TODO getHostURL is synchronized
+			throw new CalDAV4JException("Can't connecto to "+
+					getHostConfiguration().getHostURL(), connEx.getCause());
 		} catch (Exception he) {
 			throw new CalDAV4JException("Problem executing method", he);
 		}

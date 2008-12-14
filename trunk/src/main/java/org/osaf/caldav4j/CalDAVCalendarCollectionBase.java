@@ -13,7 +13,7 @@ import net.fortuna.ical4j.model.Calendar;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
+import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
@@ -21,7 +21,6 @@ import org.osaf.caldav4j.cache.NoOpResourceCache;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.OptionsMethod;
 import org.osaf.caldav4j.methods.PutMethod;
-import org.osaf.caldav4j.model.request.PropProperty;
 
 public abstract class CalDAVCalendarCollectionBase {
 	
