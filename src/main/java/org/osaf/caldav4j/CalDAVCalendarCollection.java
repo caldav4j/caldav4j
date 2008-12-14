@@ -45,7 +45,7 @@ import net.fortuna.ical4j.model.property.Version;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
+import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.webdav.lib.PropertyName;
