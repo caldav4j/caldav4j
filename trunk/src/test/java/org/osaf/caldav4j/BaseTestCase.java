@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
+import junit.textui.TestRunner;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
@@ -48,7 +49,7 @@ import org.osaf.caldav4j.util.ICalendarUtils;
  * Base class for CalDAV4j tests.
  */
 public abstract class BaseTestCase
-    extends TestCase{
+    extends TestCase {
     private static final Log log = LogFactory.getLog(BaseTestCase.class);
     private HttpClient http = createHttpClient();
     private HostConfiguration hostConfig = createHostConfiguration();

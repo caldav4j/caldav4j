@@ -8,37 +8,38 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.ParameterList;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
-import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.XProperty;
 
-import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
 import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
+import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.PostMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.scheduling.methods.CalDAV4JScheduleMethodFactory;
 import org.osaf.caldav4j.scheduling.methods.SchedulePostMethod;
+import org.osaf.caldav4j.scheduling.util.ITipUtils;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class SchedulePostMethodTest extends BaseTestCase {
 	private CalDAV4JScheduleMethodFactory scheduleMethodFactory = new CalDAV4JScheduleMethodFactory();
+
+	HttpClient http = createHttpClient();
+	HostConfiguration hostConfig = createHostConfiguration();
+	
+	public static final String BEDEWORK_RTSVC_URL = "/pubcaldav/rtsvc";
 	/**
 	 * create a simple meeting POSTing to /Outbox
 	 * and process a response
 	 */
 	public void _testSimpeMeetingInvite_Accept() {
-		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
+
 
 		Calendar invite = this
 		.getCalendarResource("meeting_invitation.ics");
@@ -49,7 +50,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		ICalendarUtils.addOrReplaceProperty(refreshEvent.getComponent(Component.VEVENT), myUid);
 
 		SchedulePostMethod request = scheduleMethodFactory.createSchedulePostMethod();
-		request.setPath("/pubcaldav/rtsvc");
+		request.setPath(BEDEWORK_RTSVC_URL);
 		request.setHostConfiguration(hostConfig);
 		request.setRequestBody(invite);
 		try {
@@ -68,7 +69,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 
 		//refresh invitation
 		PostMethod refresh = methodFactory.createPostMethod();
-		refresh.setPath("/pubcaldav/rtsvc");
+		refresh.setPath(BEDEWORK_RTSVC_URL);
 		refresh.setHostConfiguration(hostConfig);
 		refresh.setRequestBody(refreshEvent);
 		refresh.setRequestHeader("Originator","mailto:r@r.it");
@@ -94,8 +95,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * @throws URISyntaxException 
 	 */
 	public void _testRealTimeScheduling_SimpleMeetingInvitation() throws URISyntaxException {
-		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
+
 
 		Calendar invite = this
 		.getCalendarResource("meeting_invitation.ics");
@@ -105,21 +105,21 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		VEvent event = (VEvent) invite.getComponent(Component.VEVENT);
 		ICalendarUtils.addOrReplaceProperty(event,
 				new Organizer("mailto:rpolli@babel.it")
-				);
+		);
 		ParameterList plist = new ParameterList();
 		plist.add(new PartStat("NEED-ACTION"));
-				
+
 		ICalendarUtils.addOrReplaceProperty(event, 
 				new Attendee(plist, "mailto:g@r.it"));
 		event.getProperties().add(new Attendee(plist, "mailto:roberto.polli@babel.it"));
 		event.getProperties().add(new Attendee(plist, "mailto:robipolli@gmail.com"));
 
-	
+
 		ICalendarUtils.addOrReplaceProperty(event, 
 				new Uid(new DateTime().toString()));
-		
+
 		SchedulePostMethod request = scheduleMethodFactory.createSchedulePostMethod();
-		request.setPath("/pubcaldav/rtsvc");
+		request.setPath(BEDEWORK_RTSVC_URL);
 		request.setHostConfiguration(hostConfig);
 		request.setRequestBody(invite);
 		try {
@@ -146,65 +146,53 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * @throws ParseException 
 	 */
 	public void testRealTimeScheduling_SimpleMeetingReply() 
-		throws URISyntaxException, HttpException, IOException, ParseException 
+	throws URISyntaxException, HttpException, IOException, ParseException, CalDAV4JException
 	{
-		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
-
 		Calendar invite = this
-		.getCalendarResource("meeting_invitation.ics");
-		
+		.getCalendarResource("iCal-20081127-092400.ics");
+
 		VEvent event = (VEvent) invite.getComponent(Component.VEVENT);
-		
+
+
 		// r@r.it invites GMAIL
 		ICalendarUtils.addOrReplaceProperty(event,new Organizer("mailto:r@r.it"));
-		ParameterList needAction = new ParameterList();
-		needAction.add(PartStat.NEEDS_ACTION);
-		ParameterList accepted = new ParameterList();
-		accepted.add(PartStat.ACCEPTED);
-		
-		event.getProperties().add(new Attendee(needAction, "mailto:robipolli@gmail.com"));
-		ICalendarUtils.addOrReplaceProperty(event, 
-				new Uid("SAMPLE_INVITE_UID"));
 
-		// POST a meeting in /calendar inviting GMAIL
-		System.out.println("REQUEST...");
 
-		PutMethod request = methodFactory.createPutMethod();
-		request.setPath(CALDAV_SERVER_WEBDAV_ROOT + "/calendar/" + event.getUid().getValue() + ".ics");
-		request.setHostConfiguration(hostConfig);
-		request.setRequestBody(invite);
+		for (int j=0; j<10; j++) {
+			Uid myUid = new Uid(new DateTime().toString() + j);
+			ICalendarUtils.addOrReplaceProperty(event, myUid);
+			// Create meeting in /calendar 
+			System.out.println("PUT...");
 
-		http.executeMethod(request);
-		if (request.getStatusCode() != 200) {
-			System.out.println("error: " + request.getStatusText()); 
+			PutMethod request = methodFactory.createPutMethod();
+			request.setPath(CALDAV_SERVER_WEBDAV_ROOT + "/calendar/" + event.getUid().getValue() + ".ics");
+			request.setHostConfiguration(hostConfig);
+			request.setRequestBody(invite);
+
+			http.executeMethod(request);
+			if (request.getStatusCode() != 200) {
+				System.out.println("error: " + request.getStatusText()); 
+			}
+			System.out.println(request.getResponseBodyAsString());
+
+			// update event like a REPLY from robipolli@gmail.com
+			Calendar response = ITipUtils.ReplyInvitation(invite, new Attendee("mailto:robipolli@gmail.com"), PartStat.ACCEPTED);
+
+			// POST to /rtsvc a REPLY from GMAIL
+			System.out.println("REPLY...#" + j);
+			PostMethod reply = methodFactory.createPostMethod();
+			reply.setPath(BEDEWORK_RTSVC_URL);
+			reply.setHostConfiguration(hostConfig);
+			reply.setRequestBody(response);
+			reply.setRequestHeader("originator", "mailto:r@r.it");
+			reply.setRequestHeader("recipient", "mailto:r@r.it");
+
+			http.executeMethod(reply);
+			if (request.getStatusCode() != 200) {
+				System.out.println("error: " + reply.getStatusText()); 
+			}
+			System.out.println(reply.getResponseBodyAsString());
 		}
-		System.out.println(request.getResponseBodyAsString());
-
-		// update event like a REPLY
-		event.getProperties().remove(new Attendee(needAction, "mailto:r@r.it"));
-		event.getProperties().remove(new Attendee(needAction,"mailto:robipolli@gmail.com"));
-		event.getProperties().add(new Attendee(accepted, "mailto:robipolli@gmail.com"));
-		invite.getProperties().remove(Method.REQUEST);
-		invite.getProperties().add(Method.REPLY);
-		
-
-		// POST to /rtsvc a REPLY from GMAIL
-		System.out.println("REPLY...");
-		PostMethod reply = methodFactory.createPostMethod();
-		reply.setPath("/pubcaldav/rtsvc");
-		reply.setHostConfiguration(hostConfig);
-		reply.setRequestBody(invite);
-		//reply.setRequestHeader("recipient", "mailto:robipolli@gmail.com");
-		reply.setRequestHeader("originator", "mailto:r@r.it");
-		reply.setRequestHeader("recipient", "mailto:r@r.it");
-
-		http.executeMethod(reply);
-		if (request.getStatusCode() != 200) {
-			System.out.println("error: " + reply.getStatusText()); 
-		}
-		System.out.println(reply.getResponseBodyAsString());
-
 
 	}
 
@@ -224,19 +212,19 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		ICalendarUtils.addOrReplaceProperty(
 				event,
 				new Organizer("mailto:rpolli@babel.it")
-				);
+		);
 		ParameterList plist = new ParameterList();
 		plist.add(new PartStat("NEED-ACTION"));
-		
+
 		ICalendarUtils.addOrReplaceProperty(event, 
 				new Attendee(plist, "mailto:r@r.it"));
 		ICalendarUtils.addOrReplaceProperty(event,
 				new XProperty("X-BEDEWORK-SUBMITTEDBY", "r@r.it"));
 		ICalendarUtils.addOrReplaceProperty(event, 
 				new Uid(new DateTime().toString()));
-		
+
 		SchedulePostMethod request = scheduleMethodFactory
-																.createSchedulePostMethod();
+		.createSchedulePostMethod();
 		request.setPath(CALDAV_SERVER_WEBDAV_ROOT + "/Outbox/");
 		request.setHostConfiguration(hostConfig);
 		request.setRequestBody(invite);
