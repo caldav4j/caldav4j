@@ -18,12 +18,7 @@ package org.osaf.caldav4j;
 
 public class ResourceNotFoundException extends CalDAV4JException {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -2715709811374171807L;
-
-	public enum IdentifierType{
+    public enum IdentifierType{
         UID,
         PATH;
     }

@@ -12,7 +12,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Summary;
 
 import org.apache.commons.httpclient.HostConfiguration;
-import org.osaf.caldav4j.methods.HttpClient;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.BaseTestCase;
@@ -21,7 +21,7 @@ import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class PutGetTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(PutGetTest.class);
-    //private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+    private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     private ResourceBundle messages;
     
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT

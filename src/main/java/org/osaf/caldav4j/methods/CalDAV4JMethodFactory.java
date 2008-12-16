@@ -23,7 +23,7 @@ import org.osaf.caldav4j.CalDAVConstants;
 
 public class CalDAV4JMethodFactory {
 
-    protected String prodID = CalDAVConstants.PROC_ID_DEFAULT;
+    String prodID = CalDAVConstants.PROC_ID_DEFAULT;
     private boolean validatingOutputter = false;
     
     private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
@@ -46,13 +46,6 @@ public class CalDAV4JMethodFactory {
         putMethod.setProcID(prodID);
         putMethod.setCalendarOutputter(getCalendarOutputterInstance());
         return putMethod;
-    }
-    
-    public PostMethod createPostMethod(){
-        PostMethod postMethod = new PostMethod();
-        postMethod.setProcID(prodID);
-        postMethod.setCalendarOutputter(getCalendarOutputterInstance());
-        return postMethod;
     }
     
     public MkCalendarMethod createMkCalendarMethod(){
@@ -96,7 +89,7 @@ public class CalDAV4JMethodFactory {
     }
     
     
-    protected synchronized CalendarOutputter getCalendarOutputterInstance(){
+    private synchronized CalendarOutputter getCalendarOutputterInstance(){
         if (calendarOutputter == null){
             calendarOutputter = new CalendarOutputter(validatingOutputter);
         }

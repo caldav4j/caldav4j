@@ -25,7 +25,6 @@ public interface CalDAVConstants {
 
     public static final String METHOD_MKCALENDAR = "MKCALENDAR";
     public static final String METHOD_PUT = "PUT";
-    public static final String METHOD_POST = "POST";
     public static final String METHOD_REPORT = "REPORT";
     public static final String METHOD_MKTICKET = "MKTICKET";
     public static final String METHOD_DELTICKET = "DELTICKET";
@@ -72,5 +71,4 @@ public interface CalDAVConstants {
 
 	public static final PropProperty PROP_ETAG = new PropProperty(
 			CalDAVConstants.NS_DAV, "D", CalDAVConstants.PROP_GETETAG);
-	
 }

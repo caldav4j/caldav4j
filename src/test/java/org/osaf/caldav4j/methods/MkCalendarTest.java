@@ -1,7 +1,7 @@
 package org.osaf.caldav4j.methods;
 
 import org.apache.commons.httpclient.HostConfiguration;
-import org.osaf.caldav4j.methods.HttpClient;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

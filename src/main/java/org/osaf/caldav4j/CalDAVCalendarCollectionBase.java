@@ -13,7 +13,7 @@ import net.fortuna.ical4j.model.Calendar;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.osaf.caldav4j.methods.HttpClient;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
@@ -21,15 +21,18 @@ import org.osaf.caldav4j.cache.NoOpResourceCache;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.OptionsMethod;
 import org.osaf.caldav4j.methods.PutMethod;
+import org.osaf.caldav4j.model.request.PropProperty;
 
 public abstract class CalDAVCalendarCollectionBase {
-	
+
+	public static final PropProperty PROP_ETAG = new PropProperty(
+			CalDAVConstants.NS_DAV, "D", CalDAVConstants.PROP_GETETAG);	
 	 CalDAV4JMethodFactory methodFactory = null;
 	 String calendarCollectionRoot = null;
 	 HostConfiguration hostConfiguration = null;
 	 String prodId = null;
 	 Random random = new Random();
-	 protected CalDAVResourceCache cache = NoOpResourceCache.SINGLETON;
+	 CalDAVResourceCache cache = NoOpResourceCache.SINGLETON;
 
 	//Configuration Methods
 	
@@ -73,8 +76,7 @@ public abstract class CalDAVCalendarCollectionBase {
 	}
 	
 	public boolean isCacheEnabled() {
-		boolean p =  (this.cache instanceof NoOpResourceCache);
-		return !p;
+		return  (this.cache instanceof NoOpResourceCache) ? false : true;
 	}
 	
 

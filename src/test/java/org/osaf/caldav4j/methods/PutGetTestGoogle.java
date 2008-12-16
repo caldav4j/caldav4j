@@ -7,7 +7,7 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
 
 import org.apache.commons.httpclient.HostConfiguration;
-import org.osaf.caldav4j.methods.HttpClient;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.BaseTestCase;

@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
-import junit.textui.TestRunner;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
@@ -49,7 +48,7 @@ import org.osaf.caldav4j.util.ICalendarUtils;
  * Base class for CalDAV4j tests.
  */
 public abstract class BaseTestCase
-    extends TestCase {
+    extends TestCase{
     private static final Log log = LogFactory.getLog(BaseTestCase.class);
     private HttpClient http = createHttpClient();
     private HostConfiguration hostConfig = createHostConfiguration();
@@ -62,8 +61,6 @@ public abstract class BaseTestCase
     public static final String CALDAV_SERVER_PASSWORD = CaldavCredential.CALDAV_SERVER_PASSWORD;    
     public static final String COLLECTION      = CaldavCredential.COLLECTION;
     public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
-    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-    + COLLECTION;
 
     public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
     public static final String ICS_DAILY_NY_5PM_UID = "DE916949-731D-4DAE-BA93-48A38B2B2030";
@@ -105,7 +102,7 @@ public abstract class BaseTestCase
     public static final String ICS_GOOGLE_SINGLE_EVENT = "66be2585-327b-4cc1-93a7-d0e6de648183" + ".ics";
     public static final String ICS_SINGLE_EVENT= "singleEvent.ics";
 
-    protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+    private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     
     public String getCalDAVServerHost() {
         return CALDAV_SERVER_HOST;
