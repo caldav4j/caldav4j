@@ -31,7 +31,7 @@ public class FunTest extends BaseTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         try {
-        	mkdir(COLLECTION_PATH);
+        	mkcalendar(COLLECTION_PATH);
         } catch (Exception e) {
 			// TODO: handle exception
         	e.printStackTrace();
@@ -65,21 +65,21 @@ public class FunTest extends BaseTestCase {
         propFindMethod.setDepth(DepthSupport.DEPTH_INFINITY);
         propFindMethod.setPath(CALDAV_SERVER_WEBDAV_ROOT);
         propFindMethod.setType(PropFindMethod.BY_NAME);
-        Vector v = new Vector();
+        Vector<PropertyName> v = new Vector<PropertyName>();
         v.add(propName);
         propFindMethod.setPropertyNames(v.elements());
         http.executeMethod(hostConfig, propFindMethod);
-        Enumeration e = propFindMethod.getResponses();
+        Enumeration<Response> e = propFindMethod.getResponses();
         while (e.hasMoreElements()){
             Response response = (Response) e.nextElement();
-            Enumeration eProp = response.getProperties();
+            Enumeration<Property> eProp = response.getProperties();
             while (eProp.hasMoreElements()){
                 Property property = (Property) eProp.nextElement();
                 String nodeName = property.getElement().getNodeName();
                 String localName = property.getElement().getLocalName();
                 String tagName = property.getElement().getTagName();
                 String namespaceURI = property.getElement().getNamespaceURI();
-                System.err.println("nodename" + nodeName);
+                log.info("nodename: " + nodeName);
             }
             
         }
