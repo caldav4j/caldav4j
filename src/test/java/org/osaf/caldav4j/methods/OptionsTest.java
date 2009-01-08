@@ -38,9 +38,8 @@ public class OptionsTest extends BaseTestCase {
 	
 	        OptionsMethod options = new OptionsMethod();
 	        options.setPath(CALDAV_SERVER_WEBDAV_ROOT + s);
-	        options.setHostConfiguration(hostConfig);
 	        try {
-				http.executeMethod(options);
+				http.executeMethod(hostConfig,options);
 				int statusCode = options.getStatusCode();
 				if (statusCode == 200) {
 					System.out.println(options.getResponseHeader("Allow"));

@@ -27,8 +27,8 @@ public class SimpleDOMOutputtingObject extends OutputsDOMBase{
     private String namespaceQualifier = null;
     private String namespaceURI = null;
     private String textContent = null;
-    private List children = new ArrayList();
-    private Map attributes = new HashMap();
+    private List<OutputsDOM> children = new ArrayList<OutputsDOM>();
+    private Map<String, String> attributes = new HashMap<String, String>();
     
     public SimpleDOMOutputtingObject(){
         
@@ -42,14 +42,14 @@ public class SimpleDOMOutputtingObject extends OutputsDOMBase{
     }
     
     public SimpleDOMOutputtingObject(String namespaceURI,
-            String namespaceQualifier, String elementName, Map attributes) {
+            String namespaceQualifier, String elementName, Map<String,String> attributes) {
         this.namespaceURI = namespaceURI;
         this.namespaceQualifier = namespaceQualifier;
         this.elementName = elementName;
         this.attributes = attributes;
     }
     
-    public Collection getChildren() {
+    public Collection<? extends OutputsDOM> getChildren() {
         return children;
     }
 
@@ -77,7 +77,7 @@ public class SimpleDOMOutputtingObject extends OutputsDOMBase{
         return namespaceURI;
     }
     
-    public void setChildren(List children) {
+    public void setChildren(List<OutputsDOM> children) {
         this.children = children;
     }
     
@@ -101,7 +101,7 @@ public class SimpleDOMOutputtingObject extends OutputsDOMBase{
         this.elementName = localName;
     }
 
-    public Map getAttributes() {
+    public Map<String, String> getAttributes() {
         return attributes;
     }
     

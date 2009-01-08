@@ -1,6 +1,18 @@
+ /* Copyright 2008 Babel srl
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * */
 package org.osaf.caldav4j.model.request;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,10 +23,12 @@ import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 
- /* Copyright 2008 Babel srl
+
+/**
  *  http://tools.ietf.org/html/rfc2518#section-12.3     
  *      <!ELEMENT href (#PCDATA)>
- *  
+ * 
+ *  ex. <D:HREF>
  * @author rpolli@babel.it
  * 
  */
@@ -51,7 +65,6 @@ public class DavHref extends OutputsDOMBase {
 	}
     
 	protected String getTextContent() {
-		// TODO Auto-generated method stub
 		return uri.toString();
 	}
     
@@ -74,7 +87,7 @@ public class DavHref extends OutputsDOMBase {
 		return m;
 	}
 
-	@Override
+	@Override // it has no children
 	protected Collection<? extends OutputsDOM> getChildren() {
 		// TODO Auto-generated method stub
 		return null;

@@ -20,9 +20,18 @@ import static org.osaf.caldav4j.util.UrlUtils.stripHost;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.properties.PropertyFactory;
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.model.request.CalDAVReportRequest;
+import org.osaf.caldav4j.model.request.Prop;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
+import org.osaf.caldav4j.util.XMLUtils;
+import org.osaf.caldav4j.xml.OutputsDOM;
+import org.osaf.caldav4j.xml.OutputsDOMBase;
+import org.w3c.dom.Document;
 
 /**
  * This method is overwritten in order to register the ticketdiscovery element
@@ -33,6 +42,9 @@ import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
  */
 public class PropFindMethod extends
         org.apache.webdav.lib.methods.PropFindMethod {
+    private static final Log log = LogFactory
+    	.getLog(PropFindMethod.class);
+    private OutputsDOM reportRequest;
 
     /**
      * Registers the TicketDiscoveryProperty with the PropertyFactory
@@ -72,5 +84,24 @@ public class PropFindMethod extends
             return (new Vector()).elements();
         }
 
+    }
+    
+    public void setReportRequest(OutputsDOM myprop) {
+        this.reportRequest = myprop;
+    }
+
+    /**
+     * Generates a request body from the calendar query.
+     */
+    protected String generateRequestBody() {
+        Document doc = null;
+        try {
+            doc = reportRequest.createNewDocument(XMLUtils
+                    .getDOMImplementation());
+        } catch (DOMValidationException domve) {
+            log.error("Error trying to create DOM from CalDAVPropfindRequest: ", domve);
+            throw new RuntimeException(domve);
+        }
+        return XMLUtils.toPrettyXML(doc);
     }
 }

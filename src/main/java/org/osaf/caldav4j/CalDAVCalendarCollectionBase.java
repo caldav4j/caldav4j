@@ -89,6 +89,13 @@ public abstract class CalDAVCalendarCollectionBase {
 	    return href.substring(start + calendarCollectionRoot.length() + 1);
 	}
 
+	/**
+	 * Create a PUT method setting If-None-Match: *
+	 * this tag causes PUT fails if a given event exist  
+	 * @param resourceName
+	 * @param calendar
+	 * @return a PutMethod for creating events
+	 */
 	 PutMethod createPutMethodForNewResource(String resourceName,
 	        Calendar calendar) {
 	    PutMethod putMethod = methodFactory.createPutMethod();

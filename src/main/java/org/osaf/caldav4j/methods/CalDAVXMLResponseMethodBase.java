@@ -19,6 +19,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * Provide methods to parse caldav xml responsethat
+ * XXX uses CalDAVResponse, so applies only to "calendar-data" response  
+ * @author rpolli
+ *
+ */
 public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
     private Hashtable<String, CalDAVResponse> responseHashtable = null;
     private static Map<QName, Error> errorMap = null;
@@ -84,7 +90,7 @@ public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
         return responseHashtable;
     }
 
-    protected Vector getResponseURLs() {
+    protected Vector<String> getResponseURLs() {
         checkUsed();
         if (responseHashtable == null) {
             initHashtable();

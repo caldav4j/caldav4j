@@ -17,8 +17,15 @@ package org.osaf.caldav4j.model.request;
 
 import java.util.List;
 
+import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
+/**
+ * a simple, customizable DAV property with children
+ * ex. <D:ACL></D:ACL>
+ * @author rpolli
+ * 
+ */
 public class PropProperty extends SimpleDOMOutputtingObject{
 
     public PropProperty(){
@@ -33,7 +40,7 @@ public class PropProperty extends SimpleDOMOutputtingObject{
     }
     
     public PropProperty(String namespaceURI, String namespaceQualifier,
-            String propertyName, List children) {
+            String propertyName, List<OutputsDOM> children) {
         this.setNamespaceURI(namespaceURI);
         this.setElementName(propertyName);
         this.setNamespaceQualifier(namespaceQualifier);

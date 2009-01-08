@@ -47,6 +47,8 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.HeadMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.PropertyName;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
@@ -90,9 +92,20 @@ import org.osaf.caldav4j.util.ICalendarUtils;
  * no customized queries should be public in this class
  */
 public class CalDAVCollection extends CalDAVCalendarCollectionBase{
-	
+    private static final Log log = LogFactory
+    	.getLog(CalDAVCollection.class);
 	// configuration settings
 	
+    private boolean tolerantParsing = false;
+    
+	public boolean isTolerantParsing() {
+		return tolerantParsing;
+	}
+
+	public void setTolerantParsing(boolean tolerantParsing) {
+		this.tolerantParsing = tolerantParsing;
+	}
+
 	// if set to true, caldav4j will skip timezone-only calendars
 	// this should be set to false to find deleted events
 	private boolean skipGoogleTombstones = false;
@@ -199,14 +212,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	}
 
 	/**
-	 * delete a component with the given UID
+	 * Delete every component with the given UID. As UID is unique on the
+	 *  server it should remove only one Calendar resource
 	 * 
 	 * @param httpClient
 	 * @param uid
 	 * @throws CalDAV4JException
-	 * 
-	 * FIXME this method removes Calendars with multiple UID on server
-	 *  but (maybe) this shouldn't happen, as of RFC
 	 */
 	public void delete(HttpClient httpClient,String component, String uid) 
 			throws CalDAV4JException{
@@ -346,7 +357,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 							+ statusCode + "\n"
 							+ putMethod.getResponseBodyAsString());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					throw new CalDAV4JException("Unexpected status code: "
 							+ statusCode + "\n"
@@ -365,24 +375,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	public void add(HttpClient httpClient, Calendar c) 
 		throws CalDAV4JException {
 		
-		String uid = ICalendarUtils.getUIDValue(c);
-		
-//		ComponentList cl = c.getComponents();
-//		
-//		// get uid from first non VTIMEZONE event
-//		Iterator it = cl.iterator();
-//		while((uid==null) && it.hasNext()) {
-//			Object comp = it.next();
-//			if (!(comp instanceof VTimeZone)) {
-//				CalendarComponent cc = (CalendarComponent) comp;
-//				try {
-//					uid = cc.getProperty(Property.UID).getValue();
-//				} catch (NullPointerException  e) {
-//					// TODO log missing uid
-//				}				
-//			} 					
-//		}
-
+		String uid = ICalendarUtils.getUIDValue(c);		
 		if (uid == null) {
 			uid = random.nextLong() + "-" + random.nextLong();
 			ICalendarUtils.setUIDValue(c, uid);
@@ -391,8 +384,9 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		PutMethod putMethod = createPutMethodForNewResource(uid + ".ics", c);
 		try {
 			httpClient.executeMethod(getHostConfiguration(), putMethod);
-			//fixed for nullpointerexception
-			String etag = ( putMethod.getResponseHeader("ETag") != null) ? putMethod.getResponseHeader("ETag").getValue() :  ""; 
+			// TODO see RFC to check fallback  if no etags are passed in response
+			String etag = ( putMethod.getResponseHeader("ETag") != null) ?
+					putMethod.getResponseHeader("ETag").getValue() :  ""; 
 			CalDAVResource calDAVResource = new CalDAVResource(c,
 					etag, getHref((putMethod.getPath())));
 			
@@ -417,7 +411,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 						+ statusCode + "\n"
 						+ putMethod.getResponseBodyAsString());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				throw new CalDAV4JException("Unexpected status code: "
 						+ statusCode + "\n"
@@ -601,7 +594,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	/**
 	 * Returns the path to the resource that contains the VEVENT with the
 	 * specified uid
-	 * 
+	 * TODO use GenerateQuery
 	 * @param uid
 	 */
 	protected String getPathToResourceForEventId(HttpClient httpClient, String uid) throws CalDAV4JException{
@@ -653,7 +646,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param uid
 	 * @return
 	 * @throws Exception 
-	 * @deprecated this query is too specialized @see getCalDAVResourceByUID
+	 * @deprecated this query is too specialized @see{getCalDAVResourceByUID()}
 	 */
 	protected CalDAVResource getCalDAVResourceForEventUID(
 			HttpClient httpClient, String uid) throws CalDAV4JException {
@@ -665,7 +658,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 *  
 	 * it tries
 	 *  - first by a REPORT
-	 *  - then by GET /path 
+	 *  - then by GET /path checking that UID=filename
+	 *  TODO another strategy can be to
+	 *   - first by GET /path and check UID
+	 *   - else try by report
+	 *   as the first case is the most common, I avoid overload the server with REPORT
 	 * @param httpClient
 	 * @param component
 	 * @param uid
@@ -688,7 +685,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			}
 		} else {
 			// check if there's an event with the standard caldav url
-			// XXX this method retrieves a VTIMEZONE :(
+			// TODO this method retrieves a VTIMEZONE on google calendar, due to a google-bug.
+			//  check current behaviour!!!
 			try {		
 				resource = getCalDAVResource(httpClient, getAbsolutePath(uid+".ics") );
 				if (uid.equals(getUIDValue(ICalendarUtils.getFirstComponent(resource, component)))) {
@@ -802,10 +800,16 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		Calendar calendar = null;
 
 		try {
+			// XXX relaxed parsing can cause problem
+			// with converted x-vcalendar so check deeply into that stuff
+			// probably we only need to manage line-folding..
 			// if it doesn't parse, try again disabling quick-parsing @see{CompatibilityHints}
 			try {
 				calendar = getMethod.getResponseBodyAsCalendar();
 			} catch (ParserException pe) {
+				if (! isTolerantParsing()) {
+					throw pe;
+				}
 				CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, false);
 				CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, false);
 				CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
@@ -814,7 +818,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			}
 		} catch (Exception e) {
 				try {
-					System.err.println(getMethod.getResponseBodyAsString());
+					log.error(getMethod.getResponseBodyAsString());
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -871,6 +875,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		cache.removeResource(getHref(path));
 	}
 
+	/**
+	 * Replace double slashes
+	 * @param relativePath
+	 * @return a path with double slashes removed
+	 */
 	protected String getAbsolutePath(String relativePath){
 		return   (calendarCollectionRoot + "/" + relativePath).replaceAll("/+", "/");
 	}
@@ -997,7 +1006,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @throws CalDAV4JException if there was a problem
 	 * XXX check if you must cast Date to DateTime
 	 * 
-	 * @deprecated
+	 * @deprecated Create your own query instead
 	 */
 	public List<String> getComponentPropertyByTimestamp(HttpClient httpClient, String componentName, String propertyName, 
 			Date beginDate, Date endDate)
@@ -1049,12 +1058,13 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	
 
 	/**
-	 * return a list of components using REPORT
+	 * Return a list of components using REPORT
 	 * @param query
 	 * @return
 	 * @throws CalDAV4JException
 	 */
-	public List<Calendar> getCalendar(HttpClient httpClient, CalendarQuery query) throws CalDAV4JException 
+	public List<Calendar> getCalendar(HttpClient httpClient, CalendarQuery query)
+		throws CalDAV4JException 
 	{
 		List <Calendar> list = new ArrayList<Calendar>();
 		for (CalDAVResource cr: getCalDAVResources(httpClient, query)) {
@@ -1070,9 +1080,10 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param query
 	 * @return
 	 * @throws CalDAV4JException
-	 * @deprecated
+	 * @deprecated This is still a proposed feature
 	 */
-	public List<Calendar> getCalendarLight(HttpClient httpClient, CalendarQuery query) throws CalDAV4JException 
+	public List<Calendar> getCalendarLight(HttpClient httpClient, CalendarQuery query) 
+		throws CalDAV4JException 
 	{
 		List <Calendar> list = new ArrayList<Calendar>();
 
@@ -1218,7 +1229,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param httpClient
 	 * @param componentName
 	 * @param query
-	 * @return a list of Calendar (?)
+	 * @return a list of Calendar, each followed by a status
 	 * @throws CalDAV4JException
 	 */
 	protected List<Calendar> getComponentByMultiget(HttpClient httpClient, String componentName,CalendarMultiget query) throws CalDAV4JException 
@@ -1299,5 +1310,31 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	} 
 
 
+	//
+	// HEAD method, useful for testing connection
+	//
+	public int testConnection(HttpClient httpClient)
+		throws CalDAV4JException {
+		HeadMethod method = new HeadMethod();
+		method.setPath(getCalendarCollectionRoot());
+		try {
+			httpClient.executeMethod(hostConfiguration,method);
+			return method.getStatusCode();
+ 
+		} catch (Exception e) {
+			throw new CalDAV4JException(e.getMessage(), new Throwable(e.getCause()));			
+		}
+	}
+	
+	//
+	// manage ACL TODO
+	//
+	public void getAcl(){
+		
+	}
+	
+	public void setAcl(){
+		
+	}
 
 } //end of class

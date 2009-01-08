@@ -79,9 +79,9 @@ public abstract class OutputsDOMBase implements OutputsDOM{
         /*
          * Add children elements
          */
-        Collection children = getChildren();
+        Collection<? extends OutputsDOM>children = getChildren();
         if (children != null && children.size() != 0) {
-            Iterator i = children.iterator();
+            Iterator<? extends OutputsDOM> i = children.iterator();
             while (i.hasNext()) {
                 OutputsDOM node = (OutputsDOM) i.next();
                 Element childNode = node.outputDOM(e.getOwnerDocument());
@@ -112,8 +112,8 @@ public abstract class OutputsDOMBase implements OutputsDOM{
      * @param c
      * @throws DOMValidationException
      */
-    protected void validate(Collection c) throws DOMValidationException{
-        for (Iterator i = c.iterator(); i.hasNext(); ){
+    protected void validate(Collection<? extends OutputsDOM> c) throws DOMValidationException{
+        for (Iterator<? extends OutputsDOM> i = c.iterator(); i.hasNext(); ){
             OutputsDOM o = (OutputsDOM) i.next();
             o.validate();
         }
