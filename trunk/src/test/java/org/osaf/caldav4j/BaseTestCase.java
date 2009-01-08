@@ -62,7 +62,7 @@ public abstract class BaseTestCase
     public static final String CALDAV_SERVER_PASSWORD = CaldavCredential.CALDAV_SERVER_PASSWORD;    
     public static final String COLLECTION      = CaldavCredential.COLLECTION;
     public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
-    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
+    public  String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
     + COLLECTION;
 
     public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
@@ -226,7 +226,7 @@ public abstract class BaseTestCase
         }
     }
     
-    protected void mkdir(String path){
+    protected void mkcalendar(String path){
         MkCalendarMethod mk = new MkCalendarMethod();
         mk.setPath(path);
         try {

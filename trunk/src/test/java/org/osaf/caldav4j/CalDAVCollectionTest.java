@@ -1,3 +1,6 @@
+/**
+ * TODO re-implement test using deprecated methods using current methods
+ */
 package org.osaf.caldav4j;
 
 import java.util.ArrayList;
@@ -17,16 +20,17 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.Ace;
 import org.apache.webdav.lib.Privilege;
 import org.apache.webdav.lib.methods.AclMethod;
-import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.model.request.CalendarQuery;
+import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
@@ -55,9 +59,8 @@ public class CalDAVCollectionTest extends BaseTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         
-        // TODO test if MKCOL
         try {
-        	mkdir(COLLECTION_PATH); 
+        	mkcalendar(COLLECTION_PATH); 
         } catch (Exception e) {
         	e.printStackTrace();
         	log.info("MKCOL unsupported?", e);
@@ -97,6 +100,58 @@ public class CalDAVCollectionTest extends BaseTestCase {
         }
     }
 
+    public void testTestConnection()
+    	{
+    	CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();
+    	
+    	try {
+    		// test with the right collection is ok
+        	int actual = calendarCollection.testConnection(httpClient);
+        		
+        	assertEquals(CaldavStatus.SC_OK, actual);
+    	} catch (CalDAV4JException e) {
+    		e.printStackTrace();
+    		assertNull(e);
+		}
+    	HostConfiguration hostConfig = calendarCollection.getHostConfiguration();
+    	hostConfig.setHost("UNEXISTENT");
+    	try {
+    		int actual = calendarCollection.testConnection(httpClient);
+			assertFalse("Hey! We shouldn't be able to connect now", 
+					actual==CaldavStatus.SC_OK);
+		} catch (CalDAV4JException e) {
+			// do nothing, it should except
+			assertNotNull("Server shouldn't connect now", e);
+		}
+    		
+
+    	
+    }
+    
+    //
+    // new tests for CalDAVCollection
+    //
+    public void _testAddDeleteComponent() {
+    	// add a VEVENT with resource=uid.ics
+    	// check ETAGS in response
+
+    	// remove the VEVENT by UID
+    	// add a VEVENT with resource!=uid.ics
+    	// remove the VEVENT by UID
+
+    }
+    
+
+    // get a Calendar creating a query
+    public void _testGetCalendarByQuery() {
+    	
+    }
+    
+    
+    
+    //
+    // old CalDAVCalendarCollectionTests
+    //
     public void testGetCalendar() throws Exception {
         CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();        
         Calendar calendar = null;
