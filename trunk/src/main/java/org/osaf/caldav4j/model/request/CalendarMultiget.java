@@ -16,7 +16,6 @@
 
 package org.osaf.caldav4j.model.request;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

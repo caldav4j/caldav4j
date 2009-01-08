@@ -21,7 +21,6 @@ import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class PutGetTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(PutGetTest.class);
-    //private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     private ResourceBundle messages;
     
     public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
@@ -29,7 +28,7 @@ public class PutGetTest extends BaseTestCase {
     
     protected void setUp() throws Exception {
         super.setUp();
-        mkdir(COLLECTION_PATH);
+        mkcalendar(COLLECTION_PATH);
     }
 
     protected void tearDown() throws Exception {
@@ -87,8 +86,8 @@ public class PutGetTest extends BaseTestCase {
         HostConfiguration hostConfig = createHostConfiguration();
     	
     	// load an ICS and substitute summary with non-latin chars
-    	Locale.setDefault(new Locale("ru","RU"));
-    	messages = PropertyResourceBundle.getBundle("messages");
+    	Locale mylocale = new Locale("ru", "RU");
+    	messages = PropertyResourceBundle.getBundle("messages",mylocale);
     	String myLocalSummary = messages.getString("summary"); 
 
         Calendar cal = getCalendarResource(BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_PATH);

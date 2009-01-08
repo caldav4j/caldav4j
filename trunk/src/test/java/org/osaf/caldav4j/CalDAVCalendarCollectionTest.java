@@ -45,7 +45,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         try {
-        	mkdir(COLLECTION_PATH); 
+        	mkcalendar(COLLECTION_PATH); 
         } catch (Exception e) {
         	e.printStackTrace();
         	log.info("MKCOL unsupported?", e);

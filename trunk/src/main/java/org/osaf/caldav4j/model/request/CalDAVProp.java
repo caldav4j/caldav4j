@@ -30,7 +30,7 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
  * 
  * <!ATTLIST prop name CDATA #REQUIRED
  *                novalue (yes|no) "no">
- *                
+ *  ex. <C:PROP name="DESCRIPTION" />               
  * @author bobbyrullo
  * 
  */

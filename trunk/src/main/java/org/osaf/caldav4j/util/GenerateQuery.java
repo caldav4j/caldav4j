@@ -55,6 +55,7 @@ import org.w3c.dom.Document;
  */
 
 /**
+ * This Class is an helper for creating CalDAV queries.
  * @since 0.5
  * @experimental this class is experimental
  */
@@ -148,7 +149,7 @@ public class GenerateQuery  {
 
 	/**
 	 * validator
-	 * this method should provide at least a basic validation of the calendar-query
+	 * TODO this method should provide at least a basic validation of the calendar-query
 	 * @deprecated
 	 */
 	public boolean validate() {
