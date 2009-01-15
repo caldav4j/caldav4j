@@ -28,12 +28,14 @@ Here we list some kind of calendar-query that should be done, in compliance of R
 
 The GenerateQuery class is an helper for creating Calendar-Query REPORTs
  
+http://code.google.com/p/caldav4j/source/browse/trunk/src/main/java/org/osaf/caldav4j/util/GenerateQuery.java
+
 Because of the complexity of iCalendar object and relative queries, this class is intended to help the creation of basic queries like get all VEVENT with THOSE attributes in THIS time-range
 
 Main schema is a strongly typed class, with helpers/parsers that will create the caldav query
 
 == Usage ==
-
+{{{
 // create a simple query getting UID, ATTENDEE, DTSTART, DTEND
 QueryGenerator qg = new QueryGenerator();
 gg.setComponent("VEVENT"); // retrieve the whole VEVENT
@@ -49,3 +51,5 @@ qg.setFilter("VEVENT [start;end] : UID==value1 , DTSTART==[start,end],DESCRIPTIO
 
 // more complex queries can be made with GenerateQuery
 // look at GenerateQueryTest.java
+}}}
+http://code.google.com/p/caldav4j/source/browse/trunk/src/test/java/org/osaf/caldav4j/util/GenerateQueryTest.java
