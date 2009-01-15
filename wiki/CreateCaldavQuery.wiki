@@ -1,9 +1,9 @@
 #summary Here we discuss on a language to describe caldav query
-#labels Phase-Requirements
+#labels Phase-Implementation
 
 = Introduction =
 
-As CalDAVCollectionManager class is full of redundant code about creating tonns of different queries, we start discussing about a language to describe caldav query.
+As CalDAVCollectionManager class is full of redundant code about creating tonns of different queries, we provide a "language" to describe simple caldav queries.
 
 The target is about REPORT, PROPFIND and maybe MULTIGET methods, as CReate-Update-Delete methods works well enough in this implementation.
 
@@ -17,6 +17,7 @@ Here we list some kind of calendar-query that should be done, in compliance of R
  * selecting properties to retrieve (so you have to specify vcalendar.vevent)
  * filtering by component.property value
 
+== Off Target ==
  # Query Components filtering for subcomponents properties
  * VTODO.VALARM.time-range=interval
  # third
@@ -25,4 +26,26 @@ Here we list some kind of calendar-query that should be done, in compliance of R
 
 = Results =
 
-Here we write the query of the former paragraph in our new descriptive language
+The GenerateQuery class is an helper for creating Calendar-Query REPORTs
+ 
+Because of the complexity of iCalendar object and relative queries, this class is intended to help the creation of basic queries like get all VEVENT with THOSE attributes in THIS time-range
+
+Main schema is a strongly typed class, with helpers/parsers that will create the caldav query
+
+== Usage ==
+
+// create a simple query getting UID, ATTENDEE, DTSTART, DTEND
+QueryGenerator qg = new QueryGenerator();
+gg.setComponent("VEVENT"); // retrieve the whole VEVENT
+qg.setComponent("VEVENT : UID, ATTENDEE, DTSTART, DTEND"); // retrieve the given properties
+
+CalendarQuery query=gq.generateQuery();
+
+// create a "complex" query
+// start and end values can be empty strings "" or RFC2445-UTC timestamp
+qg.setFilter("VEVENT"); //request on VEVENT
+qg.setFilter("VEVENT [start;end] : UID==value1 , DTSTART==[start,end],DESCRIPTION==UNDEF, SUMMARY!=not my summary,")
+
+
+// more complex queries can be made with GenerateQuery
+// look at GenerateQueryTest.java
