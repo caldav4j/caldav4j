@@ -25,6 +25,7 @@ import org.osaf.caldav4j.model.request.CompFilter;
 import org.osaf.caldav4j.model.request.Prop;
 import org.osaf.caldav4j.model.request.PropFilter;
 import org.osaf.caldav4j.model.request.TimeRange;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
 
@@ -427,6 +428,29 @@ public class GenerateQuery  {
 	public void setTimeRange(Date start, Date end) {
 		this.timeRangeStart = start;
 		this.timeRangeEnd = end;
+	}
+	
+	
+	/**
+	 * return the xml query
+	 * @param query
+	 * @return
+	 * @throws DOMValidationException
+	 */
+	public static String printQuery(CalendarQuery query)
+		throws DOMValidationException
+	{	
+				try {
+					query.validate();
+					Document doc = query.createNewDocument(XMLUtils
+					        .getDOMImplementation());
+					return XMLUtils.toPrettyXML(doc);
+
+				} catch (DOMException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					throw new DOMValidationException(e.getMessage());
+				} 	        
 	}
 	
 	/**
