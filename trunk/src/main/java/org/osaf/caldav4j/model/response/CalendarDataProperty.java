@@ -42,6 +42,11 @@ public class CalendarDataProperty extends BaseProperty {
 		super(response, element);
 	}
 
+	/**
+	 * 
+	 * @return the parsed calendar if present, or generate a new calendar item if not present
+	 * @throws CalDAV4JException
+	 */
 	public Calendar getCalendar() throws CalDAV4JException {
 		if (calendar != null) {
 			return calendar;
