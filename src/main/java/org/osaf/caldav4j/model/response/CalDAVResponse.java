@@ -127,8 +127,18 @@ public class CalDAVResponse implements ResponseEntity {
                 CalendarDataProperty.ELEMENT_CALENDAR_DATA));
     }
     
+    /**
+     * Return a Calendar object or null if calendarDataPropery wasn't defined
+     * @author rpolli
+     * @return a Calendar object is calendarDataPropery exists
+     * @throws CalDAV4JException
+     */
     public Calendar getCalendar() throws CalDAV4JException{
-        return getCalendarDataProperty().getCalendar();
+    	CalendarDataProperty cdp = getCalendarDataProperty();
+    	if (cdp!=null) {
+    		return cdp.getCalendar();
+    	} 
+    	return null;
     }
     
     protected Element getFirstElement(String namespace, String name) {
