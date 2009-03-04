@@ -50,6 +50,7 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.PropertyName;
+import org.apache.webdav.lib.ResponseEntity;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.CalDAVReportMethod;
@@ -844,7 +845,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @return true if I object is a tombstone and tombstone-checking enabled
 	 */
 	private boolean isGoogleTombstone(Calendar calendar) {
-
+		/*
 		if (this.skipGoogleTombstones && (calendar != null )) {
 			// is it a tombstone?
 			if ( calendar.getComponents().size() ==1 && 
@@ -852,7 +853,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 					(calendar.getComponents().get(0) instanceof VTimeZone ) )
 					return true;
 		}
-		
+		*/
 		return false;
 	}
 	
@@ -1165,9 +1166,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	protected List<CalDAVResource> getCalDAVResources(org.osaf.caldav4j.methods.HttpClient httpClient, CalendarQuery query)
 		throws CalDAV4JException 
 	{
-		if (isCacheEnabled()) {
+		boolean usingCache = isCacheEnabled();
+		if (usingCache) {
 			query.setCalendarDataProp(null);
 		}
+		log.trace("Executing query: "  + GenerateQuery.printQuery(query));
+
 		CalDAVReportMethod reportMethod = methodFactory.createCalDAVReportMethod();
 		reportMethod.setPath(getCalendarCollectionRoot());
 		reportMethod.setReportRequest(query);
@@ -1180,27 +1184,26 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		} catch (Exception he) {
 			throw new CalDAV4JException("Problem executing method", he);
 		}
-
-		Enumeration<CalDAVResponse> responeEnum = reportMethod.getResponses();
+		
+		log.trace("Parsing response.. " );
+		Enumeration<CalDAVResponse> responseEnum = reportMethod.getResponses();
 		List<CalDAVResource> list = new ArrayList<CalDAVResource>();
-		while (responeEnum.hasMoreElements()){
+		while (responseEnum.hasMoreElements()){
 			try {
-				CalDAVResponse response  = responeEnum.nextElement();
+				CalDAVResponse response  = responseEnum.nextElement();
 				String etag = response.getETag();
 				
-				if (isCacheEnabled()) {
+				if (usingCache) {
 					CalDAVResource resource = getCalDAVResource(httpClient,
 							stripHost(response.getHref()), etag);
 					//  this way won't catch tombstones
-					Calendar cal   = resource.getCalendar();
+					Calendar cal   = resource.getCalendar();					
 					if ( ! isGoogleTombstone(cal)) {
 						list.add(resource);
-						
-						// XXX check if getCalDAVResource does its caching job
 						cache.putResource(resource);
 					}				
 				} else {
-					if (response.getCalendarDataProperty() != null) {
+					if (response != null) {
 						list.add(new CalDAVResource(response));
 					}
 				}							
