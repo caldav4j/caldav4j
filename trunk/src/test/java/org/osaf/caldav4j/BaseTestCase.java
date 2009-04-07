@@ -100,6 +100,8 @@ public abstract class BaseTestCase
     public static final String ICS_GOOGLE_SINGLE_EVENT = "66be2585-327b-4cc1-93a7-d0e6de648183" + ".ics";
     public static final String ICS_SINGLE_EVENT= "singleEvent.ics";
 
+    public static final String CALENDAR_DESCRIPTION = "My sample calendar description";
+    
     protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     
     public String getCalDAVServerHost() {
@@ -176,7 +178,7 @@ public abstract class BaseTestCase
         InputStream stream = this.getClass().getClassLoader()
         .getResourceAsStream(resourceFileName);
         String event = parseISToString(stream);
-        event = event.replaceAll("DTSTAMP:.*", "DTSTAMP: " + new DateTime(true).toString());
+        event = event.replaceAll("DTSTAMP:.*", "DTSTAMP:" + new DateTime(true).toString());
         log.debug(new DateTime(true).toString());
         //log.trace(event);        
         
@@ -224,8 +226,9 @@ public abstract class BaseTestCase
     protected void mkcalendar(String path){
         MkCalendarMethod mk = new MkCalendarMethod();
         mk.setPath(path);
+        mk.addDescription(CALENDAR_DESCRIPTION, "en");
         try {
-        http.executeMethod(hostConfig, mk);
+        	http.executeMethod(hostConfig, mk);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
