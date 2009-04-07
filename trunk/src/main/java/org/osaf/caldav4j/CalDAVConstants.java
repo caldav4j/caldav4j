@@ -17,6 +17,7 @@
 package org.osaf.caldav4j;
 
 import org.apache.webdav.lib.util.QName;
+import org.osaf.caldav4j.model.request.DisplayName;
 import org.osaf.caldav4j.model.request.PropProperty;
 
 public interface CalDAVConstants {
@@ -73,4 +74,11 @@ public interface CalDAVConstants {
 	public static final PropProperty PROP_ETAG = new PropProperty(
 			CalDAVConstants.NS_DAV, "D", CalDAVConstants.PROP_GETETAG);
 	
+	public static String DAV_DISPLAYNAME = "displayname" ;
+	public static String CALDAV_CALENDAR_DESCRIPTION = "calendar-description" ;
+
+	public static final QName QNAME_DISPLAYNAME = new QName(CalDAVConstants.NS_DAV, DAV_DISPLAYNAME);
+	public static final QName QNAME_CALENDAR_DESCRIPTION = new QName(CalDAVConstants.NS_CALDAV,CALDAV_CALENDAR_DESCRIPTION);
+	public static final QName QNAME_ACL = new QName(CalDAVConstants.NS_DAV, "acl");
+
 }

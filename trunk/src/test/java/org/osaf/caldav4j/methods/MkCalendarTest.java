@@ -2,6 +2,7 @@ package org.osaf.caldav4j.methods;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.osaf.caldav4j.methods.HttpClient;
+import org.osaf.caldav4j.model.request.CalendarDescription;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,9 +13,29 @@ import org.osaf.caldav4j.BaseTestCase;
 public class MkCalendarTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(MkCalendarTest.class);
     
+    
+    /**
+     * this should return something like
+     * @see http://tools.ietf.org/html/rfc4791#section-5.3.1.2
+     */
+    public void testPrintMkCalendar() {
+        MkCalendarMethod mk = new MkCalendarMethod();
+        mk.setPath(CALDAV_SERVER_WEBDAV_ROOT + COLLECTION);
+
+        mk.addDisplayName("My display Name");
+        mk.addDescription("this is my default calendar", "en");
+        mk.addDescription("this is my default calendar");
+
+        log.info(mk.generateRequestBody());
+        
+    }
+    
     public void testCreateRemoveCalendarCollection() throws Exception{
         MkCalendarMethod mk = new MkCalendarMethod();
         mk.setPath(CALDAV_SERVER_WEBDAV_ROOT + COLLECTION);
+        mk.addDisplayName("My display Name");
+        mk.addDescription("this is my default calendar", "en");
+        
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
         http.executeMethod(hostConfig, mk);
