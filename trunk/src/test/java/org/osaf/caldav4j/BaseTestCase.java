@@ -15,34 +15,29 @@
  */
 package org.osaf.caldav4j;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
-import junit.textui.TestRunner;
 import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Property;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HostConfiguration;
-//import org.apache.commons.httpclient.HttpClient;
-import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.DeleteMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
+import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
-import org.osaf.caldav4j.model.request.PropProperty;
-import org.osaf.caldav4j.util.ICalendarUtils;
+import org.osaf.caldav4j.util.XMLUtils;
+import org.osaf.caldav4j.xml.OutputsDOMBase;
+import org.w3c.dom.Document;
 
 
 /**
@@ -50,7 +45,7 @@ import org.osaf.caldav4j.util.ICalendarUtils;
  */
 public abstract class BaseTestCase
     extends TestCase {
-    private static final Log log = LogFactory.getLog(BaseTestCase.class);
+    protected static final Log log = LogFactory.getLog(BaseTestCase.class);
     private HttpClient http = createHttpClient();
     private HostConfiguration hostConfig = createHostConfiguration();
 
@@ -255,5 +250,19 @@ public abstract class BaseTestCase
       }
 
 
-
+    public String prettyPrint(OutputsDOMBase xml) {
+	    try {
+	    	Document doc = xml.createNewDocument(XMLUtils
+	                .getDOMImplementation());
+			return XMLUtils.toPrettyXML(doc);
+	    	
+	    } catch (DOMValidationException domve) {
+	        throw new RuntimeException(domve);
+	    } catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 }
