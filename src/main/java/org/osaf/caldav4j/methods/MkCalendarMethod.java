@@ -22,6 +22,8 @@ import java.util.List;
 import org.apache.webdav.lib.methods.XMLResponseMethodBase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.model.request.CalendarDescription;
+import org.osaf.caldav4j.model.request.DisplayName;
 import org.osaf.caldav4j.model.request.MkCalendar;
 import org.osaf.caldav4j.model.request.Prop;
 import org.osaf.caldav4j.model.request.PropProperty;
@@ -30,6 +32,12 @@ import org.w3c.dom.Document;
 
 public class MkCalendarMethod extends XMLResponseMethodBase{
     
+	
+	/**
+	 * Standard calendar properties
+	 */
+	
+	protected String CALENDAR_DESCRIPTION = "calendar-description";
     /**
      * Map of the properties to set.
      */
@@ -43,6 +51,15 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
     	addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.TEXT_XML_CONTENT_TYPE);
 	}
 
+    public void addDisplayName(String s) {
+    	propertiesToSet.add(new DisplayName(s));
+    }
+    public void addDescription(String description, String lang) {
+    	propertiesToSet.add(new CalendarDescription(description, lang));
+    }
+    public void addDescription(String description) {
+    	propertiesToSet.add(new CalendarDescription(description));
+    }
     /**
      * 
      */
@@ -70,8 +87,8 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
             return null;
         }
         
-        Prop prop = new Prop("D", propertiesToSet);
-        MkCalendar mkCalendar = new MkCalendar("C", "D",prop);
+        Prop prop = new Prop(CalDAVConstants.NS_QUAL_DAV, propertiesToSet);
+        MkCalendar mkCalendar = new MkCalendar("C",CalDAVConstants.NS_QUAL_DAV,prop);
         Document d = null;
         try {
             d = mkCalendar.createNewDocument(XMLUtils
