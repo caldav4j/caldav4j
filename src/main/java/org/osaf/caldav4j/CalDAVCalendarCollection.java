@@ -702,6 +702,8 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 * Gets a CalDAVResource from the server - in other words DOES NOT check the cache.
 	 * Adds the new resource to the cache, replacing any preexisting version.
 	 * 
+	 * The calendar is Thread-locally build by getResponseBodyAsCalendar()
+	 * 
 	 * @param httpClient
 	 * @param path
 	 * @return
@@ -1123,6 +1125,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 			CalDAVResponse response  = e.nextElement();
 			
 			if (response.getStatusCode()==CaldavStatus.SC_OK){
+				// TODO should use a thread-local builder ! 
 				list.add(response.getCalendar());
 			}
 //			String etag = response.getETag();

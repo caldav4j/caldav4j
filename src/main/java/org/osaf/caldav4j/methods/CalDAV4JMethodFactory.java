@@ -84,6 +84,7 @@ public class CalDAV4JMethodFactory {
     
     public CalDAVReportMethod createCalDAVReportMethod(){
         CalDAVReportMethod reportMethod = new CalDAVReportMethod();
+        reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
         return reportMethod;
     }
     

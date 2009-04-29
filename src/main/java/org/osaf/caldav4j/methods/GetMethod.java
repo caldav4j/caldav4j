@@ -34,7 +34,7 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
     
     private CalendarBuilder calendarBuilder = null;
     
-    public GetMethod (){
+    protected GetMethod (){
         super();
     }
 

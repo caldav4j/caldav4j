@@ -50,7 +50,6 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.PropertyName;
-import org.apache.webdav.lib.ResponseEntity;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.CalDAVReportMethod;
@@ -329,7 +328,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			try {
 				httpClient.executeMethod(getHostConfiguration(), putMethod);
 				//fixed for nullpointerexception
-				// A caldav server should always return a valid ETAG for given event
+				// A caldav server should always return a valid ETAG for given event, but google doesn't
 				String etag = ( putMethod.getResponseHeader("ETag") != null) ? putMethod.getResponseHeader("ETag").getValue() :  ""; 
 				CalDAVResource calDAVResource = new CalDAVResource(calendar,
 						etag, getHref((putMethod.getPath())));
@@ -353,16 +352,18 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				break;				
 			default:
 				//must be some other problem, throw an exception
+				throw new CalDAV4JException("Unexpected status code: "
+						+ statusCode + " at "
+						+ putMethod.getPath());
+			    /*
 				try {
-					throw new CalDAV4JException("Unexpected status code: "
-							+ statusCode + "\n"
-							+ putMethod.getResponseBodyAsString());
-				} catch (IOException e) {
+
+				}  catch (IOException e) {
 					e.printStackTrace();
 					throw new CalDAV4JException("Unexpected status code: "
 							+ statusCode + "\n"
 							+ "error in getResponseBodyAsString()");
-				}
+				}*/
 			} // switch
 		}
 	}
@@ -728,15 +729,23 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	/**
 	 * GET the resource at the given path. Will check the cache first, and compare that to the
 	 * latest etag obtained using a HEAD request.
+	 * 
+	 * if calendar resource in cache is void, retrieve directly from server (avoid get etag only)
 	 * @param httpClient
 	 * @param path
 	 * @return
 	 * @throws CalDAV4JException
+	 * FIXME testme
 	 */
 	protected CalDAVResource getCalDAVResource(HttpClient httpClient,
 			String path) throws CalDAV4JException {
-		String currentEtag = getETag(httpClient, path);
-		return getCalDAVResource(httpClient, path, currentEtag);
+		CalDAVResource calDAVResource = cache.getResource(getHref(path));
+		if (calDAVResource == null || calDAVResource.getCalendar() == null) {
+			return getCalDAVResourceFromServer(httpClient, path);
+		} else {
+			String currentEtag = getETag(httpClient, path);
+			return getCalDAVResource(httpClient, path, currentEtag);
+		}
 	}
 
 	/**
@@ -757,7 +766,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		CalDAVResource calDAVResource = cache.getResource(getHref(path));
 
 		//ok, so we got the resource...but has it been changed recently?
-		if (calDAVResource != null){
+		if (calDAVResource != null 
+				&& calDAVResource.getCalendar() != null) { // FIXME calDAVResource's calendar should not be null!
 			String cachedEtag = calDAVResource.getResourceMetadata().getETag();
 			if (cachedEtag.equals(currentEtag)){
 				return calDAVResource;
@@ -1156,7 +1166,13 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	
 	/**
 	 * return a list of caldav resources. 
-	 * All other methods should use this
+	 * All other methods should use this one
+	 * 
+	 * The use of caching changes the behavior of this method.
+	 * if cache is not enable, returns a list of CalDAVResource parsed from the response
+	 * if cache is enabled, foreach   HREF returned by server:
+	 *   -  retrieve the resource using getCaldavReource(client, string), this method checks cache
+	 *   -  
 	 * @param httpClient
 	 * @param componentName
 	 * @param query
@@ -1196,12 +1212,14 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				if (usingCache) {
 					CalDAVResource resource = getCalDAVResource(httpClient,
 							stripHost(response.getHref()), etag);
-					//  this way won't catch tombstones
-					Calendar cal   = resource.getCalendar();					
-					if ( ! isGoogleTombstone(cal)) {
+					//  avoid parsing object if not required
+					if (isSkipGoogleTombstones()) {
 						list.add(resource);
 						cache.putResource(resource);
-					}				
+					} else if (! isGoogleTombstone(resource.getCalendar())){
+						list.add(resource);
+						cache.putResource(resource);
+					}
 				} else {
 					if (response != null) {
 						list.add(new CalDAVResource(response));
@@ -1210,6 +1228,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
+				log.error("Exception while retrieving objects:" + e.getMessage());
 			}
 		}
 
