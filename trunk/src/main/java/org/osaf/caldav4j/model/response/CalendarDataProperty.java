@@ -37,10 +37,20 @@ public class CalendarDataProperty extends BaseProperty {
 	public static final String ELEMENT_CALENDAR_DATA = "calendar-data";
 
 	private Calendar calendar = null;
+    private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
+
 
 	public CalendarDataProperty(ResponseEntity response, Element element) {
 		super(response, element);
 	}
+    private CalendarBuilder getCalendarBuilderInstance(){
+        CalendarBuilder builder = calendarBuilderThreadLocal.get();
+        if (builder == null){
+            builder = new CalendarBuilder();
+            calendarBuilderThreadLocal.set(builder);
+        }
+        return builder;
+    }
 
 	/**
 	 * 
@@ -66,12 +76,10 @@ public class CalendarDataProperty extends BaseProperty {
 //		Pattern noDayLight = Pattern.compile("BEGIN:VTIMEZONE.*END:VTIMEZONE", Pattern.DOTALL);
 //		Matcher m = noDayLight.matcher(text);
 //		text = m.replaceAll("");
-		CalendarBuilder builder = new CalendarBuilder();
 		StringReader stringReader = new StringReader(text);
 		//System.out.println(text); // FIXME debug
 		try {
-			calendar = builder.build(stringReader);
-			builder = null;
+			calendar = getCalendarBuilderInstance().build(stringReader);
 			stringReader = null;
 			return calendar;
 		} catch (Exception e) {

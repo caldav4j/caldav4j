@@ -14,7 +14,7 @@ public class NoOpResourceCache implements CalDAVResourceCache {
      */
     public static final NoOpResourceCache SINGLETON = new NoOpResourceCache();
     
-    public NoOpResourceCache(){
+    private NoOpResourceCache(){
         
     }
     

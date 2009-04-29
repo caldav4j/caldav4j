@@ -57,11 +57,11 @@ public abstract class CalDAVCalendarCollectionBase {
 	}
 
 	/**
-	 * set base path removing multiple "/"
+	 * set base path, appending trailing "/" and  removing unneeded "/"
 	 * @param path
 	 */
 	public void setCalendarCollectionRoot(String path) {
-	    this.calendarCollectionRoot = path.replaceAll("/+", "/");
+	    this.calendarCollectionRoot = path.concat("/").replaceAll("/+", "/");
 	}
 
 	public CalDAVResourceCache getCache() {
@@ -120,10 +120,18 @@ public abstract class CalDAVCalendarCollectionBase {
 
 		/**
 		 * create cache resources: UID_TO_HREF, HREF_TO_RESOURCE
-		 * XXX test it
+		 * XXX create test method
 		 */
-		public void enableSimpleCache() throws CalDAV4JException {	        
-	        this.setCache(EhCacheResourceCache.createSimpleCache());
+		public void enableSimpleCache() throws CalDAV4JException {	
+			if (!isCacheEnabled()) {
+				try {
+					EhCacheResourceCache.createSimpleCache();
+				} catch (Exception e) {
+					// avoid error if cache doesn't exist
+					e.printStackTrace();
+				}
+				this.setCache(EhCacheResourceCache.createSimpleCache());
+			}
 		}
 		
 		/**
