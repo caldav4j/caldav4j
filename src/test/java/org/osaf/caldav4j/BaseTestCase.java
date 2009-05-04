@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.DeleteMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
+import org.junit.Before;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
@@ -39,26 +40,30 @@ import org.osaf.caldav4j.util.XMLUtils;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.w3c.dom.Document;
 
-
-/**
- * Base class for CalDAV4j tests.
- */
-public abstract class BaseTestCase
-    extends TestCase {
+public abstract class BaseTestCase  extends TestCase {
     protected static final Log log = LogFactory.getLog(BaseTestCase.class);
-    private HttpClient http = createHttpClient();
-    private HostConfiguration hostConfig = createHostConfiguration();
+    protected HttpClient http;
+    protected HttpClient httpClient;
 
-    public static final String CALDAV_SERVER_HOST = CaldavCredential.CALDAV_SERVER_HOST;
-    public static final int CALDAV_SERVER_PORT = CaldavCredential.CALDAV_SERVER_PORT;
-    public static final String CALDAV_SERVER_PROTOCOL = CaldavCredential.CALDAV_SERVER_PROTOCOL;
-    public static final String CALDAV_SERVER_WEBDAV_ROOT = CaldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
-    public static final String CALDAV_SERVER_USERNAME = CaldavCredential.CALDAV_SERVER_USERNAME;
-    public static final String CALDAV_SERVER_PASSWORD = CaldavCredential.CALDAV_SERVER_PASSWORD;    
-    public static final String COLLECTION      = CaldavCredential.COLLECTION;
+    protected HostConfiguration hostConfig;
+    protected CaldavCredential caldavCredential = new CaldavCredential();
+    
+
+    @Before
+    protected void setUp() throws Exception {
+    	super.setUp();
+        COLLECTION_PATH = caldavCredential.CALDAV_SERVER_WEBDAV_ROOT
+        + caldavCredential.COLLECTION;
+        hostConfig = createHostConfiguration();
+        http  = createHttpClient();
+        httpClient = createHttpClient();
+        methodFactory = new CalDAV4JMethodFactory();
+    	
+    }
+    
+
     public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
-    public  String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-    + COLLECTION;
+    public  String COLLECTION_PATH;
 
     public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
     public static final String ICS_DAILY_NY_5PM_UID = "DE916949-731D-4DAE-BA93-48A38B2B2030";
@@ -105,33 +110,41 @@ public abstract class BaseTestCase
     protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     
     public String getCalDAVServerHost() {
-        return CALDAV_SERVER_HOST;
+        return caldavCredential.CALDAV_SERVER_HOST;
     }
     
     public int getCalDAVServerPort(){
-        return CALDAV_SERVER_PORT;
+        return caldavCredential.CALDAV_SERVER_PORT;
     }
     
     public String getCalDavSeverProtocol(){
-        return CALDAV_SERVER_PROTOCOL;
+        return caldavCredential.CALDAV_SERVER_PROTOCOL;
     }
     
     public String getCalDavSeverWebDAVRoot(){
-        return CALDAV_SERVER_WEBDAV_ROOT;
+        return caldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
     }
     
     public String getCalDavSeverUsername(){
-        return CALDAV_SERVER_USERNAME;
+        return caldavCredential.CALDAV_SERVER_USERNAME;
     }
     
     public String getCalDavSeverPassword(){
-        return CALDAV_SERVER_PASSWORD;
+        return caldavCredential.CALDAV_SERVER_PASSWORD;
     }
-    
-    public HttpClient createHttpClient(){
+        
+
+    public BaseTestCase(String method) {
+    	super(method);
+	}
+    public BaseTestCase() {
+	}
+
+	public HttpClient createHttpClient(){
         HttpClient http = new HttpClient();
 
-        Credentials credentials = new UsernamePasswordCredentials(CALDAV_SERVER_USERNAME, CALDAV_SERVER_PASSWORD);
+        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.CALDAV_SERVER_USERNAME, 
+        		caldavCredential.CALDAV_SERVER_PASSWORD);
         http.getState().setCredentials(
         		new AuthScope(this.getCalDAVServerHost(), this.getCalDAVServerPort()),
         		credentials);
@@ -208,6 +221,7 @@ public abstract class BaseTestCase
 
 			}
         } catch (Exception e){
+        	log.info("Error while put():" + e.getMessage());
             throw new RuntimeException(e);
         }
 

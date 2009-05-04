@@ -28,6 +28,11 @@ import org.osaf.caldav4j.scheduling.util.ITipUtils;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class SchedulePostMethodTest extends BaseTestCase {
+	public SchedulePostMethodTest(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
+	}
+
 	private CalDAV4JScheduleMethodFactory scheduleMethodFactory = new CalDAV4JScheduleMethodFactory();
 
 	HttpClient http = createHttpClient();
@@ -165,7 +170,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 			System.out.println("PUT...");
 
 			PutMethod request = methodFactory.createPutMethod();
-			request.setPath(CALDAV_SERVER_WEBDAV_ROOT + "/calendar/" + event.getUid().getValue() + ".ics");
+			request.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT + "/calendar/" + event.getUid().getValue() + ".ics");
 			request.setHostConfiguration(hostConfig);
 			request.setRequestBody(invite);
 
@@ -225,7 +230,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 
 		SchedulePostMethod request = scheduleMethodFactory
 		.createSchedulePostMethod();
-		request.setPath(CALDAV_SERVER_WEBDAV_ROOT + "/Outbox/");
+		request.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT + "/Outbox/");
 		request.setHostConfiguration(hostConfig);
 		request.setRequestBody(invite);
 		try {

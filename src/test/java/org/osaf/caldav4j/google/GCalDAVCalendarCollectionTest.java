@@ -22,6 +22,7 @@ import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVCalendarCollection;
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.GCaldavCredential;
 import org.osaf.caldav4j.ResourceNotFoundException;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpClient;
@@ -29,15 +30,18 @@ import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class GCalDAVCalendarCollectionTest extends BaseTestCase {
-    private static final Log log = LogFactory
+    public GCalDAVCalendarCollectionTest(String method) {
+		super(method);
+	}
+
+	private static final Log log = LogFactory
             .getLog(GCalDAVCalendarCollectionTest.class);
 
-    private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+    private CalDAV4JMethodFactory methodFactory;
 
-    private HttpClient httpClient = createHttpClient();
+    private HttpClient httpClient;
 
-    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-            + COLLECTION;
+    public  String COLLECTION_PATH;
     
     public static final Integer TEST_TIMEOUT = 3600;
     public static final boolean TEST_READ = true;
@@ -50,8 +54,9 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
      * put events on calendar
      */
     protected void setUp() throws Exception {
-        super.setUp();
+        caldavCredential = new GCaldavCredential();
 
+        super.setUp();
 //        caldavPut(ICS_GOOGLE_DAILY_NY_5PM_PATH);
 //        caldavPut(ICS_GOOGLE_ALL_DAY_JAN1_PATH);
 //        caldavPut(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
@@ -298,8 +303,8 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     public void _testMultigetCalendar() throws Exception {
     	CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
     	
-    	final String baseUri = BaseTestCase.CALDAV_SERVER_PROTOCOL +"://" 
-    			+ BaseTestCase.CALDAV_SERVER_HOST+":" +BaseTestCase.CALDAV_SERVER_PORT 
+    	final String baseUri = caldavCredential.CALDAV_SERVER_PROTOCOL +"://" 
+    			+ caldavCredential.CALDAV_SERVER_HOST+":" +caldavCredential.CALDAV_SERVER_PORT 
     			+COLLECTION_PATH;
     	
     	List <String> calendarUris =  new ArrayList<String>();

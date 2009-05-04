@@ -1,24 +1,48 @@
 package org.osaf.caldav4j.scheduling.util;
 
-import java.awt.image.ReplicateScaleFilter;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.ParseException;
-
-import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.CalDAV4JException;
 
 import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Method;
-import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.CalDAV4JException;
+import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class ITipUtilsTest extends BaseTestCase {
+    public ITipUtilsTest(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
+	}
+
+	private static final Log log = LogFactory.getLog(ITipUtilsTest.class);
+
 	// load a sample meeting request
 	Calendar inviteComplexWithTimezone = this
-	.getCalendarResource("iCal-20081127-092400.ics"); //meeting_invitation.ics");
+	.getCalendarResource("meeting_invitation_1.ics");
+	
+	Attendee mySelf = null;
+	Attendee nobody = null;
+	
+	public void setUp() {
+		try {
+			super.setUp();
+			mySelf = new Attendee(new URI("mailto:robipolli@gmail.com"));
+			nobody = new Attendee(new URI("mailto:NOBODY"));
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			assertTrue(false);
+		}
+
+	}
 	/**
 	 * given a meeting REQUEST, create the given REPLY
 	 * @throws URISyntaxException 
@@ -28,19 +52,16 @@ public class ITipUtilsTest extends BaseTestCase {
 		try {
 			Calendar reply = null;
 			// add a set of attendees
-			Attendee mySelf = new Attendee(new URI("mailto:rpolli@babel.it"));
-			// set different partstats
 			// process it as ACCEPTED
 
 			reply =  ITipUtils.ManageInvitation(inviteComplexWithTimezone, mySelf, Method.REPLY, PartStat.ACCEPTED);
 
 			// check if reply is ok, other attendees stripped off, redundant data removed...
-			System.out.println("REPLY: " + reply );
+			log.trace("REPLY: " + reply );
 
 			// check if missing attendees cause exception
-			mySelf = new Attendee(new URI("mailto:NOBODY"));
 			try {
-				reply =  ITipUtils.ManageInvitation(inviteComplexWithTimezone, mySelf, Method.REPLY, PartStat.ACCEPTED);
+				reply =  ITipUtils.ManageInvitation(inviteComplexWithTimezone, nobody, Method.REPLY, PartStat.ACCEPTED);
 			} catch (CalDAV4JException e) {
 				// TODO Auto-generated catch block
 				assertTrue( e.getCause().equals(new Throwable("Missing attendee")));
@@ -50,6 +71,8 @@ public class ITipUtilsTest extends BaseTestCase {
 			// TODO: handle exception
 			e.printStackTrace();
 			assertTrue(false);
+			log.error("Missing ATTENDEEs should cause exceptions");
+
 		}
 
 	}
@@ -58,21 +81,31 @@ public class ITipUtilsTest extends BaseTestCase {
 		// load a sample meeting request
 		Calendar reply = null;
 
-		// add a set of attendees
-		// set different partstats
 		// process it as DECLINED
-		Attendee mySelf = new Attendee(new URI("mailto:rpolli@babel.it"));
-		// set different partstats
-		// process it as ACCEPTED
+
 		try {
-			reply =  ITipUtils.ManageInvitation(inviteComplexWithTimezone, mySelf, Method.REPLY, PartStat.DECLINED);
+			reply =  ITipUtils.ManageInvitation(inviteComplexWithTimezone, 
+					mySelf, Method.REPLY, PartStat.DECLINED);
+			
+			// check if reply is ok, other attendees stripped off, redundant data removed...
+			if ( ICalendarUtils.getFirstComponent(reply)
+					.getProperties(Property.ATTENDEE).size() > 1) {
+				assertTrue("Too many attendees in reply", false);
+			} else if (! reply.getProperty(Property.METHOD).getValue()
+					.equals(Method.REPLY.getValue())) {
+				assertTrue("bad METHOD in REPLY" + reply.getProperty(Property.METHOD), false);
+			}
+			
+			log.trace("REPLY: DECLINED: " + reply );
+			// check if reply is ok, other attendees stripped off, redundant data removed...
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			assertTrue(false);
 		}
-		// check if reply is ok, other attendees stripped off, redundant data removed...
-		System.out.println("REPLY: DECLINED: " + reply );
-		// check if reply is ok, other attendees stripped off, redundant data removed...
+				
+
 	}
 
 	// TODO to be implemented

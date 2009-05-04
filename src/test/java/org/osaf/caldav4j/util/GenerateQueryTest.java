@@ -27,6 +27,9 @@ public class GenerateQueryTest extends BaseTestCase {
     public GenerateQueryTest() {
 		super();
 	}
+    public GenerateQueryTest(String s) {
+    	super(s);
+    }
     protected void setUp() throws Exception {    	
         super.setUp();
     }
