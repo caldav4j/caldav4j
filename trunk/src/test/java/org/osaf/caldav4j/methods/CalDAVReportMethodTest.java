@@ -5,12 +5,16 @@ import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.BaseTestCase;
 
 public class CalDAVReportMethodTest extends BaseTestCase {
-    private static final Log log = LogFactory.getLog(CalDAVReportMethodTest.class);
+    public CalDAVReportMethodTest(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
+	}
+
+	private static final Log log = LogFactory.getLog(CalDAVReportMethodTest.class);
    // private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
     
     
-    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-            + COLLECTION;
+
     
     protected void setUp() throws Exception {
         super.setUp();

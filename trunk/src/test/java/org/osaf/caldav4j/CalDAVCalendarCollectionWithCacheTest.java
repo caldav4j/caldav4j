@@ -36,19 +36,22 @@ import org.osaf.caldav4j.util.ICalendarUtils;
  * 
  */
 public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
-    private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";
+    public CalDAVCalendarCollectionWithCacheTest(String method) {
+		super(method);
+	}
+
+	private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";
 
     private static final String UID_TO_HREF_CACHE = "uidToHrefCache";
 
     private static final Log log = LogFactory
             .getLog(CalDAVCalendarCollectionWithCacheTest.class);
 
-    private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+//    private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+//
+//    private HttpClient httpClient = createHttpClient();
 
-    private HttpClient httpClient = createHttpClient();
 
-    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-            + COLLECTION;
 
     private CalDAVResourceCache cache = null;
 

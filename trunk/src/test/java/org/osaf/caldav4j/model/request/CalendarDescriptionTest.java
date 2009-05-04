@@ -4,6 +4,11 @@ import org.osaf.caldav4j.BaseTestCase;
 
 public class CalendarDescriptionTest extends BaseTestCase {
 
+	public CalendarDescriptionTest(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
+	}
+
 	public void testPrintCalendarDescription() {
 		CalendarDescription d = new CalendarDescription();
 		System.out.println(prettyPrint(d)	);

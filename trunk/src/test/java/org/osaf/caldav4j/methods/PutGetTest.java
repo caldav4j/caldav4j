@@ -20,11 +20,16 @@ import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class PutGetTest extends BaseTestCase {
-    private static final Log log = LogFactory.getLog(PutGetTest.class);
+    public PutGetTest(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
+	}
+
+	private static final Log log = LogFactory.getLog(PutGetTest.class);
     private ResourceBundle messages;
     
-    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-            + "/" + COLLECTION;
+
+
     
     protected void setUp() throws Exception {
         super.setUp();

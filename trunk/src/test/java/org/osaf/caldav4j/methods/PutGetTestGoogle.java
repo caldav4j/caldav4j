@@ -11,15 +11,23 @@ import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.CaldavCredential;
+import org.osaf.caldav4j.GCaldavCredential;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class PutGetTestGoogle extends BaseTestCase {
-    private static final Log log = LogFactory.getLog(PutGetTestGoogle.class);
+    public PutGetTestGoogle(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
+	}
+
+	private static final Log log = LogFactory.getLog(PutGetTestGoogle.class);
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
-     
-    public  String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-            + "/" + COLLECTION;
+
+    protected CaldavCredential caldavCredential = new GCaldavCredential();
+
+    
     
     protected void setUp() throws Exception {
         super.setUp();

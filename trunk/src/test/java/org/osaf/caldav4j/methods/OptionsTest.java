@@ -10,6 +10,11 @@ import org.osaf.caldav4j.CalDAVCalendarCollection;
 
 public class OptionsTest extends BaseTestCase {
 
+	public OptionsTest(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
+	}
+
 	public static final String OUTBOX = "/Outbox";
 	public static final String INBOX = "/Inbox";
     // private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
@@ -37,7 +42,7 @@ public class OptionsTest extends BaseTestCase {
         	
 	
 	        OptionsMethod options = new OptionsMethod();
-	        options.setPath(CALDAV_SERVER_WEBDAV_ROOT + s);
+	        options.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT + s);
 	        try {
 				http.executeMethod(hostConfig,options);
 				int statusCode = options.getStatusCode();

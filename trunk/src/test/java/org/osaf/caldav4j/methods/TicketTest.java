@@ -25,15 +25,20 @@ import org.osaf.caldav4j.model.response.TicketResponse;
  * 
  */
 public class TicketTest extends BaseTestCase {
-    public static final Integer TEST_TIMEOUT = 3600;
+    public TicketTest(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
+	}
+
+	public static final Integer TEST_TIMEOUT = 3600;
     public static final boolean TEST_READ = true;
     public static final boolean TEST_WRITE = true;
     public static final Integer TEST_VISITS = INFINITY;
     public static final String  TEST_TIMEOUT_UNITS = "Second";
 
 
-    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-            + COLLECTION;
+
+
 
     private static final Log log = LogFactory.getLog(TicketTest.class);
 
@@ -60,7 +65,7 @@ public class TicketTest extends BaseTestCase {
 
         // Make the ticket
         MkTicketMethod mk = new MkTicketMethod(COLLECTION_PATH + "/"
-                + BaseTestCase.ICS_DAILY_NY_5PM, ticketRequest);
+                + ICS_DAILY_NY_5PM, ticketRequest);
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
         http.executeMethod(hostConfig, mk);
@@ -87,7 +92,7 @@ public class TicketTest extends BaseTestCase {
         // Delete the Ticket
 
         DelTicketMethod del = new DelTicketMethod(COLLECTION_PATH + "/"
-                + BaseTestCase.ICS_DAILY_NY_5PM, ticketResponse.getID());
+                + ICS_DAILY_NY_5PM, ticketResponse.getID());
         http.executeMethod(hostConfig, del);
 
         statusCode = del.getStatusCode();
@@ -108,7 +113,7 @@ public class TicketTest extends BaseTestCase {
         properties.add(propertyName2);
 
         PropFindMethod propFindMethod = new PropFindMethod(COLLECTION_PATH
-                + "/" + BaseTestCase.ICS_DAILY_NY_5PM, properties.elements());
+                + "/" + ICS_DAILY_NY_5PM, properties.elements());
         propFindMethod.setDepth(0);
         http.executeMethod(hostConfig, propFindMethod);
 
@@ -120,10 +125,10 @@ public class TicketTest extends BaseTestCase {
         // Check to make sure we get the right number of tickets
 
         Enumeration responses = propFindMethod
-                .getResponseProperties(BaseTestCase.CALDAV_SERVER_PROTOCOL
-                        + "://" + BaseTestCase.CALDAV_SERVER_HOST + ":"
-                        + BaseTestCase.CALDAV_SERVER_PORT + COLLECTION_PATH
-                        + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+                .getResponseProperties(caldavCredential.CALDAV_SERVER_PROTOCOL
+                        + "://" + caldavCredential.CALDAV_SERVER_HOST + ":"
+                        + caldavCredential.CALDAV_SERVER_PORT + COLLECTION_PATH
+                        + "/" + ICS_DAILY_NY_5PM);
         List<TicketResponse> ticketResponseList = new ArrayList<TicketResponse>();
         while (responses.hasMoreElements()) {
             Property item = (Property) responses.nextElement();
@@ -140,19 +145,19 @@ public class TicketTest extends BaseTestCase {
         // Remake the Same Ticket
 
         MkTicketMethod mk2 = new MkTicketMethod(COLLECTION_PATH + "/"
-                + BaseTestCase.ICS_DAILY_NY_5PM, ticketRequest);
+                + ICS_DAILY_NY_5PM, ticketRequest);
         http.executeMethod(hostConfig, mk2);
 
         // And Another Ticket
 
         MkTicketMethod mk3 = new MkTicketMethod(COLLECTION_PATH + "/"
-                + BaseTestCase.ICS_DAILY_NY_5PM, ticketRequest);
+                + ICS_DAILY_NY_5PM, ticketRequest);
         http.executeMethod(hostConfig, mk3);
 
         // Do a PropFind on Calendar for ticketdiscovery and owner properties
 
         propFindMethod = new PropFindMethod(COLLECTION_PATH + "/"
-                + BaseTestCase.ICS_DAILY_NY_5PM, properties.elements());
+                + ICS_DAILY_NY_5PM, properties.elements());
         propFindMethod.setDepth(0);
         http.executeMethod(hostConfig, propFindMethod);
 
@@ -164,10 +169,10 @@ public class TicketTest extends BaseTestCase {
         // Check to make sure we get the right number of tickets
 
         responses = propFindMethod
-                .getResponseProperties(BaseTestCase.CALDAV_SERVER_PROTOCOL
-                        + "://" + BaseTestCase.CALDAV_SERVER_HOST + ":"
-                        + BaseTestCase.CALDAV_SERVER_PORT + COLLECTION_PATH
-                        + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+                .getResponseProperties(caldavCredential.CALDAV_SERVER_PROTOCOL
+                        + "://" + caldavCredential.CALDAV_SERVER_HOST + ":"
+                        + caldavCredential.CALDAV_SERVER_PORT + COLLECTION_PATH
+                        + "/" + ICS_DAILY_NY_5PM);
         ticketResponseList = new ArrayList<TicketResponse>();
         while (responses.hasMoreElements()) {
             Property item = (Property) responses.nextElement();
@@ -206,7 +211,7 @@ public class TicketTest extends BaseTestCase {
 
         // Make the ticket
         MkTicketMethod mk = new MkTicketMethod(COLLECTION_PATH + "/"
-                + BaseTestCase.ICS_DAILY_NY_5PM, ticketRequest);
+                + ICS_DAILY_NY_5PM, ticketRequest);
 
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
@@ -221,7 +226,7 @@ public class TicketTest extends BaseTestCase {
         // Try to get the Calendar with the Ticket
 
         GetMethod get = methodFactory.createGetMethod();
-        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+        get.setPath(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
 
         // Setup a HttpClient with a bad username and password
         HttpClient badhttp = createHttpClientWithNoCredentials();
@@ -238,7 +243,7 @@ public class TicketTest extends BaseTestCase {
         // Make sure the Get method works with Bad Username/Password and valid
         // ticket in the URI
         GetMethod get2 = methodFactory.createGetMethod();
-        get2.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+        get2.setPath(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
 
         badhttp.setTicketLocation(HttpClient.TicketLocation.QUERY_PARAM);
         badhttp.executeMethod(hostConfig, get2);

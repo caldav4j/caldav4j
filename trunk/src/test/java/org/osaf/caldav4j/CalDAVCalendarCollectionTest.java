@@ -1,7 +1,6 @@
 package org.osaf.caldav4j;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +25,17 @@ import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class CalDAVCalendarCollectionTest extends BaseTestCase {
-    private static final Log log = LogFactory
+    public CalDAVCalendarCollectionTest(String method) {
+		super(method);
+	}
+
+	private static final Log log = LogFactory
             .getLog(CalDAVCalendarCollectionTest.class);
 
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
-    private HttpClient httpClient = createHttpClient();
 
-    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-            + COLLECTION;
+
     
     public static final Integer TEST_TIMEOUT = 3600;
     public static final boolean TEST_READ = true;
@@ -57,7 +58,6 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     }
 
     protected void tearDown() throws Exception {
-        super.tearDown();
         del(COLLECTION_PATH + "/" + ICS_GOOGLE_DAILY_NY_5PM);
         del(COLLECTION_PATH + "/" + ICS_GOOGLE_ALL_DAY_JAN1);
         del(COLLECTION_PATH + "/" + ICS_GOOGLE_NORMAL_PACIFIC_1PM);
@@ -69,6 +69,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         	log.info("DELETE unsupported?", e);
         }
     }
+
 
     public void testGetCalendar() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
@@ -97,6 +98,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         assertNotNull(calDAV4JException);
     }
 
+
     public void testGetCalendarByPath() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         Calendar calendar = null;
@@ -104,6 +106,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
             calendar = calendarCollection.getCalendarByPath(httpClient,
                     ICS_GOOGLE_DAILY_NY_5PM);
         } catch (CalDAV4JException ce) {
+        	log.info("Error in testGetCalendarByPath"+ ce.getMessage());
             assertNull(ce);
         }
 
@@ -124,9 +127,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         assertNotNull(calDAV4JException);
     }
 
-    /**
-     * @throws Exception
-     */
+
     public void testGetEventResources() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         Date beginDate = ICalendarUtils.createDateTime(2006, 0, 1, null, true);
@@ -164,9 +165,6 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     }
 
     // TODO wait on floating test until we can pass timezones
-    /**
-     * @throws Exception
-     */
     public void donttestGetEventResourcesFloatingIssues() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
 
@@ -188,9 +186,9 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
         assertFalse(hasEventWithUID(l, ICS_GOOGLE_FLOATING_JAN2_7PM_UID));
     }
 
-    /**
-     * @throws Exception
-     */
+
+
+    
     public void testAddNewRemove() throws Exception {
         String newUid = "NEW_UID";
         String newEvent = "NEW_EVENT";
@@ -256,8 +254,8 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     public void testMultigetCalendar() throws Exception {
     	CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
     	
-    	final String baseUri = BaseTestCase.CALDAV_SERVER_PROTOCOL +"://" 
-    			+ BaseTestCase.CALDAV_SERVER_HOST+":" +BaseTestCase.CALDAV_SERVER_PORT 
+    	String baseUri = caldavCredential.CALDAV_SERVER_PROTOCOL +"://" 
+    			+ caldavCredential.CALDAV_SERVER_HOST+":" + caldavCredential.CALDAV_SERVER_PORT 
     			+COLLECTION_PATH;
     	
     	List <String> calendarUris =  new ArrayList<String>();
@@ -273,9 +271,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     	
     }
     
-    /**
-     * @throws Exception
-     */
+    
     public void testTicket() throws Exception {
 
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
@@ -352,7 +348,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     public void testGetOptions() {
     	CalDAVCalendarCollection  cal =  createCalDAVCalendarCollection();
     	OptionsMethod options = new org.apache.webdav.lib.methods.OptionsMethod();
-    	options.setPath(CaldavCredential.CALDAV_SERVER_WEBDAV_ROOT+CaldavCredential.COLLECTION);
+    	options.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT+caldavCredential.COLLECTION);
     	options.setRequestHeader("Host", cal.hostConfiguration.getHost());
 		try {
 			httpClient.executeMethod(cal.hostConfiguration, options);
@@ -367,8 +363,7 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-    	
     }
 
+    
 }

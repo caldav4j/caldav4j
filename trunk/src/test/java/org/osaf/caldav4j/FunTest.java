@@ -20,13 +20,17 @@ import org.apache.webdav.lib.methods.XMLResponseMethodBase.Response;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 
 public class FunTest extends BaseTestCase {
-    private static final Log log = LogFactory
+    public FunTest(String method) {
+		super(method);
+	}
+
+	private static final Log log = LogFactory
             .getLog(FunTest.class);
 
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
-    public static final String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
-            + COLLECTION;
+//    public  String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
+//            + COLLECTION;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -63,7 +67,7 @@ public class FunTest extends BaseTestCase {
         PropFindMethod propFindMethod = new PropFindMethod();
         PropertyName propName = new PropertyName(CalDAVConstants.NS_DAV, "resourcetype");
         propFindMethod.setDepth(DepthSupport.DEPTH_INFINITY);
-        propFindMethod.setPath(CALDAV_SERVER_WEBDAV_ROOT);
+        propFindMethod.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT);
         propFindMethod.setType(PropFindMethod.BY_NAME);
         Vector<PropertyName> v = new Vector<PropertyName>();
         v.add(propName);
