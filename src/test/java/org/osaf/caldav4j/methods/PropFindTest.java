@@ -177,6 +177,10 @@ public class PropFindTest extends BaseTestCase {
 		}
 
 	}
+	
+	/**
+	 * TODO this test will work only on bedework which has a set of permission set
+	 */
 	public void testNewPropfind() {
 		log.info("New Propfind");
 		HttpClient http = createHttpClient();
@@ -199,7 +203,7 @@ public class PropFindTest extends BaseTestCase {
 			
 			// check that Calendar-description and DisplayName matches
 			log.debug("DisplayName: " + propfind.getDisplayName(COLLECTION_PATH));
-			assertEquals(caldavCredential.COLLECTION, propfind.getDisplayName(COLLECTION_PATH));			
+			assertEquals(caldavCredential.COLLECTION.replaceAll("/$", ""), propfind.getDisplayName(COLLECTION_PATH).replaceAll("/$", ""));			
 
 			log.debug("CalendarDescription: " +  propfind.getCalendarDescription(COLLECTION_PATH));
 			assertEquals(CALENDAR_DESCRIPTION, propfind.getCalendarDescription(COLLECTION_PATH));
