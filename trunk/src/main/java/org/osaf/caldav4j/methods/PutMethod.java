@@ -51,6 +51,17 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
     private boolean ifMatch = false;
     private boolean ifNoneMatch = false;
     private boolean allEtags = false;
+    private Charset charset = null;
+    
+    public void setCharset(Charset charset) {
+		this.charset = charset;
+	}
+    public Charset getCharset() {
+    	if (charset == null) {
+    		charset = Charset.forName("UTF-8");
+    	}
+		return charset;
+	}
     
     public PutMethod (){
         super();
@@ -174,7 +185,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
                 
                 RequestEntity requestEntity = new StringRequestEntity(writer.toString(),
 						CalDAVConstants.CALENDAR_CONTENT_TYPE, 
-						Charset.defaultCharset().toString());
+						getCharset().toString());
                 setRequestEntity(requestEntity);                                
             } catch (UnsupportedEncodingException e) {
             	 log.error("Unsupported encoding in event" + writer.toString());

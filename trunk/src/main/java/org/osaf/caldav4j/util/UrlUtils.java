@@ -25,4 +25,8 @@ public class UrlUtils {
         int index = href.indexOf("/", indexOfColon + 3);
         return href.substring(index);
     }
+    
+    public static String removeDoubleSlashes(String s) {
+    	return s.replaceAll("([^:])/{2,}","$1/");
+    }
 }

@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
@@ -91,10 +92,11 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
             }
         }
         
+        // remove double "//" from paths
         if ( hrefs != null ) { 
 	        for (String uri : hrefs) {
 	        	DavHref href = 
-	        		new DavHref(webdavNamespaceQualifier, uri);
+	        		new DavHref(webdavNamespaceQualifier, UrlUtils.removeDoubleSlashes(uri));
 	        	children.add(href);
 			}
         }

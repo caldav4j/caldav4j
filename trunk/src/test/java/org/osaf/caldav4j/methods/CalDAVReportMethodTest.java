@@ -34,8 +34,14 @@ public class CalDAVReportMethodTest extends BaseTestCase {
         del(COLLECTION_PATH);
     }
     
-    public void testReport() throws Exception{
-        assertTrue(true);
+    public void testCheckTrailingSlash() throws Exception{
+    	CalDAVReportMethod method = methodFactory.createCalDAVReportMethod();
+    	assertNotNull(method);
+    	
+    	method.setPath(COLLECTION_PATH);
+    	assertNotNull(method.getPath());
+    	assertTrue(method.getPath().endsWith("/"));
+        
     }
 
 

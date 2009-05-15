@@ -100,7 +100,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	public CalDAVCalendarCollection(String path,
 			HostConfiguration hostConfiguration,
 			CalDAV4JMethodFactory methodFactory, String prodId) {
-		this.calendarCollectionRoot = path;
+		setCalendarCollectionRoot(path);
 		this.hostConfiguration = hostConfiguration;
 		this.methodFactory = methodFactory;
 		this.prodId = prodId;
@@ -215,7 +215,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 */
 	public void createCalendar(HttpClient httpClient) throws CalDAV4JException{
 		MkCalendarMethod mkCalendarMethod = new MkCalendarMethod();
-		mkCalendarMethod.setPath(calendarCollectionRoot);
+		mkCalendarMethod.setPath(getCalendarCollectionRoot());
 		try {
 			httpClient.executeMethod(hostConfiguration, mkCalendarMethod);
 			int statusCode = mkCalendarMethod.getStatusCode();
@@ -569,7 +569,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 
 		CalDAVReportMethod reportMethod = methodFactory
 		.createCalDAVReportMethod();
-		reportMethod.setPath(calendarCollectionRoot);
+		reportMethod.setPath(getCalendarCollectionRoot());
 		reportMethod.setReportRequest(query);
 		try {
 			httpClient.executeMethod(hostConfiguration, reportMethod);
@@ -634,7 +634,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 
 		CalDAVReportMethod reportMethod = methodFactory
 		.createCalDAVReportMethod();
-		reportMethod.setPath(calendarCollectionRoot);
+		reportMethod.setPath(getCalendarCollectionRoot());
 		reportMethod.setReportRequest(query);
 		try {
 			httpClient.executeMethod(hostConfiguration, reportMethod);
@@ -761,7 +761,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	}
 
 	protected String getAbsolutePath(String relativePath){
-		return   (calendarCollectionRoot + "/" + relativePath).replaceAll("/+", "/");
+		return   (getCalendarCollectionRoot() + "/" + relativePath).replaceAll("/+", "/");
 	}
 
 

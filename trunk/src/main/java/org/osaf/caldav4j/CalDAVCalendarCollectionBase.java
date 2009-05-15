@@ -25,7 +25,7 @@ import org.osaf.caldav4j.methods.PutMethod;
 public abstract class CalDAVCalendarCollectionBase {
 	
 	 CalDAV4JMethodFactory methodFactory = null;
-	 String calendarCollectionRoot = null;
+	 private String calendarCollectionRoot = null;
 	 HostConfiguration hostConfiguration = null;
 	 String prodId = null;
 	 Random random = new Random();
