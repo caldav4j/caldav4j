@@ -209,7 +209,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
             }
             addRequestHeader(name, value);
         }
-        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CALENDAR_CONTENT_TYPE);
+
         super.addRequestHeaders(state, conn);
     }
 
