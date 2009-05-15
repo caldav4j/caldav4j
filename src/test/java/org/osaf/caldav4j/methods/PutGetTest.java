@@ -1,5 +1,6 @@
 package org.osaf.caldav4j.methods;
 
+import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -7,12 +8,10 @@ import java.util.ResourceBundle;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Summary;
 
 import org.apache.commons.httpclient.HostConfiguration;
-import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.BaseTestCase;
@@ -94,6 +93,7 @@ public class PutGetTest extends BaseTestCase {
     	Locale mylocale = new Locale("ru", "RU");
     	messages = PropertyResourceBundle.getBundle("messages",mylocale);
     	String myLocalSummary = messages.getString("summary"); 
+    	log.info("default charser: "+ Charset.defaultCharset());
 
         Calendar cal = getCalendarResource(BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_PATH);
         Component calendarComponent =  cal.getComponent(Component.VEVENT);
