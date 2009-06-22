@@ -1,4 +1,4 @@
-#summary Here we discuss on a language to describe caldav query
+#summary How to create caldav queries in 5minutes
 #labels Phase-Implementation
 
 = Introduction =
