@@ -1,0 +1,40 @@
+#summary FAQ
+#labels faq
+
+= Introduction =
+
+Please, please, please: if you have troubles, check this page carefully and remember:
+ * caldav4j is tested against Bedework 3.4.1.1
+ * caldav4j requires Java 1.6
+ * caldav4j requires the jakarta-slide jar provided on this site
+ * before submitting issues on list please, run junits
+
+
+= FAQ =
+
+== FAQ 1 ==
+ 
+Q: Can't compile caldav4j 
+
+A: build without test 
+# mvn package -Dmaven.test.skip=true
+
+== FAQ 2 ==
+Q: Caldav4j won't work with my caldav server
+
+A: Run junit tests against your caldav server. At least some tests (eg. list events) should work.
+
+== FAQ 2 ==
+Q: I got some strange XML error/exception while running caldav4j
+
+A: use java 1.6
+
+== FAQ 3 ==
+Q: caldav4j passes the test but won't work on my application
+
+A: check your environment: java version, httpclient version, slide version. To avoid issues, use maven in your project
+
+== FAQ 4 ==
+Q: how can I query for events like...
+
+A: see the CreateCaldavQuery page
