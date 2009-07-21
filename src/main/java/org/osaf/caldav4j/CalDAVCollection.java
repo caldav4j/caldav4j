@@ -50,7 +50,6 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.PropertyName;
-import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.CalDAVReportMethod;
 import org.osaf.caldav4j.methods.DelTicketMethod;
@@ -272,7 +271,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		try {
 			httpClient.executeMethod(hostConfiguration, mkCalendarMethod);
 			int statusCode = mkCalendarMethod.getStatusCode();
-			if (statusCode != WebdavStatus.SC_CREATED){
+			if (statusCode != CaldavStatus.SC_CREATED){
 				throw new CalDAV4JException("Create Failed with Status: "
 						+ statusCode + " and body: \n"
 						+ mkCalendarMethod.getResponseBodyAsString());
@@ -341,13 +340,13 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			int statusCode = putMethod.getStatusCode();
 			
 			switch (statusCode) {
-			case WebdavStatus.SC_CREATED:
+			case CaldavStatus.SC_CREATED:
 				didIt = true;
 				break;
-			case WebdavStatus.SC_NO_CONTENT:
+			case CaldavStatus.SC_NO_CONTENT:
 				didIt = true;
 				break;
-			case WebdavStatus.SC_PRECONDITION_FAILED:
+			case CaldavStatus.SC_PRECONDITION_FAILED:
 				// event not added, retry
 				break;				
 			default:
@@ -400,11 +399,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		int statusCode = putMethod.getStatusCode();
 
 		switch (statusCode) {
-		case WebdavStatus.SC_CREATED:			
+		case CaldavStatus.SC_CREATED:			
 			break;
-		case WebdavStatus.SC_NO_CONTENT:
+		case CaldavStatus.SC_NO_CONTENT:
 			break;
-		case WebdavStatus.SC_PRECONDITION_FAILED:
+		case CaldavStatus.SC_PRECONDITION_FAILED:
 			break;
 		default:
 			//must be some other problem, throw an exception
@@ -485,7 +484,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		try {
 			httpClient.executeMethod(hostConfiguration, mkTicketMethod);
 			int statusCode = mkTicketMethod.getStatusCode();
-			if (statusCode != WebdavStatus.SC_OK) {
+			if (statusCode != CaldavStatus.SC_OK) {
 				throw new CalDAV4JException("Create Ticket Failed with Status: "
 						+ statusCode + " and body: \n"
 						+ mkTicketMethod.getResponseBodyAsString());
@@ -524,7 +523,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		try {
 			httpClient.executeMethod(hostConfiguration, delTicketMethod);
 			int statusCode = delTicketMethod.getStatusCode();
-			if (statusCode != WebdavStatus.SC_NO_CONTENT) {
+			if (statusCode != CaldavStatus.SC_NO_CONTENT) {
 				throw new CalDAV4JException(
 						"Delete Ticket Failed with Status: " + statusCode
 						+ " and body: \n"
@@ -571,7 +570,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 		int statusCode = propFindMethod.getStatusCode();
 
-		if (statusCode != WebdavStatus.SC_MULTI_STATUS) {
+		if (statusCode != CaldavStatus.SC_MULTI_STATUS) {
 			throw new CalDAV4JException("PropFind Failed with Status: "
 					+ statusCode + " and body: \n"
 					+ propFindMethod.getResponseBodyAsString());
@@ -797,7 +796,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		getMethod.setPath(path);
 		try {
 			httpClient.executeMethod(hostConfiguration, getMethod);
-			if (getMethod.getStatusCode() != WebdavStatus.SC_OK){
+			if (getMethod.getStatusCode() != CaldavStatus.SC_OK){
 				throw new CalDAV4JException(
 						"Unexpected Status returned from Server: "
 						+ getMethod.getStatusCode());
@@ -874,7 +873,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		DeleteMethod deleteMethod = new DeleteMethod(path);
 		try {
 			httpClient.executeMethod(hostConfiguration, deleteMethod);
-			if (deleteMethod.getStatusCode() != WebdavStatus.SC_NO_CONTENT){
+			if (deleteMethod.getStatusCode() != CaldavStatus.SC_NO_CONTENT){
 				throw new CalDAV4JException(
 						"Unexpected Status returned from Server: "
 						+ deleteMethod.getStatusCode());
@@ -911,12 +910,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			httpClient.executeMethod(hostConfiguration, headMethod);
 			int statusCode = headMethod.getStatusCode();
 
-			if (statusCode == WebdavStatus.SC_NOT_FOUND) {
+			if (statusCode == CaldavStatus.SC_NOT_FOUND) {
 				throw new ResourceNotFoundException(
 						ResourceNotFoundException.IdentifierType.PATH, path);
 			}
 
-			if (statusCode != WebdavStatus.SC_OK){
+			if (statusCode != CaldavStatus.SC_OK){
 				throw new CalDAV4JException(
 						"Unexpected Status returned from Server: "
 						+ headMethod.getStatusCode());
