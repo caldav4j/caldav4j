@@ -198,6 +198,19 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
         return super.generateRequestBody();
     }
     
+    public void setRequestEntity(String string) {
+        RequestEntity requestEntity;
+		try {
+			requestEntity = new StringRequestEntity(string,
+					CalDAVConstants.CALENDAR_CONTENT_TYPE, 
+					getCharset().toString());
+	    	super.setRequestEntity(requestEntity);
+
+		} catch (UnsupportedEncodingException e) {
+			log.error("Unsupported encoding in event" + string);
+			throw new RuntimeException("Problem generating calendar. ", e);
+		}
+    }
     protected void addRequestHeaders(HttpState state, HttpConnection conn)
     throws IOException, HttpException {
         if (ifMatch || ifNoneMatch){
