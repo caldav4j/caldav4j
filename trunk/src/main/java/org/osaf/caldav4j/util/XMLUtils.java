@@ -23,7 +23,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.model.response.TicketResponse;
+import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -103,6 +105,24 @@ public class XMLUtils {
         return implementation;
     }
 
+    /**
+     * Create a string representation of an DOM document
+     */
+    public static String prettyPrint(OutputsDOMBase xml) {
+	    try {
+	    	Document doc = xml.createNewDocument(XMLUtils
+	                .getDOMImplementation());
+			return XMLUtils.toPrettyXML(doc);
+	    	
+	    } catch (DOMValidationException domve) {
+	        throw new RuntimeException(domve);
+	    } catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return null;		
+	}
+    
     /**
      * Takes a ticketinfo element and creates/returns it as a TicketResponse
      * Object

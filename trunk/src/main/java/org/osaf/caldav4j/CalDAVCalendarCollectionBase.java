@@ -14,7 +14,7 @@ import net.fortuna.ical4j.model.Calendar;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.osaf.caldav4j.methods.HttpClient;
-import org.apache.webdav.lib.util.WebdavStatus;
+import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.cache.NoOpResourceCache;
@@ -156,9 +156,9 @@ public abstract class CalDAVCalendarCollectionBase {
 	    try {
 	        httpClient.executeMethod(hostConfiguration, putMethod);
 	        int statusCode = putMethod.getStatusCode();
-	        if (statusCode!= WebdavStatus.SC_NO_CONTENT
-	                && statusCode != WebdavStatus.SC_CREATED) {
-	            if (statusCode == WebdavStatus.SC_PRECONDITION_FAILED){
+	        if (statusCode!= org.osaf.caldav4j.util.CaldavStatus.SC_NO_CONTENT
+	                && statusCode != CaldavStatus.SC_CREATED) {
+	            if (statusCode == CaldavStatus.SC_PRECONDITION_FAILED){
 	                throw new ResourceOutOfDateException(
 	                        "Etag was not matched: "
 	                                + etag);
