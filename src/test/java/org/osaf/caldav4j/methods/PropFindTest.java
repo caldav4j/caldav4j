@@ -22,6 +22,7 @@ import org.osaf.caldav4j.model.request.CalendarDescription;
 import org.osaf.caldav4j.model.request.DisplayName;
 import org.osaf.caldav4j.model.request.PropProperty;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
+import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -248,7 +249,7 @@ public class PropFindTest extends BaseTestCase {
 		PropProperty principal =	new PropProperty(CalDAVConstants.NS_DAV, "D", "property");
 		principal.addChild(new PropProperty(ace.getProperty().getNamespaceURI(), "D", ace.getProperty().getLocalName()));
 		String stringFormattedAci = String.format("ACE:" + 
-				" principal: %s ", "property".equals(ace.getPrincipal()) ? prettyPrint(principal)  : ace.getPrincipal() +
+				" principal: %s ", "property".equals(ace.getPrincipal()) ? XMLUtils.prettyPrint(principal)  : ace.getPrincipal() +
 						" ereditata da: " + ace.getInheritedFrom() + ";" );
 		log.debug( stringFormattedAci );
 		Enumeration<Privilege> privs = ace.enumeratePrivileges();
