@@ -5,6 +5,9 @@
 
 Please, please, please: if you have troubles, check this page carefully and remember:
  * caldav4j is tested against Bedework 3.4.1.1
+tests ok against: bedework 3.5, davical (svn)
+almost working with: darwin calendar server (apple)
+issues with: Cosmo
  * caldav4j requires Java 1.6
  * caldav4j requires the jakarta-slide jar provided on this site
  * before submitting issues on list please, run junits
@@ -22,7 +25,21 @@ A: build without test
 == FAQ 2 ==
 Q: Caldav4j won't work with my caldav server
 
-A: Run junit tests against your caldav server. At least some tests (eg. list events) should work.
+A: Run junit tests against your caldav server. At least some tests (eg. list events) should work. Caldav4j test creates and queries for events in a given user caldav path.
+ex. the following configuration
+
+"http://calendar.example.com/ucaldav/user/rpolli/"
+
+user: rpolli
+
+password: mypasswd
+
+calendar: "collection/"
+
+ * login to http://rpolli:mypasswd@calendar.example.com/ucaldav/user/rpolli/
+ * create the calendar "collection/" in the above path
+ * creates, deletes, searches calendars into  http://rpolli:mypasswd@calendar.example.com/ucaldav/user/rpolli/collection/
+
 
 == FAQ 2 ==
 Q: I got some strange XML error/exception while running caldav4j
