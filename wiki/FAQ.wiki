@@ -49,9 +49,16 @@ A: use java 1.6
 == FAQ 3 ==
 Q: caldav4j passes the test but won't work on my application
 
-A: check your environment: java version, httpclient version, slide version. To avoid issues, use maven in your project
+A: check your environment: java version, httpclient version, slide version. To avoid issues, use maven in your project. *You need to use the slide provided by this site: it's patched to run with httpclient-3.0 and httpclient-3.1*
 
 == FAQ 4 ==
 Q: how can I query for events like...
 
-A: see the CreateCaldavQuery page
+A: see the CreateCaldavQuery page. As of now caldav/webdav protocol doesn't support disjuntive search (eg. something like all events where SUMMARY=A OR SUMMARY=B )
+
+== FAQ 5 ==
+Q: how to submit new code?
+
+A: as caldav4j needs to be reliable, we'd like to have each class tested. So contributors need to write a test case (or a test class if it's not present) and then write the patch.
+The test class ensures the patch won't change the old behavior.
+*It's important not to refactor code when submitting patches, so that we can apply it easily an quickly*
