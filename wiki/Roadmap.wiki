@@ -1,10 +1,10 @@
 #summary What's next for CalDAV4j?
 
 for 0.6
- * basic scheduling support 
- * basic ACL management
- * calendar collection properties: calendar-description, displayname
- * basic PropFind support
+ * basic scheduling support [started]
+ * basic ACL management [started]
+ * calendar collection properties: calendar-description, displayname [done]
+ * basic PropFind support [started]
 
 for 0.7
  * better code
