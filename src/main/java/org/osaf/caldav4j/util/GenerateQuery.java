@@ -151,7 +151,7 @@ public class GenerateQuery  {
 	/**
 	 * validator
 	 * TODO this method should provide at least a basic validation of the calendar-query
-	 * @deprecated
+	 * @deprecated This method does nothing but returning true!!!
 	 */
 	public boolean validate() {
 		return true;
@@ -161,7 +161,6 @@ public class GenerateQuery  {
 	 * set the component to retrieve: VEVENT, VTODO
 	 * VEVENT : UID, DTSTART, DTEND,
 	 * 
-	 *  @deprecated this method is experimental
 	 */
 	public void setComponent(String component) {
 		if (component != null) {
@@ -224,7 +223,6 @@ public class GenerateQuery  {
 	 * syntax:
 	 * VTODO [;] : UID==1231423423145231 , DTSTART=[1214313254324;$3214234231] , SUMMARY!=Caldav4j
 	 * @throws ParseException 
-	 * @deprecated this method is experimental
 	 */
 	public void setFilter(String filterComponent) 
 	  throws CalDAV4JException  {		
