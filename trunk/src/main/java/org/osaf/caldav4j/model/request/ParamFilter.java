@@ -46,7 +46,12 @@ public class ParamFilter extends OutputsDOMBase {
     private boolean isDefined = false;
     private TextMatch textMatch = null;
     private String name = null;
-    
+    public void setName(String name) {
+		this.name = name;
+	}
+    public String getName() {
+		return name;
+	}
     public ParamFilter(String caldavNamespaceQualifier) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
     }

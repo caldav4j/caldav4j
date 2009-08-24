@@ -51,6 +51,7 @@ public interface CalDAVConstants {
     
     public static final String NS_QUAL_TICKET = "ticket";
     public static final String NS_QUAL_DAV = "D";
+    public static final String NS_QUAL_CALDAV = "C";
     
     public static final String ELEM_TICKETDISCOVERY = "ticketdiscovery";
     public static final String ELEM_TICKETINFO = "ticketinfo";
@@ -63,6 +64,9 @@ public interface CalDAVConstants {
     public static final String ELEM_OWNER = "owner";
     public static final String ELEM_HREF = "href";
     public static final String ELEM_ALLPROP = "allprop";
+    
+    public static final String COLLATION_ASCII = "i;ascii-casemap";
+    public static final String COLLATION_OCTET = "i;octet";
    
     public static final Integer INFINITY = -1;
     public static final String  INFINITY_STRING = "infinity";
