@@ -3,7 +3,7 @@
 for 0.6
  * basic scheduling support [started]
  * basic ACL management [started]
- * calendar collection properties: calendar-description, displayname [done]
+ * calendar collection properties: calendar-description, displayname (done)
  * basic PropFind support [started]
 
 for 0.7
