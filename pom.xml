@@ -41,7 +41,7 @@
       <groupId>net.fortuna.ical4j</groupId>
       <artifactId>ical4j</artifactId>
       <!--version>1.0-rc1-SNAPSHOT</version--><!-- patched on localhost-->
-      <version>1.0-beta5</version><!-- old-->
+      <version>1.0-rc2</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
