@@ -44,7 +44,7 @@ import org.w3c.dom.Document;
  * @author robipolli@gmail.com
  *
  */
-public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements DepthSupport {
+public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements DepthSupport, CalDAVConstants {
     private static final Log log = LogFactory
         .getLog(CalDAVReportMethod.class);
     private CalendarBuilder calendarBuilder = null;
@@ -125,8 +125,9 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements D
             break;
         }
 
-        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.TEXT_XML_CONTENT_TYPE);
-
+        if (getRequestHeader(HEADER_CONTENT_TYPE) == null) {
+        	addRequestHeader(HEADER_CONTENT_TYPE,TEXT_XML_CONTENT_TYPE);
+        }
     }
 
     /**
