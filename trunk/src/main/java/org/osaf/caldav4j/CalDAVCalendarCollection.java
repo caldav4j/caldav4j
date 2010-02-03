@@ -782,7 +782,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 						"Unexpected Status returned from Server: "
 						+ headMethod.getStatusCode());
 			}
-		} catch (Exception e){
+		} catch (IOException e){
 			throw new CalDAV4JException("Problem executing get method",e);
 		}
 
