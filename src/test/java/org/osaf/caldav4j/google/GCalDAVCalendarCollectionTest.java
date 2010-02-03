@@ -17,7 +17,6 @@ import net.fortuna.ical4j.model.property.Uid;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.omg.PortableInterceptor.NON_EXISTENT;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVCalendarCollection;
@@ -37,11 +36,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
 	private static final Log log = LogFactory
             .getLog(GCalDAVCalendarCollectionTest.class);
 
-    private CalDAV4JMethodFactory methodFactory;
 
-    private HttpClient httpClient;
-
-    public  String COLLECTION_PATH;
     
     public static final Integer TEST_TIMEOUT = 3600;
     public static final boolean TEST_READ = true;
@@ -252,8 +247,11 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
         ve.getProperties().add(uid);
 
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
-        calendarCollection.addEvent(httpClient, ve, null);
-
+        try {
+        	calendarCollection.addEvent(httpClient, ve, null);
+        } catch (CalDAV4JException e){
+        	fail("It's probably a google issue. See http://code.google.com/p/google-caldav-issues/issues/detail?id=26#c25");        	
+        }
         Calendar calendar = calendarCollection.getCalendarByPath(httpClient,
                 newUid+".ics");
         assertNotNull(calendar);
@@ -265,7 +263,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
                     newUid+".ics");
         } catch (ResourceNotFoundException e) {
 
-        }
+        } 
         assertNull(calendar);
     }
 
@@ -391,7 +389,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
 
     private CalDAVCalendarCollection createCalDAVCalendarCollection() {
         CalDAVCalendarCollection calendarCollection = new CalDAVCalendarCollection(
-                COLLECTION_PATH, createHostConfiguration(), methodFactory,
+        		COLLECTION_PATH, createHostConfiguration(), methodFactory,
                 CalDAVConstants.PROC_ID_DEFAULT);
         return calendarCollection;
     }
