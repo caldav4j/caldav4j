@@ -1,13 +1,17 @@
-#summary FAQ
+#summary Frequently Asked Questions
 #labels faq
 
 = Introduction =
 
 Please, please, please: if you have troubles, check this page carefully and remember:
  * caldav4j is tested against Bedework 3.4.1.1
+
 tests ok against: bedework 3.5, davical (svn)
+
 almost working with: darwin calendar server (apple)
+
 issues with: Cosmo
+
  * caldav4j requires Java 1.6
  * caldav4j requires the jakarta-slide jar provided on this site
  * before submitting issues on list please, run junits
