@@ -1,0 +1,24 @@
+#summary Ideas for caldav4j
+#labels Phase-Design
+
+= Introduction =
+
+Add your content here.
+
+
+= Ideas =
+
+== Jackrabbit migration ==
+
+== Scheduling support ==
+
+== ACL Helper ==
+
+== Improve Cache ==
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
