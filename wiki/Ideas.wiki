@@ -1,21 +1,122 @@
 #summary Ideas for caldav4j
 #labels Phase-Design
 
-= Introduction =
+Caldav4j is candidate to Google Summer of Code 
+
+= Students = 
+    * let us know on our mailing lists caldav4j@googlegroups.com
+    * spend some time to play with caldav and build caldav4j
+    * look at project ideas to see, if some is interesting for you
+    * student application will begin 29.March, deadline 9.April
+
+  See GsocStudentApplication
+
+= Why Caldav4j =
+ * learn the widespreading standard for calendaring and collaboration used by Apple and Google
+ * work with Test Driven Development and Agile metodologies
+ * discuss with standard maker people on IETF mailing lists
+ * contribute to make world of communication more open
+
+ See Whyjoin
+
+http://code.google.com/images/2010soclogo.jpg
+
+= Skill =
+ * required: 
+   * java, xml, tomcat, svn
+
+ * suggested:
+   * junit, Maven, [http://www.slideshare.net/som.mukhopadhyay/test-driven-development-and-junit-presentation Junit], [http://www.slideshare.net/sanjoysanyal/http-basics HTTP/1.1], RFC understanding, tomcat
+   * HTTP protocol
+
+ * moreover you will learn:
+   * httpclient java library, jackrabbit webdav library
+   *  WebDAV, [http://www.slideshare.net/ioggstream/presenting-caldav-draft-1-presentation CalDAV] protocol, iCalendar RFC5525
+   * wireshark/ethereal/tcpdump
+
+ * further resources: [http://www.slideshare.net/ioggstream/integrating-funambol-with-caldav-and-ldap-presentation Caldav4j, Funambol and mobile devices]
+= Ideas = 
+
+ == Jackrabbit migration == 
+ * Summary: migrate the webdav layer from slide to jackrabbit
+ * Level: hard
+ * Skill: java (interfaces, abstract classes), httpclient
+ * Description: caldav4j is based on top of the old apache-slide library instead of the new jackrabbit one. Many people don't use caldav4j for that reason.
+ * Strategy: isolate all slide code out of the main caldav4j package, and replace it with jackrabbit.
+   # create a webdav interface package: the actual classes will be an interface slide implementation
+   # let the main package use the interface instead of the implementation
+   # replace the slide implementation with the new jackrabbit one
+   # Junit testing will ensure the compatibility with caldav server
+
+ == CalDAV scheduling support ==
+ * Summary: improving CaldDAV scheduling support
+ * Level: easy
+ * Skill: java, icalendar
+ * Description: manage icalendar meeting request/reply with standard ical4j quite boring. We want to develop an helper (a stub still exists) to quickly manage reply/cancel/refresh meeting requests
+ * Strategy:
+   # analize standard iTip meeting reply/cancel/refresh request
+   # write a class that create meeting replies conform to iTip
+   # analize caldav scheduling protocol drafts and implicit scheduling
+   # write basic caldav scheduling support methods
+   # test against current caldav implementation: Bedework, Apple calendar server, Google calendar
+
+ == WebDAV ACI support ==
+ * Summary: improving WebDAV ACI management (needed for calendar sharing and scheduling)
+ * Level: easy
+ * Skill: java, webdav ACI
+ * Description: WebDAV ACL management is odd.You can't modify a single ACL but you have to rewrite it from scratch. Example: 
+   # jon share a calendar with mary
+   # to share it with frank, he can't "share with frank too"; 
+   he must:
+   # check calendar permission
+   # create a new ACL containing both mary and frank
+   # replace the old ACL with the new one
+
+Our target is to wrap all that stuff in an easy to use class. Actually there's a slide ACI manager stub. 
+
+ * Strategy:
+   # create an interface for ACL management, to be slide and jackrabbit independent
+   # interface contains the new ACL used by caldav scheduling protocol
+   # check different behavior between jackrabbit and slide behaviout:
+   # create an utility to add/remove single acl from a list
+   # write junit test
+   # create methods to get/set ACL
+   # use etag to avoid continuously retrieve stored ACL
+
+
+ == Improve cache ==
+ * Summary: improve default CalDAV4j cache manager based on EhCache
+ * Level: medium
+ * Skill: java, webdav ACI
+ * Description: actually CalDAV4j have basic cache support, implemented with EhCache.This cache implementation is simple and can be optimised. 
+ * Strategy: Implementation strategies will be discussed with the students.
+    # The Cached collection manager has junit testing too, so the new implementation should pass the existing tests.
+
+ == Write a Calendar Manager ==
+ * Summary: include an off-the-shelf calendar manager. Actually it's provided as an example.
+ * Level: medium
+ * Skill: java, http
+ * Description: caldav4j doesn't provide an off-the-shelf calendar manager. Now that many parts of the protocol have been supported, it's the time to create an easy caldav store manager to let people with low caldav knowledge to use the library.
+ * Strategy:
+  # writing an interface with all the desired methods
+  # write the test class
+  # less methods than the actual example class, but more flexible ones
+  # the new manager will support etags retrieval
+
+ = Your ideas welcome! =
+ You're welcome to provide your ideas for caldav4j. You can check the issue list 
 
 
 
-=== opening collaboration suites ===
+
 
 === further resources ===
- [http://www.slideshare.net/ioggstream/integrating-funambol-with-caldav-and-ldap-presentation Caldav4j, Funambol and mobile devices]
+
 
 
 == Skills for contributors ==
 
- * required: Java, Xml
- * suggested: Maven, [http://www.slideshare.net/som.mukhopadhyay/test-driven-development-and-junit-presentation Junit], [http://www.slideshare.net/sanjoysanyal/http-basics HTTP/1.1], RFC understanding
- * wish: WebDAV, [http://www.slideshare.net/ioggstream/presenting-caldav-draft-1-presentation CalDAV], HttpClient, JaCkRabbit, wireshark/ethereal/tcpdump
+
  
 = Ideas =
 
