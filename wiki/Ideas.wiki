@@ -1,7 +1,7 @@
 #summary Ideas for caldav4j
 #labels Phase-Design
 
-Caldav4j is candidate to Google Summer of Code 
+Caldav4j is candidate to Google Summer of Code http://code.google.com/images/2010soclogo.jpg
 
 = Students = 
     * let us know on our mailing lists caldav4j@googlegroups.com
@@ -9,7 +9,7 @@ Caldav4j is candidate to Google Summer of Code
     * look at project ideas to see, if some is interesting for you
     * student application will begin 29.March, deadline 9.April
 
-  See GsocStudentApplication
+  See GSoCStudentApplication
 
 = Why Caldav4j =
  * learn the widespreading standard for calendaring and collaboration used by Apple and Google
@@ -19,7 +19,7 @@ Caldav4j is candidate to Google Summer of Code
 
  See Whyjoin
 
-http://code.google.com/images/2010soclogo.jpg
+
 
 = Skill =
  * required: 
@@ -106,31 +106,3 @@ Our target is to wrap all that stuff in an easy to use class. Actually there's a
  = Your ideas welcome! =
  You're welcome to provide your ideas for caldav4j. You can check the issue list 
 
-
-
-
-
-=== further resources ===
-
-
-
-== Skills for contributors ==
-
-
- 
-= Ideas =
-
-== Jackrabbit migration ==
-
-== Scheduling support ==
-
-== ACL Helper ==
-
-== Improve Cache ==
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
