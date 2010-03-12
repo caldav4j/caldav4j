@@ -1,28 +1,26 @@
 #summary Google Summer of Code Ideas for caldav4j
 #labels Phase-Design
 
-Caldav4j is candidate to Google Summer of Code! Here you can see why to join and contribute with your ideas to this wonderful library! http://code.google.com/images/2010soclogo.jpg
- 
+||Caldav4j - the first java caldav library - is candidate to Google Summer of Code! Here you can see why to join and contribute with your ideas to this wonderful library! <wiki:toc max_depth="2" /> || [http://socghop.appspot.com/ http://code.google.com/images/2010soclogo.jpg] ||
 
-= Students = 
-    * let us know on our mailing lists caldav4j@googlegroups.com
-    * spend some time to play with caldav and build caldav4j
-    * look at project ideas to see, if some is interesting for you
-    * student application will begin 29.March, deadline 9.April
-
-  See [GSoCStudentApplication Student Application]
 
 = Why Caldav4j =
  * learn the widespreading standard for calendaring and collaboration used by Apple and Google
  * work with Test Driven Development and Agile metodologies
- * discuss with standard maker people on IETF mailing lists
+ * discuss with standard-makers on IETF mailing lists
  * contribute to make world of communication more open
 
  See more at WhyJoin
 
+= Students = 
+    * let us know on our mailing lists caldav4j@googlegroups.com
+    * spend some time to play with caldav and build caldav4j
+    * look at project ideas, to see if some is interesting for you
+    * student application will begin 29.March, deadline 9.April
 
+  See [GSoCStudentApplication Student Application]
 
-= Skill =
+== Skill ==
  * required: 
    * java, xml, tomcat, svn
 
@@ -32,17 +30,19 @@ Caldav4j is candidate to Google Summer of Code! Here you can see why to join and
 
  * moreover you will learn:
    * httpclient java library, jackrabbit webdav library
-   *  WebDAV, [http://www.slideshare.net/ioggstream/presenting-caldav-draft-1-presentation CalDAV] protocol, iCalendar RFC5525
+   * WebDAV, [http://www.slideshare.net/ioggstream/presenting-caldav-draft-1-presentation CalDAV] protocol, iCalendar RFC5525
    * wireshark/ethereal/tcpdump
 
  * further resources: [http://www.slideshare.net/ioggstream/integrating-funambol-with-caldav-and-ldap-presentation Caldav4j, Funambol and mobile devices]
+
+
 = Ideas = 
 
  == Jackrabbit migration == 
  * Summary: migrate the webdav layer from slide to jackrabbit
  * Level: hard
  * Skill: java (interfaces, abstract classes), httpclient
- * Description: caldav4j is based on top of the old apache-slide library instead of the new jackrabbit one. Many people don't use caldav4j for that reason.
+ * Description: caldav4j is based on top of the old apache-slide library instead of the new jackrabbit one. This is the main obstacle to caldav4j adoption in newer project. 
  * Strategy: isolate all slide code out of the main caldav4j package, and replace it with jackrabbit.
    # create a webdav interface package: the actual classes will be an interface slide implementation
    # let the main package use the interface instead of the implementation
