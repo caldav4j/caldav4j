@@ -3,13 +3,7 @@
 
 = Introduction =
 
-== Why a student should join caldav4j ==
- * join an opensource crew, meet calendaring community - as caldav4j people is in touch with other caldav server developer, like Bedework and Davical
- * learn how to read and interpret an RFC
- * implement a standard protocol to use in your project
- * caldav is the big issue of next years, as collaboration needs more interoperability
- * learn the protocol and switch to mobile: in the future there will be a needing of caldav mobile clients for android, symbian, windows/outlook & co
- * try test drive development: write test cases, then code..and be sure everything is as expected.
+
 
 === opening collaboration suites ===
 
