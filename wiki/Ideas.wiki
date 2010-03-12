@@ -1,7 +1,8 @@
-#summary Ideas for caldav4j
+#summary Google Summer of Code Ideas for caldav4j
 #labels Phase-Design
 
-Caldav4j is candidate to Google Summer of Code http://code.google.com/images/2010soclogo.jpg
+Caldav4j is candidate to Google Summer of Code! Here you can see why to join and contribute with your ideas to this wonderful library! http://code.google.com/images/2010soclogo.jpg
+ 
 
 = Students = 
     * let us know on our mailing lists caldav4j@googlegroups.com
@@ -9,7 +10,7 @@ Caldav4j is candidate to Google Summer of Code http://code.google.com/images/201
     * look at project ideas to see, if some is interesting for you
     * student application will begin 29.March, deadline 9.April
 
-  See GSoCStudentApplication
+  See [GSoCStudentApplication Student Application]
 
 = Why Caldav4j =
  * learn the widespreading standard for calendaring and collaboration used by Apple and Google
@@ -17,7 +18,7 @@ Caldav4j is candidate to Google Summer of Code http://code.google.com/images/201
  * discuss with standard maker people on IETF mailing lists
  * contribute to make world of communication more open
 
- See Whyjoin
+ See more at WhyJoin
 
 
 
@@ -64,7 +65,8 @@ Caldav4j is candidate to Google Summer of Code http://code.google.com/images/201
  * Summary: improving WebDAV ACI management (needed for calendar sharing and scheduling)
  * Level: easy
  * Skill: java, webdav ACI
- * Description: WebDAV ACL management is odd.You can't modify a single ACL but you have to rewrite it from scratch. Example: 
+ * Description: WebDAV ACL management is odd.You can't modify a single ACL but you have
+     to rewrite it from scratch. Example: 
    # jon share a calendar with mary
    # to share it with frank, he can't "share with frank too"; 
    he must:
@@ -72,7 +74,8 @@ Caldav4j is candidate to Google Summer of Code http://code.google.com/images/201
    # create a new ACL containing both mary and frank
    # replace the old ACL with the new one
 
-Our target is to wrap all that stuff in an easy to use class. Actually there's a slide ACI manager stub. 
+     Our target is to wrap all that stuff in an easy to use class. Actually there's a   
+     slide ACI manager stub. 
 
  * Strategy:
    # create an interface for ACL management, to be slide and jackrabbit independent
@@ -105,4 +108,3 @@ Our target is to wrap all that stuff in an easy to use class. Actually there's a
 
  = Your ideas welcome! =
  You're welcome to provide your ideas for caldav4j. You can check the issue list 
-
