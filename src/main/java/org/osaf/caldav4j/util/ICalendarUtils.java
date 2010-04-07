@@ -16,6 +16,7 @@
 
 package org.osaf.caldav4j.util;
 
+import java.text.ParseException;
 import java.util.Calendar;
 
 import net.fortuna.ical4j.model.Component;
@@ -28,8 +29,10 @@ import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
+import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.Uid;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAV4JException;
@@ -109,6 +112,7 @@ public class ICalendarUtils {
      *  exception if calendar contains different types of event
      * @param calendar
      * @return
+     * TODO use a parameter to eventually skip VTimeZone
      */
     public static Component getFirstComponent(net.fortuna.ical4j.model
     		.Calendar calendar) throws CalDAV4JException {
@@ -131,7 +135,30 @@ public class ICalendarUtils {
     	}
     	return ret;
     } 
-    
+    public static Component getFirstComponent(net.fortuna.ical4j.model
+    		.Calendar calendar, boolean skipTimezone) throws CalDAV4JException {
+    	// XXX this works only if the ics is a caldav resource
+    	Component ret = null;
+    	String compType = null;
+    	
+    	for (Object component : calendar.getComponents()) {
+    		
+    		if (!skipTimezone) {
+    			ret =  (Component) component;
+    		} else if (! (component instanceof VTimeZone)) {    		// skip timezones
+    			if (ret == null) {
+    				ret = (Component) component;
+    				compType = ret.getClass().getName();
+    			} else if (! compType.equals(component.getClass().getName()) ) {
+    				throw new CalDAV4JException("Can't get first component: "
+    						+ "Calendar contains different kinds of component");
+    			}
+				
+			}
+    	}
+    	return ret;
+    } 
+
     /**
      * get a Calendar UID value: as in Caldav, a Caldav Calendar Resource should have an unique UID value 
      * @param calendar
@@ -151,10 +178,11 @@ public class ICalendarUtils {
      */
     public static void setUIDValue(net.fortuna.ical4j.model.Calendar calendar,
     		String uid) throws CalDAV4JException{
-    	Component component = getFirstComponent(calendar);
-    	if (component != null) {
-    		addOrReplaceProperty(component, new Uid(uid));
-    	}
+    	for (Object c : calendar.getComponents()) {
+    		if (c!=null && ! (c  instanceof VTimeZone)) {
+    			addOrReplaceProperty((Component) c, new Uid(uid));
+    		}
+    	}    	
     }
     public static String getSummaryValue(VEvent event){
         return getPropertyValue(event, Property.SUMMARY);
@@ -234,6 +262,54 @@ public class ICalendarUtils {
             }
         }
         return null;
+    }
+    // TODO create junit
+    public static CalendarComponent getComponentOccurence(net.fortuna.ical4j.model.Calendar calendar, String uid, String recurrenceId){
+        ComponentList clist = calendar.getComponents();
+        for (Object o : clist){
+            CalendarComponent curEvent = (CalendarComponent) o;
+            String curUid = getUIDValue(curEvent);
+            String curRid = getPropertyValue(curEvent, Property.RECURRENCE_ID);
+            if (uid.equals(curUid) && StringUtils.equalsIgnoreCase(recurrenceId, curRid) ){
+                return curEvent;
+            }
+        }
+        return null;
+    }  
+    /**
+     * 
+     * @param calendar
+     * @param uid
+     * @param recurrenceId
+     * @return the modified calendar
+     * @throws ParseException 
+     */
+    /// TODO create junit
+    public static net.fortuna.ical4j.model.Calendar removeOccurrence(net.fortuna.ical4j.model.Calendar calendar, String uid, String recurrenceId) throws ParseException {
+    	ComponentList clist = calendar.getComponents();
+    	CalendarComponent master = null;
+    	CalendarComponent toBeRemoved = null;
+        for (Object o : clist){
+            CalendarComponent curEvent = (CalendarComponent) o;
+            if ( (master==null) && ! (o instanceof VTimeZone)) {
+            	master = curEvent;
+            }
+            String curUid = getUIDValue(curEvent);
+            String curRid = getPropertyValue(curEvent, Property.RECURRENCE_ID);
+            if (uid.equals(curUid) && StringUtils.equalsIgnoreCase(recurrenceId, curRid) ){
+            	toBeRemoved = curEvent;
+            	break;
+            }
+        }
+        if (toBeRemoved!=null) {
+        	clist.remove(toBeRemoved);
+        }
+        if (master != null) {
+	    	ExDate x = new ExDate();
+	    	x.setValue(recurrenceId);
+	    	master.getProperties().add(x);
+        }
+        return calendar;
     }
     public static void addOrReplaceProperty(Component component, Property property){
         Property oldProp = component.getProperties().getProperty(property.getName());
