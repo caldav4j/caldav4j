@@ -92,6 +92,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		CacheManager cacheManager = CacheManager.create();
 		cacheManager.removeCache(UID_TO_HREF_CACHE);
 		cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
+		cacheManager.shutdown();
 
 		caldavDel(ICS_GOOGLE_DAILY_NY_5PM_PATH);
 		caldavDel(ICS_GOOGLE_ALL_DAY_JAN1_PATH);
