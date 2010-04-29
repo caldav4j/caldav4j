@@ -123,14 +123,15 @@ public abstract class CalDAVCalendarCollectionBase {
 		 * XXX create test method
 		 */
 		public void enableSimpleCache() throws CalDAV4JException {	
+			EhCacheResourceCache cache = null;
 			if (!isCacheEnabled()) {
 				try {
-					EhCacheResourceCache.createSimpleCache();
-				} catch (Exception e) {
+					cache = EhCacheResourceCache.createSimpleCache();
+				} catch (CacheException e) {
 					// avoid error if cache doesn't exist
 					e.printStackTrace();
 				}
-				this.setCache(EhCacheResourceCache.createSimpleCache());
+				this.setCache(cache);
 			}
 		}
 		

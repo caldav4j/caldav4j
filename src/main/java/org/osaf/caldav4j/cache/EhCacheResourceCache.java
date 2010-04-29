@@ -51,9 +51,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	        cacheManager.addCache(uidToHrefCache);
 	        cacheManager.addCache(hrefToResourceCache);
         } catch (ObjectExistsException e) {
-        	// FIXME check if it's ok
-        	e.printStackTrace();
-        	throw new CalDAV4JException("Cache exists",e);
+        	throw new org.osaf.caldav4j.CacheException("Cache exists",e);
         }
         return myCache;
     }
@@ -65,6 +63,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         CacheManager cacheManager = CacheManager.create();
         cacheManager.removeCache(UID_TO_HREF_CACHE);
         cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
+        cacheManager.shutdown();
     }
     
     

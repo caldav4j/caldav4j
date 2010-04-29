@@ -403,8 +403,9 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			break;
 		case CaldavStatus.SC_NO_CONTENT:
 			break;
+		case CaldavStatus.SC_CONFLICT:
+		case CaldavStatus.SC_UNAUTHORIZED:
 		case CaldavStatus.SC_PRECONDITION_FAILED:
-			break;
 		default:
 			//must be some other problem, throw an exception
 			try {
@@ -412,10 +413,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 						+ statusCode + "\n"
 						+ putMethod.getResponseBodyAsString());
 			} catch (IOException e) {
-				e.printStackTrace();
 				throw new CalDAV4JException("Unexpected status code: "
-						+ statusCode + "\n"
-						+ "error in getResponseBodyAsString()");
+						+ statusCode, e);
 			}
 		} 
 		

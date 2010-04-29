@@ -40,6 +40,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.util.UrlUtils;
 
 public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
     private static final Log log = LogFactory.getLog(PutMethod.class);
@@ -239,7 +240,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
 
     // remove double slashes
     public void setPath(String path) {
-    	super.setPath(path.replaceAll("/+", "/"));
+    	super.setPath(UrlUtils.removeDoubleSlashes(path));
     }
     
     protected boolean hasRequestContent() {
