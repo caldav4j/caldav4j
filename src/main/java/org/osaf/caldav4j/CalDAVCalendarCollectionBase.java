@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.util.CaldavStatus;
+import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.cache.NoOpResourceCache;
@@ -53,7 +54,7 @@ public abstract class CalDAVCalendarCollectionBase {
 	 * @return
 	 */
 	public String getCalendarCollectionRoot() {
-	    return calendarCollectionRoot.replaceAll("/+", "/");
+	    return UrlUtils.removeDoubleSlashes(calendarCollectionRoot);
 	}
 
 	/**
@@ -61,7 +62,7 @@ public abstract class CalDAVCalendarCollectionBase {
 	 * @param path
 	 */
 	public void setCalendarCollectionRoot(String path) {
-	    this.calendarCollectionRoot = path.concat("/").replaceAll("/+", "/");
+	    this.calendarCollectionRoot = UrlUtils.removeDoubleSlashes(path.concat("/"));
 	}
 
 	public CalDAVResourceCache getCache() {

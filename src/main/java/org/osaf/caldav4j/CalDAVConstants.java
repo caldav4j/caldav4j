@@ -17,7 +17,6 @@
 package org.osaf.caldav4j;
 
 import org.apache.webdav.lib.util.QName;
-import org.osaf.caldav4j.model.request.DisplayName;
 import org.osaf.caldav4j.model.request.PropProperty;
 
 public interface CalDAVConstants {
@@ -33,8 +32,12 @@ public interface CalDAVConstants {
     
     public static final String NS_CALDAV = "urn:ietf:params:xml:ns:caldav";
     public static final String NS_DAV = "DAV:";
+    public static final String NS_QUAL_DAV = "D";
+    public static final String NS_QUAL_CALDAV = "C";
     public static final String NS_XYTHOS = "http://www.xythos.com/namespaces/StorageServer";
-    
+    public static final String NS_QUAL_TICKET = "ticket";
+
+
     public static final String PROC_ID_DEFAULT =  "-//OSAF//NONSGML CalDAV4j Client//EN";
     
     public static final String HEADER_IF_NONE_MATCH = "If-None-Match";
@@ -46,13 +49,12 @@ public interface CalDAVConstants {
     
     public static final String PROP_GETETAG = "getetag";
     
-    public static final QName QNAME_GETETAG 
-        = new QName(NS_DAV, PROP_GETETAG);
-    
-    public static final String NS_QUAL_TICKET = "ticket";
-    public static final String NS_QUAL_DAV = "D";
-    public static final String NS_QUAL_CALDAV = "C";
-    
+	public static final String DAV_ACL ="acl";
+	public static final String DAV_PROP ="prop";
+	public static final String DAV_PROPFIND ="propfind";
+	public static final String DAV_DISPLAYNAME = "displayname" ;
+	public static final String CALDAV_CALENDAR_DESCRIPTION = "calendar-description" ;
+	
     public static final String ELEM_TICKETDISCOVERY = "ticketdiscovery";
     public static final String ELEM_TICKETINFO = "ticketinfo";
     public static final String ELEM_TIMEOUT = "timeout";
@@ -64,7 +66,15 @@ public interface CalDAVConstants {
     public static final String ELEM_OWNER = "owner";
     public static final String ELEM_HREF = "href";
     public static final String ELEM_ALLPROP = "allprop";
-    
+    public static final String CALDAV_CALENDAR_DATA = "calendar-data";
+    public static final String ELEM_EXPAND_RECURRENCE_SET = "expand";
+    public static final String ELEM_LIMIT_RECURRENCE_SET = "limit-recurrence-set";
+    public static final String ATTR_START = "start";
+    public static final String ATTR_END = "end";
+    public static final String ELEM_PROPNAME = "propname";
+    public static final String CALDAV_CALENDAR_QUERY = "calendar-query";
+    public static final String ELEM_FILTER = "filter";
+
     public static final String COLLATION_ASCII = "i;ascii-casemap";
     public static final String COLLATION_OCTET = "i;octet";
    
@@ -75,14 +85,12 @@ public interface CalDAVConstants {
 
     public static final String URL_APPENDER = "?ticket=";
 
-	public static final PropProperty PROP_ETAG = new PropProperty(
-			CalDAVConstants.NS_DAV, "D", CalDAVConstants.PROP_GETETAG);
+	public static final PropProperty PROP_ETAG = new PropProperty(NS_DAV,NS_QUAL_DAV, PROP_GETETAG);
 	
-	public static String DAV_DISPLAYNAME = "displayname" ;
-	public static String CALDAV_CALENDAR_DESCRIPTION = "calendar-description" ;
 
-	public static final QName QNAME_DISPLAYNAME = new QName(CalDAVConstants.NS_DAV, DAV_DISPLAYNAME);
-	public static final QName QNAME_CALENDAR_DESCRIPTION = new QName(CalDAVConstants.NS_CALDAV,CALDAV_CALENDAR_DESCRIPTION);
-	public static final QName QNAME_ACL = new QName(CalDAVConstants.NS_DAV, "acl");
+    public static final QName QNAME_GETETAG = new QName(NS_DAV, PROP_GETETAG);
+	public static final QName QNAME_DISPLAYNAME = new QName(NS_DAV, DAV_DISPLAYNAME);
+	public static final QName QNAME_CALENDAR_DESCRIPTION = new QName(NS_CALDAV,CALDAV_CALENDAR_DESCRIPTION);
+	public static final QName QNAME_ACL = new QName(NS_DAV, "acl");
 
 }

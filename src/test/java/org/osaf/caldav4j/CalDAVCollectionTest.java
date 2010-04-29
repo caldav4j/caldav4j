@@ -27,8 +27,6 @@ import org.apache.webdav.lib.Ace;
 import org.apache.webdav.lib.Privilege;
 import org.apache.webdav.lib.methods.AclMethod;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
-import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
-import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.GenerateQuery;
@@ -42,9 +40,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	protected static final Log log = LogFactory
 	.getLog(CalDAVCollectionTest.class);
 
-	protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
-
-	protected HttpClient httpClient = createHttpClient();
 
 
 
@@ -490,12 +485,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		return false;
 	}
 
-	protected CalDAVCollection createCalDAVCollection() {
-		CalDAVCollection calendarCollection = new CalDAVCollection(
-				COLLECTION_PATH, createHostConfiguration(), methodFactory,
-				CalDAVConstants.PROC_ID_DEFAULT);
-		return calendarCollection;
-	}
 
 	protected CalDAVCollection createCalDAVCollectionWithCache() {
 
@@ -505,26 +494,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		return calendarCollection;
 	}
 
-	/**
-	 * put an event on a caldav store using UID.ics
-	 */
-	 protected void caldavPut(String s) {    	 
-		 Calendar cal = getCalendarResource(s);
 
-		 String resPath = COLLECTION_PATH + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
-		 put (s, resPath );
-
-	 }
-
-	 /**
-	  * remove an event on a caldav store using UID.ics
-	  */
-	 protected void caldavDel(String s) {
-		 Calendar cal = getCalendarResource(s);
-		 String delPath = COLLECTION_PATH + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
-		 log.debug("DEL " + delPath);
-		 del(delPath);
-
-	 }
 
 }

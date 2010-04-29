@@ -196,6 +196,7 @@ public abstract class BaseTestCase  extends TestCase implements TestConstants {
     
     protected void del(String path){
         DeleteMethod delete = new DeleteMethod();
+        delete.setPath(path);
         try {
         	http.executeMethod(hostConfig, delete);
         } catch (Exception e){
@@ -232,6 +233,34 @@ public abstract class BaseTestCase  extends TestCase implements TestConstants {
         return sb.toString();
       }
 
+	/**
+	 * put an event on a caldav store using UID.ics
+	 */
+	 protected void caldavPut(String s) {    	 
+		 Calendar cal = getCalendarResource(s);
+
+		 String resPath = COLLECTION_PATH + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
+		 put (s, resPath );
+
+	 }
+
+	 /**
+	  * remove an event on a caldav store using UID.ics
+	  */
+	 protected void caldavDel(String s) {
+		 Calendar cal = getCalendarResource(s);
+		 String delPath = COLLECTION_PATH + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
+		 log.debug("DEL " + delPath);
+		 del(delPath);
+
+	 }
+	 
+		protected CalDAVCollection createCalDAVCollection() {
+			CalDAVCollection calendarCollection = new CalDAVCollection(
+					COLLECTION_PATH, createHostConfiguration(), methodFactory,
+					CalDAVConstants.PROC_ID_DEFAULT);
+			return calendarCollection;
+		}
 
 
 }

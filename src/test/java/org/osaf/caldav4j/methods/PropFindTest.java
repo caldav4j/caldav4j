@@ -2,7 +2,6 @@ package org.osaf.caldav4j.methods;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Hashtable;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
@@ -15,13 +14,13 @@ import org.apache.webdav.lib.Property;
 import org.apache.webdav.lib.PropertyName;
 import org.apache.webdav.lib.properties.AclProperty;
 import org.apache.webdav.lib.util.DOMUtils;
-import org.apache.webdav.lib.util.QName;
 import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.request.CalendarDescription;
 import org.osaf.caldav4j.model.request.DisplayName;
 import org.osaf.caldav4j.model.request.PropProperty;
-import org.osaf.caldav4j.model.response.CalDAVResponse;
+import org.osaf.caldav4j.model.util.PropertyFactory;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -45,26 +44,43 @@ public class PropFindTest extends BaseTestCase {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void donttestGetAcl() {
+	public void donttestGetAcl() throws CalDAV4JException {
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
 
 		PropFindMethod propfind = new PropFindMethod();
 		propfind.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT);
 
-		PropProperty propFindTag = new PropProperty(CalDAVConstants.NS_DAV,"D","propfind");
-		PropProperty aclTag = new PropProperty(CalDAVConstants.NS_DAV,"D","acl");
+		PropProperty propFindTag = PropertyFactory.createProperty(PropertyFactory.PROPFIND);
+		PropProperty aclTag = PropertyFactory.createProperty(PropertyFactory.ACL);
 		PropProperty propTag = new PropProperty(CalDAVConstants.NS_DAV,"D","prop");
 		propTag.addChild(aclTag);
 //		propTag.addChild(new DisplayName());
 //		propTag.addChild(new CalendarDescription());
 		propFindTag.addChild(propTag);
-		propfind.setReportRequest(propFindTag);
+		propfind.setPropFindRequest(propFindTag);
 		propfind.setDepth(0);
 		try {
 			http.executeMethod(hostConfig,propfind);
 			
 			Enumeration<Property> myEnum = propfind.getResponseProperties(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT);
+			/*
+			 * response
+			 *   href
+			 *   propstat
+			 *      prop
+			 *         acl
+			 *            ace
+			 *               principal
+			 *                  property
+			 *                     owner
+			 *               grant
+			 *                  privilege
+			 *               inherited
+			 *                  href
+			 *            ace
+			 *            ,,,      
+			 */
 			while (myEnum.hasMoreElements()) {
 				AclProperty prop = (AclProperty) myEnum.nextElement();
 				NodeList nl = prop.getElement().getElementsByTagName("ace");
@@ -140,7 +156,7 @@ public class PropFindTest extends BaseTestCase {
 		propTag.addChild(new DisplayName());
 		propTag.addChild(new CalendarDescription());
 		propFindTag.addChild(propTag);
-		propfind.setReportRequest(propFindTag);
+		propfind.setPropFindRequest(propFindTag);
 		propfind.setDepth(0);
 		try {
 			http.executeMethod(hostConfig,propfind);
@@ -197,7 +213,7 @@ public class PropFindTest extends BaseTestCase {
 		propTag.addChild(new DisplayName());
 		propTag.addChild(new CalendarDescription());
 		propFindTag.addChild(propTag);
-		propfind.setReportRequest(propFindTag);
+		propfind.setPropFindRequest(propFindTag);
 		propfind.setDepth(0);
 		try {
 			http.executeMethod(hostConfig,propfind);
