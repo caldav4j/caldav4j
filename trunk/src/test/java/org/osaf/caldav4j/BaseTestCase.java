@@ -26,19 +26,15 @@ import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.methods.DeleteMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.junit.Before;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
+import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
-import org.osaf.caldav4j.util.XMLUtils;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.w3c.dom.Document;
 
 public abstract class BaseTestCase  extends TestCase implements TestConstants {
     protected static final Log log = LogFactory.getLog(BaseTestCase.class);
@@ -200,7 +196,6 @@ public abstract class BaseTestCase  extends TestCase implements TestConstants {
     
     protected void del(String path){
         DeleteMethod delete = new DeleteMethod();
-        delete.setPath(path.replaceAll("/+", "/"));
         try {
         	http.executeMethod(hostConfig, delete);
         } catch (Exception e){

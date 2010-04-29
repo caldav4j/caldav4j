@@ -17,15 +17,16 @@ import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class PutGetTestGoogle extends BaseTestCase {
-    public PutGetTestGoogle(String method) {
-		super(method);
-		// TODO Auto-generated constructor stub
-	}
 
 	private static final Log log = LogFactory.getLog(PutGetTestGoogle.class);
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
-    protected CaldavCredential caldavCredential = new GCaldavCredential();
+    public PutGetTestGoogle(String method) {
+		super(method);
+		 caldavCredential = new GCaldavCredential();
+	}
+
+    
 
     
     
@@ -59,8 +60,8 @@ public class PutGetTestGoogle extends BaseTestCase {
         put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();
-        // google uses SC_NO_CONTENT instead of SC_CREATED
-        assertEquals("Status code for put:", CaldavStatus.SC_NO_CONTENT, statusCode);
+        // google used SC_NO_CONTENT instead of SC_CREATED
+        assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
 
 
         //ok, so we created it...let's make sure it's there!
