@@ -47,9 +47,13 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.HeadMethod;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.PropertyName;
+import org.apache.webdav.lib.methods.DepthSupport;
+import org.apache.webdav.lib.properties.AclProperty;
+import org.osaf.caldav4j.ResourceNotFoundException.IdentifierType;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.CalDAVReportMethod;
 import org.osaf.caldav4j.methods.DelTicketMethod;
@@ -65,11 +69,13 @@ import org.osaf.caldav4j.model.request.CalendarMultiget;
 import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.model.request.CompFilter;
 import org.osaf.caldav4j.model.request.PropFilter;
+import org.osaf.caldav4j.model.request.PropProperty;
 import org.osaf.caldav4j.model.request.TextMatch;
 import org.osaf.caldav4j.model.request.TicketRequest;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.model.response.TicketResponse;
+import org.osaf.caldav4j.model.util.PropertyFactory;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
@@ -1349,7 +1355,42 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	//
 	// manage ACL TODO
 	//
-	public void getAcl(){
+	public AclProperty getAcl(HttpClient httpClient) throws CalDAV4JException{
+		return getAcl(httpClient, null);
+	}
+	
+	public AclProperty getAcl(HttpClient httpClient, String path) throws CalDAV4JException{
+		PropFindMethod method = methodFactory.createPropFindMethod();
+		method.setPath(getCalendarCollectionRoot() + StringUtils.defaultString(path, ""));	
+		method.setDepth(DepthSupport.DEPTH_0);
+		try {
+			PropProperty propfind = PropertyFactory.createProperty(PropertyFactory.PROPFIND);
+			PropProperty prop = PropertyFactory.createProperty(PropertyFactory.PROP);
+			prop.addChild(PropertyFactory.createProperty(PropertyFactory.ACL));
+			propfind.addChild(prop);
+			
+			method.setPropFindRequest(propfind);
+			httpClient.executeMethod(getHostConfiguration(),method);
+
+		} catch (CalDAV4JException e) {
+			throw new RuntimeException("Error in source code", e);
+		} catch (HttpException e) {
+			throw new CalDAV4JException("Error in PROPFIND " +  getCalendarCollectionRoot(), e);
+		} catch (IOException e) {
+			throw new CalDAV4JException("Error in PROPFIND " +  getCalendarCollectionRoot(), e);
+		}
+		
+		int status =  method.getStatusCode();
+		
+		switch (status) {
+		case CaldavStatus.SC_MULTI_STATUS:			
+			return method.getAcl(getCalendarCollectionRoot());
+		case CaldavStatus.SC_NOT_FOUND:
+			throw new ResourceNotFoundException(IdentifierType.PATH, method.getPath());
+		default:
+			throw new CalDAV4JException("Bad status in PROPFIND: "+ status + " on " + getCalendarCollectionRoot());
+		}
+		
 		
 	}
 	

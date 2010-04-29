@@ -34,7 +34,7 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
  * @author bobbyrullo
  * 
  */
-public class CalDAVProp extends OutputsDOMBase {
+public class CalDAVProp extends OutputsDOMBase  {
     
     public static final String ELEMENT_NAME = "prop";
     public static final String ATTR_NAME = "start";

@@ -17,7 +17,6 @@ package org.osaf.caldav4j.methods;
 
 import static org.osaf.caldav4j.CalDAVConstants.NS_CALDAV;
 import static org.osaf.caldav4j.CalDAVConstants.NS_DAV;
-import static org.osaf.caldav4j.util.UrlUtils.stripHost;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -27,10 +26,7 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Ace;
-import org.apache.webdav.lib.BaseProperty;
 import org.apache.webdav.lib.Property;
-import org.apache.webdav.lib.methods.XMLResponseMethodBase.Response;
 import org.apache.webdav.lib.properties.AclProperty;
 import org.apache.webdav.lib.properties.PropertyFactory;
 import org.apache.webdav.lib.util.DOMUtils;
@@ -38,16 +34,10 @@ import org.apache.webdav.lib.util.QName;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
-import org.osaf.caldav4j.ResourceNotFoundException;
-import org.osaf.caldav4j.methods.CalDAVXMLResponseMethodBase.Error;
-import org.osaf.caldav4j.methods.CalDAVXMLResponseMethodBase.ErrorType;
-import org.osaf.caldav4j.model.request.CalDAVReportRequest;
-import org.osaf.caldav4j.model.request.Prop;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.osaf.caldav4j.xml.OutputsDOM;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -63,7 +53,7 @@ import org.w3c.dom.NodeList;
 public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod {
     private static final Log log = LogFactory
     	.getLog(PropFindMethod.class);
-    private OutputsDOM reportRequest;
+    private OutputsDOM propFindRequest;
 
 
     /**
@@ -129,8 +119,8 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
 //    	}
 //    }
     
-    public void setReportRequest(OutputsDOM myprop) {
-        this.reportRequest = myprop;
+    public void setPropFindRequest(OutputsDOM myprop) {
+        this.propFindRequest = myprop;
     }
 
     /**
@@ -139,7 +129,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
     protected String generateRequestBody() {
         Document doc = null;
         try {
-            doc = reportRequest.createNewDocument(XMLUtils
+            doc = propFindRequest.createNewDocument(XMLUtils
                     .getDOMImplementation());
         } catch (DOMValidationException domve) {
             log.error("Error trying to create DOM from CalDAVPropfindRequest: ", domve);

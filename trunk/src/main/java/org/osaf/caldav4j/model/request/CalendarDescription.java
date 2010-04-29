@@ -18,7 +18,7 @@ public class CalendarDescription extends PropProperty {
 
 	}
 	public CalendarDescription(String value, String lang) {
-		super(CalDAVConstants.NS_CALDAV, "C", "calendar-description");
+		super(CalDAVConstants.NS_CALDAV, CalDAVConstants.NS_QUAL_CALDAV, CalDAVConstants.CALDAV_CALENDAR_DESCRIPTION);
 		if (value != null) {
 			this.setTextContent(value);
 			if (lang != null) {
