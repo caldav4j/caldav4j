@@ -174,14 +174,14 @@
   </repositories>
   <distributionManagement>
       <repository>
-          <id>osaf-m2</id>
-          <name>OSAF M2 Repository</name>
-          <url>scpexe://paniolo.osafoundation.org/www/maven2</url>
+          <id>local-m2</id>
+          <name>local M2 Repository</name>
+          <url>file:///home/rpolli/workspace/caldav4j/maven</url>
       </repository>
       <snapshotRepository>
-          <id>osaf-m2</id>
-          <name>OSAF M2 Repository</name>
-          <url>scpexe://paniolo.osafoundation.org/www/maven2</url>
+          <id>local-m2</id>
+          <name>local M2 Repository</name>
+          <url>file:///home/rpolli/workspace/caldav4j/maven</url>
       </snapshotRepository>
   </distributionManagement>
 </project>
