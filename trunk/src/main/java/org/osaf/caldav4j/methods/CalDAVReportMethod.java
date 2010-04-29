@@ -29,6 +29,7 @@ import org.apache.webdav.lib.methods.DepthSupport;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
+import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
 
@@ -143,5 +144,10 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements D
             throw new RuntimeException(domve);
         }
         return XMLUtils.toPrettyXML(doc);
+    }
+    
+    // remove double slashes
+    public void setPath(String path) {
+    	super.setPath(UrlUtils.removeDoubleSlashes(path));
     }
 }
