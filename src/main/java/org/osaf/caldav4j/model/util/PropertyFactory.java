@@ -1,7 +1,5 @@
 package org.osaf.caldav4j.model.util;
 
-import java.util.ArrayList;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVConstants;
@@ -13,8 +11,10 @@ public  class PropertyFactory implements CalDAVConstants {
 	public static final String PROPFIND = CalDAVConstants.DAV_PROPFIND;
 	public static final String DISPLAYNAME = CalDAVConstants.DAV_DISPLAYNAME;
 	public static final String PROP = CalDAVConstants.DAV_PROP;
-
-	private static  String[] davProperties = new String[] {ACL, PROPFIND, DISPLAYNAME, PROP};
+	public static final String OWNER = CalDAVConstants.DAV_PRINCIPAL_OWNER;
+	
+	
+	private static  String[] davProperties = new String[] {ACL, PROPFIND, DISPLAYNAME, PROP, OWNER};
 	private static  String[] caldavProperties = new String[] {};
 	
 	public static  PropProperty createProperty(String property) throws CalDAV4JException {

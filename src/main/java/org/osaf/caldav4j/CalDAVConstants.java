@@ -16,7 +16,9 @@
 
 package org.osaf.caldav4j;
 
+import org.apache.webdav.lib.Ace;
 import org.apache.webdav.lib.util.QName;
+import org.osaf.caldav4j.model.request.Privilege;
 import org.osaf.caldav4j.model.request.PropProperty;
 
 public interface CalDAVConstants {
@@ -53,8 +55,13 @@ public interface CalDAVConstants {
 	public static final String DAV_PROP ="prop";
 	public static final String DAV_PROPFIND ="propfind";
 	public static final String DAV_DISPLAYNAME = "displayname" ;
-	public static final String CALDAV_CALENDAR_DESCRIPTION = "calendar-description" ;
+	public static final String DAV_PRINCIPAL_OWNER = "owner";
+	public static final String DAV_PRINCIPAL_AUTHENTICATED = "authenticated";
 	
+	public static final String CALDAV_PRIVILEGE_READ_FREE_BUSY =  "read-free-busy";
+	public static final String CALDAV_PRIVILEGE_SCHEDULE =  "schedule";
+	public static final String CALDAV_CALENDAR_DESCRIPTION = "calendar-description" ;
+		
     public static final String ELEM_TICKETDISCOVERY = "ticketdiscovery";
     public static final String ELEM_TICKETINFO = "ticketinfo";
     public static final String ELEM_TIMEOUT = "timeout";
@@ -92,5 +99,5 @@ public interface CalDAVConstants {
 	public static final QName QNAME_DISPLAYNAME = new QName(NS_DAV, DAV_DISPLAYNAME);
 	public static final QName QNAME_CALENDAR_DESCRIPTION = new QName(NS_CALDAV,CALDAV_CALENDAR_DESCRIPTION);
 	public static final QName QNAME_ACL = new QName(NS_DAV, "acl");
-
+	
 }
