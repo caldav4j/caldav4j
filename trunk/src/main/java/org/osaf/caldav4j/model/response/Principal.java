@@ -1,6 +1,8 @@
 package org.osaf.caldav4j.model.response;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.webdav.lib.PropertyName;
+import org.osaf.caldav4j.CalDAVConstants;
 
 /*
 Principal encapsulates the DAV:principal element which identifies the principal to which this ACE applies. RFC 3744 defines the following structure for this element:
@@ -37,6 +39,22 @@ public class Principal  {
 				break;
 			}
 		}		
+	}
+	// TODO set href
+	public boolean isOwner() {
+		return ( (getPropertyName() != null) &&
+				StringUtils.equalsIgnoreCase("owner",getPropertyName().getLocalName())
+				); 
+	}
+	
+	// TODO set href
+	public boolean isGroup() {
+		return (getPropertyName()!=null) &&
+			StringUtils.equalsIgnoreCase("group",getPropertyName().getLocalName());
+	}
+	
+	public void setOwner() {
+		setPropertyName(new PropertyName(CalDAVConstants.NS_DAV, "owner"));
 	}
 	public boolean isAll() {
 		return all;
