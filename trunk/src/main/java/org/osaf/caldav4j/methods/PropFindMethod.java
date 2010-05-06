@@ -26,16 +26,19 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.webdav.lib.Ace;
 import org.apache.webdav.lib.Property;
 import org.apache.webdav.lib.properties.AclProperty;
 import org.apache.webdav.lib.properties.PropertyFactory;
 import org.apache.webdav.lib.util.DOMUtils;
 import org.apache.webdav.lib.util.QName;
 import org.apache.webdav.lib.util.WebdavStatus;
+import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
+import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.osaf.caldav4j.xml.OutputsDOM;
 import org.w3c.dom.Document;
@@ -207,6 +210,20 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
      */
     public AclProperty getAcl(String urlPath) {
     	return (AclProperty) getWebDavProperty(urlPath, CalDAVConstants.QNAME_ACL);
+    }
+    public Ace[] getAces(String urlPath) throws CalDAV4JException {
+    	int status = -1;
+    	AclProperty acls = (AclProperty) getWebDavProperty(urlPath, CalDAVConstants.QNAME_ACL);
+    	status = acls.getStatusCode();
+    	if (acls != null) {
+    		switch (status) {
+			case CaldavStatus.SC_OK:
+				return acls.getAces();
+			default:
+				break;
+			}
+    	}
+    	throw new CalDAV4JException("Error gettinh ACLs. PROPFIND status is: " + status);
     }
     public String getCalendarDescription(String urlPath) {
     	Property p =  getWebDavProperty(urlPath, CalDAVConstants.QNAME_CALENDAR_DESCRIPTION);

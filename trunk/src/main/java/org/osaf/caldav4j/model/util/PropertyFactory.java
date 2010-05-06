@@ -5,6 +5,11 @@ import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.request.PropProperty;
 
+/**
+ * Create DAV or CalDAV properties
+ * @author rpolli
+ *
+ */
 public  class PropertyFactory implements CalDAVConstants {
 
 	public static final String ACL =CalDAVConstants.DAV_ACL;
@@ -17,6 +22,12 @@ public  class PropertyFactory implements CalDAVConstants {
 	private static  String[] davProperties = new String[] {ACL, PROPFIND, DISPLAYNAME, PROP, OWNER};
 	private static  String[] caldavProperties = new String[] {};
 	
+	/**
+	 * Return a new PropProperty setting the proper NAMESPACE
+	 * @param property
+	 * @return
+	 * @throws CalDAV4JException
+	 */
 	public static  PropProperty createProperty(String property) throws CalDAV4JException {
 		
 		if (ArrayUtils.contains((Object[])davProperties, property)) {

@@ -14,32 +14,45 @@ public class Principal  {
 	private String href;
 	private PropertyName propertyName;
 	private boolean all, authenticated, unauthenticated, self;
-	
-	private String[] principalValues = new String[] {"all", "authenticated", "unauthenticated", "self"};
+	private String value;
+
+	private String[] principalValues = new String[] {"all", "authenticated", "unauthenticated", "self", "owner"};
 
 	public Principal() {
 		super();
 	}
 	public Principal(String defaultPrincipal) {
 		super();
-		for (int i=0;i<principalValues.length;i++) {
-			switch (i) {
-			case 0:
-				setAll(true);
-				break;
-			case 1:
-				setAuthenticated(true);
+		int i=0;
+		for (i=0;i<principalValues.length;i++) {
+			if (StringUtils.equalsIgnoreCase(principalValues[i], defaultPrincipal)) 
+				switch (i) {
+				case 0:
+					setAll(true);
 					break;
-			case 2:
-				setUnauthenticated(true);
-				break;
-			case 3:
-				setSelf(true);
-			default:
-				break;
-			}
-		}		
+				case 1:
+					setAuthenticated(true);
+					break;
+				case 2:
+					setUnauthenticated(true);
+					break;
+				case 3:
+					setSelf(true);
+					break;
+				case 4:
+					setOwner();
+					break;
+				default:
+					break;
+				}	
+		}
+		
+		this.value = defaultPrincipal;
 	}
+public String getValue() {
+	return value;
+}
+	
 	// TODO set href
 	public boolean isOwner() {
 		return ( (getPropertyName() != null) &&
@@ -54,7 +67,8 @@ public class Principal  {
 	}
 	
 	public void setOwner() {
-		setPropertyName(new PropertyName(CalDAVConstants.NS_DAV, "owner"));
+		PropertyName o = new PropertyName(CalDAVConstants.NS_DAV, "owner");
+		setPropertyName(o);
 	}
 	public boolean isAll() {
 		return all;

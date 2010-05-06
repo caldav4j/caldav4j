@@ -50,7 +50,9 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.webdav.lib.Ace;
 import org.apache.webdav.lib.PropertyName;
+import org.apache.webdav.lib.methods.AclMethod;
 import org.apache.webdav.lib.methods.DepthSupport;
 import org.apache.webdav.lib.properties.AclProperty;
 import org.osaf.caldav4j.ResourceNotFoundException.IdentifierType;
@@ -123,6 +125,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		this.skipGoogleTombstones = skipGoogleTombstones;
 	}
 
+	private static String BAD_STATUS_ERROR_STRING = "Bad status in %s: %d on %s";
 
 	public CalDAVCollection(){
 
@@ -1355,11 +1358,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	//
 	// manage ACL TODO
 	//
-	public AclProperty getAcl(HttpClient httpClient) throws CalDAV4JException{
-		return getAcl(httpClient, null);
+	public Ace[] getAces(HttpClient httpClient) throws CalDAV4JException{
+		return getAces(httpClient, null);
 	}
 	
-	public AclProperty getAcl(HttpClient httpClient, String path) throws CalDAV4JException{
+	public Ace[] getAces(HttpClient httpClient, String path) throws CalDAV4JException{
 		PropFindMethod method = methodFactory.createPropFindMethod();
 		method.setPath(getCalendarCollectionRoot() + StringUtils.defaultString(path, ""));	
 		method.setDepth(DepthSupport.DEPTH_0);
@@ -1384,17 +1387,45 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		
 		switch (status) {
 		case CaldavStatus.SC_MULTI_STATUS:			
-			return method.getAcl(getCalendarCollectionRoot());
+			return method.getAces(getCalendarCollectionRoot());
 		case CaldavStatus.SC_NOT_FOUND:
 			throw new ResourceNotFoundException(IdentifierType.PATH, method.getPath());
 		default:
-			throw new CalDAV4JException("Bad status in PROPFIND: "+ status + " on " + getCalendarCollectionRoot());
+			throw new CalDAV4JException(String.format(BAD_STATUS_ERROR_STRING, "PROPFIND", status, getCalendarCollectionRoot()));
 		}
 		
 		
 	}
 	
-	public void setAcl(){
+	public void setAces(HttpClient client, Ace[] aces, String path) throws CalDAV4JException{
+		AclMethod method = new AclMethod();
+		method.setPath(getCalendarCollectionRoot() + StringUtils.defaultString(path, ""));	
+
+		for (Ace a: aces) {
+			method.addAce(a);
+		}
+		
+		try {
+			client.executeMethod(method);
+			int status = method.getStatusCode();
+			switch (status) {
+			case CaldavStatus.SC_OK:
+				break;
+			case CaldavStatus.SC_NOT_FOUND:
+				throw new ResourceNotFoundException(IdentifierType.PATH, method.getPath());
+			case CaldavStatus.SC_UNAUTHORIZED:
+				throw new CalDAV4JException(String.format(BAD_STATUS_ERROR_STRING, "ACL", status, getCalendarCollectionRoot()));
+			default:
+				throw new CalDAV4JException(String.format(BAD_STATUS_ERROR_STRING, "ACL", status, getCalendarCollectionRoot()));
+			}
+			
+		} catch (HttpException e) {
+			throw new CalDAV4JException("Error in ACL " +  getCalendarCollectionRoot(), e);
+		} catch (IOException e) {
+			throw new CalDAV4JException("Error in ACL " +  getCalendarCollectionRoot(), e);
+		}
+
+				
 		
 	}
 
