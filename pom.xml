@@ -19,7 +19,7 @@
  <name>CalDav4j</name>
   <groupId>org.osaf</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>0.6-SNAPSHOT</version>
+  <version>0.6</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
