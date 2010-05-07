@@ -1,11 +1,7 @@
 package org.osaf.caldav4j;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.properties.AclProperty;
-import org.osaf.caldav4j.cache.EhCacheResourceCache;
+import org.apache.webdav.lib.Ace;
 
 public class CalDAVCollectionTest_ACL extends BaseTestCase {
 	public CalDAVCollectionTest_ACL(String method) {
@@ -48,16 +44,16 @@ public class CalDAVCollectionTest_ACL extends BaseTestCase {
 
 	public void testFolder() throws CalDAV4JException {
 		CalDAVCollection calendarCollection = createCalDAVCollection();
-		AclProperty acls = calendarCollection.getAcl(httpClient);
-		assertNotNull(acls);		
-		log.info(acls);			
+		Ace[] aces = calendarCollection.getAces(httpClient, null);
+		assertNotNull(aces);		
+		log.info(aces);			
 	}
 	
 	public void testResource() throws Exception {		
 		CalDAVCollection calendarCollection = createCalDAVCollection();		
-		AclProperty acls = calendarCollection.getAcl(httpClient, ICS_GOOGLE_DAILY_NY_5PM_PATH);
-		assertNotNull(acls);		
-		log.info(acls);	
+		Ace[] aces = calendarCollection.getAces(httpClient, ICS_GOOGLE_DAILY_NY_5PM_PATH);
+		assertNotNull(aces);		
+		log.info(aces);	
 	}
 	
 }
