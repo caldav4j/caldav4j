@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.apache.webdav.lib.methods.XMLResponseMethodBase;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalendarDescription;
 import org.osaf.caldav4j.model.request.DisplayName;
 import org.osaf.caldav4j.model.request.MkCalendar;

@@ -13,17 +13,22 @@ import net.fortuna.ical4j.model.Calendar;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.logging.Log;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.cache.NoOpResourceCache;
+import org.osaf.caldav4j.exceptions.BadStatusException;
+import org.osaf.caldav4j.exceptions.CacheException;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.ResourceOutOfDateException;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.OptionsMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 
-public abstract class CalDAVCalendarCollectionBase {
+public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	
 	 CalDAV4JMethodFactory methodFactory = null;
 	 private String calendarCollectionRoot = null;
@@ -47,7 +52,8 @@ public abstract class CalDAVCalendarCollectionBase {
 	}
 
 	public void setMethodFactory(CalDAV4JMethodFactory methodFactory) {
-	this.methodFactory = methodFactory; }
+		this.methodFactory = methodFactory; 
+	}
 
 	/**
 	 * remove double slashes
@@ -73,6 +79,10 @@ public abstract class CalDAVCalendarCollectionBase {
 	    this.cache = cache;
 	}
 	
+	/**
+	 * Check if a cache is set
+	 * @return true if cache is not NoOpResourceCache
+	 */
 	public boolean isCacheEnabled() {
 		boolean p =  (this.cache instanceof NoOpResourceCache);
 		return !p;
@@ -108,13 +118,15 @@ public abstract class CalDAVCalendarCollectionBase {
 	    return putMethod;
 	}
 
+	 /**
+	  * TODO check hostConfiguration.getUri()
+	  * @param path
+	  * @return the URI of the path resource
+	  */
 	 String getHref(String path){
-	    String href = hostConfiguration.getProtocol().getScheme() + "://"
-	    + hostConfiguration.getHost()
-	    + (hostConfiguration.getPort() != 80 ? ":" + hostConfiguration.getPort() : "")
-	    + ""
-	    + path;
-	    return href;
+	    return String.format("%s://%s:%d/%s", hostConfiguration.getProtocol().getScheme(),
+	    		hostConfiguration.getHost(),
+	    		hostConfiguration.getPort() == 80 ? "" : hostConfiguration.getPort(), path );
 	}
 	 
 		
@@ -147,6 +159,16 @@ public abstract class CalDAVCalendarCollectionBase {
 
 	 
 
+		/**
+		 * TODO manage status codes with an helper
+		 * TODO I should throw an exception when server doesn't set etag
+		 * 
+		 * @param httpClient
+		 * @param calendar
+		 * @param path
+		 * @param etag
+		 * @throws CalDAV4JException
+		 */
 	void put(HttpClient httpClient, Calendar calendar, String path,
 	        String etag)
 	        throws CalDAV4JException {
@@ -158,14 +180,15 @@ public abstract class CalDAVCalendarCollectionBase {
 	    try {
 	        httpClient.executeMethod(hostConfiguration, putMethod);
 	        int statusCode = putMethod.getStatusCode();
-	        if (statusCode!= org.osaf.caldav4j.util.CaldavStatus.SC_NO_CONTENT
-	                && statusCode != CaldavStatus.SC_CREATED) {
-	            if (statusCode == CaldavStatus.SC_PRECONDITION_FAILED){
-	                throw new ResourceOutOfDateException(
-	                        "Etag was not matched: "
-	                                + etag);
-	            }
-	        }
+	        switch(statusCode) {
+	        case CaldavStatus.SC_NO_CONTENT:
+	        case CaldavStatus.SC_CREATED:
+	        	break;
+	        case CaldavStatus.SC_PRECONDITION_FAILED:
+	            throw new ResourceOutOfDateException("Etag was not matched: "+ etag);
+            default:
+            	throw new BadStatusException(statusCode, putMethod.getName(), path);
+	        }	        
 	    } catch (Exception e){
 	        throw new CalDAV4JException("Problem executing put method",e);
 	    }
@@ -174,9 +197,8 @@ public abstract class CalDAVCalendarCollectionBase {
 	
 	    if (h != null) {
 	        String newEtag = h.getValue();
-	        cache.putResource(new CalDAVResource(calendar, newEtag, getHref(path)));
-	    }
-	    	
+	        cache.putResource(new CalDAVResource(calendar, newEtag, getHref(putMethod.getPath())));
+	    } 	    	
 	}
 
 	/**
@@ -196,15 +218,18 @@ public abstract class CalDAVCalendarCollectionBase {
 		
 		try {
 			httpClient.executeMethod(this.hostConfiguration, optMethod);
-			if (optMethod.getStatusCode() >=400) {
-				throw new Exception("Bad OPTIONS request: " + optMethod.getStatusText());
-			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			throw new CalDAV4JException("Trouble executing OPTIONS", e);
 		}
 
+		
+		int status = optMethod.getStatusCode();
+		switch (status) {
+		case CaldavStatus.SC_OK:
+			break;
+		default:
+			throw new BadStatusException(status, optMethod.getName(), getCalendarCollectionRoot());
+		}
 
 		for (Header h: optMethod.getResponseHeaders()) {
 			hList.add(h);

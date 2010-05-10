@@ -27,7 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.DepthSupport;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;

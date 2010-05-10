@@ -1,7 +1,7 @@
 package org.osaf.caldav4j.cache;
 
-import org.osaf.caldav4j.CacheException;
 import org.osaf.caldav4j.CalDAVResource;
+import org.osaf.caldav4j.exceptions.CacheException;
 
 /**
  * Implementations allow for caching of CalDAVResources based on path, and also for

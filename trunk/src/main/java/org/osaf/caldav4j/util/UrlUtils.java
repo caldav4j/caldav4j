@@ -16,6 +16,10 @@
 
 package org.osaf.caldav4j.util;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.lang.StringUtils;
+
 public class UrlUtils {
     public static String stripHost(String href){
         if (!href.startsWith("http")){
@@ -28,5 +32,16 @@ public class UrlUtils {
     
     public static String removeDoubleSlashes(String s) {
     	return s.replaceAll("([^:])/{2,}","$1/");
+    }
+    
+    public static String getHeaderPrettyValue(HttpMethod method, String headerName) {
+    	if (method != null && headerName != null) {
+    		Header header  = method.getResponseHeader(headerName);  
+    		if (header != null) {
+    			return header.getValue();
+    		}
+    	}
+    	
+    	return null;
     }
 }
