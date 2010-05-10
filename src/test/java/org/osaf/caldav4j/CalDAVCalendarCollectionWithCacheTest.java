@@ -1,5 +1,12 @@
 package org.osaf.caldav4j;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.List;
 
 import net.fortuna.ical4j.model.Calendar;
@@ -8,24 +15,21 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.DtStart;
-import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
-import net.fortuna.ical4j.model.property.Version;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.event.CacheEventListener;
 
-import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
-import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 /**
@@ -105,7 +109,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
 
     public TestingCacheEventListener listener = null;
 
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         mkcalendar(COLLECTION_PATH);
         put(ICS_DAILY_NY_5PM, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
@@ -132,8 +136,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
         ((EhCacheResourceCache) cache).setUidToHrefCache(uidToHrefCache);
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    public void tearDown() throws Exception {
         CacheManager cacheManager = CacheManager.create();
         cacheManager.removeCache(UID_TO_HREF_CACHE);
         cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);

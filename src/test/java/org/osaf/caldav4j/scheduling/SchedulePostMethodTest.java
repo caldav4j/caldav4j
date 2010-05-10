@@ -18,7 +18,7 @@ import net.fortuna.ical4j.model.property.XProperty;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
 import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.PostMethod;
 import org.osaf.caldav4j.methods.PutMethod;
@@ -170,7 +170,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 			System.out.println("PUT...");
 
 			PutMethod request = methodFactory.createPutMethod();
-			request.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT + "/calendar/" + event.getUid().getValue() + ".ics");
+			request.setPath(caldavCredential.home + "/calendar/" + event.getUid().getValue() + ".ics");
 			request.setHostConfiguration(hostConfig);
 			request.setRequestBody(invite);
 
@@ -230,7 +230,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 
 		SchedulePostMethod request = scheduleMethodFactory
 		.createSchedulePostMethod();
-		request.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT + "/Outbox/");
+		request.setPath(caldavCredential.home + "/Outbox/");
 		request.setHostConfiguration(hostConfig);
 		request.setRequestBody(invite);
 		try {

@@ -3,16 +3,16 @@
  */
 package org.osaf.caldav4j.methods;
 
+import static org.junit.Assert.assertEquals;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
 
 import org.apache.commons.httpclient.HostConfiguration;
-import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.CaldavCredential;
-import org.osaf.caldav4j.GCaldavCredential;
+import org.osaf.caldav4j.credential.GCaldavCredential;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
@@ -21,26 +21,26 @@ public class PutGetTestGoogle extends BaseTestCase {
 	private static final Log log = LogFactory.getLog(PutGetTestGoogle.class);
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
-    public PutGetTestGoogle(String method) {
-		super(method);
-		 caldavCredential = new GCaldavCredential();
+    public PutGetTestGoogle() {
+		super();
+	 caldavCredential = new GCaldavCredential();
 	}
 
     
 
     
     
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         // mkdir(COLLECTION_PATH);
     }
 
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         del(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         //del(COLLECTION_PATH);
     }
-
+	@Test
     public void testAddRemoveCalendarResource() throws Exception{
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();

@@ -7,6 +7,8 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.model.response.Principal;
 import org.apache.webdav.lib.Ace;
 import org.apache.webdav.lib.BaseProperty;
@@ -17,7 +19,6 @@ import org.apache.webdav.lib.methods.AclMethod;
 import org.apache.webdav.lib.properties.AclProperty;
 import org.apache.webdav.lib.util.DOMUtils;
 import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.request.CalendarDescription;
 import org.osaf.caldav4j.model.request.DisplayName;
@@ -27,20 +28,22 @@ import org.osaf.caldav4j.util.AceUtils;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import static org.junit.Assert.*;
 
 public class PropFindTest extends BaseTestCase {
-	public PropFindTest(String method) {
-		super(method);
-		// TODO Auto-generated constructor stub
+
+
+	public PropFindTest() {
+		super();
 	}
 	private static final Log log = LogFactory.getLog(PropFindTest.class);
 
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		super.setUp();
 		mkcalendar(COLLECTION_PATH);
 	}
 
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		super.tearDown();
 //		del(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
 		del(COLLECTION_PATH);
@@ -52,7 +55,7 @@ public class PropFindTest extends BaseTestCase {
 		HostConfiguration hostConfig = createHostConfiguration();
 
 		PropFindMethod propfind = new PropFindMethod();
-		propfind.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT);
+		propfind.setPath(caldavCredential.home);
 
 		PropProperty propFindTag = PropertyFactory.createProperty(PropertyFactory.PROPFIND);
 		PropProperty aclTag = PropertyFactory.createProperty(PropertyFactory.ACL);
@@ -66,7 +69,7 @@ public class PropFindTest extends BaseTestCase {
 		try {
 			http.executeMethod(hostConfig,propfind);
 			
-			Enumeration<Property> myEnum = propfind.getResponseProperties(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT);
+			Enumeration<Property> myEnum = propfind.getResponseProperties(caldavCredential.home);
 			/*
 			 * response
 			 *   href
@@ -150,7 +153,7 @@ public class PropFindTest extends BaseTestCase {
 		HostConfiguration hostConfig = createHostConfiguration();
 
 		PropFindMethod propfind = new PropFindMethod();
-		propfind.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT);
+		propfind.setPath(caldavCredential.home);
 
 		PropProperty propFindTag = new PropProperty(CalDAVConstants.NS_DAV,"D","propfind");
 		PropProperty aclTag = new PropProperty(CalDAVConstants.NS_DAV,"D","acl");
@@ -165,7 +168,7 @@ public class PropFindTest extends BaseTestCase {
 			http.executeMethod(hostConfig,propfind);
 			//Hashtable<String, CalDAVResponse> hashme = propfind.getResponseHashtable();
 
-			Enumeration<Property> myEnum = propfind.getResponseProperties(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT);
+			Enumeration<Property> myEnum = propfind.getResponseProperties(caldavCredential.home);
 			while (myEnum.hasMoreElements()) {
 				log.info("new Property element");
 				BaseProperty e =  (BaseProperty) myEnum.nextElement();
@@ -202,6 +205,7 @@ public class PropFindTest extends BaseTestCase {
 	 * TODO this test will work only on bedework which has a set of permission set
 	 * @throws CalDAV4JException 
 	 */
+	@Test
 	public void testNewPropfind() throws CalDAV4JException {
 		log.info("New Propfind");
 		HttpClient http = createHttpClient();
@@ -224,7 +228,7 @@ public class PropFindTest extends BaseTestCase {
 			
 			// check that Calendar-description and DisplayName matches
 			log.debug("DisplayName: " + propfind.getDisplayName(COLLECTION_PATH));
-			assertEquals(caldavCredential.COLLECTION.replaceAll("/$", ""), propfind.getDisplayName(COLLECTION_PATH).replaceAll("/$", ""));			
+			assertEquals(caldavCredential.collection.replaceAll("/$", ""), propfind.getDisplayName(COLLECTION_PATH).replaceAll("/$", ""));			
 
 			log.debug("CalendarDescription: " +  propfind.getCalendarDescription(COLLECTION_PATH));
 			assertEquals(CALENDAR_DESCRIPTION, propfind.getCalendarDescription(COLLECTION_PATH));
@@ -266,6 +270,8 @@ public class PropFindTest extends BaseTestCase {
 		}
 
 	}
+	
+	@Test
 	public void testAclMethod() {
 		log.info("New Propfind");
 		HttpClient http = createHttpClient();

@@ -17,7 +17,6 @@ package org.osaf.caldav4j;
 
 import java.io.InputStream;
 
-import junit.framework.TestCase;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
@@ -29,65 +28,43 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.util.WebdavStatus;
+import org.junit.After;
 import org.junit.Before;
+import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 
-public abstract class BaseTestCase  extends TestCase implements TestConstants {
+public abstract class BaseTestCase   implements TestConstants {
     protected static final Log log = LogFactory.getLog(BaseTestCase.class);
-    protected HttpClient http;
+    protected HttpClient testHttpClient;
     protected HttpClient httpClient;
 
     protected HostConfiguration hostConfig;
     protected CaldavCredential caldavCredential = new CaldavCredential();
     public  String COLLECTION_PATH;
+    protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
 
     @Before
-    protected void setUp() throws Exception {
-    	super.setUp();
-        COLLECTION_PATH = caldavCredential.CALDAV_SERVER_WEBDAV_ROOT
-        + caldavCredential.COLLECTION;
+    public void setUp() throws Exception {
+        COLLECTION_PATH = caldavCredential.home + caldavCredential.collection;
         hostConfig = createHostConfiguration();
-        http  = createHttpClient();
-        httpClient = createHttpClient();
-        methodFactory = new CalDAV4JMethodFactory();
+        testHttpClient  = createHttpClient();
+        httpClient = createHttpClient();    	
+    }
+    
+    @After
+    public void tearDown() throws Exception {
     	
     }
     
 
-    protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
-    
-    public String getCalDAVServerHost() {
-        return caldavCredential.CALDAV_SERVER_HOST;
-    }
-    
-    public int getCalDAVServerPort(){
-        return caldavCredential.CALDAV_SERVER_PORT;
-    }
-    
-    public String getCalDavSeverProtocol(){
-        return caldavCredential.CALDAV_SERVER_PROTOCOL;
-    }
-    
-    public String getCalDavSeverWebDAVRoot(){
-        return caldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
-    }
-    
-    public String getCalDavSeverUsername(){
-        return caldavCredential.CALDAV_SERVER_USERNAME;
-    }
-    
-    public String getCalDavSeverPassword(){
-        return caldavCredential.CALDAV_SERVER_PASSWORD;
-    }
-        
 
+    // constructor
     public BaseTestCase(String method) {
-    	super(method);
 	}
     public BaseTestCase() {
 	}
@@ -95,8 +72,8 @@ public abstract class BaseTestCase  extends TestCase implements TestConstants {
 	public HttpClient createHttpClient(){
         HttpClient http = new HttpClient();
 
-        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.CALDAV_SERVER_USERNAME, 
-        		caldavCredential.CALDAV_SERVER_PASSWORD);
+        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.user, 
+        		caldavCredential.password);
         http.getState().setCredentials(
         		new AuthScope(this.getCalDAVServerHost(), this.getCalDAVServerPort()),
         		credentials);
@@ -106,10 +83,10 @@ public abstract class BaseTestCase  extends TestCase implements TestConstants {
 	public static HttpClient createHttpClient(CaldavCredential caldavCredential){
         HttpClient http = new HttpClient();
 
-        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.CALDAV_SERVER_USERNAME, 
-        		caldavCredential.CALDAV_SERVER_PASSWORD);
+        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.user, 
+        		caldavCredential.password);
         http.getState().setCredentials(
-        		new AuthScope(caldavCredential.CALDAV_SERVER_HOST, caldavCredential.CALDAV_SERVER_PORT),
+        		new AuthScope(caldavCredential.host, caldavCredential.port),
         		credentials);
         http.getParams().setAuthenticationPreemptive(true);
         return http;
@@ -127,7 +104,7 @@ public abstract class BaseTestCase  extends TestCase implements TestConstants {
     }
     public static HostConfiguration createHostConfiguration(CaldavCredential caldavCredential){
         HostConfiguration hostConfig = new HostConfiguration();
-        hostConfig.setHost(caldavCredential.CALDAV_SERVER_HOST,caldavCredential.CALDAV_SERVER_PORT, caldavCredential.CALDAV_SERVER_PROTOCOL);
+        hostConfig.setHost(caldavCredential.host,caldavCredential.port, caldavCredential.protocol);
         return hostConfig;
     }
     
@@ -166,7 +143,7 @@ public abstract class BaseTestCase  extends TestCase implements TestConstants {
         put.setPath(path);
     	log.debug("\nPUT " + put.getPath());
         try {
-            http.executeMethod(hostConfig, put);
+            testHttpClient.executeMethod(hostConfig, put);
             
             int statusCode =  put.getStatusCode();
             
@@ -198,7 +175,7 @@ public abstract class BaseTestCase  extends TestCase implements TestConstants {
         DeleteMethod delete = new DeleteMethod();
         delete.setPath(path);
         try {
-        	http.executeMethod(hostConfig, delete);
+        	testHttpClient.executeMethod(hostConfig, delete);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
@@ -209,7 +186,7 @@ public abstract class BaseTestCase  extends TestCase implements TestConstants {
         mk.setPath(path);
         mk.addDescription(CALENDAR_DESCRIPTION, "en");
         try {
-        	http.executeMethod(hostConfig, mk);
+        	testHttpClient.executeMethod(hostConfig, mk);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
@@ -262,5 +239,29 @@ public abstract class BaseTestCase  extends TestCase implements TestConstants {
 			return calendarCollection;
 		}
 
-
+		// getter+setter
+	    public String getCalDAVServerHost() {
+	        return caldavCredential.host;
+	    }
+	    
+	    public int getCalDAVServerPort(){
+	        return caldavCredential.port;
+	    }
+	    
+	    public String getCalDavSeverProtocol(){
+	        return caldavCredential.protocol;
+	    }
+	    
+	    public String getCalDavSeverWebDAVRoot(){
+	        return caldavCredential.home;
+	    }
+	    
+	    public String getCalDavSeverUsername(){
+	        return caldavCredential.user;
+	    }
+	    
+	    public String getCalDavSeverPassword(){
+	        return caldavCredential.password;
+	    }
+	        
 }

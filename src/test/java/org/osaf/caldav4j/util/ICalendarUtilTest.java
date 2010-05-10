@@ -17,8 +17,10 @@ import net.fortuna.ical4j.util.CompatibilityHints;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.methods.PutGetTest;
+import static org.junit.Assert.*;
 
 public class ICalendarUtilTest extends BaseTestCase{
     private static final Log log = LogFactory.getLog(PutGetTest.class);
@@ -26,7 +28,7 @@ public class ICalendarUtilTest extends BaseTestCase{
     // list of different components
     private static List<String> calendarList = new ArrayList<String>();
 
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
     	log.trace("setUp");
     	super.setUp();
     	calendarList.add("DAY-VTODO-123123.ics");
@@ -34,7 +36,7 @@ public class ICalendarUtilTest extends BaseTestCase{
     	
     }
     
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
     	super.tearDown();
     }
     
@@ -85,6 +87,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 
     }
     
+    @Test
     public void testParseStrangeICs() throws Exception {
 		//	CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, false);
 		//CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
