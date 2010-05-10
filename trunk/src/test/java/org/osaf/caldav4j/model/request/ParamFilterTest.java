@@ -1,12 +1,14 @@
 package org.osaf.caldav4j.model.request;
 
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.util.XMLUtils;
+import static org.junit.Assert.*;
 
 public class ParamFilterTest extends BaseTestCase {
-
+	@Test
         public void testSimpleConstructor() {
                 ParamFilter p = new ParamFilter("C");
                 try {
@@ -17,7 +19,7 @@ public class ParamFilterTest extends BaseTestCase {
                         assertNotNull("Ok, doesn't accept null name", e);
                 }
         }
-
+	@Test
         public void testName() {
                 ParamFilter p = new ParamFilter("C");
                 p.setName("newname");
@@ -31,7 +33,7 @@ public class ParamFilterTest extends BaseTestCase {
                 
                 p.setDefined(false);
         }
-        
+	@Test
         public void testDefined() {
             ParamFilter p = new ParamFilter("C");
             p.setName("testDefined");
@@ -45,7 +47,8 @@ public class ParamFilterTest extends BaseTestCase {
                     fail("Should have a valid ParamFilter");
             }
             
-    }
+    }	
+        @Test
         public void testTextMatch() {
             ParamFilter p = new ParamFilter("C");
             p.setName("testDefined");

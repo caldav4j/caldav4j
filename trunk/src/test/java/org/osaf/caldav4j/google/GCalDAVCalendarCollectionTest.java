@@ -1,6 +1,13 @@
 package org.osaf.caldav4j.google;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,15 +25,15 @@ import net.fortuna.ical4j.model.property.Uid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVCalendarCollection;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.GCaldavCredential;
-import org.osaf.caldav4j.ResourceNotFoundException;
-import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
+import org.osaf.caldav4j.credential.GCaldavCredential;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
+
 
 public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     public GCalDAVCalendarCollectionTest(String method) {
@@ -48,7 +55,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     /**
      * put events on calendar
      */
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         caldavCredential = new GCaldavCredential();
 
         super.setUp();
@@ -61,7 +68,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     /**
      * remove events from calendar
      */
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         
 //        caldavDel(ICS_GOOGLE_DAILY_NY_5PM_PATH);
@@ -301,8 +308,8 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     public void _testMultigetCalendar() throws Exception {
     	CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
     	
-    	final String baseUri = caldavCredential.CALDAV_SERVER_PROTOCOL +"://" 
-    			+ caldavCredential.CALDAV_SERVER_HOST+":" +caldavCredential.CALDAV_SERVER_PORT 
+    	final String baseUri = caldavCredential.protocol +"://" 
+    			+ caldavCredential.host+":" +caldavCredential.port 
     			+COLLECTION_PATH;
     	
     	List <String> calendarUris =  new ArrayList<String>();

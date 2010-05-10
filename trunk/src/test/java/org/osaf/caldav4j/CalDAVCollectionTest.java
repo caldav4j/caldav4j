@@ -26,15 +26,21 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.Ace;
 import org.apache.webdav.lib.Privilege;
 import org.apache.webdav.lib.methods.AclMethod;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
 import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
+import static org.junit.Assert.*;
 
 public class CalDAVCollectionTest extends BaseTestCase {
-	public CalDAVCollectionTest(String method) {
-		super(method);
+	public CalDAVCollectionTest() {
+		super();
 	}
 
 	protected static final Log log = LogFactory
@@ -55,7 +61,9 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	public static final Integer TEST_VISITS = CalDAVConstants.INFINITY;
 
 	public static final String  TEST_TIMEOUT_UNITS = "Second";
-	protected void setUp() throws Exception {
+	
+	@Before
+	public void setUp() throws Exception {
 		super.setUp();
 
 		try {
@@ -82,8 +90,8 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		cacheManager.addCache(hrefToResourceCache);
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		CacheManager cacheManager = CacheManager.create();
 		cacheManager.removeCache(UID_TO_HREF_CACHE);
 		cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
@@ -100,6 +108,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		}
 	}
 
+	@Test
 	public void testTestConnection()
 	{
 		CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();
@@ -152,6 +161,10 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	//
 	// old CalDAVCalendarCollectionTests
 	//
+	/**
+	 * @deprecated use calendar query
+	 */
+	@Test
 	public void testGetCalendar() throws Exception {
 		CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();        
 		Calendar calendar = null;
@@ -179,6 +192,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		assertNotNull(calDAV4JException);
 	}
 
+	@Test
 	public void testGetCalendarByPath() throws Exception {
 		CalDAVCollection calendarCollection = createCalDAVCollection();
 		Calendar calendar = null;
@@ -211,6 +225,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testGetEventResources() throws Exception {
 		CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();
 		Date beginDate = ICalendarUtils.createDateTime(2006, 0, 1, null, true);
@@ -275,6 +290,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	/**
 	 * @throws Exception
 	 */
+	@Test
 	public void testAddNewRemove() throws Exception {
 		String newUid = "NEW_UID";
 		String newEvent = "NEW_EVENT";
@@ -312,6 +328,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	/**
 	 * @throws Exception
 	 */
+	@Test
 	public void testGetWithoutCacheThenWithCache()  {
 		String newUid = "NEW_UID";
 		String newEvent = "NEW_EVENT";
@@ -350,6 +367,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	/**
 	 * @throws Exception
 	 */
+	@Test
 	public void testUpdateEvent() throws Exception {
 		CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();
 
@@ -378,11 +396,12 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	/**
 	 * do a calendar-multiget with a valid event and an invalid one
 	 */
+	@Test
 	public void testMultigetCalendar() throws Exception {
 		CalDAVCollection calendarCollection = createCalDAVCollection();
 
-		final String baseUri = caldavCredential.CALDAV_SERVER_PROTOCOL +"://" 
-		+ caldavCredential.CALDAV_SERVER_HOST+":" +caldavCredential.CALDAV_SERVER_PORT 
+		final String baseUri = caldavCredential.protocol +"://" 
+		+ caldavCredential.host+":" +caldavCredential.port 
 		+COLLECTION_PATH;
 
 		List <String> calendarUris =  new ArrayList<String>();
@@ -403,6 +422,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	 * make a OPTIONS  requesto to caldav server
 	 * @throws Exception
 	 */
+	@Test
 	public void testGetOptions() throws Exception {
 		CalDAVCollection calendarCollection = createCalDAVCollection();
 
@@ -431,7 +451,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		}
 	}
 
-
+	@Test
 	public void testReportCalendarWithTimezone() throws Exception {
 		CalDAVCollection calendarCollection = createCalDAVCollectionWithCache(); 
 

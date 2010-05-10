@@ -5,7 +5,7 @@
  *    it's the expected result 
  */
 package org.osaf.caldav4j.util;
-
+import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +13,11 @@ import net.fortuna.ical4j.model.Component;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.methods.PutGetTest;
 import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.model.request.Comp;
@@ -31,14 +32,13 @@ public class GenerateQueryTest extends BaseTestCase {
     public GenerateQueryTest() {
 		super();
 	}
-    public GenerateQueryTest(String s) {
-    	super(s);
-    }
-    protected void setUp() throws Exception {    	
+ 
+
+    public void setUp() throws Exception {    	
         super.setUp();
     }
 
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
 
     }
@@ -64,6 +64,7 @@ public class GenerateQueryTest extends BaseTestCase {
     /**
      * basic VEVENT CompFilter
      */
+    @Test
     public void testFilter_VEVENT() {
 		try {    	
 			log.info("Filter: VEVENT");
@@ -83,6 +84,7 @@ public class GenerateQueryTest extends BaseTestCase {
 		} 
 
     }
+@Test
     public void testComp_VEVENT() {
 
 		try {
@@ -120,7 +122,7 @@ public class GenerateQueryTest extends BaseTestCase {
 
     }    
     // Creating Calendar-Query like the RFC's one
-
+@Test
     public void testQuery_TODO()  {
 		try {
 			List<String> a = new ArrayList<String> ();
@@ -152,7 +154,7 @@ public class GenerateQueryTest extends BaseTestCase {
 		}	
     }
 
-    
+    @Test
     public void testQuery_ATTENDEE()  {
 		try {
 			log.info("VEVENT + ATTENDEE:");
@@ -178,6 +180,7 @@ public class GenerateQueryTest extends BaseTestCase {
      *  so you have to use a bit of magic 
      * VTODO : VALARM 
      */
+    @Test
     public void testQuery_VALARM()  {
 		try {
 			CalendarQuery compoundQuery = null;
@@ -201,7 +204,7 @@ public class GenerateQueryTest extends BaseTestCase {
 		}
 		
     }
-    
+    @Test
     public void testFilterProperties()  {
 		try {
 			List<String> a = new ArrayList<String> ();
@@ -234,6 +237,7 @@ public class GenerateQueryTest extends BaseTestCase {
     /**
      * @see http://tools.ietf.org/html/rfc4791#section-7.8.7
      */
+    @Test
     public void testParamFilterProperties()  {
 		try {
 

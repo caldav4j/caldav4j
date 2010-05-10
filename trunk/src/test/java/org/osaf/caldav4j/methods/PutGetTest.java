@@ -14,14 +14,14 @@ import net.fortuna.ical4j.model.property.Summary;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
-
+import static org.junit.Assert.*;
 public class PutGetTest extends BaseTestCase {
-    public PutGetTest(String method) {
-		super(method);
-		// TODO Auto-generated constructor stub
+    public PutGetTest() {
+		super();
 	}
 
 	private static final Log log = LogFactory.getLog(PutGetTest.class);
@@ -30,17 +30,17 @@ public class PutGetTest extends BaseTestCase {
 
 
     
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         mkcalendar(COLLECTION_PATH);
     }
 
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         del(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
         del(COLLECTION_PATH);
     }
-
+	@Test
     public void testAddRemoveCalendarResource() throws Exception{
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
@@ -83,6 +83,7 @@ public class PutGetTest extends BaseTestCase {
     /**
      * TODO test PUT with non-latin characters
      */
+	@Test
     public void testPutNonLatin()
     throws Exception {
     	

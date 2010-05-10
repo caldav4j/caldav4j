@@ -1,6 +1,7 @@
 package org.osaf.caldav4j.methods;
 
 import static org.osaf.caldav4j.CalDAVConstants.INFINITY;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -44,7 +45,7 @@ public class TicketTest extends BaseTestCase {
 
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         mkcalendar(COLLECTION_PATH);
         put(ICS_DAILY_NY_5PM, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
@@ -125,9 +126,9 @@ public class TicketTest extends BaseTestCase {
         // Check to make sure we get the right number of tickets
 
         Enumeration responses = propFindMethod
-                .getResponseProperties(caldavCredential.CALDAV_SERVER_PROTOCOL
-                        + "://" + caldavCredential.CALDAV_SERVER_HOST + ":"
-                        + caldavCredential.CALDAV_SERVER_PORT + COLLECTION_PATH
+                .getResponseProperties(caldavCredential.protocol
+                        + "://" + caldavCredential.host + ":"
+                        + caldavCredential.port + COLLECTION_PATH
                         + "/" + ICS_DAILY_NY_5PM);
         List<TicketResponse> ticketResponseList = new ArrayList<TicketResponse>();
         while (responses.hasMoreElements()) {
@@ -169,9 +170,9 @@ public class TicketTest extends BaseTestCase {
         // Check to make sure we get the right number of tickets
 
         responses = propFindMethod
-                .getResponseProperties(caldavCredential.CALDAV_SERVER_PROTOCOL
-                        + "://" + caldavCredential.CALDAV_SERVER_HOST + ":"
-                        + caldavCredential.CALDAV_SERVER_PORT + COLLECTION_PATH
+                .getResponseProperties(caldavCredential.protocol
+                        + "://" + caldavCredential.host + ":"
+                        + caldavCredential.port + COLLECTION_PATH
                         + "/" + ICS_DAILY_NY_5PM);
         ticketResponseList = new ArrayList<TicketResponse>();
         while (responses.hasMoreElements()) {
@@ -252,7 +253,7 @@ public class TicketTest extends BaseTestCase {
         assertEquals("Status code for get2: ", WebdavStatus.SC_OK, statusCode);
     }
 
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         del(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
         del(COLLECTION_PATH);
