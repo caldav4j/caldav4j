@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Open Source Applications Foundation
+ * Copyright 2006 Open Source Applications Foundation
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osaf.caldav4j;
+package org.osaf.caldav4j.exceptions;
 
 /**
- * Thrown when trying to update a resource and the etags do not match
- * 
+ * Thrown by OutputsDOM objects when trying to validate improperly constructed objects.
  * @author bobbyrullo
  *
  */
-public class ResourceOutOfDateException extends CalDAV4JException {
+public class DOMValidationException extends CalDAV4JException {
 
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -7814395605221751094L;
+	private static final long serialVersionUID = -6661253484687262767L;
 
-	public ResourceOutOfDateException(String message) {
+	public DOMValidationException(String message) {
         super(message);
     }
     
-    public ResourceOutOfDateException(String message, Throwable cause){
+    public DOMValidationException(String message, Throwable cause){
         super(message, cause);
     }
 }

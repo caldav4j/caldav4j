@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osaf.caldav4j;
+package org.osaf.caldav4j.exceptions;
 
 /**
  * This is the base class for low level CalDAV4J Exceptions

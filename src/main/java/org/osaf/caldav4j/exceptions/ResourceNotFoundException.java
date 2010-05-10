@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.osaf.caldav4j;
+package org.osaf.caldav4j.exceptions;
 
 public class ResourceNotFoundException extends CalDAV4JException {
 

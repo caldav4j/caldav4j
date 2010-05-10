@@ -9,9 +9,10 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.ObjectExistsException;
 
-import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVResource;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.util.ICalendarUtils;
+import org.osaf.caldav4j.util.UrlUtils;
 
 /**
  * 
@@ -51,7 +52,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	        cacheManager.addCache(uidToHrefCache);
 	        cacheManager.addCache(hrefToResourceCache);
         } catch (ObjectExistsException e) {
-        	throw new org.osaf.caldav4j.CacheException("Cache exists",e);
+        	throw new org.osaf.caldav4j.exceptions.CacheException("Cache exists",e);
         }
         return myCache;
     }
@@ -83,27 +84,28 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         this.uidToHrefCache = uidToPathCache;
     }
 
-    public synchronized String getHrefForEventUID(String uid) throws org.osaf.caldav4j.CacheException {
+    public synchronized String getHrefForEventUID(String uid) throws org.osaf.caldav4j.exceptions.CacheException {
         Element e = null;
         try {
             e = uidToHrefCache.get(uid);
         } catch (CacheException ce){
-            throw new org.osaf.caldav4j.CacheException("Problem with the uidToHrefCache",ce);
+            throw new org.osaf.caldav4j.exceptions.CacheException("Problem with the uidToHrefCache",ce);
         }
         
         return e == null ? null : (String) e.getValue();
         
     }
 
-    public synchronized CalDAVResource getResource(String href) throws org.osaf.caldav4j.CacheException {
+    public synchronized CalDAVResource getResource(String href) throws org.osaf.caldav4j.exceptions.CacheException {
         Element e = null;
         try {
+        	href = UrlUtils.removeDoubleSlashes(href);
             e = hrefToResourceCache.get(href);
             if (e == null){
                 e = hrefToResourceCache.get(stripHost(href));
             }
         } catch (CacheException ce) {
-            throw new org.osaf.caldav4j.CacheException(
+            throw new org.osaf.caldav4j.exceptions.CacheException(
                     "Problem with the hrefToResourceCache", ce);
         }
 
@@ -116,7 +118,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
      * XXX works only with VEVENT
      */
     public synchronized void putResource(CalDAVResource calDAVResource)
-            throws org.osaf.caldav4j.CacheException {
+            throws org.osaf.caldav4j.exceptions.CacheException {
         String href = calDAVResource.getResourceMetadata().getHref();
         Element resourceElement = new Element(href, calDAVResource);
         hrefToResourceCache.put(resourceElement);
@@ -128,15 +130,15 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         }
     }
 
-    public synchronized void removeResource(String href) throws org.osaf.caldav4j.CacheException {
+    public synchronized void removeResource(String href) throws org.osaf.caldav4j.exceptions.CacheException {
         CalDAVResource resource = getResource(href);
         if (resource != null){
-            hrefToResourceCache.remove(href);
+            hrefToResourceCache.remove(href);           
         }
         String uid = getEventUID(resource);
         if (uid != null){
             uidToHrefCache.remove(uid);
-        }
+        }      
     }
     
     private synchronized String getEventUID(CalDAVResource calDAVResource){

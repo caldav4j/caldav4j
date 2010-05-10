@@ -14,9 +14,9 @@ import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
 
-import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalDAVProp;
 import org.osaf.caldav4j.model.request.CalendarData;
 import org.osaf.caldav4j.model.request.CalendarQuery;

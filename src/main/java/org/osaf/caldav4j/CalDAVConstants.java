@@ -45,6 +45,7 @@ public interface CalDAVConstants {
     public static final String HEADER_IF_NONE_MATCH = "If-None-Match";
     public static final String HEADER_IF_MATCH = "If-Match";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_ETAG = "ETag";
     
     public static final String CALENDAR_CONTENT_TYPE = "text/calendar";
     public static final String TEXT_XML_CONTENT_TYPE = "text/xml";

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Open Source Applications Foundation
+ * Copyright 2006 Open Source Applications Foundation
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osaf.caldav4j.xml;
+package org.osaf.caldav4j.exceptions;
 
-import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+/**
+ * Thrown by CalDAVResourceCache implementations when there is a problem with the cache.
+ * @author bobbyrullo
+ *
+ */
+public class CacheException extends CalDAV4JException {
 
-public interface OutputsDOM {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1543727714287441815L;
 
-    public Element outputDOM(Document document) throws DOMValidationException;
-
-    public Document createNewDocument(DOMImplementation dom) throws DOMValidationException;
+	public CacheException(String message) {
+        super(message);
+    }
     
-    public void validate() throws DOMValidationException;
+    public CacheException(String message, Throwable cause){
+        super(message, cause);
+    }
 }

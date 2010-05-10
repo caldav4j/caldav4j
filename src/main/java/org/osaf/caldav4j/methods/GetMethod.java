@@ -26,7 +26,7 @@ import net.fortuna.ical4j.model.Calendar;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osaf.caldav4j.CalDAV4JProtocolException;
+import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
 import org.osaf.caldav4j.util.UrlUtils;
 
 

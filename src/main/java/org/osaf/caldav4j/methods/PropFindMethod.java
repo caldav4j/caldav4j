@@ -33,9 +33,9 @@ import org.apache.webdav.lib.properties.PropertyFactory;
 import org.apache.webdav.lib.util.DOMUtils;
 import org.apache.webdav.lib.util.QName;
 import org.apache.webdav.lib.util.WebdavStatus;
-import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.DOMValidationException;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.util.CaldavStatus;
@@ -214,8 +214,8 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
     public Ace[] getAces(String urlPath) throws CalDAV4JException {
     	int status = -1;
     	AclProperty acls = (AclProperty) getWebDavProperty(urlPath, CalDAVConstants.QNAME_ACL);
-    	status = acls.getStatusCode();
     	if (acls != null) {
+        	status = acls.getStatusCode();
     		switch (status) {
 			case CaldavStatus.SC_OK:
 				return acls.getAces();
