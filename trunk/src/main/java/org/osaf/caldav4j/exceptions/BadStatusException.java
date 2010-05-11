@@ -15,6 +15,9 @@
  */
 package org.osaf.caldav4j.exceptions;
 
+import org.apache.commons.httpclient.HttpMethod;
+
+
 /**
  * This is the root class for all CalDAV4J specific exceptions.
  * 
@@ -37,5 +40,8 @@ public class BadStatusException extends CalDAV4JException {
     
     public BadStatusException(int status, String method, String path) {
     	super(String.format(MESSAGE,status,method,path));
+    }
+    public BadStatusException(HttpMethod method) {
+    	super(String.format(MESSAGE,method.getStatusCode(),method.getName(),method.getPath()));
     }
 }

@@ -174,7 +174,7 @@ public class PostMethod extends org.apache.commons.httpclient.methods.PostMethod
                 calendarOutputter.output(calendar, writer);
                 
                 RequestEntity requestEntity = new StringRequestEntity(writer.toString(),
-						CalDAVConstants.CALENDAR_CONTENT_TYPE, 
+						CalDAVConstants.CONTENT_TYPE_CALENDAR, 
 						Charset.defaultCharset().toString());
                 setRequestEntity(requestEntity);                                
             } catch (UnsupportedEncodingException e) {
@@ -198,7 +198,7 @@ public class PostMethod extends org.apache.commons.httpclient.methods.PostMethod
             } else {
                 StringBuffer buf = new StringBuffer();
                 int x = 0;
-                for (Iterator i = etags.iterator();i.hasNext();){
+                for (Iterator<String> i = etags.iterator();i.hasNext();){
                     if (x > 0){
                         buf.append(", ");
                     }
@@ -210,7 +210,7 @@ public class PostMethod extends org.apache.commons.httpclient.methods.PostMethod
             }
             addRequestHeader(name, value);
         }
-        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CALENDAR_CONTENT_TYPE);
+        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_CALENDAR);
         super.addRequestHeaders(state, conn);
     }
 

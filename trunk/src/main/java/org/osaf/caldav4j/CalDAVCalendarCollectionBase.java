@@ -13,10 +13,6 @@ import net.fortuna.ical4j.model.Calendar;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.osaf.caldav4j.methods.HttpClient;
-import org.osaf.caldav4j.util.CaldavStatus;
-import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.cache.NoOpResourceCache;
@@ -25,8 +21,11 @@ import org.osaf.caldav4j.exceptions.CacheException;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.ResourceOutOfDateException;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
+import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.OptionsMethod;
 import org.osaf.caldav4j.methods.PutMethod;
+import org.osaf.caldav4j.util.CaldavStatus;
+import org.osaf.caldav4j.util.UrlUtils;
 
 public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	
@@ -124,9 +123,11 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	  * @return the URI of the path resource
 	  */
 	 String getHref(String path){
-	    return String.format("%s://%s:%d/%s", hostConfiguration.getProtocol().getScheme(),
-	    		hostConfiguration.getHost(),
-	    		hostConfiguration.getPort() == 80 ? "" : hostConfiguration.getPort(), path );
+	    return UrlUtils.removeDoubleSlashes(
+	    		String.format("%s://%s:%d/%s", hostConfiguration.getProtocol().getScheme(),
+		    		hostConfiguration.getHost(),
+		    		hostConfiguration.getPort() == 80 ? "" : hostConfiguration.getPort(), path )
+	    		);
 	}
 	 
 		
@@ -157,7 +158,16 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	        this.setCache(NoOpResourceCache.SINGLETON);
 		}
 
-	 
+		private boolean tolerantParsing = false;
+
+		public boolean isTolerantParsing() {
+			return tolerantParsing;
+		}
+
+		public void setTolerantParsing(boolean tolerantParsing) {
+			this.tolerantParsing = tolerantParsing;
+		}
+
 
 		/**
 		 * TODO manage status codes with an helper

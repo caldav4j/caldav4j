@@ -48,7 +48,7 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
     public MkCalendarMethod() {
 		// Add Headers Content-Type: text/xml
     	
-    	addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.TEXT_XML_CONTENT_TYPE);
+    	addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
 	}
 
     public void addDisplayName(String s) {

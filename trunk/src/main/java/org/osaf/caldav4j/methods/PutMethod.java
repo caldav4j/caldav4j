@@ -185,7 +185,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
                 calendarOutputter.output(calendar, writer);
                 
                 RequestEntity requestEntity = new StringRequestEntity(writer.toString(),
-						CalDAVConstants.CALENDAR_CONTENT_TYPE, 
+						CalDAVConstants.CONTENT_TYPE_CALENDAR, 
 						getCharset().toString());
                 setRequestEntity(requestEntity);                                
             } catch (UnsupportedEncodingException e) {
@@ -203,7 +203,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
         RequestEntity requestEntity;
 		try {
 			requestEntity = new StringRequestEntity(string,
-					CalDAVConstants.CALENDAR_CONTENT_TYPE, 
+					CalDAVConstants.CONTENT_TYPE_CALENDAR, 
 					getCharset().toString());
 	    	super.setRequestEntity(requestEntity);
 

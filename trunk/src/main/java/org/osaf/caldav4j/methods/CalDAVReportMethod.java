@@ -127,7 +127,7 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements D
         }
 
         if (getRequestHeader(HEADER_CONTENT_TYPE) == null) {
-        	addRequestHeader(HEADER_CONTENT_TYPE,TEXT_XML_CONTENT_TYPE);
+        	addRequestHeader(HEADER_CONTENT_TYPE,CONTENT_TYPE_TEXT_XML);
         }
     }
 

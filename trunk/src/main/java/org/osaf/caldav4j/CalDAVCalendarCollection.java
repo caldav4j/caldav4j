@@ -154,7 +154,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		// first create the calendar query
 		CalendarQuery query = new CalendarQuery("C", "D");
 
-		query.addProperty(CalDAVConstants.PROP_ETAG);
+		query.addProperty(CalDAVConstants.PROP_GETETAG);
 		CompFilter vCalendarCompFilter = new CompFilter("C");
 		vCalendarCompFilter.setName(Calendar.VCALENDAR);
 
@@ -552,7 +552,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		// first create the calendar query
 		CalendarQuery query = new CalendarQuery("C", "D");
 
-		query.addProperty(CalDAVConstants.PROP_ETAG);
+		query.addProperty(CalDAVConstants.PROP_GETETAG);
 
 		CompFilter vCalendarCompFilter = new CompFilter("C");
 		vCalendarCompFilter.setName(Calendar.VCALENDAR);
@@ -617,7 +617,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		// first create the calendar query
 		CalendarQuery query = new CalendarQuery("C", "D");
 		query.setCalendarDataProp(new CalendarData("C"));
-		query.addProperty(CalDAVConstants.PROP_ETAG);
+		query.addProperty(CalDAVConstants.PROP_GETETAG);
 
 		CompFilter vCalendarCompFilter = new CompFilter("C");
 		vCalendarCompFilter.setName(Calendar.VCALENDAR);
@@ -812,7 +812,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		// first create the calendar query
 		CalendarQuery query = new CalendarQuery("C", "D");
 
-		query.addProperty(CalDAVConstants.PROP_ETAG);
+		query.addProperty(CalDAVConstants.PROP_GETETAG);
 		CompFilter vCalendarCompFilter = new CompFilter("C");
 		vCalendarCompFilter.setName(Calendar.VCALENDAR);
 
@@ -877,7 +877,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		// first create the calendar query
 		CalendarQuery query = new CalendarQuery("C", "D");
 
-		query.addProperty(CalDAVConstants.PROP_ETAG);
+		query.addProperty(CalDAVConstants.PROP_GETETAG);
 
 		// create the query fields 
 		CalendarData calendarData = new CalendarData("C");
@@ -966,7 +966,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		// first create the calendar query
 		CalendarQuery query = new CalendarQuery("C", "D");
 
-		query.addProperty(CalDAVConstants.PROP_ETAG);
+		query.addProperty(CalDAVConstants.PROP_GETETAG);
 
 		// create the query fields 
 		CalendarData calendarData = new CalendarData("C");
@@ -1065,7 +1065,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		CalendarMultiget query = new CalendarMultiget("C", "D");
 		CalendarData calendarData = new CalendarData("C");
 
-		query.addProperty(CalDAVConstants.PROP_ETAG);
+		query.addProperty(CalDAVConstants.PROP_GETETAG);
 		query.setCalendarDataProp(calendarData);
 
 		query.setHrefs(calendarUris);
