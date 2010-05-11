@@ -13,8 +13,11 @@ for 0.6
  * basic PropFind support 
 
 for 0.8
- * profiling
+ * principal search support (nice for Apple Calendar)
  * start jackrabbit migration
+
+for 0.9:
+ * profiling
 
 for 1.0
  * documentation: example code shows very well how to use caldav4j. As I've no time for documentation, people are welcome to contribute posting it to mailing list and I'll put it into the wiki. 
