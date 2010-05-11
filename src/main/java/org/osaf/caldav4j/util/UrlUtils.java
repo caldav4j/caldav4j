@@ -16,6 +16,10 @@
 
 package org.osaf.caldav4j.util;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.lang.StringUtils;
@@ -44,4 +48,24 @@ public class UrlUtils {
     	
     	return null;
     }
+    
+    public static String parseISToString(InputStream is){
+    	StringBuffer sb = new StringBuffer();
+    	try {
+    		BufferedReader din = new BufferedReader(new InputStreamReader(is));
+
+    		String line = null;
+    		while((line=din.readLine()) != null){
+    			sb.append(line+"\n");
+    		}
+    	}catch(Exception ex){
+    		ex.getMessage();
+    	}finally{
+    		try{
+    			is.close();
+    		}catch(Exception ex){}
+    	}
+    	return sb.toString();
+    }
+
 }

@@ -34,7 +34,6 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
-import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
@@ -71,10 +70,7 @@ import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.model.request.CalendarData;
 import org.osaf.caldav4j.model.request.CalendarMultiget;
 import org.osaf.caldav4j.model.request.CalendarQuery;
-import org.osaf.caldav4j.model.request.CompFilter;
-import org.osaf.caldav4j.model.request.PropFilter;
 import org.osaf.caldav4j.model.request.PropProperty;
-import org.osaf.caldav4j.model.request.TextMatch;
 import org.osaf.caldav4j.model.request.TicketRequest;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
@@ -105,29 +101,6 @@ import org.osaf.caldav4j.util.UrlUtils;
 public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	private static final Log log = LogFactory.getLog(CalDAVCollection.class);
 	// configuration settings
-
-	private boolean tolerantParsing = false;
-
-	public boolean isTolerantParsing() {
-		return tolerantParsing;
-	}
-
-	public void setTolerantParsing(boolean tolerantParsing) {
-		this.tolerantParsing = tolerantParsing;
-	}
-
-	// if set to true, caldav4j will skip timezone-only calendars
-	// this should be set to false to find deleted events
-	private boolean skipGoogleTombstones = false;
-
-	public boolean isSkipGoogleTombstones() {
-		return skipGoogleTombstones;
-	}
-
-	public void setSkipGoogleTombstones(boolean skipGoogleTombstones) {
-		this.skipGoogleTombstones = skipGoogleTombstones;
-	}
-
 
 	public CalDAVCollection(){
 
@@ -183,6 +156,33 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	throws CalDAV4JException{
 		return getCalDAVResource(httpClient, getAbsolutePath(icsRelativePath)).getCalendar();
 	}
+	
+	/**
+	 * Retrieve a single calendar by UID / COMPONENT using REPORT
+	 * @param httpClient
+	 * @param component
+	 * @param uid
+	 * @param recurrenceId
+	 * @return  The Calendar with the given UID. null if not found
+	 * @throws CalDAV4JException
+	 */
+	public Calendar queryCalendar(HttpClient httpClient, String component, String uid, String recurrenceId) throws CalDAV4JException {
+		String filter =  String.format("%s : UID==%s", component, uid);
+		if (recurrenceId != null) {
+			filter  = String.format("%s, RECURRENCE-ID==%s", filter, recurrenceId);
+		}		
+		GenerateQuery gq = new GenerateQuery(component, filter);
+		
+		List<Calendar> cals = queryCalendars(httpClient, gq.generate());
+		switch (cals.size()) {
+			case 1:
+				return cals.get(0);
+			case 0:
+				return null;
+			default:
+				throw new CalDAV4JException("More than one calendar returned for uid "+uid);
+		}
+	}
 
 	/**
 	 * Returns all Calendars which contain events which have instances who fall within 
@@ -203,24 +203,10 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		GenerateQuery gq = new GenerateQuery();
 		gq.setFilter("VEVENT");
 		gq.setTimeRange(beginDate, endDate);		
-		return getCalendar(httpClient,  gq.generateQuery());
+		return queryCalendars(httpClient,  gq.generate());
 	}
 
-	/**
-	 * Deletes an event based on it's uid. If the calendar resource containing the
-	 * event contains no other VEVENT's, the entire resource will be deleted.
-	 * 
-	 * If the uid is for a recurring event, the master event and all exceptions will
-	 * be deleted
-	 * 
-	 * @param uid
-	 * 
-	 * @deprecated should delete a given component
-	 */
-	public void deleteEvent(HttpClient httpClient,String uid) throws CalDAV4JException{
-		delete(httpClient, Component.VEVENT, uid);
-	}
-
+	
 	/**
 	 * Delete every component with the given UID. As UID is unique in the
 	 * collection  it should remove only one Calendar resource
@@ -228,8 +214,10 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param httpClient
 	 * @param uid
 	 * @throws CalDAV4JException
+	 * 
+	 * TODO this method should be refined with recurrenceid
 	 */
-	public void delete(HttpClient httpClient,String component, String uid) 
+	public void delete(HttpClient httpClient, String component, String uid) 
 	throws CalDAV4JException{
 
 
@@ -584,52 +572,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 
 	/**
-	 * Returns the path to the resource that contains the VEVENT with the
-	 * specified uid
-	 * TODO use GenerateQuery
-	 * @param uid
-	 */
-	private String getPathToResourceForEventId(HttpClient httpClient, String uid) throws CalDAV4JException{
-		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
-
-		query.addProperty(CalDAVConstants.PROP_ETAG);
-
-		CompFilter vCalendarCompFilter = new CompFilter("C");
-		vCalendarCompFilter.setName(Calendar.VCALENDAR);
-
-		CompFilter vEventCompFilter = new CompFilter("C");
-		vEventCompFilter.setName(Component.VEVENT);
-
-		PropFilter propFilter = new PropFilter("C");
-		propFilter.setName(Property.UID);
-		propFilter.setTextMatch(new TextMatch("C", false,null,null, uid));
-		vEventCompFilter.addPropFilter(propFilter);
-
-		vCalendarCompFilter.addCompFilter(vEventCompFilter);
-		query.setCompFilter(vCalendarCompFilter);
-
-		CalDAVReportMethod reportMethod = methodFactory
-		.createCalDAVReportMethod();
-		reportMethod.setPath(getCalendarCollectionRoot());
-		reportMethod.setReportRequest(query);
-		try {
-			httpClient.executeMethod(hostConfiguration, reportMethod);
-		} catch (Exception he) {
-			throw new CalDAV4JException("Problem executing method", he);
-		}
-
-		Enumeration<CalDAVResponse> e = reportMethod.getResponses();
-		if (!e.hasMoreElements()) {
-			throw new ResourceNotFoundException(
-					ResourceNotFoundException.IdentifierType.UID, uid);
-		}
-
-		return stripHost(e.nextElement().getHref());
-	}
-
-
-	/**
 	 * get a CalDAVResource by UID
 	 * it tries
 	 *  - first by a REPORT
@@ -640,7 +582,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @throws Exception 
 	 * @deprecated this query is too specialized @see{getCalDAVResourceByUID()}
 	 */
-	protected CalDAVResource getCalDAVResourceForEventUID(
+	private CalDAVResource getCalDAVResourceForEventUID(
 			HttpClient httpClient, String uid) throws CalDAV4JException {
 
 		return getCalDAVResourceByUID(httpClient, Component.VEVENT, uid);
@@ -696,7 +638,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 
 		List<CalDAVResource> cr;
-		cr = getCalDAVResources(httpClient, gq.generateQuery());
+		cr = getCalDAVResources(httpClient, gq.generate());
 		try {
 			resource = cr.get(0);
 			if (uid.equals(getUIDValue(ICalendarUtils.getFirstComponent(resource, component)))) {
@@ -787,13 +729,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		getMethod.setPath(path);
 		try {
 			httpClient.executeMethod(hostConfiguration, getMethod);
-			if (getMethod.getStatusCode() != CaldavStatus.SC_OK){
-				throw new CalDAV4JException(
-						"Unexpected Status returned from Server: "
-						+ getMethod.getStatusCode());
-			}
 		} catch (Exception e){
 			throw new CalDAV4JException("Problem executing get method",e);
+		}
+		if (getMethod.getStatusCode() != CaldavStatus.SC_OK){
+			MethodUtil.StatusToExceptions(getMethod);
+			throw new BadStatusException(getMethod);
 		}
 
 		String href = getHref(path);
@@ -863,16 +804,15 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	throws CalDAV4JException {
 		DeleteMethod deleteMethod = new DeleteMethod(path);
 		try {
-			httpClient.executeMethod(hostConfiguration, deleteMethod);
-			if (deleteMethod.getStatusCode() != CaldavStatus.SC_NO_CONTENT){
-				throw new CalDAV4JException(
-						"Unexpected Status returned from Server: "
-						+ deleteMethod.getStatusCode());
-			}
+			httpClient.executeMethod(hostConfiguration, deleteMethod);			
 		} catch (Exception e){
 			throw new CalDAV4JException("Problem executing delete method",e);
 		}
-
+		
+		if (deleteMethod.getStatusCode() != CaldavStatus.SC_NO_CONTENT){
+			MethodUtil.StatusToExceptions(deleteMethod);
+			throw new CalDAV4JException("Problem executing delete method");
+		}
 		cache.removeResource(getHref(path));
 	}
 
@@ -925,105 +865,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	}
 
 
-	/**
-	 * Returns all Calendars (VCALENDAR/VEVENTS) which contain events with DTSTAMP between beginDate - endDate
-	 * TODO Note that recurring events are NOT expanded. 
-	 * TODO we can parametrize too the Component.VEVENT field to get a more flexible method
-	 * TODO This method doesn't use cache
-	 *   the search is the following...
-<C:calendar-query xmlns:C="urn:ietf:params:xml:ns:caldav">
-       <D:prop xmlns:D="DAV:">
-           <D:getetag/>
-           <C:calendar-data>
-               <C:comp name="VCALENDAR">
-                   <C:comp name="VEVENT">
-                       <C:prop name="UID"/>
-                   </C:comp>
-               </C:comp>
-           </C:calendar-data>
-       </D:prop>
-       <C:filter>
-           <C:comp-filter name="VCALENDAR">
-               <C:comp-filter name="VEVENT">
-               		<C:time-range end="20081210T000000Z" start="20080607T000000Z"/> XXX
-                   <C:prop-filter name="DTSTAMP">
-                       <C:time-range end="20071210T000000Z" start="20070607T000000Z"/>
-                   </C:prop-filter>
-               </C:comp-filter>
-           </C:comp-filter>
-       </C:filter>
-   </C:calendar-query>
 
-	 * @param httpClient the httpClient which will make the request
-	 * @param propertyName the iCalendar property name ex. Property.UID @see Property
-	 * @param beginDate the beginning of the date range. Must be a UTC date
-	 * @param endDate the end of the date range. Must be a UTC date.
-	 * @return a List of Property values (eg. a List of VEVENT UIDs
-	 * @throws CalDAV4JException if there was a problem
-	 * @deprecated this query is too specialized. use component property by timestamp instead
-	 */
-	public List<String> getEventPropertyByTimestamp(HttpClient httpClient, String propertyName,
-			Date beginDate, Date endDate)
-			throws CalDAV4JException {
-
-		return getComponentPropertyByTimestamp(httpClient, Component.VEVENT, propertyName, beginDate, endDate);
-	}
-
-	/**
-	 * Returns all Calendars (VCALENDAR/VEVENTS) which contain events with DTSTAMP between beginDate - endDate
-	 * TODO Note that recurring events are NOT expanded. 
-	 * TODO we can parametrize too the Component.VEVENT field to get a more flexible method
-	 * TODO This method doesn't use cache
-	 *   the search is the following...
-<C:calendar-query xmlns:C="urn:ietf:params:xml:ns:caldav">
-       <D:prop xmlns:D="DAV:">
-           <D:getetag/>
-           <C:calendar-data>
-               <C:comp name="VCALENDAR">
-                   <C:comp name="VEVENT">
-                       <C:prop name="UID"/>
-                   </C:comp>
-               </C:comp>
-           </C:calendar-data>
-       </D:prop>
-       <C:filter>
-           <C:comp-filter name="VCALENDAR">
-               <C:comp-filter name="VEVENT">
-                   <C:prop-filter name="DTSTAMP">
-                       <C:time-range end="20071210T000000Z" start="20070607T000000Z"/>
-                   </C:prop-filter>
-               </C:comp-filter>
-           </C:comp-filter>
-       </C:filter>
-   </C:calendar-query>
-
-	 * @param httpClient the httpClient which will make the request
-	 * @param componentName the iCalendar component name ex. Component.VEVENT @see Property
-	 * @param propertyName the iCalendar property name ex. Property.UID @see Property
-	 * @param propertyFilter the iCalendar property key name ex. Property.DTSTAMP Property.LAST-MODIFIED @see Property
-	 * @param beginDate the beginning of the date range. Must be a UTC date
-	 * @param endDate the end of the date range. Must be a UTC date.
-	 * @return a List of Property values (eg. a List of VEVENT UIDs
-	 * @throws CalDAV4JException if there was a problem
-	 * XXX check if you must cast Date to DateTime
-	 * 
-	 * @deprecated Create your own query instead
-	 */
-	public List<String> getComponentPropertyByTimestamp(HttpClient httpClient, String componentName, String propertyName, 
-			Date beginDate, Date endDate)
-			throws CalDAV4JException {
-		GenerateQuery gq = new GenerateQuery();
-		String cquery = componentName + " : " + propertyName;
-		String fquery = componentName + " : " +"DTSTAMP==["+beginDate.toString() +";"+ endDate.toString()+"]";
-
-		gq.setComponent(cquery);
-		gq.setFilter(fquery);
-		CalendarQuery query = null;				
-		query = gq.generateQuery();
-
-		return getComponentProperty(httpClient, componentName, propertyName, query );
-
-	}
 
 	/**
 	 * Useful for retrieving a list of UIDs of all events
@@ -1061,10 +903,10 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	/**
 	 * Return a list of components using REPORT
 	 * @param query
-	 * @return
+	 * @return a new Calendar list with no elements if 0
 	 * @throws CalDAV4JException
 	 */
-	public List<Calendar> getCalendar(HttpClient httpClient, CalendarQuery query)
+	public List<Calendar> queryCalendars(HttpClient httpClient, CalendarQuery query)
 	throws CalDAV4JException 
 	{
 		List <Calendar> list = new ArrayList<Calendar>();
@@ -1169,7 +1011,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @return
 	 * @throws CalDAV4JException
 	 */
-	protected List<CalDAVResource> getCalDAVResources(org.osaf.caldav4j.methods.HttpClient httpClient, CalendarQuery query)
+	protected List<CalDAVResource> getCalDAVResources(HttpClient httpClient, CalendarQuery query)
 	throws CalDAV4JException 
 	{
 		boolean usingCache = isCacheEnabled();
@@ -1202,14 +1044,18 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				if (usingCache) {
 					CalDAVResource resource = getCalDAVResource(httpClient,
 							stripHost(response.getHref()), etag);
-					//  avoid parsing object if not required
-					if (isSkipGoogleTombstones()) {
-						list.add(resource);
-						cache.putResource(resource);
-					} else if (! isGoogleTombstone(resource.getCalendar())){
-						list.add(resource);
-						cache.putResource(resource);
-					}
+					list.add(resource);
+					cache.putResource(resource);
+/* dead code, to be reenabled in case of tombstones
+//  avoid parsing object if not required
+if (isSkipGoogleTombstones()) {
+	list.add(resource);
+	cache.putResource(resource);
+} else if (! isGoogleTombstone(resource.getCalendar())){
+	list.add(resource);
+	cache.putResource(resource);
+}
+*/
 				} else {
 					if (response != null) {
 						list.add(new CalDAVResource(response));
@@ -1313,7 +1159,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		CalendarMultiget query = new CalendarMultiget("C", "D");
 		CalendarData calendarData = new CalendarData("C");
 
-		query.addProperty(CalDAVConstants.PROP_ETAG);
+		query.addProperty(CalDAVConstants.PROP_GETETAG);
 		query.setCalendarDataProp(calendarData);
 
 		query.setHrefs(calendarUris);
@@ -1413,5 +1259,19 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 
 	}
+	/*
+	// if set to true, caldav4j will skip timezone-only calendars
+	// this should be set to false to find deleted events
+	private boolean skipGoogleTombstones = false;
+
+	public boolean isSkipGoogleTombstones() {
+		return skipGoogleTombstones;
+	}
+
+	public void setSkipGoogleTombstones(boolean skipGoogleTombstones) {
+		this.skipGoogleTombstones = skipGoogleTombstones;
+	}
+*/
+
 
 } //end of class

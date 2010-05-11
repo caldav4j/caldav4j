@@ -1,13 +1,11 @@
 package org.osaf.caldav4j.util;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern; 
-import java.util.regex.Matcher; 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -22,9 +20,7 @@ import org.osaf.caldav4j.model.request.CalendarData;
 import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.model.request.Comp;
 import org.osaf.caldav4j.model.request.CompFilter;
-import org.osaf.caldav4j.model.request.Prop;
 import org.osaf.caldav4j.model.request.PropFilter;
-import org.osaf.caldav4j.model.request.TimeRange;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
@@ -60,21 +56,22 @@ import org.w3c.dom.Document;
  * @since 0.5
  * @experimental this class is experimental
  */
-public class GenerateQuery  {
+public class GenerateQuery implements CalDAVConstants  {
 	
 	// constants
-	private static final String caldavNameSpaceQualifier = "C";
+	private static final String caldavNameSpaceQualifier = NS_QUAL_CALDAV;
 	
 	// component attributes
 	String requestedComponent = null; // VEVENT, VTODO
 	List<String> requestedComponentProperties = new ArrayList<String>(); // a list of properties to be retrieved 
 		
 
-	// TODO how can I manage nested object queries?
+	// Nested object queries should be managed nesting two generated queries
 	String filterComponent = null; // VEVENT, VTODO
 	List<String> filterComponentProperties = new ArrayList<String>();
 	Date timeRangeStart = null;
 	Date timeRangeEnd = null;
+	boolean allProp = true;
 	boolean noCalendarData = false;
 	public void setNoCalendarData(boolean p) {
 		this.noCalendarData = p;
@@ -86,20 +83,14 @@ public class GenerateQuery  {
 	//TODO limit-recurrence-set, limit-freebusy-set, get-etag	
 
 	private Date recurrenceSetEnd;
-
 	private Date recurrenceSetStart;
 	
 	/**
-	 * create a GenerateQuery object with the given parameters
-	 * @param comp
-	 * @param filter 
-	 * 
-	 * component syntax:
-	 *  COMPONENT : PROP1,PROP2,..,PROPn
-	 * filter syntax:
-	 *  COMPONENT : PROP1==VALUE1,PROP2=VALUE2
-	 * @throws ParseException 
-	 * @throws ParseException 
+	 * Create a GenerateQuery object with the given parameters
+	 * NB: DON'T use spaces in comp and filter unless you REALLY need spaces
+     * @param comp COMPONENT : PROP1,PROP2,..,PROPn
+	 * @param filter COMPONENT : PROP1==VALUE1,PROP2!=VALUE2
+	 * @throws CalDAV4JException 
 	 */
 	public GenerateQuery(String component, String filterComponent) 
 	  throws CalDAV4JException {
@@ -111,7 +102,7 @@ public class GenerateQuery  {
 	 * 
 	 */	
 	public GenerateQuery() {
-		
+
 	}
 	
 	/**  
@@ -169,11 +160,13 @@ public class GenerateQuery  {
 			
 			setRequestedComponent(c[0]);
 			
+			// if a list of properties is specified, then remove the allprop tag
 			if (c.length>1){
+				allProp = false;
 				cl = c[1].trim().split("\\s*,\\s*");
 				this.requestedComponentProperties =  Arrays.asList(cl);
 			}					
-		}
+		} 
 	}
 	
 	/**
@@ -190,16 +183,16 @@ public class GenerateQuery  {
 	 * transform the requestedComponentProperties fields in a PropComp value 
 	 */
 	private Comp getComp() {
-		Comp vCalendarComp = new Comp("C");
+		Comp vCalendarComp = new Comp();
 		vCalendarComp.setName(Calendar.VCALENDAR);
 		
 		if (requestedComponent != null) {
-			Comp vEventComp = new Comp("C");
+			Comp vEventComp = new Comp();
 			vEventComp.setName(requestedComponent);
 			
 			for (String propertyName : requestedComponentProperties ) {
 				// add properties to VCALENDAR.VEVENT
-				vEventComp.addProp(new CalDAVProp("C", "name", propertyName, false, false)); // @see modification to CalDAVProp
+				vEventComp.addProp(new CalDAVProp(NS_QUAL_CALDAV, "name", propertyName, false, false)); // @see modification to CalDAVProp
 			}
 			// add only one component...maybe more ;)
 			List <Comp> comps = new ArrayList<Comp> ();			
@@ -277,7 +270,7 @@ public class GenerateQuery  {
 			Boolean isDefined = null;
 			boolean negateCondition = false;
 			Date timeRangeStart = null, timeRangeEnd = null; 
-			Boolean  textmatchcaseless = true;
+			Boolean  isTextmatchcaseless = true;
 			String textmatchString = null;
 			
 			//
@@ -306,9 +299,9 @@ public class GenerateQuery  {
 						Component.VALARM, Component.VEVENT, Component.VFREEBUSY, Component.VJOURNAL, Component.VTIMEZONE, Component.VTODO, Component.VVENUE }); 
 				
 				if (! componentList.contains(name)) {
-					pf.add(new PropFilter(caldavNameSpaceQualifier, name, isDefined,
+					pf.add(new PropFilter(NS_QUAL_CALDAV, name, isDefined,
 							timeRangeStart, timeRangeEnd, 
-							textmatchcaseless, negateCondition, this.collation, textmatchString,  null));			
+							isTextmatchcaseless, negateCondition, this.collation, textmatchString,  null));			
 				} else {
 					// if there, filter is invalid: we needed a comp-filter, not prop-filter
 				}
@@ -329,12 +322,12 @@ public class GenerateQuery  {
 			throws CalDAV4JException {
 		
 		// search for VCALENDAR matching...
-		CompFilter vCalendarCompFilter = new CompFilter("C");
+		CompFilter vCalendarCompFilter = new CompFilter(NS_QUAL_CALDAV);
 		vCalendarCompFilter.setName(Calendar.VCALENDAR);
 
 		// parse filterComponent
 		if (this.filterComponent != null ) {
-			CompFilter vEventCompFilter = new CompFilter("C", this.filterComponent,
+			CompFilter vEventCompFilter = new CompFilter(NS_QUAL_CALDAV, this.filterComponent,
 					false, timeRangeStart, timeRangeEnd,												/// isDefined, dateStart, dateEnd
 					null,getPropFilters().size()==0 ? null : getPropFilters());
 			try {
@@ -350,21 +343,30 @@ public class GenerateQuery  {
 	}
 	
 	/**
+	 * Create a CalendarQuery 
+	 * @deprecated Use generate() instead;
+	 */
+	public CalendarQuery generateQuery() throws  CalDAV4JException {
+		return generate();
+	}
+	/**
 	 * this should parse QueryGenerator attributes
 	 * and create the CalendarQuery
 	 * @param recurrenceSetStart 
 	 * @throws CalDAV4JException 
 	 * @throws ParseException 
 	 */
-	public CalendarQuery generateQuery() 
+	public CalendarQuery generate() 
 		throws  CalDAV4JException {
 
-		CalendarQuery query = new CalendarQuery("C", "D");				
-		query.addProperty(CalDAVConstants.PROP_ETAG);
-
+		CalendarQuery query = new CalendarQuery(NS_QUAL_CALDAV, NS_QUAL_DAV);				
+		query.addProperty(CalDAVConstants.PROP_GETETAG);
+		if (allProp) {
+			query.addProperty(CalDAVConstants.PROP_ALLPROP);
+		}
 		if (!noCalendarData) {
 			// TODO limit-recurrence-set
-			CalendarData calendarData = new CalendarData("C");
+			CalendarData calendarData = new CalendarData(NS_QUAL_CALDAV);
 			calendarData.setRecurrenceSetStart(recurrenceSetStart);
 			calendarData.setRecurrenceSetEnd(recurrenceSetEnd);
 			calendarData.setComp(getComp());
@@ -380,7 +382,7 @@ public class GenerateQuery  {
     public String prettyPrint() {
 		//query.validate();			
 	    try {
-	    	Document doc = generateQuery().createNewDocument(XMLUtils
+	    	Document doc = generate().createNewDocument(XMLUtils
 	                .getDOMImplementation());
 			return XMLUtils.toPrettyXML(doc);
 	    	
@@ -445,9 +447,7 @@ public class GenerateQuery  {
 					return XMLUtils.toPrettyXML(doc);
 
 				} catch (DOMException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					throw new DOMValidationException(e.getMessage());
+					throw new DOMValidationException(e.getMessage(), e);
 				} 	        
 	}
 	

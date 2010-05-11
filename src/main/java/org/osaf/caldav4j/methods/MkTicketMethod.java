@@ -176,7 +176,7 @@ public class MkTicketMethod extends HttpRequestBodyMethodBase {
 
         super.addRequestHeaders(state, conn);
         
-        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.TEXT_XML_CONTENT_TYPE);
+        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
 
     }
     

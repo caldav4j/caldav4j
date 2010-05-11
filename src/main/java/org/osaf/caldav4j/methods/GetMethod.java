@@ -24,8 +24,11 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
 import org.osaf.caldav4j.util.UrlUtils;
 
@@ -47,19 +50,29 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
         this.calendarBuilder = calendarBuilder;
     }
 
-    public Calendar getResponseBodyAsCalendar() throws IOException,
-            ParserException, CalDAV4JProtocolException {
-        Header header = getResponseHeader("Content-Type");
-        String contentType = header.getValue();
-        if (!contentType.startsWith("text/calendar")) {
-            log.error("Content type must be \"text/calendar\" to parse as an " +
-                    "icalendar resource. Type was: " + contentType);
-            throw new CalDAV4JProtocolException(
-                    "Content type must be \"text/calendar\" to parse as an " +
-                    "icalendar resource");
-        }
-        InputStream stream = getResponseBodyAsStream();
-        return calendarBuilder.build(stream);
+    public Calendar getResponseBodyAsCalendar()  throws
+            ParserException, CalDAV4JException {
+    	Calendar ret = null;
+        InputStream stream = null;
+        try {
+		    Header header = getResponseHeader(CalDAVConstants.HEADER_CONTENT_TYPE);
+		    String contentType = header.getValue();
+		    if (contentType.startsWith(CalDAVConstants.CONTENT_TYPE_CALENDAR)) {
+		        stream = getResponseBodyAsStream();
+		        ret =  calendarBuilder.build(stream);
+		        return ret;		        
+		    }
+        
+	        log.error("Expected content-type text/calendar. Was: " + contentType);
+	        throw new CalDAV4JProtocolException("Expected content-type text/calendar. Was: " + contentType );
+        } catch (IOException e) {
+        	if (stream != null ) { //the server sends the response
+        		if (log.isWarnEnabled()) {
+        			log.warn("Server response is " + UrlUtils.parseISToString(stream));
+        		}
+        	}
+        	throw new CalDAV4JException("Error retrieving and parsing server response at " + getPath(), e);
+        }	       
     }
     
     // remove double slashes

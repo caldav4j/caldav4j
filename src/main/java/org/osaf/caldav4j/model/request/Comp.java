@@ -86,6 +86,10 @@ public class Comp extends OutputsDOMBase {
     public Comp(String caldavNamespaceQualifier) {
         this.caldavNamespaceQualifier = caldavNamespaceQualifier;
     }
+    
+    public Comp() {
+    	this.caldavNamespaceQualifier = CalDAVConstants.NS_QUAL_CALDAV;
+    }
 
     public boolean isAllComp() {
         return allComp;
