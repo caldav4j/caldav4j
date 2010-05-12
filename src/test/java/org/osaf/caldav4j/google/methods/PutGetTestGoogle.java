@@ -1,7 +1,7 @@
 /**
  * @author rpolli
  */
-package org.osaf.caldav4j.methods;
+package org.osaf.caldav4j.google.methods;
 
 import static org.junit.Assert.assertEquals;
 import net.fortuna.ical4j.model.Calendar;
@@ -13,6 +13,10 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.credential.GCaldavCredential;
+import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
+import org.osaf.caldav4j.methods.GetMethod;
+import org.osaf.caldav4j.methods.HttpClient;
+import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
