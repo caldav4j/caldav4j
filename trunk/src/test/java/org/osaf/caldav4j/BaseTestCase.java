@@ -15,7 +15,9 @@
  */
 package org.osaf.caldav4j;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
@@ -36,6 +38,7 @@ import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
+import org.osaf.caldav4j.util.UrlUtils;
 
 public abstract class BaseTestCase   implements TestConstants {
     protected static final Log log = LogFactory.getLog(BaseTestCase.class);
@@ -134,7 +137,7 @@ public abstract class BaseTestCase   implements TestConstants {
         PutMethod put = methodFactory.createPutMethod();
         InputStream stream = this.getClass().getClassLoader()
         .getResourceAsStream(resourceFileName);
-        String event = parseISToString(stream);
+        String event = UrlUtils.parseISToString(stream);
         event = event.replaceAll("DTSTAMP:.*", "DTSTAMP:" + new DateTime(true).toString());
         log.debug(new DateTime(true).toString());
         //log.trace(event);        
@@ -192,24 +195,6 @@ public abstract class BaseTestCase   implements TestConstants {
         }
     }
     
-    public String parseISToString(java.io.InputStream is){
-        java.io.DataInputStream din = new java.io.DataInputStream(is);
-        StringBuffer sb = new StringBuffer();
-        try{
-          String line = null;
-          while((line=din.readLine()) != null){
-            sb.append(line+"\n");
-          }
-        }catch(Exception ex){
-          ex.getMessage();
-        }finally{
-          try{
-            is.close();
-          }catch(Exception ex){}
-        }
-        return sb.toString();
-      }
-
 	/**
 	 * put an event on a caldav store using UID.ics
 	 */

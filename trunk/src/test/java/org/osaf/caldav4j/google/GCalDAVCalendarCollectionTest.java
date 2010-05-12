@@ -110,7 +110,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
         	System.out.println(gq.prettyPrint());
             calendar = collection.getComponentByQuery(httpClient, 
 				            		Component.VEVENT,
-				            		gq.generateQuery())
+				            		gq.generate())
 				            			.get(0);
                     
         } catch (CalDAV4JException ce) {
@@ -129,7 +129,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
         			Component.VEVENT + "UID==NON_EXISTENT_RESOURCE");
             calendar = collection.getComponentByQuery(httpClient, 
             		Component.VEVENT,
-            		gq.generateQuery())
+            		gq.generate())
             			.get(0);
         } catch (CalDAV4JException ce) {
             calDAV4JException = ce;

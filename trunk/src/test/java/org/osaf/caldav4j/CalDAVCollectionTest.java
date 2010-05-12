@@ -158,40 +158,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
 
 
-	//
-	// old CalDAVCalendarCollectionTests
-	//
-	/**
-	 * @deprecated use calendar query
-	 */
-	@Test
-	public void testGetCalendar() throws Exception {
-		CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();        
-		Calendar calendar = null;
-		try {
-			calendar = calendarCollection.getCalendarForEventUID(httpClient,
-					ICS_DAILY_NY_5PM_UID);
-		} catch (CalDAV4JException ce) {
-			assertNull(ce);
-		}
-
-		assertNotNull(calendar);
-		VEvent vevent = ICalendarUtils.getFirstEvent(calendar);
-		assertNotNull(vevent);
-		String summary = ICalendarUtils.getSummaryValue(vevent);
-		assertEquals(ICS_DAILY_NY_5PM_SUMMARY, summary);
-
-		CalDAV4JException calDAV4JException = null;
-		try {
-			calendar = calendarCollection.getCalendarForEventUID(httpClient,
-					"NON_EXISTENT_RESOURCE");
-		} catch (CalDAV4JException ce) {
-			calDAV4JException = ce;
-		}
-
-		assertNotNull(calDAV4JException);
-	}
-
 	@Test
 	public void testGetCalendarByPath() throws Exception {
 		CalDAVCollection calendarCollection = createCalDAVCollection();
@@ -307,13 +273,12 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();        
 
 		calendarCollection.add(httpClient, ve, null);
-
-		Calendar calendar = calendarCollection.getCalendarForEventUID(
-				httpClient, newUid);
+		CalendarQuery query = new GenerateQuery(null, "VEVENT : UID==" + newUid).generate();
+		Calendar calendar = calendarCollection.queryCalendars(httpClient, query).get(0);
 		assertNotNull(calendar);
 
 		log.info("Delete event with uid" + newUid);
-		calendarCollection.deleteEvent(httpClient, newUid);
+		calendarCollection.delete(httpClient, Component.VEVENT, newUid);
 
 		log.info("Check if event is still on server");
 		calendar = null;
@@ -350,7 +315,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 			calendarCollection.enableSimpleCache();
 
 			// set only etag for given resource
-			CalendarQuery query = new GenerateQuery("VEVENT", "VEVENT : UID=="+newUid).generateQuery();
+			CalendarQuery query = new GenerateQuery("VEVENT", "VEVENT : UID=="+newUid).generate();
 			query.setCalendarDataProp(null);
 			List<CalDAVResource> res = calendarCollection.getCalDAVResources(httpClient, query);
 			CalDAVResource r = res.get(0);
@@ -457,7 +422,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
 		GenerateQuery gq = new GenerateQuery();
 		gq.setComponent("VEVENT :");
-		CalendarQuery query = gq.generateQuery();
+		CalendarQuery query = gq.generate();
 
 		Calendar calendar = null;
 		try {
