@@ -1017,6 +1017,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		boolean usingCache = isCacheEnabled();
 		if (usingCache) {
 			query.setCalendarDataProp(null);
+			log.debug("Using cache, so I am removing calendar data");
 		}
 		log.trace("Executing query: "  + GenerateQuery.printQuery(query));
 
@@ -1062,9 +1063,7 @@ if (isSkipGoogleTombstones()) {
 					}
 				}							
 			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-				log.error("Exception while retrieving objects:" + e.getMessage());
+				log.error("Exception while retrieving objects:" + e.getMessage(), e);
 			}
 		}
 

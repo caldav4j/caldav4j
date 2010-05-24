@@ -5,25 +5,27 @@
  *    it's the expected result 
  */
 package org.osaf.caldav4j.util;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.DateTime;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xalan.templates.ElemApplyImport;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.methods.PutGetTest;
+import org.osaf.caldav4j.model.request.CalendarData;
 import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.model.request.Comp;
 import org.osaf.caldav4j.model.request.ParamFilter;
-import org.osaf.caldav4j.model.request.PropFilter;
 import org.osaf.caldav4j.model.request.TextMatch;
 import org.w3c.dom.Document;
 
@@ -116,12 +118,27 @@ public class GenerateQueryTest extends BaseTestCase {
 			// now remove calendar data
 			gq.setNoCalendarData(true);			
 			log.info("no calendar-data:\n" + printQuery(gq.generate()));			
+			
+			// and limit recurrence set
+			gq.setNoCalendarData(false);			
+			gq.setRecurrenceSet("20060101T170000Z","20060105T240000Z", CalendarData.EXPAND);
+			// gq.setRecurrenceSet("20060104T000000Z","20060105T000000Z");
+			log.info("limit-recurrence-set:\n" + printQuery(gq.generate()));
 		} catch (CalDAV4JException e) {
 			e.printStackTrace();
 			assertTrue(false);
 		} 
 
     }    
+
+@Test
+public void testDateTime() throws ParseException {
+	String dates[] = new String[] {  "20060101T170000Z","20060105T230000Z" };
+	
+	for (String d : dates) {
+		log.info(new DateTime(d));
+	}
+}
     // Creating Calendar-Query like the RFC's one
 @Test
     public void testQuery_TODO()  {
@@ -143,7 +160,7 @@ public class GenerateQueryTest extends BaseTestCase {
 
 			log.info(printQuery(gq.generate()));
 			
-			// and now the constructor
+			// and now the constru ctor
 			fquery = "VTODO [20060106T100000Z;20060106T100000Z]: STATUS!=CANCELLED , COMPLETED==UNDEF , DTSTART==[;20080810]";
 			gq = new GenerateQuery(null, fquery);	
 

@@ -12,8 +12,10 @@ import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
 
+import org.apache.commons.lang.StringUtils;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalDAVProp;
 import org.osaf.caldav4j.model.request.CalendarData;
@@ -84,7 +86,8 @@ public class GenerateQuery implements CalDAVConstants  {
 
 	private Date recurrenceSetEnd;
 	private Date recurrenceSetStart;
-	
+
+	private Integer expandOrLimit;
 	/**
 	 * Create a GenerateQuery object with the given parameters
 	 * NB: DON'T use spaces in comp and filter unless you REALLY need spaces
@@ -367,11 +370,18 @@ public class GenerateQuery implements CalDAVConstants  {
 		if (!noCalendarData) {
 			// TODO limit-recurrence-set
 			CalendarData calendarData = new CalendarData(NS_QUAL_CALDAV);
-			calendarData.setRecurrenceSetStart(recurrenceSetStart);
-			calendarData.setRecurrenceSetEnd(recurrenceSetEnd);
+			if (recurrenceSetEnd!=null || recurrenceSetStart!=null ) {
+				calendarData.setExpandOrLimitRecurrenceSet(expandOrLimit);
+				calendarData.setRecurrenceSetStart(recurrenceSetStart);
+				calendarData.setRecurrenceSetEnd(recurrenceSetEnd);
+			}
 			calendarData.setComp(getComp());
 			
 			query.setCalendarDataProp(calendarData);			
+		} else {
+			if (this.recurrenceSetEnd != null || this.recurrenceSetStart != null) {
+				throw new CalDAV4JProtocolException("Bad query: you set noCalendarData but you have limit-recurrence-set");
+			}
 		}
 		query.setCompFilter(getFilter());
 		query.validate();
@@ -430,7 +440,35 @@ public class GenerateQuery implements CalDAVConstants  {
 		this.timeRangeEnd = end;
 	}
 	
-	
+	// TODO testme
+	public void setRecurrenceSet(String start, String end, Integer expandOrLimit) {
+		if (StringUtils.isNotBlank(start)) {
+			try {
+				this.recurrenceSetStart = parseTime(start);
+			} catch (CalDAV4JException e) {
+				// TODO write a log class
+				e.printStackTrace();
+			}
+		}
+		if (StringUtils.isNotBlank(end)) {
+			try {
+				this.recurrenceSetEnd = parseTime(end);
+			} catch (CalDAV4JException e) {
+				// TODO write a log class
+				e.printStackTrace();
+			}
+		}
+		
+		switch (expandOrLimit) {
+			case 1:
+			case 0:
+				this.expandOrLimit = expandOrLimit;			
+				break;
+			default:
+				//TODO error validating
+				break;
+		}
+	}
 	/**
 	 * return the xml query
 	 * @param query
@@ -473,9 +511,7 @@ public class GenerateQuery implements CalDAVConstants  {
 					}
 					
 				} catch (ParseException e) {
-					e.printStackTrace();
 					throw new CalDAV4JException("Unparsable date format in query:"+time, e);
-
 				}
 			}
 		}

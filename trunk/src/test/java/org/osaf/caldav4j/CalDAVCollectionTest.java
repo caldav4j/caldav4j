@@ -3,6 +3,7 @@
  */
 package org.osaf.caldav4j;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import org.junit.Test;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
+import org.osaf.caldav4j.model.request.CalendarData;
 import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.GenerateQuery;
@@ -151,12 +153,56 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	}
 
 
-	// get a Calendar creating a query
-	public void _testGetCalendarByQuery() {
+	// get a Calendar by uid, then by summary, then by recurrence-id
+	@Test
+	public void queryCalendar() throws CalDAV4JException {
+		CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();
+		Calendar calendar = null;
+		GenerateQuery gq=new GenerateQuery();
+
+		// query by uid
+		calendar = calendarCollection.queryCalendar(httpClient, Component.VEVENT, ICS_GOOGLE_DAILY_NY_5PM_UID, null);
+		assertNotNull(calendar);
+		
+		//check if is cache
+		assertNotNull(calendarCollection.getCache().getHrefForEventUID(ICS_GOOGLE_DAILY_NY_5PM_UID));		
+		
+		//query by SUMMARY
+		calendar = null;
+		gq.setFilter("VEVENT : SUMMARY=="+ICS_GOOGLE_NORMAL_PACIFIC_1PM_SUMMARY );
+		List<Calendar>calendars = calendarCollection.queryCalendars(httpClient, gq.generate());		
+		assertNotNull(calendars);
+		assertEquals("non unique result",calendars.size(), 1);
+		calendar = calendars.get(0);
+		assertEquals(ICalendarUtils.getUIDValue(calendar), ICS_GOOGLE_NORMAL_PACIFIC_1PM_UID);
+		//check if is in cache
 
 	}
 
+	@Test /// this is work in progress: if it fails, don't worry ;)
+	public void queryPartialCalendar() throws CalDAV4JException {
+		CalDAVCollection calendarCollection = createCalDAVCollection();
+		Calendar calendar = null;
+		GenerateQuery gq=new GenerateQuery();
+		
+		//query by UID in a given timerange
+		calendar = null;
+		gq.setFilter("VEVENT : UID=="+ICS_GOOGLE_DAILY_NY_5PM_UID );
+		gq.setRecurrenceSet("20060101T170000Z","20060103T230000Z", CalendarData.EXPAND);
 
+		List<Calendar>calendars = calendarCollection.queryCalendars(httpClient, gq.generate());		
+		assertNotNull(calendars);
+		assertEquals("non unique result",calendars.size(), 1);
+		calendar = calendars.get(0);
+		assertEquals(ICalendarUtils.getUIDValue(calendar), ICS_GOOGLE_DAILY_NY_5PM_UID);
+		
+		// count ocmponents
+		int size = calendar.getComponents(Component.VEVENT).size();
+		log.info("number of vevents: " + size);
+		assertEquals(3, size);
+		//check if is in cache
+
+	}
 
 	@Test
 	public void testGetCalendarByPath() throws Exception {
@@ -254,6 +300,8 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	}
 
 	/**
+	 * add and remove a vevent using
+	 *  - add(), queryCalendar(component, uid), delete(component, uid)
 	 * @throws Exception
 	 */
 	@Test
@@ -273,8 +321,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		CalDAVCollection calendarCollection = createCalDAVCollectionWithCache();        
 
 		calendarCollection.add(httpClient, ve, null);
-		CalendarQuery query = new GenerateQuery(null, "VEVENT : UID==" + newUid).generate();
-		Calendar calendar = calendarCollection.queryCalendars(httpClient, query).get(0);
+		Calendar calendar = calendarCollection.queryCalendar(httpClient, Component.VEVENT, uid.getValue(), null);
 		assertNotNull(calendar);
 
 		log.info("Delete event with uid" + newUid);
@@ -283,11 +330,9 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		log.info("Check if event is still on server");
 		calendar = null;
 		try {
-			calendar = calendarCollection.getCalendarForEventUID(httpClient,
-					newUid);
-		} catch (ResourceNotFoundException e) {
-
-		}
+			calendar = calendarCollection.queryCalendar(httpClient, Component.VEVENT, uid.getValue(), null);
+		} catch (ResourceNotFoundException e) {}
+		
 		assertNull(calendar);
 	}
 	/**
