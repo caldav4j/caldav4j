@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.lang.StringUtils;
 
 public class UrlUtils {
     public static String stripHost(String href){

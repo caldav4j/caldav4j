@@ -12,7 +12,20 @@ public class UrlUtilsTest  {
 		String uris[] = {"http://a/b/c/", "http://a//b/c//",  "http:///a/b/c///", "http://a///b/c/" };
 		String EXPECTED = "http://a/b/c/";
 		for (String s : uris) {
-			assertEquals(EXPECTED, UrlUtils.removeDoubleSlashes(s));
+			String s1 = UrlUtils.removeDoubleSlashes(s);
+			assertEquals(EXPECTED,s1);
+			assertEquals(EXPECTED, UrlUtils.removeDoubleSlashes(s1));
+		}
+	}
+	@Test
+	public void stripDoesntRegress() {
+	
+		String uris[] = {"/a/b/c/", "/a//b/c//",  "/a///b/c///", "/a///b////c///" };
+		String EXPECTED = "/a/b/c/";
+		for (String s : uris) {
+			String s1 = UrlUtils.removeDoubleSlashes(s);
+			assertEquals(EXPECTED,s1);
+			assertEquals(EXPECTED, UrlUtils.removeDoubleSlashes(s1));
 		}
 	}
 

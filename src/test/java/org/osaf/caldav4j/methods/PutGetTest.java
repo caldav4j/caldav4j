@@ -1,5 +1,8 @@
 package org.osaf.caldav4j.methods;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
@@ -18,7 +21,7 @@ import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
-import static org.junit.Assert.*;
+import org.osaf.caldav4j.util.MethodUtil;
 public class PutGetTest extends BaseTestCase {
     public PutGetTest() {
 		super();
@@ -40,26 +43,38 @@ public class PutGetTest extends BaseTestCase {
         del(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
         del(COLLECTION_PATH);
     }
+    @Test
+    public  void testResourceBundle() {
+    	// load an ICS and substitute summary with non-latin chars
+    	Locale mylocale = new Locale("ru", "RU");
+    	ResourceBundle messages = PropertyResourceBundle.getBundle("messages",mylocale);
+    	String myLocalSummary = messages.getString("summary"); 
+    	log.info("default charser: "+ Charset.defaultCharset());
+    	assertTrue(true);
+    }
+    
 	@Test
     public void testAddRemoveCalendarResource() throws Exception{
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
+        String eventPath = String.format("%s/%s.ics", COLLECTION_PATH,BaseTestCase.ICS_DAILY_NY_5PM_UID);
 
         Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM);
         PutMethod put = methodFactory.createPutMethod();
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+        put.setPath(eventPath);
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();
         assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
 
         //ok, so we created it...let's make sure it's there!
         GetMethod get = methodFactory.createGetMethod();
-        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+        get.setPath(eventPath);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
+        MethodUtil.StatusToExceptions(get);
         assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
         
         //now let's make sure we can get the resource body as a calendar
@@ -73,7 +88,7 @@ public class PutGetTest extends BaseTestCase {
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+        put.setPath(eventPath);
         http.executeMethod(hostConfig, put);
         statusCode = put.getStatusCode();
         assertEquals("Status code for put:",
