@@ -122,7 +122,7 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements D
             super.setRequestHeader("Depth", "1");
             break;
         case DEPTH_INFINITY:
-            super.setRequestHeader("Depth", "infinity");
+            super.setRequestHeader("Depth", CalDAVConstants.INFINITY_STRING);
             break;
         }
 
