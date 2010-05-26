@@ -12,6 +12,7 @@ import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.DtStart;
@@ -192,14 +193,11 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
 		List<Calendar>calendars = calendarCollection.queryCalendars(httpClient, gq.generate());		
 		assertNotNull(calendars);
-		assertEquals("non unique result",calendars.size(), 1);
-		calendar = calendars.get(0);
-		assertEquals(ICalendarUtils.getUIDValue(calendar), ICS_GOOGLE_DAILY_NY_5PM_UID);
-		
-		// count ocmponents
-		int size = calendar.getComponents(Component.VEVENT).size();
-		log.info("number of vevents: " + size);
-		assertEquals(3, size);
+		assertEquals("bad number of responses: ",3,calendars.size());
+		for (Calendar c : calendars) {
+			assertEquals(ICalendarUtils.getUIDValue(calendar), ICS_GOOGLE_DAILY_NY_5PM_UID);
+			assertNotNull(ICalendarUtils.getPropertyValue(c.getComponent(Component.VEVENT), Property.RECURRENCE_ID));
+		}
 		//check if is in cache
 
 	}
@@ -353,26 +351,28 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		ve.getProperties().add(uid);
 
 		CalDAVCollection calendarCollection = createCalDAVCollection();        
-
+		CalDAV4JException e = null;
 		try {
 			calendarCollection.add(httpClient, ve, null);
 
-			calendarCollection.enableSimpleCache();
+			calendarCollection.setCache(myCache);
 
 			// set only etag for given resource
 			CalendarQuery query = new GenerateQuery("VEVENT", "VEVENT : UID=="+newUid).generate();
 			query.setCalendarDataProp(null);
 			List<CalDAVResource> res = calendarCollection.getCalDAVResources(httpClient, query);
+			assertTrue(res.size()>0);
 			CalDAVResource r = res.get(0);
 			assertNotNull(r);
 
-			Calendar calendar  = calendarCollection.getCalendar(httpClient, newUid);
-		} catch (CalDAV4JException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Calendar calendar  = calendarCollection.getCalendar(httpClient, newUid+".ics");
+			assertNotNull(calendar);
+		} catch (CalDAV4JException e1) {
+			e=e1;
 		} finally {
-			del("/calendar/dav/mog5nihf51ibm157h59gc82ldg%40group.calendar.google.com/events/"+newUid);
+			del(calendarCollection.getCalendarCollectionRoot()+"/"+newUid+".ics");
 		}
+		assertNull(e);
 	}
 	/**
 	 * @throws Exception
