@@ -3,9 +3,12 @@ package org.osaf.caldav4j.methods;
 import static org.osaf.caldav4j.CalDAVConstants.NS_CALDAV;
 import static org.osaf.caldav4j.CalDAVConstants.NS_DAV;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -28,10 +31,10 @@ import org.w3c.dom.NodeList;
  *
  */
 public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
-	private Hashtable<String, CalDAVResponse> responseHashtable = null;
+	private Vector<CalDAVResponse> responseHashtable = null;
 	private static Map<QName, Error> errorMap = null;
 	private Error error = null;
-
+	//private Collection<?> responseURLs = null;
 	public enum ErrorType{PRECONDITION, POSTCONDITON}
 
 	/**
@@ -77,21 +80,25 @@ public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
 	 * ResponseEntity interface
 	 */
 	public Enumeration<CalDAVResponse> getResponses() {
-		return getResponseHashtable().elements();
+		return getResponseVector().elements();
 	}
 
 	public Error getError(){
 		return error;
 	}
 
-	protected Hashtable<String, CalDAVResponse> getResponseHashtable() {
+	protected Vector<CalDAVResponse> getResponseVector() {
 		checkUsed();
 		if (responseHashtable == null) {
 			initHashtable();
 		}
 		return responseHashtable;
 	}
-
+	
+	protected Hashtable<String, CalDAVResponse> getResponseHashtable() {
+		throw new RuntimeException("Unimplemented method");
+	}
+	
 	protected Vector<String> getResponseURLs() {
 		checkUsed();
 		if (responseHashtable == null) {
@@ -108,7 +115,7 @@ public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
 	 */
 	@SuppressWarnings("unchecked")
 	private void initHashtable(){
-		responseHashtable = new Hashtable<String, CalDAVResponse>();
+		responseHashtable = new Vector<CalDAVResponse>();
 		responseURLs = new Vector<String>();
 		Document rdoc = null;
 		// Also accept OK sent by buggy servers in reply to a PROPFIND
@@ -135,7 +142,7 @@ public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
 								CalDAVResponse response =	new CalDAVResponse(child);
 								String href = response.getHref() ;
 								// FIXME this hashTable won't support expanded events
-								responseHashtable.put(href,response);
+								responseHashtable.add(response);
 								responseURLs.add(href);
 							}
 						} catch (ClassCastException e) {
