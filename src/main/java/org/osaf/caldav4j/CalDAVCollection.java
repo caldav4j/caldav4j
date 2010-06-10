@@ -397,11 +397,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			switch (statusCode) {
 			case CaldavStatus.SC_CREATED:			
 			case CaldavStatus.SC_NO_CONTENT:
+				didIt = true;
 				break;
 			default:
 				MethodUtil.StatusToExceptions(putMethod);
 			} 
-		}
+		} //for
 	}
 
 	/**
