@@ -19,6 +19,12 @@ issues with: Cosmo
 
 = FAQ =
 
+
+== FAQ 0 ==
+Q: Can't download caldav4j 0.6+
+
+A: Use maven and add https://caldav4j.googlecode.com/svn/trunk/maven/ to your repos.
+
 == FAQ 1 ==
  
 Q: Can't compile caldav4j 
