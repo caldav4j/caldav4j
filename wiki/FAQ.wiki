@@ -25,6 +25,11 @@ Q: Can't download caldav4j 0.6+
 
 A: Use maven and add https://caldav4j.googlecode.com/svn/trunk/maven/ to your repos.
 
+Q: Isn't maven a build tool? How can I use it for downloading?
+
+A: Yes, maven is a build tool. Learn a bit of maven in 5 minutes here http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html 
+and remember: caldav4j is open source, you should know how to build it.
+
 == FAQ 1 ==
  
 Q: Can't compile caldav4j 
