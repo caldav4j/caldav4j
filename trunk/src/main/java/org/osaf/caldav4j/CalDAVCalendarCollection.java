@@ -81,6 +81,7 @@ import org.osaf.caldav4j.util.ICalendarUtils;
  * 
  * @author bobbyrullo
  * @author ptr.ventura_at_gmail.com changed addEvent
+ * @deprecated Use CalDAVCollection instead
  */
 public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 

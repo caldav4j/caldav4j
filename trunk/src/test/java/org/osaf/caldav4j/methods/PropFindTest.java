@@ -307,13 +307,9 @@ public class PropFindTest extends BaseTestCase {
 
 			log.info("post setacl returns: "+ propfind.getResponseBodyAsString());
 			// TODO check returned ACIS
-		} catch (HttpException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 
 	}
 
