@@ -19,7 +19,7 @@
  <name>CalDav4j</name>
   <groupId>org.osaf</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>0.6</version>
+  <version>0.6.1</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
@@ -71,7 +71,7 @@
     <dependency>
       <groupId>ehcache</groupId>
       <artifactId>ehcache</artifactId>
-      <version>1.2beta4</version>
+      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>

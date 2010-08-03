@@ -177,7 +177,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
         Calendar calendar = null;
         try {
             calendar = calendarCollection.getCalendarByPath(httpClient,
-                    ICS_DAILY_NY_5PM);
+                    ICS_DAILY_NY_5PM_UID + ".ics");
         } catch (CalDAV4JException ce) {
             assertNull(ce);
         }

@@ -50,14 +50,14 @@ public class PutGetTest extends BaseTestCase {
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM_SUMMARY+".ics");
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();
         assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
 
         //ok, so we created it...let's make sure it's there!
         GetMethod get = methodFactory.createGetMethod();
-        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM_UID+".ics");
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
         assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
@@ -73,7 +73,7 @@ public class PutGetTest extends BaseTestCase {
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
+        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM_UID+".ics");
         http.executeMethod(hostConfig, put);
         statusCode = put.getStatusCode();
         assertEquals("Status code for put:",
@@ -107,14 +107,14 @@ public class PutGetTest extends BaseTestCase {
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();
         assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
 
         //ok, so we created it...let's make sure it's there!
         GetMethod get = methodFactory.createGetMethod();
-        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
         assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
@@ -133,7 +133,7 @@ public class PutGetTest extends BaseTestCase {
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         statusCode = put.getStatusCode();
         assertEquals("Status code for put:",
