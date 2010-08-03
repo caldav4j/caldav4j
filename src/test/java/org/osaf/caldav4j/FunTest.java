@@ -9,6 +9,7 @@ import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.parameter.Value;
 
 import org.apache.commons.httpclient.HostConfiguration;
+import org.osaf.caldav4j.methods.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.Property;
@@ -16,22 +17,22 @@ import org.apache.webdav.lib.PropertyName;
 import org.apache.webdav.lib.methods.DepthSupport;
 import org.apache.webdav.lib.methods.PropFindMethod;
 import org.apache.webdav.lib.methods.XMLResponseMethodBase.Response;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.osaf.caldav4j.methods.HttpClient;
+import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 
 public class FunTest extends BaseTestCase {
-    public FunTest() {
-		super();
+    public FunTest(String method) {
+		super(method);
 	}
 
 	private static final Log log = LogFactory
             .getLog(FunTest.class);
 
+    private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
-    @Before
-    public void setUp() throws Exception {
+//    public  String COLLECTION_PATH = CALDAV_SERVER_WEBDAV_ROOT
+//            + COLLECTION;
+
+    protected void setUp() throws Exception {
         super.setUp();
         try {
         	mkcalendar(COLLECTION_PATH);
@@ -49,8 +50,8 @@ public class FunTest extends BaseTestCase {
                 + ICS_FLOATING_JAN2_7PM);
     }
 
-    @After
-    public void tearDown() throws Exception {
+    protected void tearDown() throws Exception {
+        super.tearDown();
         del(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
         del(COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
         del(COLLECTION_PATH + "/" + ICS_NORMAL_PACIFIC_1PM);
@@ -59,7 +60,6 @@ public class FunTest extends BaseTestCase {
         del(COLLECTION_PATH);
     }
 
-    @Test
     public void testFun() throws Exception{
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
@@ -67,7 +67,7 @@ public class FunTest extends BaseTestCase {
         PropFindMethod propFindMethod = new PropFindMethod();
         PropertyName propName = new PropertyName(CalDAVConstants.NS_DAV, "resourcetype");
         propFindMethod.setDepth(DepthSupport.DEPTH_INFINITY);
-        propFindMethod.setPath(caldavCredential.home);
+        propFindMethod.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT);
         propFindMethod.setType(PropFindMethod.BY_NAME);
         Vector<PropertyName> v = new Vector<PropertyName>();
         v.add(propName);

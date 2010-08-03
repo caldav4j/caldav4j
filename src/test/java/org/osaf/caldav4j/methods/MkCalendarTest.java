@@ -1,18 +1,19 @@
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.commons.httpclient.HostConfiguration;
+import org.osaf.caldav4j.methods.HttpClient;
+import org.osaf.caldav4j.model.request.CalendarDescription;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.DeleteMethod;
 import org.apache.webdav.lib.util.WebdavStatus;
-import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
+
 public class MkCalendarTest extends BaseTestCase {
-    public MkCalendarTest() {
-		super();
+    public MkCalendarTest(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
 	}
 
 	private static final Log log = LogFactory.getLog(MkCalendarTest.class);
@@ -22,10 +23,9 @@ public class MkCalendarTest extends BaseTestCase {
      * this should return something like
      * @see http://tools.ietf.org/html/rfc4791#section-5.3.1.2
      */
-	@Test
     public void testPrintMkCalendar() {
         MkCalendarMethod mk = new MkCalendarMethod();
-        mk.setPath(caldavCredential.home + caldavCredential.collection);
+        mk.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT + caldavCredential.COLLECTION);
 
         mk.addDisplayName("My display Name");
         mk.addDescription("this is my default calendar", "en");
@@ -34,10 +34,10 @@ public class MkCalendarTest extends BaseTestCase {
         log.info(mk.generateRequestBody());
         
     }
-	@Test
+    
     public void testCreateRemoveCalendarCollection() throws Exception{
         MkCalendarMethod mk = new MkCalendarMethod();
-        mk.setPath(caldavCredential.home +caldavCredential.collection);
+        mk.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT +caldavCredential.COLLECTION);
         mk.addDisplayName("My display Name");
         mk.addDescription("this is my default calendar", "en");
         
@@ -50,14 +50,14 @@ public class MkCalendarTest extends BaseTestCase {
         
         //now let's try and get it, make sure it's there
         GetMethod get = methodFactory.createGetMethod();
-        get.setPath(caldavCredential.home +caldavCredential.collection);
+        get.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT +caldavCredential. COLLECTION);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
         assertEquals("Status code for get:", WebdavStatus.SC_OK, statusCode);
         
         
         DeleteMethod delete = new DeleteMethod();
-        delete.setPath(caldavCredential.home + caldavCredential.collection);
+        delete.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT + caldavCredential.COLLECTION);
         http.executeMethod(hostConfig, delete);
         
         statusCode = delete.getStatusCode();
@@ -65,7 +65,7 @@ public class MkCalendarTest extends BaseTestCase {
 
         //Now make sure that it goes away
         get = methodFactory.createGetMethod();
-        get.setPath( caldavCredential.home +  caldavCredential.collection);
+        get.setPath( caldavCredential.CALDAV_SERVER_WEBDAV_ROOT +  caldavCredential.COLLECTION);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
         assertEquals("Status code for get:", WebdavStatus.SC_NOT_FOUND, statusCode);

@@ -31,10 +31,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.HttpRequestBodyMethodBase;
 import org.apache.webdav.lib.util.WebdavStatus;
+import org.osaf.caldav4j.CalDAV4JException;
+import org.osaf.caldav4j.CalDAV4JProtocolException;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
-import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.model.request.TicketRequest;
 import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.util.XMLUtils;
@@ -176,7 +176,7 @@ public class MkTicketMethod extends HttpRequestBodyMethodBase {
 
         super.addRequestHeaders(state, conn);
         
-        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
+        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.TEXT_XML_CONTENT_TYPE);
 
     }
     

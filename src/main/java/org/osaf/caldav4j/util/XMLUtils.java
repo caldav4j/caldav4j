@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.w3c.dom.DOMImplementation;

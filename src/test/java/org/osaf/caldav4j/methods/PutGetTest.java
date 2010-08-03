@@ -1,8 +1,5 @@
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
@@ -17,14 +14,14 @@ import net.fortuna.ical4j.model.property.Summary;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
-import org.osaf.caldav4j.util.MethodUtil;
+
 public class PutGetTest extends BaseTestCase {
-    public PutGetTest() {
-		super();
+    public PutGetTest(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
 	}
 
 	private static final Log log = LogFactory.getLog(PutGetTest.class);
@@ -33,48 +30,36 @@ public class PutGetTest extends BaseTestCase {
 
 
     
-    public void setUp() throws Exception {
+    protected void setUp() throws Exception {
         super.setUp();
         mkcalendar(COLLECTION_PATH);
     }
 
-    public void tearDown() throws Exception {
+    protected void tearDown() throws Exception {
         super.tearDown();
         del(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
         del(COLLECTION_PATH);
     }
-    @Test
-    public  void testResourceBundle() {
-    	// load an ICS and substitute summary with non-latin chars
-    	Locale mylocale = new Locale("ru", "RU");
-    	ResourceBundle messages = PropertyResourceBundle.getBundle("messages",mylocale);
-    	String myLocalSummary = messages.getString("summary"); 
-    	log.info("default charser: "+ Charset.defaultCharset());
-    	assertTrue(true);
-    }
-    
-	@Test
+
     public void testAddRemoveCalendarResource() throws Exception{
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
-        String eventPath = String.format("%s/%s.ics", COLLECTION_PATH,BaseTestCase.ICS_DAILY_NY_5PM_UID);
 
         Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM);
         PutMethod put = methodFactory.createPutMethod();
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
-        put.setPath(eventPath);
+        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM_SUMMARY+".ics");
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();
         assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
 
         //ok, so we created it...let's make sure it's there!
         GetMethod get = methodFactory.createGetMethod();
-        get.setPath(eventPath);
+        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM_UID+".ics");
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
-        MethodUtil.StatusToExceptions(get);
         assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
         
         //now let's make sure we can get the resource body as a calendar
@@ -88,7 +73,7 @@ public class PutGetTest extends BaseTestCase {
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
-        put.setPath(eventPath);
+        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM_UID+".ics");
         http.executeMethod(hostConfig, put);
         statusCode = put.getStatusCode();
         assertEquals("Status code for put:",
@@ -98,7 +83,6 @@ public class PutGetTest extends BaseTestCase {
     /**
      * TODO test PUT with non-latin characters
      */
-	@Test
     public void testPutNonLatin()
     throws Exception {
     	
@@ -123,14 +107,14 @@ public class PutGetTest extends BaseTestCase {
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();
         assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
 
         //ok, so we created it...let's make sure it's there!
         GetMethod get = methodFactory.createGetMethod();
-        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
         assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
@@ -149,7 +133,7 @@ public class PutGetTest extends BaseTestCase {
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
         put.setRequestBody(cal);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         statusCode = put.getStatusCode();
         assertEquals("Status code for put:",

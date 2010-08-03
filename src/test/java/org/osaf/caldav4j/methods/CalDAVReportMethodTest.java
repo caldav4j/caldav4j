@@ -1,8 +1,5 @@
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.BaseTestCase;
@@ -19,7 +16,7 @@ public class CalDAVReportMethodTest extends BaseTestCase {
     
 
     
-    public void setUp() throws Exception {
+    protected void setUp() throws Exception {
         super.setUp();
         mkcalendar(COLLECTION_PATH);
         put(ICS_DAILY_NY_5PM, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
@@ -28,7 +25,7 @@ public class CalDAVReportMethodTest extends BaseTestCase {
         put(ICS_SINGLE_EVENT, COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
     }
 
-    public void tearDown() throws Exception {
+    protected void tearDown() throws Exception {
         super.tearDown();
         del(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
         del(COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);

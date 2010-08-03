@@ -16,13 +16,6 @@
 
 package org.osaf.caldav4j.util;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpMethod;
-
 public class UrlUtils {
     public static String stripHost(String href){
         if (!href.startsWith("http")){
@@ -36,35 +29,4 @@ public class UrlUtils {
     public static String removeDoubleSlashes(String s) {
     	return s.replaceAll("([^:])/{2,}","$1/");
     }
-    
-    public static String getHeaderPrettyValue(HttpMethod method, String headerName) {
-    	if (method != null && headerName != null) {
-    		Header header  = method.getResponseHeader(headerName);  
-    		if (header != null) {
-    			return header.getValue();
-    		}
-    	}
-    	
-    	return null;
-    }
-    
-    public static String parseISToString(InputStream is){
-    	StringBuffer sb = new StringBuffer();
-    	try {
-    		BufferedReader din = new BufferedReader(new InputStreamReader(is));
-
-    		String line = null;
-    		while((line=din.readLine()) != null){
-    			sb.append(line+"\n");
-    		}
-    	}catch(Exception ex){
-    		ex.getMessage();
-    	}finally{
-    		try{
-    			is.close();
-    		}catch(Exception ex){}
-    	}
-    	return sb.toString();
-    }
-
 }

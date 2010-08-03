@@ -35,8 +35,8 @@ import net.fortuna.ical4j.model.property.Uid;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVResource;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
 
 public class ICalendarUtils {
     private static final Log log = LogFactory.getLog(ICalendarUtils.class);
@@ -184,7 +184,6 @@ public class ICalendarUtils {
     		}
     	}    	
     }
-    
     public static String getSummaryValue(VEvent event){
         return getPropertyValue(event, Property.SUMMARY);
     }

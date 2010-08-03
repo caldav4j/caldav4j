@@ -1,8 +1,8 @@
 package org.osaf.caldav4j.model.util;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.model.request.PropProperty;
 
 /**

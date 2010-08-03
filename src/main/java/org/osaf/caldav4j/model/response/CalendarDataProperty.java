@@ -25,7 +25,7 @@ import net.fortuna.ical4j.model.Calendar;
 
 import org.apache.webdav.lib.BaseProperty;
 import org.apache.webdav.lib.ResponseEntity;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.CalDAV4JException;
 import org.w3c.dom.Element;
 /**
  * 

@@ -1,24 +1,16 @@
 package org.osaf.caldav4j;
-import static org.junit.Assert.assertNotNull;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.Ace;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
 
 public class CalDAVCollectionTest_ACL extends BaseTestCase {
-	public CalDAVCollectionTest_ACL() {
-		super();
+	public CalDAVCollectionTest_ACL(String method) {
+		super(method);
 	}
 
 	protected static final Log log = LogFactory
 	.getLog(CalDAVCollectionTest_ACL.class);
-	
-	@Before
-	public void setUp() throws Exception {
+	protected void setUp() throws Exception {
 		super.setUp();
 
 		try {
@@ -34,8 +26,8 @@ public class CalDAVCollectionTest_ACL extends BaseTestCase {
 
 	}
 
-	@After
-	public void tearDown() throws Exception {
+	protected void tearDown() throws Exception {
+		super.tearDown();
 
 		caldavDel(ICS_GOOGLE_DAILY_NY_5PM_PATH);
 		caldavDel(ICS_GOOGLE_ALL_DAY_JAN1_PATH);
@@ -49,29 +41,19 @@ public class CalDAVCollectionTest_ACL extends BaseTestCase {
 	}
 
 
-	@Test
-	public void getFolderAces() throws CalDAV4JException {
+
+	public void testFolder() throws CalDAV4JException {
 		CalDAVCollection calendarCollection = createCalDAVCollection();
 		Ace[] aces = calendarCollection.getAces(httpClient, null);
 		assertNotNull(aces);		
 		log.info(aces);			
 	}
 	
-	@Test
-	public void getResourceAces() throws Exception {		
+	public void testResource() throws Exception {		
 		CalDAVCollection calendarCollection = createCalDAVCollection();		
-		Ace[] aces = calendarCollection.getAces(httpClient, ICS_GOOGLE_DAILY_NY_5PM);
+		Ace[] aces = calendarCollection.getAces(httpClient, ICS_GOOGLE_DAILY_NY_5PM_PATH);
 		assertNotNull(aces);		
 		log.info(aces);	
 	}
 	
-	// @Test TODO
-	public void setFolderAces() {
-		
-	}
-
-	// @Test TODO
-	public void updateFolderAces() {
-		
-	}
 }

@@ -17,8 +17,6 @@ package org.osaf.caldav4j;
 
 import java.io.Serializable;
 
-import org.osaf.caldav4j.util.UrlUtils;
-
 public class ResourceMetadata implements Serializable {
     /**
 	 * 
@@ -41,7 +39,7 @@ public class ResourceMetadata implements Serializable {
     }
     
     public void setHref(String href) {
-        this.href = UrlUtils.removeDoubleSlashes(href);
+        this.href = href;
     }
     
 }

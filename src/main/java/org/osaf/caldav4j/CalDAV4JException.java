@@ -1,11 +1,11 @@
 /*
- * Copyright 2005 Open Source Applications Foundation
+ * Copyright 2006 Open Source Applications Foundation
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.osaf.caldav4j.exceptions;
+package org.osaf.caldav4j;
 
 /**
- * Thrown when trying to update a resource and the etags do not match (eg. precondition failed)
+ * This is the root class for all CalDAV4J specific exceptions.
  * 
  * @author bobbyrullo
- *
+ * 
  */
-public class ResourceOutOfDateException extends CalDAV4JException {
+public class CalDAV4JException extends Exception {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -7814395605221751094L;
+    private static final long serialVersionUID = 1L;
 
-	public ResourceOutOfDateException(String message) {
+    public CalDAV4JException(String message) {
         super(message);
     }
-    
-    public ResourceOutOfDateException(String message, Throwable cause){
+
+    public CalDAV4JException(String message, Throwable cause) {
         super(message, cause);
     }
 }

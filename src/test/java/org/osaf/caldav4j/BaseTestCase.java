@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 package org.osaf.caldav4j;
-import static org.junit.Assert.*;
 
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.Locale;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
 
+import junit.framework.TestCase;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
@@ -33,46 +29,65 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.util.WebdavStatus;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
-import org.osaf.caldav4j.util.UrlUtils;
-import org.junit.*;
 
-public abstract class BaseTestCase   implements TestConstants {
+public abstract class BaseTestCase  extends TestCase implements TestConstants {
     protected static final Log log = LogFactory.getLog(BaseTestCase.class);
-    protected HttpClient testHttpClient;
+    protected HttpClient http;
     protected HttpClient httpClient;
 
     protected HostConfiguration hostConfig;
     protected CaldavCredential caldavCredential = new CaldavCredential();
     public  String COLLECTION_PATH;
-    protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
 
     @Before
-    public void setUp() throws Exception {
-        COLLECTION_PATH = caldavCredential.home + caldavCredential.collection;
+    protected void setUp() throws Exception {
+    	super.setUp();
+        COLLECTION_PATH = caldavCredential.CALDAV_SERVER_WEBDAV_ROOT
+        + caldavCredential.COLLECTION;
         hostConfig = createHostConfiguration();
-        testHttpClient  = createHttpClient();
-        httpClient = createHttpClient();    	
-    }
-    
-    @After
-    public void tearDown() throws Exception {
+        http  = createHttpClient();
+        httpClient = createHttpClient();
+        methodFactory = new CalDAV4JMethodFactory();
     	
     }
     
 
+    protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+    
+    public String getCalDAVServerHost() {
+        return caldavCredential.CALDAV_SERVER_HOST;
+    }
+    
+    public int getCalDAVServerPort(){
+        return caldavCredential.CALDAV_SERVER_PORT;
+    }
+    
+    public String getCalDavSeverProtocol(){
+        return caldavCredential.CALDAV_SERVER_PROTOCOL;
+    }
+    
+    public String getCalDavSeverWebDAVRoot(){
+        return caldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
+    }
+    
+    public String getCalDavSeverUsername(){
+        return caldavCredential.CALDAV_SERVER_USERNAME;
+    }
+    
+    public String getCalDavSeverPassword(){
+        return caldavCredential.CALDAV_SERVER_PASSWORD;
+    }
+        
 
-    // constructor
     public BaseTestCase(String method) {
+    	super(method);
 	}
     public BaseTestCase() {
 	}
@@ -80,8 +95,8 @@ public abstract class BaseTestCase   implements TestConstants {
 	public HttpClient createHttpClient(){
         HttpClient http = new HttpClient();
 
-        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.user, 
-        		caldavCredential.password);
+        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.CALDAV_SERVER_USERNAME, 
+        		caldavCredential.CALDAV_SERVER_PASSWORD);
         http.getState().setCredentials(
         		new AuthScope(this.getCalDAVServerHost(), this.getCalDAVServerPort()),
         		credentials);
@@ -91,10 +106,10 @@ public abstract class BaseTestCase   implements TestConstants {
 	public static HttpClient createHttpClient(CaldavCredential caldavCredential){
         HttpClient http = new HttpClient();
 
-        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.user, 
-        		caldavCredential.password);
+        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.CALDAV_SERVER_USERNAME, 
+        		caldavCredential.CALDAV_SERVER_PASSWORD);
         http.getState().setCredentials(
-        		new AuthScope(caldavCredential.host, caldavCredential.port),
+        		new AuthScope(caldavCredential.CALDAV_SERVER_HOST, caldavCredential.CALDAV_SERVER_PORT),
         		credentials);
         http.getParams().setAuthenticationPreemptive(true);
         return http;
@@ -112,12 +127,10 @@ public abstract class BaseTestCase   implements TestConstants {
     }
     public static HostConfiguration createHostConfiguration(CaldavCredential caldavCredential){
         HostConfiguration hostConfig = new HostConfiguration();
-        hostConfig.setHost(caldavCredential.host,caldavCredential.port, caldavCredential.protocol);
+        hostConfig.setHost(caldavCredential.CALDAV_SERVER_HOST,caldavCredential.CALDAV_SERVER_PORT, caldavCredential.CALDAV_SERVER_PROTOCOL);
         return hostConfig;
     }
     
-
-
     // TODO testme
     public static Calendar getCalendarResource(String resourceName) {
         Calendar cal;
@@ -144,7 +157,7 @@ public abstract class BaseTestCase   implements TestConstants {
         PutMethod put = methodFactory.createPutMethod();
         InputStream stream = this.getClass().getClassLoader()
         .getResourceAsStream(resourceFileName);
-        String event = UrlUtils.parseISToString(stream);
+        String event = parseISToString(stream);
         event = event.replaceAll("DTSTAMP:.*", "DTSTAMP:" + new DateTime(true).toString());
         log.debug(new DateTime(true).toString());
         //log.trace(event);        
@@ -153,7 +166,7 @@ public abstract class BaseTestCase   implements TestConstants {
         put.setPath(path);
     	log.debug("\nPUT " + put.getPath());
         try {
-            testHttpClient.executeMethod(hostConfig, put);
+            http.executeMethod(hostConfig, put);
             
             int statusCode =  put.getStatusCode();
             
@@ -185,7 +198,7 @@ public abstract class BaseTestCase   implements TestConstants {
         DeleteMethod delete = new DeleteMethod();
         delete.setPath(path);
         try {
-        	testHttpClient.executeMethod(hostConfig, delete);
+        	http.executeMethod(hostConfig, delete);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
@@ -196,12 +209,30 @@ public abstract class BaseTestCase   implements TestConstants {
         mk.setPath(path);
         mk.addDescription(CALENDAR_DESCRIPTION, "en");
         try {
-        	testHttpClient.executeMethod(hostConfig, mk);
+        	http.executeMethod(hostConfig, mk);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
     }
     
+    public String parseISToString(java.io.InputStream is){
+        java.io.DataInputStream din = new java.io.DataInputStream(is);
+        StringBuffer sb = new StringBuffer();
+        try{
+          String line = null;
+          while((line=din.readLine()) != null){
+            sb.append(line+"\n");
+          }
+        }catch(Exception ex){
+          ex.getMessage();
+        }finally{
+          try{
+            is.close();
+          }catch(Exception ex){}
+        }
+        return sb.toString();
+      }
+
 	/**
 	 * put an event on a caldav store using UID.ics
 	 */
@@ -231,29 +262,5 @@ public abstract class BaseTestCase   implements TestConstants {
 			return calendarCollection;
 		}
 
-		// getter+setter
-	    public String getCalDAVServerHost() {
-	        return caldavCredential.host;
-	    }
-	    
-	    public int getCalDAVServerPort(){
-	        return caldavCredential.port;
-	    }
-	    
-	    public String getCalDavSeverProtocol(){
-	        return caldavCredential.protocol;
-	    }
-	    
-	    public String getCalDavSeverWebDAVRoot(){
-	        return caldavCredential.home;
-	    }
-	    
-	    public String getCalDavSeverUsername(){
-	        return caldavCredential.user;
-	    }
-	    
-	    public String getCalDavSeverPassword(){
-	        return caldavCredential.password;
-	    }
-	        
+
 }

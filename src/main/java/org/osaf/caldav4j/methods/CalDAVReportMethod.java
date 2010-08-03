@@ -27,7 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.DepthSupport;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
+import org.osaf.caldav4j.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;
@@ -122,12 +122,12 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements D
             super.setRequestHeader("Depth", "1");
             break;
         case DEPTH_INFINITY:
-            super.setRequestHeader("Depth", CalDAVConstants.INFINITY_STRING);
+            super.setRequestHeader("Depth", "infinity");
             break;
         }
 
         if (getRequestHeader(HEADER_CONTENT_TYPE) == null) {
-        	addRequestHeader(HEADER_CONTENT_TYPE,CONTENT_TYPE_TEXT_XML);
+        	addRequestHeader(HEADER_CONTENT_TYPE,TEXT_XML_CONTENT_TYPE);
         }
     }
 

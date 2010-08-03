@@ -5,15 +5,14 @@ import java.io.IOException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
-import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVCalendarCollection;
-import static org.junit.Assert.*;
 
 public class OptionsTest extends BaseTestCase {
 
-	public OptionsTest( ) {
-		super();
+	public OptionsTest(String method) {
+		super(method);
+		// TODO Auto-generated constructor stub
 	}
 
 	public static final String OUTBOX = "/Outbox";
@@ -35,7 +34,6 @@ public class OptionsTest extends BaseTestCase {
 	   DAV: 1, 2, 3, access-control
 	   DAV: calendar-access, calendar-auto-schedule
 	   */
-	@Test
 	public void testOptions() {
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
@@ -44,7 +42,7 @@ public class OptionsTest extends BaseTestCase {
         	
 	
 	        OptionsMethod options = new OptionsMethod();
-	        options.setPath(caldavCredential.home + s);
+	        options.setPath(caldavCredential.CALDAV_SERVER_WEBDAV_ROOT + s);
 	        try {
 				http.executeMethod(hostConfig,options);
 				int statusCode = options.getStatusCode();
@@ -62,11 +60,13 @@ public class OptionsTest extends BaseTestCase {
 						}
 					}
 				}
-			} catch (Exception e) {
+			} catch (HttpException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				fail(e.getMessage());
-			} 
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         
 	}

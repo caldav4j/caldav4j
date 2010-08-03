@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
+import org.osaf.caldav4j.DOMValidationException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;

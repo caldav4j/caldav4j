@@ -1,5 +1,4 @@
 package org.osaf.caldav4j.scheduling.util;
-import static org.junit.Assert.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,7 +12,7 @@ import net.fortuna.ical4j.model.property.Method;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class ITipUtilsTest extends BaseTestCase {
