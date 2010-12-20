@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<Button android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/setup_acc_btn" android:text="@string/setup_caldav_acc"></Button>
+
+<Button android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/sync_caldav" android:id="@+id/sync_caldav_btn"></Button>
+
+<Button android:layout_width="fill_parent" android:layout_height="wrap_content"
+android:text="@string/caldav_remove" android:id="@+id/remove_caldav_btn"></Button>
+
+
+</LinearLayout>

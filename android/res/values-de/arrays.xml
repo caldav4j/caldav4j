@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string-array name="reminder_minutes_labels">
+    <item msgid="9134196715565887256">"1 Minute"</item>
+    <item msgid="7350720278790900276">"5 Minuten"</item>
+    <item msgid="559329025736829220">"10 Minuten"</item>
+    <item msgid="4523534383318084162">"15 Minuten"</item>
+    <item msgid="7153990736543668084">"20 Minuten"</item>
+    <item msgid="2030352540011653596">"25 Minuten"</item>
+    <item msgid="7307245847296317340">"30 Minuten"</item>
+    <item msgid="5174730509775969611">"45 Minuten"</item>
+    <item msgid="1920425054049263702">"1 Stunde"</item>
+    <item msgid="6972139375792068825">"2 Stunden"</item>
+    <item msgid="5643568168685093982">"3 Stunden"</item>
+    <item msgid="2179302053572039553">"12 Stunden"</item>
+    <item msgid="314399712609472931">"24 Stunden"</item>
+    <item msgid="6908283876728494719">"2 Tage"</item>
+    <item msgid="3390146235648970198">"1 Woche"</item>
+  </string-array>
+  <string-array name="preferences_default_reminder_labels">
+    <item msgid="7495163916242649023">"Keine"</item>
+    <item msgid="3377199512833209480">"1 Minute"</item>
+    <item msgid="5023205715881387516">"5 Minuten"</item>
+    <item msgid="7720870540593319107">"10 Minuten"</item>
+    <item msgid="1653841700859180907">"15 Minuten"</item>
+    <item msgid="3741629746313107482">"20 Minuten"</item>
+    <item msgid="5357458446224446398">"25 Minuten"</item>
+    <item msgid="403143749684280703">"30 Minuten"</item>
+    <item msgid="5611574008997362948">"45 Minuten"</item>
+    <item msgid="30462793717552">"1 Stunde"</item>
+    <item msgid="119808229352802480">"2 Stunden"</item>
+    <item msgid="7456742278252094745">"3 Stunden"</item>
+    <item msgid="5263928189935026559">"12 Stunden"</item>
+    <item msgid="6451763179435252852">"24 Stunden"</item>
+    <item msgid="966666856467721784">"2 Tage"</item>
+    <item msgid="5840973497558794742">"1 Woche"</item>
+  </string-array>
+  <string-array name="preferences_alert_type_labels">
+    <item msgid="2724242028978664229">"Benachrichtigung"</item>
+    <item msgid="8723674378160518790">"Statuszeilennachricht"</item>
+    <item msgid="8433736231022186661">"Aus"</item>
+  </string-array>
+  <string-array name="availability">
+    <item msgid="454869065893453189">"Beschäftigt"</item>
+    <item msgid="6228387173725732140">"Verfügbar"</item>
+  </string-array>
+  <string-array name="visibility">
+    <item msgid="3035788428581513163">"Standard"</item>
+    <item msgid="5200216103966973369">"Privat"</item>
+    <item msgid="9182342638433672664">"Öffentlich"</item>
+  </string-array>
+  <string-array name="ordinal_labels">
+    <item msgid="2693927956303125332">"1."</item>
+    <item msgid="5631923029483854900">"2."</item>
+    <item msgid="148935502975250973">"3."</item>
+    <item msgid="5124200797326669172">"4."</item>
+    <item msgid="7564374178324652137">"letzten"</item>
+  </string-array>
+  <string-array name="response_labels1">
+    <item msgid="3654955385120106241">"(keine Antwort)"</item>
+    <item msgid="3724434080904437698">"Ja"</item>
+    <item msgid="8854145743148992583">"Vielleicht"</item>
+    <item msgid="6174292185978948873">"Nein"</item>
+  </string-array>
+  <string-array name="response_labels2">
+    <item msgid="5967437218994333578">"Ja"</item>
+    <item msgid="1254269034445160199">"Vielleicht"</item>
+    <item msgid="1099407454885268744">"Nein"</item>
+  </string-array>
+  <string-array name="delete_repeating_labels">
+    <item msgid="4208432367651646938">"Nur dieser Termin"</item>
+    <item msgid="8626755531271570950">"Dieser und zukünftige Termine"</item>
+    <item msgid="7833229563617435430">"Alle Termine"</item>
+  </string-array>
+  <string-array name="delete_repeating_labels_no_selected">
+    <item msgid="1341910309321756150">"Dieser und zukünftige Termine"</item>
+    <item msgid="6315440193748139854">"Alle Termine"</item>
+  </string-array>
+  <string-array name="change_response_labels">
+    <item msgid="2012815396992847028">"Nur diesen Termin"</item>
+    <item msgid="140670561403965380">"Alle Termine in der Reihe"</item>
+  </string-array>
+</resources>

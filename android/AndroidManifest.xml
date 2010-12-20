@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* //device/apps/Calendar/AndroidManifest.xml
+**
+** Copyright 2006, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.android.calendar"
+        android:sharedUserLabel="@string/app_label">
+
+    <!--
+       NOTE: and original-package cannot be used, since the Eclair
+       version was using a shared user ID with the provider.
+    -->
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="com.google.android.googleapps.permission.GOOGLE_AUTH.mail" />
+
+    <application android:name="CalendarApplication"
+            android:label="@string/app_label" android:icon="@drawable/app_icon"
+            android:taskAffinity="android.task.calendar">
+        <!-- TODO: Remove dependency of application on the test runner
+             (android.test) library. -->
+        <uses-library android:name="android.test.runner" />
+
+        <activity android:name="LaunchActivity"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="time/epoch" />
+                <data android:host="com.android.calendar" />
+                <data android:scheme="content"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="MonthActivity" android:label="@string/month_view"
+            android:theme="@style/CalendarTheme" />
+        <activity android:name="WeekActivity" android:label="@string/week_view"
+            android:theme="@style/CalendarTheme" />
+        <activity android:name="DayActivity" android:label="@string/day_view"
+            android:theme="@style/CalendarTheme" />
+        <activity android:name="AgendaActivity" android:label="@string/agenda_view"
+            android:theme="@android:style/Theme.Light"
+            android:exported="true" />
+
+        <activity android:name=".caldav.CalDAVCtrlActivity" android:label="@string/caldav_ctrlpanel_title"
+            android:theme="@android:style/Theme.Light"
+            android:exported="true" />
+        <activity android:name=".caldav.CalDAVSetupAccActivity" android:label="@string/setup_caldav_acc"
+            android:theme="@android:style/Theme.Light"
+            android:exported="true" />
+        <service android:name=".caldav.CalDAVService" />
+
+        <activity android:name="EditEvent" android:label="@string/event_edit_title"
+            android:theme="@android:style/Theme"
+            android:configChanges="orientation|keyboardHidden">
+
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/event" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="EventInfoActivity" android:label="@string/event_info_title"
+            android:theme="@android:style/Theme.Light"
+            android:configChanges="orientation|keyboardHidden">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/event" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="GoogleCalendarUriIntentFilter" android:label="@string/app_label"
+            android:theme="@android:style/Theme.Light"
+            android:configChanges="orientation|keyboardHidden">
+
+            <intent-filter>
+               <action android:name="android.intent.action.VIEW" />
+               <category android:name="android.intent.category.DEFAULT" />
+               <category android:name="android.intent.category.BROWSABLE" />
+               <data android:scheme="http" android:host="www.google.com" android:pathPrefix="/calendar/event" />
+               <data android:scheme="https" android:host="www.google.com" android:pathPrefix="/calendar/event" />
+               <data android:scheme="http" android:host="www.google.com" android:pathPattern="/calendar/hosted/.*/event" />
+               <data android:scheme="https" android:host="www.google.com" android:pathPattern="/calendar/hosted/.*/event" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="SelectCalendarsActivity" android:label="@string/calendars_title" />
+        <activity android:name="CalendarPreferenceActivity" android:label="@string/preferences_title" />
+        <activity android:name="AlertActivity" android:launchMode="singleInstance"
+             android:theme="@android:style/Theme.Light" android:excludeFromRecents="true" />
+        <receiver android:name="AlertReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.EVENT_REMINDER" />
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <data android:scheme="content" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="AlertService" />
+
+        <service android:name="DismissAllAlarmsService" />
+
+        <activity android:name="CalendarTests" android:label="Calendar Tests">
+            <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+                 <category android:name="android.intent.category.UNIT_TEST" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+

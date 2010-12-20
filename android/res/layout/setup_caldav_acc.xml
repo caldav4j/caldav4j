@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<TableRow android:id="@+id/TableRow01" android:layout_height="wrap_content" android:layout_width="fill_parent">
+
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/caldav_calname_c" android:text="@string/caldav_calname"></TextView>
+<EditText android:layout_height="wrap_content" android:id="@+id/caldav_calname" android:text="@string/caldav_def_calname" android:layout_width="fill_parent"></EditText>
+</TableRow><TableRow android:id="@+id/TableRow02" android:layout_height="wrap_content" android:layout_width="fill_parent">
+
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/caldav_caluser_c" android:text="@string/caldav_username"></TextView>
+<EditText android:layout_height="wrap_content" android:id="@+id/caldav_caluser" android:text="@string/caldav_def_user" android:layout_width="fill_parent"></EditText>
+</TableRow>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<TableRow android:id="@+id/TableRow03" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/caldav_password" android:id="@+id/caldav_pswd_c"></TextView>
+<EditText android:layout_height="wrap_content" android:id="@+id/caldav_password" android:visibility="visible" android:text="@string/caldav_def_pswd" android:layout_width="fill_parent"></EditText>
+</TableRow>
+<TableRow android:id="@+id/TableRow04" android:layout_height="wrap_content" android:layout_width="fill_parent"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/caldav_host_c" android:text="@string/caldav_host"></TextView>
+<EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/caldav_host" android:text="@string/caldav_def_host"></EditText>
+</TableRow><TableRow android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/TableRow05"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/caldav_protocol_c" android:text="@string/caldav_protocol"></TextView>
+<EditText android:layout_height="wrap_content" android:text="@string/caldav_def_proto" android:id="@+id/caldav_protocol" android:layout_width="fill_parent"></EditText>
+</TableRow><TableRow android:layout_height="wrap_content" android:id="@+id/TableRow06" android:layout_width="fill_parent"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/caldav_port_c" android:text="@string/caldav_port"></TextView>
+<EditText android:layout_height="wrap_content" android:text="@string/caldav_def_port" android:id="@+id/caldav_port" android:digits="0123456789" android:layout_width="fill_parent"></EditText>
+</TableRow><TableRow android:layout_height="wrap_content" android:id="@+id/TableRow07" android:layout_width="fill_parent"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/caldav_home_c" android:text="@string/caldav_home"></TextView>
+<EditText android:layout_height="wrap_content" android:id="@+id/caldav_home" android:text="@string/caldav_def_home" android:layout_width="fill_parent"></EditText>
+</TableRow><TableRow android:layout_height="wrap_content" android:id="@+id/TableRow08" android:layout_width="fill_parent"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/caldav_collection_c" android:text="@string/caldav_collection"></TextView>
+<EditText android:layout_height="wrap_content" android:text="@string/caldav_def_coll" android:id="@+id/caldav_collection" android:layout_width="fill_parent"></EditText>
+</TableRow>
+<Button android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/save" android:text="@string/caldav_save"></Button>
+</LinearLayout>
+</ScrollView>
