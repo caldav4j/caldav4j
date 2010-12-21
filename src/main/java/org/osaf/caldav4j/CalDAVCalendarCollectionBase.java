@@ -128,14 +128,13 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 		 int port = hostConfiguration.getPort();
 		 String scheme = hostConfiguration.getProtocol().getScheme();
 		 String portString = "";
-		 if ( port == 80 && (! "http".equals(scheme)) || 
-				 port == 443 && (!"https".equals(scheme))
+		 if ( (port != 80 && "http".equals(scheme)) || 
+				 (port != 443 && "https".equals(scheme))
 		 ) {
 			 portString = ":" + port;
 		 } 
 
 		 return UrlUtils.removeDoubleSlashes(
-
 				 String.format("%s://%s%s/%s", scheme,
 						 hostConfiguration.getHost(),
 						 portString, path )
