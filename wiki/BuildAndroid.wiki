@@ -1,0 +1,27 @@
+#summary Building for Android
+
+= Introduction =
+
+Add your content here.
+Sudheer used caldav4j to write a caldav client for Android. To use that client, which is based on default Android package, you have to follow these steps:
+ # checkout android sources v 2.2
+ # build android from scratch
+ # replace the Calendar android sources with the one provided by Sudheet
+ # build again
+ # get the Calendar.apk
+ # install it on your emulator
+
+= Details =
+
+ == Get android sources ==
+
+ == Build on 32bit ==
+ after getting android sources, you need to apply this patch to build on 32 bit arch.
+
+http://android-platform.googlegroups.com/attach/5e699c57ad5cf04b/for-32-bit-compilation.patch?view=1&part=2
+
+Building requires about 10Gb disk space and a couple of hours on my Core2Duo laptop
+
+ == Replace Calendar app with our one ==
+
+ == Install the Calendar.apk on your emulator ==
