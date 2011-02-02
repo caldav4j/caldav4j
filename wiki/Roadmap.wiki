@@ -5,6 +5,7 @@ for 0.7:
  * fine-grained ACL (scheduling acls too) [started]
  * drop deprecated classes
  * recurrent event support
+ * bits of android
 
 for 0.6
  * basic scheduling support 
