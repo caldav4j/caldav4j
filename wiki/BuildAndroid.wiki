@@ -25,3 +25,4 @@ Building requires about 10Gb disk space and a couple of hours on my Core2Duo lap
  == Replace Calendar app with our one ==
 
  == Install the Calendar.apk on your emulator ==
+ see http://openhandsetmagazine.com/2008/01/tips-how-to-install-apk-files-on-android-emulator/
