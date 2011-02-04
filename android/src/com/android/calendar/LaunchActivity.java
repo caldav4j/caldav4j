@@ -48,6 +48,7 @@ public class LaunchActivity extends Activity {
         // setVisible(false);
 
         // Only try looking for an account if this is the first launch.
+        /*
         if (icicle == null) {
             Account[] accounts = AccountManager.get(this).getAccounts();
             if(accounts.length > 0) {
@@ -67,6 +68,9 @@ public class LaunchActivity extends Activity {
                 startActivityForResult(intent, 0);
             }
         }
+        */
+        launchCalendarView();
+
     }
 
     @Override
