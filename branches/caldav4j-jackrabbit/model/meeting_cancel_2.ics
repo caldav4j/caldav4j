@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+PRODID:-//Example/ExampleCalendarClient//EN
+METHOD:CANCEL
+VERSION:2.0
+BEGIN:VEVENT
+ORGANIZER:mailto:a@example.com
+ATTENDEE:mailto:b@example.com
+COMMENT:You're off the hook for this meeting
+UID:calsrv.example.com-873970198738777@example.com
+DTSTAMP:19970613T193000Z
+SEQUENCE:1
+END:VEVENT
+END:VCALENDAR
