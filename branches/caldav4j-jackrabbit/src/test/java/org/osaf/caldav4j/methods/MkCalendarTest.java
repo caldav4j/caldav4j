@@ -6,10 +6,9 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.methods.DeleteMethod;
-import org.apache.webdav.lib.util.WebdavStatus;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.util.CaldavStatus;
 public class MkCalendarTest extends BaseTestCase {
     public MkCalendarTest() {
 		super();
@@ -24,8 +23,7 @@ public class MkCalendarTest extends BaseTestCase {
      */
 	@Test
     public void testPrintMkCalendar() {
-        MkCalendarMethod mk = new MkCalendarMethod();
-        mk.setPath(caldavCredential.home + caldavCredential.collection);
+        MkCalendarMethod mk = new MkCalendarMethod(caldavCredential.home + caldavCredential.collection);
 
         mk.addDisplayName("My display Name");
         mk.addDescription("this is my default calendar", "en");
@@ -36,8 +34,7 @@ public class MkCalendarTest extends BaseTestCase {
     }
 	@Test
     public void testCreateRemoveCalendarCollection() throws Exception{
-        MkCalendarMethod mk = new MkCalendarMethod();
-        mk.setPath(caldavCredential.home +caldavCredential.collection);
+        MkCalendarMethod mk = new MkCalendarMethod(caldavCredential.home + caldavCredential.collection);
         mk.addDisplayName("My display Name");
         mk.addDescription("this is my default calendar", "en");
         
@@ -46,29 +43,28 @@ public class MkCalendarTest extends BaseTestCase {
         http.executeMethod(hostConfig, mk);
         
         int statusCode = mk.getStatusCode();
-        assertEquals("Status code for mk:", WebdavStatus.SC_CREATED, statusCode);
+        assertEquals("Status code for mk:", CaldavStatus.SC_CREATED, statusCode);
         
         //now let's try and get it, make sure it's there
         GetMethod get = methodFactory.createGetMethod();
         get.setPath(caldavCredential.home +caldavCredential.collection);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
-        assertEquals("Status code for get:", WebdavStatus.SC_OK, statusCode);
+        assertEquals("Status code for get:", CaldavStatus.SC_OK, statusCode);
         
         
-        DeleteMethod delete = new DeleteMethod();
-        delete.setPath(caldavCredential.home + caldavCredential.collection);
+        DeleteMethod delete = new DeleteMethod(caldavCredential.home + caldavCredential.collection);
         http.executeMethod(hostConfig, delete);
         
         statusCode = delete.getStatusCode();
-        assertEquals("Status code for delete:", WebdavStatus.SC_NO_CONTENT, statusCode);
+        assertEquals("Status code for delete:", CaldavStatus.SC_NO_CONTENT, statusCode);
 
         //Now make sure that it goes away
         get = methodFactory.createGetMethod();
         get.setPath( caldavCredential.home +  caldavCredential.collection);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
-        assertEquals("Status code for get:", WebdavStatus.SC_NOT_FOUND, statusCode);
+        assertEquals("Status code for get:", CaldavStatus.SC_NOT_FOUND, statusCode);
         
         
     }

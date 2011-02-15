@@ -54,12 +54,12 @@ public class CalDAV4JMethodFactory {
         postMethod.setCalendarOutputter(getCalendarOutputterInstance());
         return postMethod;
     }
-    
+    /*
     public MkCalendarMethod createMkCalendarMethod(){
         MkCalendarMethod mkCalendarMethod = new MkCalendarMethod();
         return mkCalendarMethod;
     }
-    
+    */
     public MkTicketMethod createMkTicketMethod(){
         MkTicketMethod mkTicketMethod = new MkTicketMethod();
         return mkTicketMethod;

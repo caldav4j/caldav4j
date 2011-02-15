@@ -19,7 +19,6 @@ package org.osaf.caldav4j.methods;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.webdav.lib.methods.XMLResponseMethodBase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalendarDescription;
@@ -30,7 +29,9 @@ import org.osaf.caldav4j.model.request.PropProperty;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
 
-public class MkCalendarMethod extends XMLResponseMethodBase{
+import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;;
+
+public class MkCalendarMethod extends DavMethodBase{
     
 	
 	/**
@@ -45,9 +46,9 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
 
     // --------------------------------------------------------- Public Methods
 
-    public MkCalendarMethod() {
+    public MkCalendarMethod(String uri) {
 		// Add Headers Content-Type: text/xml
-    	
+    	super(uri);
     	addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
 	}
 
@@ -82,7 +83,7 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
     /**
      *
      */
-    protected String generateRequestBody() {
+    protected byte[] generateRequestBody() {
         if (propertiesToSet.size() == 0 ){
             return null;
         }
@@ -96,7 +97,13 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
         } catch (DOMValidationException domve) {
             throw new RuntimeException(domve);
         }
-        return XMLUtils.toPrettyXML(d);
+        return XMLUtils.toPrettyXML(d).getBytes();
 
     }
+
+	@Override
+	protected boolean isSuccess(int statusCode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

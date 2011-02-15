@@ -22,7 +22,7 @@
  <name>CalDav4j</name>
   <groupId>org.osaf</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>0.7-SNAPSHOT</version>
+  <version>0.7-JCR-SNAPSHOT</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
@@ -49,17 +49,12 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.8</version>
+      <version>1.2.12</version>
     </dependency>
     <dependency>
       <groupId>servletapi</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.4-20040521</version>
-    </dependency>
-    <dependency>
-      <groupId>slide</groupId>
-      <artifactId>jakarta-slide-webdavlib</artifactId>
-      <version>2.2pre1-httpclient-3.0</version>
     </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
@@ -102,7 +97,14 @@
             <version>4.4</version>
             <scope>test</scope>
         </dependency>  
-    </dependencies>
+        <dependency>
+        	<groupId>org.apache.jackrabbit</groupId>
+        	<artifactId>jackrabbit-webdav</artifactId>
+        	<version>2.2.2</version>
+        	<type>jar</type>
+        	<scope>compile</scope>
+        </dependency>
+  </dependencies>
   <url>http://code.google.com/p/caldav4j/</url>
   <build>
     <testResources>

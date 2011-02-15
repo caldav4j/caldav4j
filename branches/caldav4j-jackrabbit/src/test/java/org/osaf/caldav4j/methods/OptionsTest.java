@@ -43,8 +43,7 @@ public class OptionsTest extends BaseTestCase {
         for (String s : new String[] {INBOX, OUTBOX} ) {
         	
 	
-	        OptionsMethod options = new OptionsMethod();
-	        options.setPath(caldavCredential.home + s);
+	        OptionsMethod options = new OptionsMethod(caldavCredential.home + s);
 	        try {
 				http.executeMethod(hostConfig,options);
 				int statusCode = options.getStatusCode();

@@ -16,7 +16,7 @@
 
 package org.osaf.caldav4j;
 
-import org.apache.webdav.lib.util.QName;
+ 
 import org.osaf.caldav4j.model.request.PropProperty;
 
 public interface CalDAVConstants {
@@ -98,9 +98,10 @@ public interface CalDAVConstants {
 	public static final PropProperty PROP_ALLPROP = new PropProperty(NS_DAV,NS_QUAL_DAV, ELEM_ALLPROP);
 
 	// response tag
+	/*
     public static final QName QNAME_GETETAG = new QName(NS_DAV, ELEM_GETETAG);
 	public static final QName QNAME_DISPLAYNAME = new QName(NS_DAV, DAV_DISPLAYNAME);
 	public static final QName QNAME_CALENDAR_DESCRIPTION = new QName(NS_CALDAV,CALDAV_CALENDAR_DESCRIPTION);
 	public static final QName QNAME_ACL = new QName(NS_DAV, "acl");
-	
+	*/
 }

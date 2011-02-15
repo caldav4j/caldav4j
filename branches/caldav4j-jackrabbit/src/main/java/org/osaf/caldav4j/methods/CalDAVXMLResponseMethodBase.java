@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
 import org.apache.webdav.lib.methods.XMLResponseMethodBase;
 import org.apache.webdav.lib.util.DOMUtils;
 import org.apache.webdav.lib.util.QName;
@@ -30,7 +31,11 @@ import org.w3c.dom.NodeList;
  * @author rpolli
  *
  */
-public abstract class CalDAVXMLResponseMethodBase extends XMLResponseMethodBase{
+public abstract class CalDAVXMLResponseMethodBase extends DavMethodBase{
+	public CalDAVXMLResponseMethodBase(String uri) {
+		super(uri);
+		// TODO Auto-generated constructor stub
+	}
 	private Vector<CalDAVResponse> responseHashtable = null;
 	private static Map<QName, Error> errorMap = null;
 	private Error error = null;

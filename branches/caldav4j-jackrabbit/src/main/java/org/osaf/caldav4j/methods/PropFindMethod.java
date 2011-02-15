@@ -26,13 +26,12 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Ace;
+import org.apache.jackrabbit.webdav.security.AclProperty.Ace;
 import org.apache.webdav.lib.Property;
-import org.apache.webdav.lib.properties.AclProperty;
+import org.apache.jackrabbit.webdav.security.AclProperty;
 import org.apache.webdav.lib.properties.PropertyFactory;
 import org.apache.webdav.lib.util.DOMUtils;
 import org.apache.webdav.lib.util.QName;
-import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
@@ -53,7 +52,7 @@ import org.w3c.dom.NodeList;
  * @author EdBindl
  * 
  */
-public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod {
+public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.PropFindMethod {
     private static final Log log = LogFactory
     	.getLog(PropFindMethod.class);
     private OutputsDOM propFindRequest;
@@ -73,10 +72,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
         }
     }
     
-    public PropFindMethod() {
-        super();
-    }
-    
+  
     public PropFindMethod(String path, Enumeration propertyNames) {
         super(path, propertyNames);
     }
@@ -129,7 +125,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
     /**
      * Generates a request body from the calendar query.
      */
-    protected String generateRequestBody() {
+    protected byte[] generateRequestBody() {
         Document doc = null;
         try {
             doc = propFindRequest.createNewDocument(XMLUtils
@@ -138,7 +134,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
             log.error("Error trying to create DOM from CalDAVPropfindRequest: ", domve);
             throw new RuntimeException(domve);
         }
-        return XMLUtils.toPrettyXML(doc);
+        return XMLUtils.toPrettyXML(doc).getBytes();
     }
 
 
@@ -208,10 +204,10 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
      * @param urlPath
      * @return AclProperty xml response or null if missing
      */
-    public AclProperty getAcl(String urlPath) {
+    public org.apache.jackrabbit.webdav.security.AclProperty getAcl(String urlPath) {
     	return (AclProperty) getWebDavProperty(urlPath, CalDAVConstants.QNAME_ACL);
     }
-    public Ace[] getAces(String urlPath) throws CalDAV4JException {
+    public org.apache.jackrabbit.webdav.security.AclProperty.Ace[] getAces(String urlPath) throws CalDAV4JException {
     	int status = -1;
     	AclProperty acls = (AclProperty) getWebDavProperty(urlPath, CalDAVConstants.QNAME_ACL);
     	if (acls != null) {
@@ -293,7 +289,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
         // Also accept OK sent by buggy servers in reply to a PROPFIND
         // or REPORT (Xythos, Catacomb, ...?).
         int statusCode = getStatusCode();
-        if (statusCode == WebdavStatus.SC_MULTI_STATUS) {
+        if (statusCode == CaldavStatus.SC_MULTI_STATUS) {
 
 
             Document rdoc = getResponseDocument();
@@ -323,7 +319,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
                     }
                 }
             }
-        } else if (statusCode == WebdavStatus.SC_CONFLICT || statusCode == WebdavStatus
+        } else if (statusCode == CaldavStatus.SC_CONFLICT || statusCode == CaldavStatus
                 .SC_FORBIDDEN){
             Document rdoc = getResponseDocument();
             Element errorElement = rdoc.getDocumentElement();

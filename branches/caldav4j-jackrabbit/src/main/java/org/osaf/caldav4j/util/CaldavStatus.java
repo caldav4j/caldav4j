@@ -1,12 +1,9 @@
 package org.osaf.caldav4j.util;
 
-import org.apache.webdav.lib.util.WebdavStatus;
+import org.apache.jackrabbit.webdav.DavServletResponse;;
 
 
 
-public class CaldavStatus extends WebdavStatus {
+public interface CaldavStatus extends DavServletResponse {
 
-	public CaldavStatus() {
-		super();
-	}
 }
