@@ -16,6 +16,7 @@
 
 package org.osaf.caldav4j.methods;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -53,12 +54,12 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
     public Calendar getResponseBodyAsCalendar()  throws
             ParserException, CalDAV4JException {
     	Calendar ret = null;
-        InputStream stream = null;
+    	BufferedInputStream stream = null;
         try {
 		    Header header = getResponseHeader(CalDAVConstants.HEADER_CONTENT_TYPE);
 		    String contentType = header.getValue();
 		    if (contentType.startsWith(CalDAVConstants.CONTENT_TYPE_CALENDAR)) {
-		        stream = getResponseBodyAsStream();
+		         stream = new BufferedInputStream(getResponseBodyAsStream());
 		        ret =  calendarBuilder.build(stream);
 		        return ret;		        
 		    }

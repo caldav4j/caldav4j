@@ -71,13 +71,11 @@ public class CalendarDataProperty extends BaseProperty {
 		//this fix the problem occurred when lines are breaked only with \n 
 		text=text.replaceAll("\n","\r\n").replaceAll("\r\r\n", "\r\n");
 		
-		// FIXME
 		
 //		Pattern noDayLight = Pattern.compile("BEGIN:VTIMEZONE.*END:VTIMEZONE", Pattern.DOTALL);
 //		Matcher m = noDayLight.matcher(text);
 //		text = m.replaceAll("");
 		StringReader stringReader = new StringReader(text);
-		//System.out.println(text); // FIXME debug
 		try {
 			calendar = getCalendarBuilderInstance().build(stringReader);
 			stringReader = null;
