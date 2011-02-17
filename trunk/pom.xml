@@ -113,21 +113,6 @@
   	<url>https://caldav4j.googlecode.com/svn/trunk</url>
   </scm>
   <build>
-    <testResources>
-        <testResource>
-            <directory>src/test/resources</directory>
-            <includes>
-                <include>ehcache.xml</include>
-                <include>log4j.xml</include>
-            </includes>
-        </testResource>
-        <testResource>
-            <directory>src/test/resources/icalendar</directory>
-            <includes>
-                <include>*.ics</include>
-            </includes>
-        </testResource>
-    </testResources>
     <pluginManagement>
     <plugins>
         <plugin>

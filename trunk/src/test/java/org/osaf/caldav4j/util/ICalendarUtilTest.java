@@ -36,7 +36,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 	public void setUp() throws Exception {
 		log.trace("setUp");
 		super.setUp();
-		calendarList.add("DAY-VTODO-123123.ics");
+		calendarList.add("icalendar/DAY-VTODO-123123.ics");
 		calendarList.add(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
 
 	}
@@ -104,7 +104,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 		//CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
 		//CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
 
-		Calendar strangeIcs =  this.parseICS("Recurrent_with_timezone.ics");
+		Calendar strangeIcs =  this.parseICS("icalendar/Recurrent_with_timezone.ics");
 		log.info(strangeIcs);
 	}
 
@@ -153,7 +153,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 	public void testSetCalendarUid() throws Exception {
 		// get a calendar from file  
 		// or create one
-		String resource = "Google_NOUID_Daily_NY_5pm.ics";
+		String resource = "icalendar/Google_NOUID_Daily_NY_5pm.ics";
 		String newUid = "newUid";
 
 		log.info("testing with: " + resource);
@@ -189,7 +189,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 	public void _testReplaceCalendarUid() throws Exception{
 		// get a calendar from file  
 		// or create one
-		String resource = "Google_Daily_NY_5pm.ics";
+		String resource = "icalendar/Google_Daily_NY_5pm.ics";
 		String newUid = "newUid";
 
 		log.info("testing with: " + resource);
