@@ -48,10 +48,10 @@
   </logger>
 
   <logger name="org.osaf">
-    <level value="TRACE"/>
+    <level value="INFO"/>
   </logger>
   <logger name="httpclient.wire">
-    <level value="DEBUG"/>
+    <level value="WARN"/>
   </logger>
   <root>
     <level value="WARN"/>
