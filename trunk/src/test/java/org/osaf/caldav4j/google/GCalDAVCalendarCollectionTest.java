@@ -24,6 +24,10 @@ import net.fortuna.ical4j.model.property.Uid;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVCalendarCollection;
 import org.osaf.caldav4j.CalDAVConstants;
@@ -36,9 +40,7 @@ import org.osaf.caldav4j.util.ICalendarUtils;
 
 
 public class GCalDAVCalendarCollectionTest extends BaseTestCase {
-    public GCalDAVCalendarCollectionTest(String method) {
-		super(method);
-	}
+
 
 	private static final Log log = LogFactory
             .getLog(GCalDAVCalendarCollectionTest.class);
@@ -55,6 +57,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     /**
      * put events on calendar
      */
+    @Before
     public void setUp() throws Exception {
         caldavCredential = new GCaldavCredential();
 
@@ -68,6 +71,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     /**
      * remove events from calendar
      */
+    @After
     public void tearDown() throws Exception {
         super.tearDown();
         
@@ -100,7 +104,8 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
      * test: get calendar by UID using REPORT, then checks if SUMMARY matches 
      * @throws Exception
      */
-    public void ko_testGetCalendar() throws Exception {
+    @Test // XXX this will probably fail
+    public void testGetCalendar() throws Exception {
         CalDAVCalendarCollection collection = createCalDAVCalendarCollection();
         Calendar calendar = null;
         try {
@@ -143,7 +148,8 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
      * retrieve calendar by /path/to/resource
      * @throws Exception
      */
-    public void ok_testGetCalendarByPath() throws Exception {
+    @Test
+    public void testGetCalendarByPath() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         
         log.info("GET "+ calendarCollection.getCalendarCollectionRoot()+ICS_DAILY_NY_5PM_UID+".ics");
@@ -176,7 +182,8 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
      * get VEVENT by date TODO
      * @throws Exception
      */
-    public void ok_testGetEventResources() throws Exception {
+    @Test
+    public void testGetEventResources() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         Date beginDate = ICalendarUtils.createDateTime(2008, 0, 1, null, true);
         Date endDate = ICalendarUtils.createDateTime(2008, 8, 1, null, true);
@@ -216,7 +223,9 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     /**
      * @throws Exception
      */
-    public void _donttestGetEventResourcesFloatingIssues() throws Exception {
+    @Test
+    @Ignore
+    public void testGetEventResourcesFloatingIssues() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
 
         // make sure our 7pm event gets returned
@@ -240,6 +249,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     /**
      * @throws Exception
      */
+    @Test
     public void testAddNewRemove() throws Exception {
         String newUid = "NEW_UID";
         String newEvent = "NEW_EVENT";
@@ -277,7 +287,8 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     /**
      * @throws Exception
      */
-    public void _testUpdateEvent() throws Exception {
+    @Test
+    public void testUpdateEvent() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
 
         Calendar calendar = calendarCollection.getCalendarForEventUID(
@@ -305,7 +316,8 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     /**
      * do a calendar-multiget with a valid event and an invalid one
      */
-    public void _testMultigetCalendar() throws Exception {
+    @Test
+    public void testMultigetCalendar() throws Exception {
     	CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
     	
     	final String baseUri = caldavCredential.protocol +"://" 
@@ -328,7 +340,9 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     /**
      * @throws Exception
      */
-    public void _testTicket() throws Exception {
+    @Test
+    @Ignore // google doesn't support Tickets
+    public void testTicket() throws Exception {
 
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
 

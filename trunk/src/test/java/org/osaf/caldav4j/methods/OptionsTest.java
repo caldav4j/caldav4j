@@ -1,14 +1,12 @@
 package org.osaf.caldav4j.methods;
 
-import java.io.IOException;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpException;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.CalDAVCalendarCollection;
-import static org.junit.Assert.*;
 
 public class OptionsTest extends BaseTestCase {
 

@@ -26,6 +26,10 @@ import net.sf.ehcache.event.CacheEventListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
@@ -40,9 +44,6 @@ import org.osaf.caldav4j.util.ICalendarUtils;
  * 
  */
 public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
-    public CalDAVCalendarCollectionWithCacheTest(String method) {
-		super(method);
-	}
 
 	private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";
 
@@ -109,6 +110,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
 
     public TestingCacheEventListener listener = null;
 
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         mkcalendar(COLLECTION_PATH);
@@ -136,6 +138,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
         ((EhCacheResourceCache) cache).setUidToHrefCache(uidToHrefCache);
     }
 
+    @After
     public void tearDown() throws Exception {
         CacheManager cacheManager = CacheManager.create();
         cacheManager.removeCache(UID_TO_HREF_CACHE);
@@ -148,6 +151,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
         del(COLLECTION_PATH);
     }
 
+    @Test
     public void testGetCalendar() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         Calendar calendar = null;
@@ -175,6 +179,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
         assertNotNull(calDAV4JException);
     }
 
+    @Test
     public void testGetCalendarByPath() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         Calendar calendar = null;
@@ -202,6 +207,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
         assertNotNull(calDAV4JException);
     }
 
+    @Test
     public void testGetEventResources() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         Date beginDate = ICalendarUtils.createDateTime(2006, 0, 1, null, true);
@@ -239,7 +245,9 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
     }
 
     // TODO wait on floating test until we can pass timezones
-    public void donttestGetEventResourcesFloatingIssues() throws Exception {
+    @Test
+    @Ignore
+    public void testGetEventResourcesFloatingIssues() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
 
         // make sure our 7pm event gets returned
@@ -260,6 +268,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
         assertFalse(hasEventWithUID(l, ICS_FLOATING_JAN2_7PM_UID));
     }
 
+    @Test
     public void testAddNewRemove() throws Exception {
         String newUid = "NEW_UID";
         String newEvent = "NEW_EVENT";
@@ -291,6 +300,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
         assertNull(calendar);
     }
 
+    @Test
     public void testUpdateEvent() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
 
@@ -320,6 +330,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
      * We want to make sure that the cache actually is being used!
      * 
      */
+    @Test
     public void testCacheGetsHit() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
 
