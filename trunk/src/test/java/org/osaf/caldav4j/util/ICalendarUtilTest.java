@@ -186,7 +186,8 @@ public class ICalendarUtilTest extends BaseTestCase{
 	/**
 	 * replace an uid to a Component from an one-component calendar
 	 */
-	public void _testReplaceCalendarUid() throws Exception{
+	@Test
+	public void testReplaceCalendarUid() throws Exception{
 		// get a calendar from file  
 		// or create one
 		String resource = "icalendar/Google_Daily_NY_5pm.ics";
