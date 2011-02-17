@@ -10,6 +10,8 @@ import net.fortuna.ical4j.model.component.VEvent;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.credential.GCaldavCredential;
@@ -20,12 +22,12 @@ import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
-public class PutGetTestGoogle extends BaseTestCase {
+public class GooglePutGetTest extends BaseTestCase {
 
-	private static final Log log = LogFactory.getLog(PutGetTestGoogle.class);
+	private static final Log log = LogFactory.getLog(GooglePutGetTest.class);
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
-    public PutGetTestGoogle() {
+    public GooglePutGetTest() {
 		super();
 	 caldavCredential = new GCaldavCredential();
 	}
@@ -33,12 +35,14 @@ public class PutGetTestGoogle extends BaseTestCase {
     
 
     
-    
+    @Before
     public void setUp() throws Exception {
         super.setUp();
+        // Google doesn't allow us to create collections
         // mkdir(COLLECTION_PATH);
     }
 
+    @After
     public void tearDown() throws Exception {
         super.tearDown();
         del(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);

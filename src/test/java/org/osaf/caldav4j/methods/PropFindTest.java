@@ -1,5 +1,8 @@
 package org.osaf.caldav4j.methods;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.Enumeration;
 
@@ -7,9 +10,6 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
-import org.osaf.caldav4j.model.response.Principal;
 import org.apache.webdav.lib.Ace;
 import org.apache.webdav.lib.BaseProperty;
 import org.apache.webdav.lib.Privilege;
@@ -18,17 +18,22 @@ import org.apache.webdav.lib.PropertyName;
 import org.apache.webdav.lib.methods.AclMethod;
 import org.apache.webdav.lib.properties.AclProperty;
 import org.apache.webdav.lib.util.DOMUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.model.request.CalendarDescription;
 import org.osaf.caldav4j.model.request.DisplayName;
 import org.osaf.caldav4j.model.request.PropProperty;
+import org.osaf.caldav4j.model.response.Principal;
 import org.osaf.caldav4j.model.util.PropertyFactory;
 import org.osaf.caldav4j.util.AceUtils;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import static org.junit.Assert.*;
 
 public class PropFindTest extends BaseTestCase {
 
@@ -38,11 +43,13 @@ public class PropFindTest extends BaseTestCase {
 	}
 	private static final Log log = LogFactory.getLog(PropFindTest.class);
 
+    @Before
 	public void setUp() throws Exception {
 		super.setUp();
 		mkcalendar(COLLECTION_PATH);
 	}
 
+    @After
 	public void tearDown() throws Exception {
 		super.tearDown();
 //		del(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
@@ -50,7 +57,9 @@ public class PropFindTest extends BaseTestCase {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void donttestGetAcl() throws CalDAV4JException {
+	@Test
+	@Ignore
+	public void testGetAcl() throws CalDAV4JException {
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
 
@@ -148,7 +157,10 @@ public class PropFindTest extends BaseTestCase {
 		}
 
 	}
-	public void donttestGetAcl_1() {
+	
+    @Test
+    @Ignore
+	public void testGetAcl_1() {
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
 

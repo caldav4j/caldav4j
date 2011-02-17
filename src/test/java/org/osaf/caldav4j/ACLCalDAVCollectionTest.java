@@ -6,16 +6,15 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.Ace;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 
-public class CalDAVCollectionTest_ACL extends BaseTestCase {
-	public CalDAVCollectionTest_ACL() {
-		super();
-	}
+public class ACLCalDAVCollectionTest extends BaseTestCase {
+
 
 	protected static final Log log = LogFactory
-	.getLog(CalDAVCollectionTest_ACL.class);
+	.getLog(ACLCalDAVCollectionTest.class);
 	
 	@Before
 	public void setUp() throws Exception {
@@ -65,12 +64,14 @@ public class CalDAVCollectionTest_ACL extends BaseTestCase {
 		log.info(aces);	
 	}
 	
-	// @Test TODO
+	@Test // TODO
+	@Ignore
 	public void setFolderAces() {
 		
 	}
 
-	// @Test TODO
+	@Test //t TODO
+	@Ignore
 	public void updateFolderAces() {
 		
 	}

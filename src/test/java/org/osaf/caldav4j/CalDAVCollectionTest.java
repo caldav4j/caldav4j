@@ -10,7 +10,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +36,7 @@ import org.apache.webdav.lib.Privilege;
 import org.apache.webdav.lib.methods.AclMethod;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
@@ -149,7 +149,9 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	//
 	// new tests for CalDAVCollection
 	//
-	public void _testAddDeleteComponent() {
+    @Test
+    @Ignore
+	public void testAddDeleteComponent() {
 		// add a VEVENT with resource=uid.ics
 		// check ETAGS in response
 
@@ -282,7 +284,9 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	/**
 	 * @throws Exception
 	 */
-	public void _testGetEventResourcesFloatingIssues() throws Exception {
+	@Test
+	@Ignore
+	public void testGetEventResourcesFloatingIssues() throws Exception {
 		CalDAVCollection calendarCollection = createCalDAVCollection();
 
 		// make sure our 7pm event gets returned

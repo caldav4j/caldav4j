@@ -17,6 +17,8 @@ import net.fortuna.ical4j.model.property.XProperty;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.methods.HttpClient;
@@ -28,10 +30,7 @@ import org.osaf.caldav4j.scheduling.util.ITipUtils;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class SchedulePostMethodTest extends BaseTestCase {
-	public SchedulePostMethodTest(String method) {
-		super(method);
-		// TODO Auto-generated constructor stub
-	}
+
 
 	private CalDAV4JScheduleMethodFactory scheduleMethodFactory = new CalDAV4JScheduleMethodFactory();
 
@@ -43,15 +42,17 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * create a simple meeting POSTing to /Outbox
 	 * and process a response
 	 */
-	public void _testSimpeMeetingInvite_Accept() {
+    @Test
+    @Ignore
+	public void testSimpeMeetingInvite_Accept() {
 
 
 		Calendar invite = this
-		.getCalendarResource("meeting_invitation.ics");
+		.getCalendarResource("scheduling/meeting_invitation.ics");
 		Uid myUid = new Uid(new DateTime().toString());
 		ICalendarUtils.addOrReplaceProperty(invite.getComponent(Component.VEVENT), myUid);
 		Calendar refreshEvent = this
-		.getCalendarResource("meeting_reply.ics");
+		.getCalendarResource("scheduling/meeting_reply.ics");
 		ICalendarUtils.addOrReplaceProperty(refreshEvent.getComponent(Component.VEVENT), myUid);
 
 		SchedulePostMethod request = scheduleMethodFactory.createSchedulePostMethod();
@@ -99,11 +100,13 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * POST a meeting in r@r.it Outbox using this user to provide invitation to g@r.it
 	 * @throws URISyntaxException 
 	 */
-	public void _testRealTimeScheduling_SimpleMeetingInvitation() throws URISyntaxException {
+    @Test
+    @Ignore
+	public void testRealTimeScheduling_SimpleMeetingInvitation() throws URISyntaxException {
 
 
 		Calendar invite = this
-		.getCalendarResource("meeting_invitation.ics");
+		.getCalendarResource("scheduling/meeting_invitation.ics");
 
 
 		// replace fields from template
@@ -150,11 +153,12 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * @throws HttpException 
 	 * @throws ParseException 
 	 */
+    @Test
 	public void testRealTimeScheduling_SimpleMeetingReply() 
 	throws URISyntaxException, HttpException, IOException, ParseException, CalDAV4JException
 	{
-		Calendar invite = this
-		.getCalendarResource("iCal-20081127-092400.ics");
+		Calendar invite = BaseTestCase
+		.getCalendarResource("scheduling/meeting_invitation.ics");
 
 		VEvent event = (VEvent) invite.getComponent(Component.VEVENT);
 
@@ -205,12 +209,14 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * POST a meeting in an user's inbox
 	 * @throws URISyntaxException 
 	 */
-	public void _testSimpleMeetingInvitation() throws URISyntaxException {
+    @Test
+    @Ignore
+	public void testSimpleMeetingInvitation() throws URISyntaxException {
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
 
 		Calendar invite = this
-		.getCalendarResource("meeting_invitation.ics");
+		.getCalendarResource("scheduling/meeting_invitation.ics");
 
 
 		VEvent event = (VEvent) invite.getComponent(Component.VEVENT);

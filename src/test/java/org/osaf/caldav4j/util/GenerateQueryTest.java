@@ -16,6 +16,8 @@ import net.fortuna.ical4j.model.DateTime;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
@@ -31,16 +33,13 @@ import org.w3c.dom.Document;
 
 public class GenerateQueryTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(PutGetTest.class);
-
-    public GenerateQueryTest() {
-		super();
-	}
  
-
+    @Before
     public void setUp() throws Exception {    	
         super.setUp();
     }
 
+    @After
     public void tearDown() throws Exception {
         super.tearDown();
 

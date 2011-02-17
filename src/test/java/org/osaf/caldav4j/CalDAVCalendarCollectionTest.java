@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.OptionsMethod;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
@@ -166,7 +167,9 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
     }
 
     // TODO wait on floating test until we can pass timezones
-    public void donttestGetEventResourcesFloatingIssues() throws Exception {
+    @Ignore
+    @Test
+    public void testGetEventResourcesFloatingIssues() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
 
         // make sure our 7pm event gets returned
