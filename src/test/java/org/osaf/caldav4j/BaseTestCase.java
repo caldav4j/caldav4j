@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 package org.osaf.caldav4j;
-import static org.junit.Assert.*;
-
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.Locale;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
@@ -35,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.DeleteMethod;
@@ -43,7 +36,6 @@ import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.util.UrlUtils;
-import org.junit.*;
 
 public abstract class BaseTestCase   implements TestConstants {
     protected static final Log log = LogFactory.getLog(BaseTestCase.class);

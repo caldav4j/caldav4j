@@ -49,13 +49,13 @@ public class OptionsTest extends BaseTestCase {
 				http.executeMethod(hostConfig,options);
 				int statusCode = options.getStatusCode();
 				if (statusCode == 200) {
-					System.out.println(options.getResponseHeader("Allow"));
+					log.info(options.getResponseHeader("Allow"));
 					for (Header h : options.getResponseHeaders("DAV")) {
 						if (h != null) {
 							 if (h.getValue().contains("calendar-access")) { 
-								 System.out.println(h);
+								 log.info(h);
 							 } else if (h.getValue().contains("calendar-schedule")) {
-								 System.out.println(h);
+								 log.info(h);
 							 } else {
 								 assertTrue(false);
 							 }

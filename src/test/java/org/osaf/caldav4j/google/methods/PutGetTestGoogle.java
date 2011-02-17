@@ -60,7 +60,7 @@ public class PutGetTestGoogle extends BaseTestCase {
         put.setRequestBody(cal);
         COLLECTION_PATH = COLLECTION_PATH.replaceAll("/+", "/");
         
-        System.out.println("putting " + COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
+        log.info("putting " + COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();

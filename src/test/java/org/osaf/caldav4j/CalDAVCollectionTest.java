@@ -3,7 +3,14 @@
  */
 package org.osaf.caldav4j;
 
-import java.text.ParseException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +46,6 @@ import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
-import static org.junit.Assert.*;
 
 public class CalDAVCollectionTest extends BaseTestCase {
 	public CalDAVCollectionTest() {
@@ -495,6 +501,12 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	}
 
 
+	@Test
+	public void getHref() {
+		CalDAVCollection calendarCollection = createCalDAVCollectionWithCache(); 
+		String ret = calendarCollection.getHref("PATH");
+		log.info(ret);
+	}
 	//
 	// private
 	//

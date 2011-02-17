@@ -13,23 +13,23 @@ public class CalendarDescriptionTest extends BaseTestCase {
 	@Test
 	public void testPrintCalendarDescription() {
 		CalendarDescription d = new CalendarDescription();
-		System.out.println(XMLUtils.prettyPrint(d)	);
+		log.info(XMLUtils.prettyPrint(d)	);
 		
 		d = new CalendarDescription("My Description");
-		System.out.println(XMLUtils.prettyPrint(d)	);
+		log.info(XMLUtils.prettyPrint(d)	);
 		
 		d = new CalendarDescription("My Description", "it");
-		System.out.println(XMLUtils.prettyPrint(d)	);
+		log.info(XMLUtils.prettyPrint(d)	);
 
 	}
 	
 	@Test
 	public void testPrintDisplayName() {
 		DisplayName d = new DisplayName();
-		System.out.println(XMLUtils.prettyPrint(d)	);
+		log.info(XMLUtils.prettyPrint(d)	);
 		
 		d = new DisplayName("My Description");
-		System.out.println(XMLUtils.prettyPrint(d)	);		
+		log.info(XMLUtils.prettyPrint(d)	);		
 
 	}
 }

@@ -106,7 +106,7 @@ public class FunTest extends BaseTestCase {
                 = recur.getDates(baseDate, startDate, endDate, Value.DATE_TIME);
             for (int x = 0; x < dateList.size(); x++){
                 DateTime d = (DateTime) dateList.get(x);
-                System.out.println(d);
+                log.info(d);
             }
         } catch (Exception e){
             throw new RuntimeException(e);
