@@ -25,7 +25,7 @@ public class ITipUtilsTest extends BaseTestCase {
 
 	// load a sample meeting request
 	Calendar inviteComplexWithTimezone = this
-	.getCalendarResource("meeting_invitation_1.ics");
+	.getCalendarResource("scheduling/meeting_invitation_1.ics");
 	
 	Attendee mySelf = null;
 	Attendee nobody = null;
