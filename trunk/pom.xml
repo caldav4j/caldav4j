@@ -79,7 +79,7 @@
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.6.2</version>
+      <version>2.9.1</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
@@ -103,7 +103,15 @@
             <scope>test</scope>
         </dependency>  
     </dependencies>
+  <description>The Caldav Java Library</description>
   <url>http://code.google.com/p/caldav4j/</url>
+  <issueManagement>
+  	<system>Google Code</system>
+  	<url>http://code.google.com/p/caldav4j/issues/list</url>
+  </issueManagement>
+  <scm>
+  	<url>https://caldav4j.googlecode.com/svn/trunk</url>
+  </scm>
   <build>
     <testResources>
         <testResource>
@@ -139,29 +147,45 @@
                 </excludes>
             </configuration>
         </plugin>
-     <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-source-plugin</artifactId>
-       <version>2.1.2</version>
-       <executions>
-         <execution>
-           <id>attach-sources</id>
-           <phase>verify</phase>
-           <goals>
-             <goal>jar-no-fork</goal>
-           </goals>
-         </execution>
-       </executions>
-     </plugin>
 
-     </plugins>
+    </plugins>
     </pluginManagement>
+    <plugins>
+    	<plugin>
+    		<groupId>org.apache.maven.plugins</groupId>
+    		<artifactId>maven-source-plugin</artifactId>
+    		<version>2.1.2</version>
+    		<executions>
+    			<execution>
+    				<id>attach-sources</id>
+    				<phase>install</phase>
+    				<goals>
+    					<goal>jar</goal>
+    				</goals>
+    			</execution>
+    		</executions>
+    	</plugin>
+    	<plugin>
+    		<groupId>org.apache.maven.plugins</groupId>
+    		<artifactId>maven-javadoc-plugin</artifactId>
+    		<version>2.7</version>
+    		<executions>
+    			<execution>
+    				<id>attach-javadocs</id>
+    				<phase>install</phase>
+    				<goals>
+    					<goal>jar</goal>
+    				</goals>
+    			</execution>
+    		</executions>
+    	</plugin>
+    </plugins>
   </build>
   <repositories>
       <repository>
           <id>caldav4j</id>
           <name>Caldav4j repos</name>
-          <url>http://caldav4j.googlecode.com/svn/trunk/maven/</url>
+          <url>http://caldav4j.googlecode.com/svn/maven/</url>
           <releases>
             <enabled>true</enabled>
           </releases>
@@ -194,12 +218,12 @@
       <repository>
           <id>local-m2</id>
           <name>local M2 Repository</name>
-          <url>file:///home/rpolli/workspace/caldav4j/maven</url>
+          <url>file:///home/rpolli/workspace/caldav4j-maven</url>
       </repository>
       <snapshotRepository>
           <id>local-m2</id>
           <name>local M2 Repository</name>
-          <url>file:///home/rpolli/workspace/caldav4j/maven</url>
+          <url>file:///home/rpolli/workspace/caldav4j-maven</url>
       </snapshotRepository>
   </distributionManagement>
 </project>
