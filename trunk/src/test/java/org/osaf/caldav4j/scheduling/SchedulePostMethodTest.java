@@ -61,9 +61,9 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		try {
 			http.executeMethod(request);
 			if (request.getStatusCode() != 200) {
-				System.out.println("error: " + request.getStatusText()); 
+				log.info("error: " + request.getStatusText()); 
 			}
-			System.out.println(request.getResponseBodyAsString());
+			log.info(request.getResponseBodyAsString());
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,9 +83,9 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		try {
 			http.executeMethod(refresh);
 			if (refresh.getStatusCode() != 200) {
-				System.out.println("error: " + refresh.getStatusText()); 
+				log.info("error: " + refresh.getStatusText()); 
 			}
-			System.out.println(refresh.getResponseBodyAsString());
+			log.info(refresh.getResponseBodyAsString());
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -130,9 +130,9 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		try {
 			http.executeMethod(request);
 			if (request.getStatusCode() != 200) {
-				System.out.println("error: " + request.getStatusText()); 
+				log.info("error: " + request.getStatusText()); 
 			}
-			System.out.println(request.getResponseBodyAsString());
+			log.info(request.getResponseBodyAsString());
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -167,7 +167,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 			Uid myUid = new Uid(new DateTime().toString() + j);
 			ICalendarUtils.addOrReplaceProperty(event, myUid);
 			// Create meeting in /calendar 
-			System.out.println("PUT...");
+			log.info("PUT...");
 
 			PutMethod request = methodFactory.createPutMethod();
 			request.setPath(caldavCredential.home + "/calendar/" + event.getUid().getValue() + ".ics");
@@ -176,15 +176,15 @@ public class SchedulePostMethodTest extends BaseTestCase {
 
 			http.executeMethod(request);
 			if (request.getStatusCode() != 200) {
-				System.out.println("error: " + request.getStatusText()); 
+				log.info("error: " + request.getStatusText()); 
 			}
-			System.out.println(request.getResponseBodyAsString());
+			log.info(request.getResponseBodyAsString());
 
 			// update event like a REPLY from robipolli@gmail.com
 			Calendar response = ITipUtils.ReplyInvitation(invite, new Attendee("mailto:robipolli@gmail.com"), PartStat.ACCEPTED);
 
 			// POST to /rtsvc a REPLY from GMAIL
-			System.out.println("REPLY...#" + j);
+			log.info("REPLY...#" + j);
 			PostMethod reply = methodFactory.createPostMethod();
 			reply.setPath(BEDEWORK_RTSVC_URL);
 			reply.setHostConfiguration(hostConfig);
@@ -194,9 +194,9 @@ public class SchedulePostMethodTest extends BaseTestCase {
 
 			http.executeMethod(reply);
 			if (request.getStatusCode() != 200) {
-				System.out.println("error: " + reply.getStatusText()); 
+				log.info("error: " + reply.getStatusText()); 
 			}
-			System.out.println(reply.getResponseBodyAsString());
+			log.info(reply.getResponseBodyAsString());
 		}
 
 	}
@@ -236,9 +236,9 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		try {
 			http.executeMethod(request);
 			if (request.getStatusCode() != 200) {
-				System.out.println("error: " + request.getStatusText()); 
+				log.info("error: " + request.getStatusText()); 
 			}
-			System.out.println(request.getResponseBodyAsString());
+			log.info(request.getResponseBodyAsString());
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

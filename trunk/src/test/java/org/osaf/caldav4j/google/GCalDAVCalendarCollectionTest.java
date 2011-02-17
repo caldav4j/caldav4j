@@ -107,7 +107,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
         	GenerateQuery gq = new GenerateQuery(null,
         			Component.VEVENT + "UID=="+ICS_DAILY_NY_5PM_UID );
 
-        	System.out.println(gq.prettyPrint());
+        	log.info(gq.prettyPrint());
             calendar = collection.getComponentByQuery(httpClient, 
 				            		Component.VEVENT,
 				            		gq.generate())
@@ -146,7 +146,7 @@ public class GCalDAVCalendarCollectionTest extends BaseTestCase {
     public void ok_testGetCalendarByPath() throws Exception {
         CalDAVCalendarCollection calendarCollection = createCalDAVCalendarCollection();
         
-        System.out.println("GET "+ calendarCollection.getCalendarCollectionRoot()+ICS_DAILY_NY_5PM_UID+".ics");
+        log.info("GET "+ calendarCollection.getCalendarCollectionRoot()+ICS_DAILY_NY_5PM_UID+".ics");
         Calendar calendar = null;
         try {
             calendar = calendarCollection.getCalendarByPath(httpClient,
