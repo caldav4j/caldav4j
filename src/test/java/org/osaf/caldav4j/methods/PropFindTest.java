@@ -214,9 +214,10 @@ public class PropFindTest extends BaseTestCase {
 	}
 	
 	/**
-	 * TODO this test will work only on bedework which has a set of permission set
 	 * @throws CalDAV4JException 
 	 */
+    // TODO: this test will work only on bedework which has a set of permission set
+    @Ignore
 	@Test
 	public void testNewPropfind() throws CalDAV4JException {
 		log.info("New Propfind");
