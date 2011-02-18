@@ -40,12 +40,12 @@ public class FunTest extends BaseTestCase {
         	e.printStackTrace();
         	log.warn("MKCAL not supported?");
 		}
-        put(ICS_DAILY_NY_5PM, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
-        put(ICS_ALL_DAY_JAN1, COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
-        put(ICS_NORMAL_PACIFIC_1PM, COLLECTION_PATH + "/"
+        put(ICS_DAILY_NY_5PM_PATH, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
+        put(ICS_ALL_DAY_JAN1_PATH, COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
+        put(ICS_NORMAL_PACIFIC_1PM_PATH, COLLECTION_PATH + "/"
                 + ICS_NORMAL_PACIFIC_1PM);
-        put(ICS_SINGLE_EVENT, COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
-        put(ICS_FLOATING_JAN2_7PM, COLLECTION_PATH + "/"
+        put(ICS_SINGLE_EVENT_PATH, COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
+        put(ICS_FLOATING_JAN2_7PM_PATH, COLLECTION_PATH + "/"
                 + ICS_FLOATING_JAN2_7PM);
     }
 

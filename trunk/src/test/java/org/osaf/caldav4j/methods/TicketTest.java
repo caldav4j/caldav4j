@@ -47,7 +47,7 @@ public class TicketTest extends BaseTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		mkcalendar(COLLECTION_PATH);
-		put(ICS_DAILY_NY_5PM, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
+		put(ICS_DAILY_NY_5PM_PATH, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
 	}
 
 	@Test
