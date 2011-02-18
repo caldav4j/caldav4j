@@ -19,6 +19,8 @@ import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
+// test resource missing and all test methods are currently ignored
+@Ignore
 public class ITipUtilsTest extends BaseTestCase {
 
 	private static final Log log = LogFactory.getLog(ITipUtilsTest.class);
