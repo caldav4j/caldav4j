@@ -67,12 +67,14 @@ import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.model.request.Comp;
 import org.osaf.caldav4j.model.request.CompFilter;
 import org.osaf.caldav4j.model.request.PropFilter;
+import org.osaf.caldav4j.model.request.PropProperty;
 import org.osaf.caldav4j.model.request.TextMatch;
 import org.osaf.caldav4j.model.request.TicketRequest;
 import org.osaf.caldav4j.model.request.TimeRange;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.model.response.TicketResponse;
+import org.osaf.caldav4j.model.util.PropertyFactory;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
@@ -501,22 +503,24 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	public List<String> getTicketsIDs(HttpClient httpClient, String relativePath)
 	throws CalDAV4JException, HttpException, IOException {
 
-		Vector<PropertyName> properties = new Vector<PropertyName>();
+		PropProperty propFind = PropertyFactory.createProperty(PropertyFactory.PROPFIND);
+		PropProperty properties = PropertyFactory.createProperty(PropertyFactory.PROP);
+		propFind.addChild(properties);
 
-		PropertyName ticketDiscoveryProperty = new PropertyName(CalDAVConstants.NS_XYTHOS,
-				CalDAVConstants.ELEM_TICKETDISCOVERY);
-		PropertyName ownerProperty = new PropertyName(CalDAVConstants.NS_DAV,
+		PropProperty ticketDiscoveryProperty = new PropProperty(CalDAVConstants.NS_XYTHOS,
+			CalDAVConstants.NS_QUAL_TICKET, CalDAVConstants.ELEM_TICKETDISCOVERY);
+		PropProperty ownerProperty = new PropProperty(CalDAVConstants.NS_DAV, CalDAVConstants.NS_QUAL_DAV,
 		"owner");
 
-		properties.add(ticketDiscoveryProperty);
-		properties.add(ownerProperty);
+		properties.addChild(ticketDiscoveryProperty);
+		properties.addChild(ownerProperty);
 
 		PropFindMethod propFindMethod = methodFactory.createPropFindMethod();
 
 		propFindMethod.setDepth(0);
 		propFindMethod.setType(0);
 		propFindMethod.setPath(getAbsolutePath(relativePath));
-		propFindMethod.setPropertyNames(properties.elements());
+		propFindMethod.setPropFindRequest(propFind);
 		httpClient.executeMethod(hostConfiguration, propFindMethod);
 
 		int statusCode = propFindMethod.getStatusCode();
