@@ -6,7 +6,4 @@ import org.apache.webdav.lib.util.WebdavStatus;
 
 public class CaldavStatus extends WebdavStatus {
 
-	public CaldavStatus() {
-		super();
-	}
 }

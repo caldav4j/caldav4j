@@ -96,11 +96,11 @@ public abstract class OutputsDOMBase implements OutputsDOM{
         /*
          * Add Attributes
          */
-        Map attributes = getAttributes();
+        Map<String, String> attributes = getAttributes();
         if (attributes != null && attributes.size() > 0) {
-            Iterator<Entry> i = attributes.entrySet().iterator();
+            Iterator<Entry<String, String>> i = attributes.entrySet().iterator();
             while (i.hasNext()) {
-                Entry entry = i.next();
+                Entry<String, String> entry = i.next();
                 e.setAttribute(entry.getKey().toString(), entry.getValue()
                         .toString());
             }
