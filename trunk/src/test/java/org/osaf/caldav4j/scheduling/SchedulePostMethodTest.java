@@ -29,6 +29,8 @@ import org.osaf.caldav4j.scheduling.methods.SchedulePostMethod;
 import org.osaf.caldav4j.scheduling.util.ITipUtils;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
+// TODO: work in progress
+@Ignore
 public class SchedulePostMethodTest extends BaseTestCase {
 
 
@@ -43,7 +45,6 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * and process a response
 	 */
     @Test
-    @Ignore
 	public void testSimpeMeetingInvite_Accept() {
 
 
@@ -101,7 +102,6 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * @throws URISyntaxException 
 	 */
     @Test
-    @Ignore
 	public void testRealTimeScheduling_SimpleMeetingInvitation() throws URISyntaxException {
 
 
@@ -210,7 +210,6 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * @throws URISyntaxException 
 	 */
     @Test
-    @Ignore
 	public void testSimpleMeetingInvitation() throws URISyntaxException {
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
