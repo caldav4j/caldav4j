@@ -26,7 +26,6 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.util.WebdavStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.osaf.caldav4j.credential.CaldavCredential;
@@ -35,6 +34,7 @@ import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
+import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
 
 public abstract class BaseTestCase   implements TestConstants {
@@ -150,13 +150,13 @@ public abstract class BaseTestCase   implements TestConstants {
             int statusCode =  put.getStatusCode();
             
             switch (statusCode) {
-			case WebdavStatus.SC_CREATED:
-			case WebdavStatus.SC_NO_CONTENT:
+			case CaldavStatus.SC_CREATED:
+			case CaldavStatus.SC_NO_CONTENT:
 				break;
-			case WebdavStatus.SC_PRECONDITION_FAILED:
+			case CaldavStatus.SC_PRECONDITION_FAILED:
 				log.error("item exists?");
 				break;
-			case WebdavStatus.SC_CONFLICT:
+			case CaldavStatus.SC_CONFLICT:
 				log.error("conflict: item still on server");
 			default:
                 log.error(put.getResponseBodyAsString());

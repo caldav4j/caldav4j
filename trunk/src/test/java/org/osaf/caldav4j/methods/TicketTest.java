@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.Property;
 import org.apache.webdav.lib.PropertyName;
-import org.apache.webdav.lib.util.WebdavStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -23,6 +22,7 @@ import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.request.TicketRequest;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.model.response.TicketResponse;
+import org.osaf.caldav4j.util.CaldavStatus;
 /**
  * 
  * @author EdBindl
@@ -76,7 +76,7 @@ public class TicketTest extends BaseTestCase {
 
 		int statusCode = mk.getStatusCode();
 
-		assertEquals("Status code for mk:", WebdavStatus.SC_OK, statusCode);
+		assertEquals("Status code for mk:", CaldavStatus.SC_OK, statusCode);
 
 		TicketResponse ticketResponse = mk.getResponseBodyAsTicketResponse();
 
@@ -101,7 +101,7 @@ public class TicketTest extends BaseTestCase {
 
 		statusCode = del.getStatusCode();
 
-		assertEquals("Status code for del:", WebdavStatus.SC_NO_CONTENT,
+		assertEquals("Status code for del:", CaldavStatus.SC_NO_CONTENT,
 				statusCode);
 
 		// Make sure the Ticket is gone
@@ -124,7 +124,7 @@ public class TicketTest extends BaseTestCase {
 		statusCode = propFindMethod.getStatusCode();
 
 		assertEquals("Status code for propFindMethod:",
-				WebdavStatus.SC_MULTI_STATUS, statusCode);
+				CaldavStatus.SC_MULTI_STATUS, statusCode);
 
 		// Check to make sure we get the right number of tickets
 
@@ -168,7 +168,7 @@ public class TicketTest extends BaseTestCase {
 		statusCode = propFindMethod.getStatusCode();
 
 		assertEquals("Status code for propFindMethod:",
-				WebdavStatus.SC_MULTI_STATUS, statusCode);
+				CaldavStatus.SC_MULTI_STATUS, statusCode);
 
 		// Check to make sure we get the right number of tickets
 
@@ -224,7 +224,7 @@ public class TicketTest extends BaseTestCase {
 
 		int statusCode = mk.getStatusCode();
 
-		assertEquals("Status code for mk:", WebdavStatus.SC_OK, statusCode);
+		assertEquals("Status code for mk:", CaldavStatus.SC_OK, statusCode);
 
 		TicketResponse ticketResponse = mk.getResponseBodyAsTicketResponse();
 
@@ -243,7 +243,7 @@ public class TicketTest extends BaseTestCase {
 		badhttp.executeMethod(hostConfig, get);
 		statusCode = get.getStatusCode();
 
-		assertEquals("Status code for get: ", WebdavStatus.SC_OK, statusCode);
+		assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
 
 		// Make sure the Get method works with Bad Username/Password and valid
 		// ticket in the URI
@@ -254,7 +254,7 @@ public class TicketTest extends BaseTestCase {
 		badhttp.executeMethod(hostConfig, get2);
 		statusCode = get2.getStatusCode();
 
-		assertEquals("Status code for get2: ", WebdavStatus.SC_OK, statusCode);
+		assertEquals("Status code for get2: ", CaldavStatus.SC_OK, statusCode);
 	}
 
 	@After
