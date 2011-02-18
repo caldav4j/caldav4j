@@ -62,7 +62,7 @@ public class PutGetTest extends BaseTestCase {
         HostConfiguration hostConfig = createHostConfiguration();
         String eventPath = String.format("%s/%s.ics", COLLECTION_PATH,BaseTestCase.ICS_DAILY_NY_5PM_UID);
 
-        Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM);
+        Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM_PATH);
         PutMethod put = methodFactory.createPutMethod();
         put.setIfNoneMatch(true);
         put.setAllEtags(true);
