@@ -16,6 +16,7 @@ import org.apache.webdav.lib.PropertyName;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
@@ -27,6 +28,8 @@ import org.osaf.caldav4j.model.response.TicketResponse;
  * @author EdBindl
  * 
  */
+// tickets are not currently supported
+@Ignore
 public class TicketTest extends BaseTestCase {
 
 	public static final Integer TEST_TIMEOUT = 3600;
