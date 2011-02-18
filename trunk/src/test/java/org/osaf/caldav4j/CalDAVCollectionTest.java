@@ -188,7 +188,9 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
 	}
 
-	@Test /// this is work in progress: if it fails, don't worry ;)
+	// TODO: this is work in progress; see issue 48
+	@Ignore
+	@Test
 	public void queryPartialCalendar() throws CalDAV4JException {
 		CalDAVCollection calendarCollection = createCalDAVCollection();
 		Calendar calendar = null;
