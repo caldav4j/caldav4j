@@ -39,6 +39,8 @@ import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 
+// TODO: migrate use of CalDAVCalendarCollection to CalDAVCollection
+@Ignore
 public class GCalDAVCalendarCollectionTest extends BaseTestCase {
 
 
