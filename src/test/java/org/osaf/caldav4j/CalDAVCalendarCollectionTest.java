@@ -300,6 +300,8 @@ public class CalDAVCalendarCollectionTest extends BaseTestCase {
 
     
     
+    // tickets are not currently supported
+    @Ignore
     @Test
     public void testTicket() throws Exception {
 
