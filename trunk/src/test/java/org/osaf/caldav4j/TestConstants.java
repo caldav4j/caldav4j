@@ -4,7 +4,10 @@ public interface TestConstants {
 
     public static final String CALDAV_SERVER_BAD_USERNAME = "IDONTEXIST";
 
-    public static final String ICS_DAILY_NY_5PM = "icalendar/Daily_NY_5pm.ics";
+    public static final String ICS_RESOURCE_PATH = "icalendar/";
+
+    public static final String ICS_DAILY_NY_5PM = "Daily_NY_5pm.ics";
+    public static final String ICS_DAILY_NY_5PM_PATH = ICS_RESOURCE_PATH + "Daily_NY_5pm.ics";
     public static final String ICS_DAILY_NY_5PM_UID = "DE916949-731D-4DAE-BA93-48A38B2B2030";
     public static final String ICS_DAILY_NY_5PM_SUMMARY = "Daily_NY_5pm";
 

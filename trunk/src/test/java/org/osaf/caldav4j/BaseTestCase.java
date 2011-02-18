@@ -151,16 +151,13 @@ public abstract class BaseTestCase   implements TestConstants {
             
             switch (statusCode) {
 			case WebdavStatus.SC_CREATED:
-				
-				break;
 			case WebdavStatus.SC_NO_CONTENT:
 				break;
 			case WebdavStatus.SC_PRECONDITION_FAILED:
 				log.error("item exists?");
 				break;
 			case WebdavStatus.SC_CONFLICT:
-				log.error("conflict: item still on server" + put.getResponseBodyAsString());
-				break;
+				log.error("conflict: item still on server");
 			default:
                 log.error(put.getResponseBodyAsString());
 				throw new Exception("trouble executing PUT of " +resourceFileName + "\nresponse:" + put.getResponseBodyAsString());
