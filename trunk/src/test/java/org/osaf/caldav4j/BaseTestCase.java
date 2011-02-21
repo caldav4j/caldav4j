@@ -27,6 +27,7 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
@@ -50,7 +51,7 @@ public abstract class BaseTestCase   implements TestConstants {
 
     @Before
     public void setUp() throws Exception {
-        COLLECTION_PATH = caldavCredential.home + caldavCredential.collection;
+        COLLECTION_PATH = UrlUtils.removeDoubleSlashes(caldavCredential.home + caldavCredential.collection);
         hostConfig = createHostConfiguration();
         testHttpClient  = createHttpClient();
         httpClient = createHttpClient();    	
@@ -120,6 +121,7 @@ public abstract class BaseTestCase   implements TestConstants {
         
         try {
             cal = cb.build(stream);
+            Assert.assertNotNull("Missing entry " + resourceName, cal);
         } catch (Exception e) {        	
             throw new RuntimeException("Problems opening file:" + resourceName + "\n" + e);
         }
