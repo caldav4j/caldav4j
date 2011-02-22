@@ -1,4 +1,5 @@
 #summary More info on building CalDAV4j
+#labels Phase-Deploy
 
 == Get Java 1.6 ==
 
@@ -21,8 +22,11 @@ mvn -Dmaven.test.skip=true package
 
 == Build With Tests ==
 
+Now Caldav4j uses a online caldav server for testing, so you can run your test easily.
+
 The reason I mentioned building without the tests first is because building with the tests is harder than it should be right now, but if you are developing CalDAV4j you should really be running the tests.
 
+To test against you favorite implementation, follow the steps:
    # Get a caldav server (Bedework, Chandler Server, ..)
       * [http://chandlerproject.org/Developers/DownloadChandlerServer Download] and install Chandler Server (aka Cosmo)
       * [http://www.bedework.org Download] and install Bedework
