@@ -1,5 +1,6 @@
 #summary Student Application Page
-If you want to apply to Google Summer of Code 2010 for Caldav4j you'll find this application template
+#labels Featured
+If you want to apply to Google Summer of Code 2011 for Caldav4j you'll find this application template
 
 Personal data:
  * Name, Surname, Country, Born
@@ -53,5 +54,3 @@ eventually ask there for help
  * Checkout and build caldav4j: if you
 succeed let us know on list!
  * search on wiki our slides and resources on caldav!
-
-
