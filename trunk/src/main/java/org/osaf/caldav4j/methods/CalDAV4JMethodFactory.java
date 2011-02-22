@@ -88,6 +88,12 @@ public class CalDAV4JMethodFactory {
         return reportMethod;
     }
     
+    public CalendarCalDAVReportMethod createCalendarCalDAVReportMethod(){
+    	CalendarCalDAVReportMethod reportMethod = new CalendarCalDAVReportMethod();
+    	reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
+    	return reportMethod;
+    }
+    
     public boolean isCalendarValidatingOutputter() {
         return validatingOutputter;
     }
