@@ -1,7 +1,7 @@
 #summary Google Summer of Code Ideas for caldav4j
 #labels Phase-Design
 
-||Caldav4j - the first java caldav library - is candidate to Google Summer of Code! Here you can see why to join and contribute with your ideas to this wonderful library! <wiki:toc max_depth="2" /> || [http://socghop.appspot.com/ http://code.google.com/images/2010soclogo.jpg] ||
+||Caldav4j - the first java caldav library - is candidate to Google Summer of Code! Here you can see why to join and contribute with your ideas to this wonderful library! <wiki:toc max_depth="2" /> || [http://socghop.appspot.com/ http://google-summer-of-code.googlecode.com/files/GSoC2011_190x127_px.jpg] ||
 
 
 = Why Caldav4j =
