@@ -1,4 +1,5 @@
 #summary Strategies to simplify the library
+#labels Phase-Design
 
 = Some hints to simplify the library =
 
@@ -13,3 +14,7 @@ A semplification could be to let CalDAVResource to be a subclass of Calendar
 
  == no custom queries in methods name ==
 All queries should be made via GenerateQuery
+
+ == Test refactoring ==
+ * enjoy annotations and parameterized test with Junit4
+ * create a testlist related to caldav rfc examples
