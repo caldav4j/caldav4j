@@ -47,7 +47,6 @@ http://android-platform.googlegroups.com/attach/5e699c57ad5cf04b/for-32-bit-comp
 To build the android emulator you must run make sdk too, not just make!
  * source build/envsetup.sh
  * lunch 1
- * make 
  * make sdk
 
  == Run the vanilla emulator ==
