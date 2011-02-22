@@ -30,6 +30,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.osaf.caldav4j.credential.CaldavCredential;
+import org.osaf.caldav4j.dialect.CalDavDialect;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.methods.HttpClient;
@@ -47,6 +48,7 @@ public abstract class BaseTestCase   implements TestConstants {
     protected CaldavCredential caldavCredential = new CaldavCredential();
     public  String COLLECTION_PATH;
     protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+	protected CalDavDialect caldavDialect;
 
 
     @Before

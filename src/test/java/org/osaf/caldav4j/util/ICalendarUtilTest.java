@@ -30,7 +30,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 	private static final Log log = LogFactory.getLog(PutGetTest.class);
 
 	// list of different components
-	private static List<String> calendarList = new ArrayList<String>();
+	private List<String> calendarList = new ArrayList<String>();
 
 	@Before
 	public void setUp() throws Exception {
