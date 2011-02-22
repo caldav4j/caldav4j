@@ -1,11 +1,20 @@
 #summary What's next for CalDAV4j?
+#labels Phase-Requirements
+
 
 for 0.7:
+ * free-busy support [done]
  * code refactoring [started]
  * fine-grained ACL (scheduling acls too) [started]
- * drop deprecated classes
+ * drop deprecated classes [started]
  * recurrent event support
- * bits of android
+ * bits of android [done]
+ * jackrabbit branch [started]
+
+future:
+ * full jackrabbit migration
+ * test jackrabbit with android
+ * scheduling support
 
 for 0.6
  * basic scheduling support 
