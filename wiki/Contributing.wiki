@@ -21,7 +21,9 @@ Contribute to caldav4j is easy. Follow these steps:
 = FAQ =
  
  Q: Can I contribute even if I'm not a professional developer (eg. a student)?
+
  A: Sure! You must follow the above step and be sure test cases run ok after the changes.
 
  Q: I'm a professional developer and I want to contribute without creating test case: can I have svn access?
+
  A: No, you can't :(
