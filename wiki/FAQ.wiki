@@ -4,15 +4,15 @@
 = Introduction =
 
 Please, please, please: if you have troubles, check this page carefully and remember:
- * caldav4j is tested against Bedework 3.4.1.1
+ * caldav4j is tested against 
+    * a public Cosmo / Chandler server
+    * Bedework 3.4.1.1
 
 tests ok against: bedework 3.5, davical (svn)
 
 almost working with: darwin calendar server (apple)
 
-issues with: Cosmo
-
- * caldav4j requires Java 1.6
+ * caldav4j requires Java 1.6, but recently we tested ok with 1.5 using xerces
  * caldav4j requires the jakarta-slide jar provided on this site
  * before submitting issues on list please, run junits
 
@@ -23,7 +23,7 @@ issues with: Cosmo
 == FAQ 0 ==
 Q: Can't download caldav4j 0.6+
 
-A: Use maven and add https://caldav4j.googlecode.com/svn/trunk/maven/ to your repos.
+A: Use maven and add https://caldav4j.googlecode.com/svn/maven/ to your repos.
 
 Q: Isn't maven a build tool? How can I use it for downloading?
 
@@ -63,7 +63,7 @@ A: Please check junits and code in [http://code.google.com/p/caldav4j/source/bro
 == FAQ 3 ==
 Q: I got some strange XML error/exception while running caldav4j
 
-A: use java 1.6
+A: use java 1.6 or test that you have a suitable version of xerces(2.7+)
 
 == FAQ 4 ==
 Q: caldav4j passes the test but won't work on my application
