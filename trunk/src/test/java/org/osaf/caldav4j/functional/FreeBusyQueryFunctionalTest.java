@@ -66,7 +66,7 @@ public class FreeBusyQueryFunctionalTest
 	
 	// constructors -----------------------------------------------------------
 	
-	public FreeBusyQueryFunctionalTest()
+	private FreeBusyQueryFunctionalTest()
 	{
 		// TODO: run test for all server implementations
 		this(new CaldavCredential(), new ChandlerCalDavDialect());

@@ -37,6 +37,7 @@ import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.support.HttpClientTestUtils;
 import org.osaf.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
+import org.osaf.caldav4j.util.UrlUtils;
 
 /**
  * Provides fixture support for CalDAV functional tests.
@@ -64,7 +65,7 @@ public class CalDavFixture
 		configure(httpClient, credential);
 		
 		methodFactory = new CalDAV4JMethodFactory();
-		collectionPath = credential.home + credential.collection;
+		collectionPath = UrlUtils.removeDoubleSlashes(credential.home + credential.collection);
 		deleteOnTearDownPaths = new ArrayList<String>();
 		
 		// make collection
