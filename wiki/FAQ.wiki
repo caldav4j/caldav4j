@@ -81,3 +81,8 @@ Q: how to submit new code?
 A: as caldav4j needs to be reliable, we'd like to have each class tested. So contributors need to write a test case (or a test class if it's not present) and then write the patch.
 The test class ensures the patch won't change the old behavior.
 *It's important not to refactor code when submitting patches, so that we can apply it easily an quickly*
+
+== FAQ 7 ==
+Q: can I use caldav4j on Android?
+
+A: yes. Samsung has written Caldav support for Android Calendar  using  caldav4j. You can get more info here: BuildAndroid
