@@ -56,4 +56,9 @@ public class ChandlerCalDavDialect implements CalDavDialect
 	{
 		return CalScale.GREGORIAN;
 	}
+
+	@Override
+	public boolean isCreateCollection() {
+		return true;
+	}
 }

@@ -78,8 +78,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		try {
 			mkcalendar(COLLECTION_PATH); 
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("MKCOL unsupported?", e);
+			log.info("MKCALENDAR unsupported?", e);
 		}
 		caldavPut(ICS_GOOGLE_DAILY_NY_5PM_PATH);
 		caldavPut(ICS_GOOGLE_ALL_DAY_JAN1_PATH);

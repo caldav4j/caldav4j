@@ -26,6 +26,7 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.webdav.lib.methods.MkcolMethod;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -195,6 +196,16 @@ public abstract class BaseTestCase   implements TestConstants {
         }
     }
     
+    
+    protected void mkcol(String path) {
+    	MkcolMethod mk = new MkcolMethod(path);
+        try {
+        	testHttpClient.executeMethod(hostConfig, mk);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+    }
 	/**
 	 * put an event on a caldav store using UID.ics
 	 */
