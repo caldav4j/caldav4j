@@ -30,6 +30,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VFreeBusy;
 import net.fortuna.ical4j.model.parameter.FbType;
 import net.fortuna.ical4j.model.property.FreeBusy;
+import net.fortuna.ical4j.model.property.Uid;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.junit.After;
@@ -44,6 +45,7 @@ import org.osaf.caldav4j.methods.CalendarCalDAVReportMethod;
 import org.osaf.caldav4j.model.request.FreeBusyQuery;
 import org.osaf.caldav4j.model.request.TimeRange;
 import org.osaf.caldav4j.support.CalendarBuilder;
+import org.osaf.caldav4j.util.ICalendarUtils;
 
 /**
  * Functional test for {@code FreeBusyQuery}.
@@ -84,7 +86,7 @@ public class FreeBusyQueryFunctionalTest
 	public void setUp() throws IOException
 	{
 		fixture = new CalDavFixture();
-		fixture.setUp(credential);
+		fixture.setUp(credential, dialect);
 		
 		builder = new CalendarBuilder(dialect);
 	}
@@ -106,13 +108,13 @@ public class FreeBusyQueryFunctionalTest
 
 		Calendar actual = fixture.executeMethod(HttpStatus.SC_OK, method, false, calendarReportCallback());
 		
-		assertEqualsIgnoringUidAndDtStamp(expected, actual);
+		assertEqualsIgnoringUidAndDtStampAndAttendee(expected, actual);
 	}
 	
 	@Test
 	public void freeBusyQueryReportWithEvent() throws Exception
 	{
-		fixture.putEvent("a", createEvent("20000107T000000Z", "P1D", "a"));
+		fixture.putEvent("a.ics", createEvent("a","20000107T000000Z", "P1D", "a"));
 		
 		CalendarCalDAVReportMethod method = createFreeBusyQueryMethod("", "20000101T000000Z", "20000201T000000Z");
 		
@@ -121,14 +123,17 @@ public class FreeBusyQueryFunctionalTest
 		
 		Calendar actual = fixture.executeMethod(HttpStatus.SC_OK, method, false, calendarReportCallback());
 		
-		assertEqualsIgnoringUidAndDtStamp(expected, actual);
+		assertEqualsIgnoringUidAndDtStampAndAttendee(expected, actual);
 	}
 	
 	// private methods --------------------------------------------------------
 	
-	private static VEvent createEvent(String start, String duration, String summary) throws ParseException
+	private static VEvent createEvent(String uid, String start, String duration, String summary) throws ParseException
 	{
-		return new VEvent(new DateTime(start), new Dur(duration), summary);
+		
+		VEvent e = new VEvent(new DateTime(start), new Dur(duration), summary);
+		ICalendarUtils.addOrReplaceProperty(e, new Uid(uid));
+		return  e;
 	}
 	
 	private CalendarCalDAVReportMethod createFreeBusyQueryMethod(String relativePath, String rangeStart,
@@ -168,5 +173,9 @@ public class FreeBusyQueryFunctionalTest
 	private static void assertEqualsIgnoringUidAndDtStamp(Calendar expected, Calendar actual)
 	{
 		assertEqualsIgnoring(expected, actual, Property.UID, Property.DTSTAMP);
+	}
+	private static void assertEqualsIgnoringUidAndDtStampAndAttendee(Calendar expected, Calendar actual)
+	{
+		assertEqualsIgnoring(expected, actual, Property.UID, Property.DTSTAMP, Property.ATTENDEE);
 	}
 }

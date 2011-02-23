@@ -29,4 +29,6 @@ public interface CalDavDialect
 	ProdId getProdId();
 	
 	CalScale getDefaultCalScale();
+	
+	boolean isCreateCollection();
 }

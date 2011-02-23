@@ -30,7 +30,9 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.webdav.lib.methods.MkcolMethod;
 import org.osaf.caldav4j.credential.CaldavCredential;
+import org.osaf.caldav4j.dialect.CalDavDialect;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
@@ -57,9 +59,11 @@ public class CalDavFixture
 	
 	private List<String> deleteOnTearDownPaths;
 	
+	private CalDavDialect dialect;
+	
 	// public methods ---------------------------------------------------------
 	
-	public void setUp(CaldavCredential credential) throws IOException
+	public void setUp(CaldavCredential credential, CalDavDialect dialect) throws IOException
 	{
 		httpClient = new HttpClient();
 		configure(httpClient, credential);
@@ -67,9 +71,12 @@ public class CalDavFixture
 		methodFactory = new CalDAV4JMethodFactory();
 		collectionPath = UrlUtils.removeDoubleSlashes(credential.home + credential.collection);
 		deleteOnTearDownPaths = new ArrayList<String>();
-		
-		// make collection
-		makeCalendar("");
+		this.dialect = dialect;
+
+		// eventually make collection
+		if (getDialect() != null && getDialect().isCreateCollection()) {
+			makeCalendar("");
+		}
 	}
 	
 	public void tearDown() throws IOException
@@ -91,7 +98,12 @@ public class CalDavFixture
 
 		executeMethod(HttpStatus.SC_CREATED, method, true);
 	}
-	
+	public void makeCollection(String relativePath) throws IOException
+	{
+		MkcolMethod method = new MkcolMethod(UrlUtils.removeDoubleSlashes(relativePath));
+
+		executeMethod(HttpStatus.SC_CREATED, method, true);
+	}
 	public void putEvent(String relativePath, VEvent event) throws IOException
 	{
 		PutMethod method = methodFactory.createPutMethod();
@@ -142,5 +154,13 @@ public class CalDavFixture
 		httpClient.getState().setCredentials(AuthScope.ANY, httpCredentials);
 		
 		httpClient.getParams().setAuthenticationPreemptive(true);
+	}
+
+	public void setDialect(CalDavDialect dialect) {
+		this.dialect = dialect;
+	}
+
+	public CalDavDialect getDialect() {
+		return dialect;
 	}
 }

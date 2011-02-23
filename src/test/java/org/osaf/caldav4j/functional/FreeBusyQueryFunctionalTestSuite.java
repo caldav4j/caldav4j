@@ -2,8 +2,9 @@ package org.osaf.caldav4j.functional;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.runners.Parameterized;
+
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.osaf.caldav4j.credential.BedeworkCaldavCredential;
 import org.osaf.caldav4j.credential.CaldavCredential;
@@ -21,8 +22,11 @@ public class FreeBusyQueryFunctionalTestSuite extends FreeBusyQueryFunctionalTes
 	@Parameters
 	public static Collection<Object[]> getCaldavCredentials() {
 		return Arrays.asList(new Object[][] {
-			//	{new BedeworkCaldavCredential(), new BedeworkCalDavDialect()},
 				{new CaldavCredential(), new ChandlerCalDavDialect()}
+				// ,{new BedeworkCaldavCredential(), new BedeworkCalDavDialect()}
+				// TODO Google doesn't support FB
+				// , {new GCaldavCredential(), new GoogleCalDavDialect()} 
+
 		});
 	}
 

@@ -19,20 +19,20 @@ import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
 
 /**
- * A {@code CalDavDialect} for Bedework CalDAV server.
+ * A {@code CalDavDialect} for Google CalDAV server.
  * 
  * @author <a href="mailto:robipolli@gmail.com">Roberto Polli</a>
  * @version
  */
-public class BedeworkCalDavDialect implements CalDavDialect
+public class GoogleCalDavDialect implements CalDavDialect
 {
 	// constants --------------------------------------------------------------
 	
-	private static final String PROD_ID_VALUE = "BedeWork V3.4";
+	private static final String PROD_ID_VALUE = "-//Google Inc//Google Calendar 70.9054//EN";
 	
 	// constructors -----------------------------------------------------------
 	
-	public BedeworkCalDavDialect()
+	public GoogleCalDavDialect()
 	{
 		// CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
 	}
@@ -52,7 +52,7 @@ public class BedeworkCalDavDialect implements CalDavDialect
 	 */
 	public CalScale getDefaultCalScale()
 	{
-		return null;
+		return CalScale.GREGORIAN;
 	}
 
 	@Override
