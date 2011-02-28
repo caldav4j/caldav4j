@@ -46,7 +46,8 @@ import org.w3c.dom.Document;
  *
  */
 public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements DepthSupport, CalDAVConstants {
-    private static final Log log = LogFactory
+    private static final String DEPTH_S = "Depth";
+	private static final Log log = LogFactory
         .getLog(CalDAVReportMethod.class);
     private CalendarBuilder calendarBuilder = null;
 
@@ -116,13 +117,13 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements D
 
         switch (depth) {
         case DEPTH_0:
-            super.setRequestHeader("Depth", "0");
+            super.setRequestHeader(DEPTH_S, "0");
             break;
         case DEPTH_1:
-            super.setRequestHeader("Depth", "1");
+            super.setRequestHeader(DEPTH_S, "1");
             break;
         case DEPTH_INFINITY:
-            super.setRequestHeader("Depth", CalDAVConstants.INFINITY_STRING);
+            super.setRequestHeader(DEPTH_S, CalDAVConstants.INFINITY_STRING);
             break;
         }
 

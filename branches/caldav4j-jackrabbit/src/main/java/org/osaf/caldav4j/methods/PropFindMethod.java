@@ -58,20 +58,6 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
     private OutputsDOM propFindRequest;
 
 
-    /**
-     * Registers the TicketDiscoveryProperty with the PropertyFactory
-     */
-    static {
-        try {
-            PropertyFactory.register(CalDAVConstants.NS_XYTHOS,
-                    CalDAVConstants.ELEM_TICKETDISCOVERY,
-                    TicketDiscoveryProperty.class);
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    "Could not register TicketDiscoveryProperty!", e);
-        }
-    }
-    
   
     public PropFindMethod(String path, Enumeration propertyNames) {
         super(path, propertyNames);
@@ -174,13 +160,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
         
     }
     
-    static {
-        errorMap = new HashMap<QName, Error>();
-        for (Error error : Error.values()) {
-            errorMap.put(new QName(error.namespaceURI(), error.elementName()),
-                    error);
-        }
-    }
+
     
     public static final String ELEMENT_ERROR ="error";
     
@@ -204,10 +184,10 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
      * @param urlPath
      * @return AclProperty xml response or null if missing
      */
-    public org.apache.jackrabbit.webdav.security.AclProperty getAcl(String urlPath) {
+    public AclProperty getAcl(String urlPath) {
     	return (AclProperty) getWebDavProperty(urlPath, CalDAVConstants.QNAME_ACL);
     }
-    public org.apache.jackrabbit.webdav.security.AclProperty.Ace[] getAces(String urlPath) throws CalDAV4JException {
+    public AclProperty.Ace[] getAces(String urlPath) throws CalDAV4JException {
     	int status = -1;
     	AclProperty acls = (AclProperty) getWebDavProperty(urlPath, CalDAVConstants.QNAME_ACL);
     	if (acls != null) {

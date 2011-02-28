@@ -17,9 +17,11 @@
 package org.osaf.caldav4j;
 
  
+import org.apache.jackrabbit.webdav.DavConstants;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.osaf.caldav4j.model.request.PropProperty;
 
-public interface CalDAVConstants {
+public interface CalDAVConstants extends DavConstants {
     
     public static final String TICKET_HEADER = "Ticket";
 
@@ -36,6 +38,8 @@ public interface CalDAVConstants {
     public static final String NS_QUAL_CALDAV = "C";
     public static final String NS_XYTHOS = "http://www.xythos.com/namespaces/StorageServer";
     public static final String NS_QUAL_TICKET = "ticket";
+    public static final Namespace NAMESPACE_CALDAV = Namespace.getNamespace(
+    		NS_QUAL_CALDAV, NS_CALDAV);
 
 
     public static final String PROC_ID_DEFAULT =  "-//OSAF//NONSGML CalDAV4j Client//EN";

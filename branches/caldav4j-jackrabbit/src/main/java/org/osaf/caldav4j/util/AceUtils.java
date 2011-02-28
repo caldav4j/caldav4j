@@ -2,7 +2,7 @@ package org.osaf.caldav4j.util;
 
 import java.util.Enumeration;
 
-import org.apache.webdav.lib.Ace;
+import org.apache.jackrabbit.webdav.security.AclProperty.Ace;
 import org.apache.webdav.lib.Privilege;
 import org.osaf.caldav4j.model.response.Principal;
 

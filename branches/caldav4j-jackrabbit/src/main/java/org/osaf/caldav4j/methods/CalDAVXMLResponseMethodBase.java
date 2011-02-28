@@ -3,6 +3,7 @@ package org.osaf.caldav4j.methods;
 import static org.osaf.caldav4j.CalDAVConstants.NS_CALDAV;
 import static org.osaf.caldav4j.CalDAVConstants.NS_DAV;
 
+import java.net.ResponseCache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -12,10 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.jackrabbit.webdav.DavResourceIteratorImpl;
+import org.apache.jackrabbit.webdav.MultiStatus;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
+import org.apache.jackrabbit.webdav.WebdavResponseImpl;
 import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.apache.webdav.lib.methods.XMLResponseMethodBase;
 import org.apache.webdav.lib.util.DOMUtils;
-import org.apache.webdav.lib.util.QName;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.util.CaldavStatus;
@@ -31,15 +36,14 @@ import org.w3c.dom.NodeList;
  * @author rpolli
  *
  */
-public abstract class CalDAVXMLResponseMethodBase extends DavMethodBase{
-	public CalDAVXMLResponseMethodBase(String uri) {
-		super(uri);
-		// TODO Auto-generated constructor stub
-	}
+public abstract class CalDAVXMLResponseMethodBase extends WebdavResponseImpl{
+
+
+
 	private Vector<CalDAVResponse> responseHashtable = null;
-	private static Map<QName, Error> errorMap = null;
+	private static Map<Namespace, Error> errorMap = null;
 	private Error error = null;
-	//private Collection<?> responseURLs = null;
+	private Vector<String> responseURLs = null;
 	public enum ErrorType{PRECONDITION, POSTCONDITON}
 
 	/**
@@ -69,9 +73,9 @@ public abstract class CalDAVXMLResponseMethodBase extends DavMethodBase{
 	}
 
 	static {
-		errorMap = new HashMap<QName, Error>();
+		errorMap = new HashMap<Namespace, Error>();
 		for (Error error : Error.values()) {
-			errorMap.put(new QName(error.namespaceURI(), error.elementName()),
+			errorMap.put(Namespace.getNamespace(error.namespaceURI(), error.elementName()),
 					error);
 		}
 	}
@@ -93,7 +97,7 @@ public abstract class CalDAVXMLResponseMethodBase extends DavMethodBase{
 	}
 
 	protected Vector<CalDAVResponse> getResponseVector() {
-		checkUsed();
+		//checkUsed();
 		if (responseHashtable == null) {
 			initHashtable();
 		}
@@ -105,7 +109,7 @@ public abstract class CalDAVXMLResponseMethodBase extends DavMethodBase{
 	}
 	
 	protected Vector<String> getResponseURLs() {
-		checkUsed();
+		//checkUsed();
 		if (responseHashtable == null) {
 			initHashtable();
 		}
@@ -125,7 +129,7 @@ public abstract class CalDAVXMLResponseMethodBase extends DavMethodBase{
 		Document rdoc = null;
 		// Also accept OK sent by buggy servers in reply to a PROPFIND
 		// or REPORT (Xythos, Catacomb, ...?).
-		int statusCode = getStatusCode();
+		int statusCode = super.get;
 		switch(statusCode) {
 			case CaldavStatus.SC_MULTI_STATUS:
 				rdoc = getResponseDocument();
@@ -164,8 +168,11 @@ public abstract class CalDAVXMLResponseMethodBase extends DavMethodBase{
 				if (!errorElement.getNamespaceURI().equals(NS_DAV)
 						|| !errorElement.getLocalName().equals(ELEMENT_ERROR)) {
 					Node condition = errorElement.getChildNodes().item(0);
-					error = errorMap.get(new QName(condition.getNamespaceURI(),
-							condition.getLocalName()));
+					error = errorMap.get(
+							Namespace.getNamespace(
+									condition.getLocalName(),condition.getNamespaceURI()
+									)
+							);
 				}
 				break;
 			default:
