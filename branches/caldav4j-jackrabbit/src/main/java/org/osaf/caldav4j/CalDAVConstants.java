@@ -17,11 +17,11 @@
 package org.osaf.caldav4j;
 
  
-import org.apache.jackrabbit.webdav.DavConstants;
-import org.apache.jackrabbit.webdav.xml.Namespace;
+//import org.apache.webdav.lib.util.QName;
+
 import org.osaf.caldav4j.model.request.PropProperty;
 
-public interface CalDAVConstants extends DavConstants {
+public interface CalDAVConstants {
     
     public static final String TICKET_HEADER = "Ticket";
 
@@ -38,8 +38,6 @@ public interface CalDAVConstants extends DavConstants {
     public static final String NS_QUAL_CALDAV = "C";
     public static final String NS_XYTHOS = "http://www.xythos.com/namespaces/StorageServer";
     public static final String NS_QUAL_TICKET = "ticket";
-    public static final Namespace NAMESPACE_CALDAV = Namespace.getNamespace(
-    		NS_QUAL_CALDAV, NS_CALDAV);
 
 
     public static final String PROC_ID_DEFAULT =  "-//OSAF//NONSGML CalDAV4j Client//EN";
@@ -102,10 +100,10 @@ public interface CalDAVConstants extends DavConstants {
 	public static final PropProperty PROP_ALLPROP = new PropProperty(NS_DAV,NS_QUAL_DAV, ELEM_ALLPROP);
 
 	// response tag
-	/*
-    public static final QName QNAME_GETETAG = new QName(NS_DAV, ELEM_GETETAG);
-	public static final QName QNAME_DISPLAYNAME = new QName(NS_DAV, DAV_DISPLAYNAME);
-	public static final QName QNAME_CALENDAR_DESCRIPTION = new QName(NS_CALDAV,CALDAV_CALENDAR_DESCRIPTION);
-	public static final QName QNAME_ACL = new QName(NS_DAV, "acl");
-	*/
+
+//    public static final QName QNAME_GETETAG = new QName(NS_DAV, ELEM_GETETAG);
+//	public static final QName QNAME_DISPLAYNAME = new QName(NS_DAV, DAV_DISPLAYNAME);
+//	public static final QName QNAME_CALENDAR_DESCRIPTION = new QName(NS_CALDAV,CALDAV_CALENDAR_DESCRIPTION);
+//	public static final QName QNAME_ACL = new QName(NS_DAV, "acl");
+
 }

@@ -16,12 +16,10 @@
 package org.osaf.caldav4j.methods;
 
 import java.io.IOException;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
-import org.apache.webdav.lib.methods.HttpRequestBodyMethodBase;
 import org.osaf.caldav4j.CalDAVConstants;
 
 /**
@@ -30,15 +28,14 @@ import org.osaf.caldav4j.CalDAVConstants;
  * @author EdBindl
  * 
  */
-public class DelTicketMethod extends HttpRequestBodyMethodBase {
+public class DelTicketMethod extends org.apache.jackrabbit.webdav.client.methods.DeleteMethod {
 
 	private String ticket = null;
 
-	public DelTicketMethod() {
 
-	}
 
 	public DelTicketMethod(String path, String ticket) {
+	   super(path);
 		this.ticket = ticket;
 		setPath(path);
 	}

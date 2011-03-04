@@ -17,18 +17,23 @@
 package org.osaf.caldav4j.methods;
 
 import java.io.IOException;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
-
 import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.methods.DepthSupport;
+import org.apache.jackrabbit.webdav.MultiStatus;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
+import org.apache.jackrabbit.webdav.property.DavProperty;
+import org.apache.jackrabbit.webdav.property.DavPropertySet;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
+import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
@@ -45,9 +50,8 @@ import org.w3c.dom.Document;
  * @author robipolli@gmail.com
  *
  */
-public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements DepthSupport, CalDAVConstants {
-    private static final String DEPTH_S = "Depth";
-	private static final Log log = LogFactory
+public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements CalDAVConstants {
+    private static final Log log = LogFactory
         .getLog(CalDAVReportMethod.class);
     private CalendarBuilder calendarBuilder = null;
 
@@ -64,14 +68,10 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements D
     
     private int depth = DEPTH_1;
     
-    protected CalDAVReportMethod() {
-
+    protected CalDAVReportMethod(String path) {
+       super(UrlUtils.removeDoubleSlashes(path));
     }
 
-    protected CalDAVReportMethod(String path, CalDAVReportRequest reportRequest) {
-        this.reportRequest = reportRequest;
-        setPath(path);
-    }
 
     /**
      * Depth setter.
@@ -111,31 +111,35 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements D
      * @param conn The connection being used to make the request.
      */
     public void addRequestHeaders(HttpState state, HttpConnection conn)
-    throws IOException, HttpException {
-
+    throws IOException, HttpException 
+    {
+       //first add headers generate RequestEntity or 
+       //addContentLengthRequestHeader() will mess up things > result "400 Bad Request"
+       //can not override generateRequestBody(), because called to often
+        setRequestEntity(new ByteArrayRequestEntity(generateRequestBytes()));
         super.addRequestHeaders(state, conn);
 
         switch (depth) {
         case DEPTH_0:
-            super.setRequestHeader(DEPTH_S, "0");
+            super.setRequestHeader("Depth", "0");
             break;
         case DEPTH_1:
-            super.setRequestHeader(DEPTH_S, "1");
+            super.setRequestHeader("Depth", "1");
             break;
         case DEPTH_INFINITY:
-            super.setRequestHeader(DEPTH_S, CalDAVConstants.INFINITY_STRING);
+            super.setRequestHeader("Depth", CalDAVConstants.INFINITY_STRING);
             break;
         }
 
-        if (getRequestHeader(HEADER_CONTENT_TYPE) == null) {
-        	addRequestHeader(HEADER_CONTENT_TYPE,CONTENT_TYPE_TEXT_XML);
+        if (getRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE) == null) {
+        	addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE,CONTENT_TYPE_TEXT_XML);
         }
     }
 
     /**
      * Generates a request body from the calendar query.
      */
-    protected String generateRequestBody() {
+    protected byte[] generateRequestBytes() {
         Document doc = null;
         try {
             doc = reportRequest.createNewDocument(XMLUtils
@@ -144,11 +148,39 @@ public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements D
             log.error("Error trying to create DOM from CalDAVReportRequest: ", domve);
             throw new RuntimeException(domve);
         }
-        return XMLUtils.toPrettyXML(doc);
+        String ret = XMLUtils.toPrettyXML(doc);
+        log.info(ret);
+
+       return ret.getBytes();
     }
     
     // remove double slashes
     public void setPath(String path) {
     	super.setPath(UrlUtils.removeDoubleSlashes(path));
     }
+
+   @Override
+   protected boolean isSuccess(int statusCode) {
+      return true;
+   }
+   
+   @Override
+   protected void processMultiStatusBody(MultiStatus multiStatus, HttpState httpState, HttpConnection httpConnection) {
+      init();
+        for (MultiStatusResponse response : multiStatus.getResponses()){
+           responseURLs.add( response.getHref());
+   
+           int status = HttpStatus.SC_OK;
+           DavPropertySet set =response.getProperties(status);
+           if(set ==null)continue;
+           DavProperty<?> dp=set.get(CalDAVConstants.CALDAV_CALENDAR_DATA,
+                 Namespace.getNamespace(CalDAVConstants.NS_QUAL_CALDAV, CalDAVConstants.NS_CALDAV));
+           if(dp ==null)continue;
+           Object  caldata = dp.getValue();
+          if(caldata ==null)continue;
+           responseTable.add(new CalDAVResponse((String)caldata));
+        }
+      
+      
+   }
 }

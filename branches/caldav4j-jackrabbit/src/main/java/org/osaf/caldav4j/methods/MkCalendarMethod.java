@@ -18,7 +18,7 @@ package org.osaf.caldav4j.methods;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalendarDescription;
@@ -28,8 +28,6 @@ import org.osaf.caldav4j.model.request.Prop;
 import org.osaf.caldav4j.model.request.PropProperty;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
-
-import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;;
 
 public class MkCalendarMethod extends DavMethodBase{
     

@@ -18,19 +18,18 @@ package org.osaf.caldav4j.methods;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.methods.HttpRequestBodyMethodBase;
-import org.apache.webdav.lib.util.WebdavStatus;
+import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
@@ -48,7 +47,7 @@ import org.xml.sax.SAXException;
  * @author EdBindl
  * 
  */
-public class MkTicketMethod extends HttpRequestBodyMethodBase {
+public class MkTicketMethod extends DavMethodBase{
     private static final Log log = LogFactory.getLog(CalDAVReportMethod.class);
 
     private TicketRequest ticketRequest;
@@ -59,16 +58,13 @@ public class MkTicketMethod extends HttpRequestBodyMethodBase {
 
     protected DocumentBuilder builder = null;
 
-    public MkTicketMethod(){
-        
-    }
-    
     /**
      * 
      * @param path
      * @param ticketRequest
      */
     public MkTicketMethod(String path, TicketRequest ticketRequest) {
+       super(path);
         this.ticketRequest = ticketRequest;
         setPath(path);
     }
@@ -91,11 +87,11 @@ public class MkTicketMethod extends HttpRequestBodyMethodBase {
 
     /**
      * Creates a DOM Representation of the TicketRequest, turns into XML and
-     * returns it in a string
+     * returns it in a bytes
      * 
      * @return
      */
-    protected String generateRequestBody() {
+    protected byte[] generateRequestBytes() {
         Document doc = null;
         try {
             doc = ticketRequest.createNewDocument(XMLUtils
@@ -107,7 +103,7 @@ public class MkTicketMethod extends HttpRequestBodyMethodBase {
             throw new RuntimeException(domve);
         }
 
-        return XMLUtils.toPrettyXML(doc);
+        return XMLUtils.toPrettyXML(doc).getBytes();
     }
 
     /**
@@ -159,7 +155,7 @@ public class MkTicketMethod extends HttpRequestBodyMethodBase {
 
         int statusCode = getStatusCode();
 
-        if (WebdavStatus.SC_OK == statusCode) {
+        if (HttpStatus.SC_OK == statusCode) {
             Element docElement = this.responseDocument.getDocumentElement();
 
             TicketResponse tr = XMLUtils
@@ -175,24 +171,14 @@ public class MkTicketMethod extends HttpRequestBodyMethodBase {
     throws IOException, HttpException {
 
         super.addRequestHeaders(state, conn);
-        
+        setRequestEntity(new ByteArrayRequestEntity(generateRequestBytes()));
         addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
 
     }
-    
-    /**
-     * Handles the authoring of the Request Body
-     */
-    protected void writeRequest(HttpState state, HttpConnection conn)
-            throws IOException, HttpException {
-        String contents = generateRequestBody();
-        // be nice - allow overriding functions to return null or empty
-        // strings for no content.
-        if (contents == null) {
-            contents = "";
-        }
-        setRequestBody(contents);
-        super.writeRequest(state, conn);
-    }
+
+   @Override
+   protected boolean isSuccess(int statusCode) {
+      return true;
+   }
 
 }

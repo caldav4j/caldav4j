@@ -2,7 +2,7 @@ package org.osaf.caldav4j.model.request;
 
 import org.osaf.caldav4j.CalDAVConstants;
 
-public class Privilege extends org.apache.webdav.lib.Privilege {
+public class Privilege {
 
 	// Standard CalDAV  privileges
 	public static final Privilege READ_FREE_BUSY = 
@@ -41,7 +41,6 @@ public class Privilege extends org.apache.webdav.lib.Privilege {
 	
 	
 	public Privilege(String namespace, String name, String parameter) {
-		super(namespace, name, parameter);
 	}
 
 }

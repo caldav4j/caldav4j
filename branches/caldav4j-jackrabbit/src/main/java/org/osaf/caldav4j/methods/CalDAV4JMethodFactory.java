@@ -16,19 +16,9 @@
 
 package org.osaf.caldav4j.methods;
 
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
-
-import org.apache.jackrabbit.webdav.header.DepthHeader;
-import org.apache.jackrabbit.webdav.version.report.ReportInfo;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.MethodFactoryException;
-import org.osaf.caldav4j.model.request.CalendarMultiget;
-import org.osaf.caldav4j.model.request.CalendarQuery;
-import org.osaf.caldav4j.util.XMLUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class CalDAV4JMethodFactory {
 
@@ -63,28 +53,27 @@ public class CalDAV4JMethodFactory {
         postMethod.setCalendarOutputter(getCalendarOutputterInstance());
         return postMethod;
     }
-    /*
-    public MkCalendarMethod createMkCalendarMethod(){
-        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod();
+    
+    public MkCalendarMethod createMkCalendarMethod(String uri){
+        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri);
         return mkCalendarMethod;
     }
-    */
-    public MkTicketMethod createMkTicketMethod(){
-        MkTicketMethod mkTicketMethod = new MkTicketMethod();
-        return mkTicketMethod;
-    }
     
-    public DelTicketMethod createDelTicketMethod(){
-        DelTicketMethod delTicketMethod = new DelTicketMethod();
-        return delTicketMethod;
-    }
-    /* TODO
-    public PropFindMethod createPropFindMethod(){
-        PropFindMethod propFindMethod = new PropFindMethod();
-        return propFindMethod;
-        
-    }
-    */
+//    public MkTicketMethod createMkTicketMethod(){
+//        MkTicketMethod mkTicketMethod = new MkTicketMethod();
+//        return mkTicketMethod;
+//    }
+//    
+//    public DelTicketMethod createDelTicketMethod(){
+//        DelTicketMethod delTicketMethod = new DelTicketMethod();
+//        return delTicketMethod;
+//    }
+    
+//    public PropFindMethod createPropFindMethod(){
+//        PropFindMethod propFindMethod = new PropFindMethod();
+//        return propFindMethod;
+//        
+//    }
     
     public GetMethod createGetMethod(){
         GetMethod getMethod = new GetMethod();
@@ -92,8 +81,8 @@ public class CalDAV4JMethodFactory {
         return getMethod;
     }
     
-    public CalDAVReportMethod createCalDAVReportMethod(){
-        CalDAVReportMethod reportMethod = new CalDAVReportMethod();
+    public CalDAVReportMethod createCalDAVReportMethod(String uri){
+        CalDAVReportMethod reportMethod = new CalDAVReportMethod(uri);
         reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
         return reportMethod;
     }
@@ -122,27 +111,4 @@ public class CalDAV4JMethodFactory {
         }
         return builder;
     }
-
-	public CaldavReportMethod createCaldavReportMethod(
-			String calendarCollectionRoot, CalendarQuery query) throws MethodFactoryException {
-		if (query !=  null & calendarCollectionRoot != null) {
-			Document document;
-			try {
-				document = query.createNewDocument(XMLUtils
-						.getDOMImplementation());
-				Element e =  query.outputDOM(document);
-
-				ReportInfo reportinfo = new ReportInfo(e, DepthHeader.DEPTH_INFINITY);
-
-				CaldavReportMethod ret = new CaldavReportMethod(calendarCollectionRoot, reportinfo);
-				ret.setCalendarBuilder(getCalendarBuilderInstance());
-				return ret;
-
-			} catch (Exception e) {
-				throw new MethodFactoryException(e);
-			}
-		}
-
-		throw new MethodFactoryException("Missing parameter in method factory");
-	}
 }

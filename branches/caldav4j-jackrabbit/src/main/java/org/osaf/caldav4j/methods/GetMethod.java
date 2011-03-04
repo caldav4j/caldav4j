@@ -18,13 +18,10 @@ package org.osaf.caldav4j.methods;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
-
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVConstants;
