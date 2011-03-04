@@ -16,12 +16,19 @@
 
 package org.osaf.caldav4j.util;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import java.io.StringWriter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
+
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.response.TicketResponse;
@@ -87,16 +94,38 @@ public class XMLUtils {
     }
 
     public static String toPrettyXML(Document document) {
-        StringWriter stringWriter = new StringWriter();
-        OutputFormat outputFormat = new OutputFormat(document, null, true);
-        XMLSerializer xmlSerializer = new XMLSerializer(stringWriter,
-                outputFormat);
-        xmlSerializer.setNamespaces(true);
+        
+       StringWriter stringWriter = new StringWriter();        
+        // please, no direct reference to xerces, use api!
+        //
+        
+        TransformerFactory tf = TransformerFactory.newInstance();
+        
+        // some problems occur
+        // you can not use default processor from Xalan.jar
+        // must xlstc.jar version also from xalan-j_2_7_1-bin-2jars.zip, 
+        // see also WebdavResponseImpl.sendXmlResponse
+        // of course better: do not add anything, only use the default from the jdk: 
+        //     tf instance of "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl"
+        // if from xlstc.jar: "javax.xml.transform.TransformerFactory"
+        // TODO make proper test for this problem
+      Transformer t = null;
+      try {
+          t = tf.newTransformer();
+          t.setOutputProperty(OutputKeys.INDENT, "yes");
+          t.setOutputProperty(OutputKeys.METHOD, "xml");
+          t.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+      } catch (TransformerConfigurationException tce) {
+          assert(false);
+      }
+      DOMSource doms = new DOMSource(document);
+      StreamResult sr = new StreamResult(stringWriter);
         try {
-            xmlSerializer.asDOMSerializer().serialize(document);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+          t.transform(doms, sr);
+      } catch (TransformerException te) {
+
+         throw new RuntimeException(te);
+        }     
         return stringWriter.toString();
 
     }
