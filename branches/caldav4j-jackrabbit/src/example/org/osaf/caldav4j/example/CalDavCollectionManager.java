@@ -8,7 +8,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
@@ -24,21 +23,14 @@ import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtStamp;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
-
 import org.apache.commons.httpclient.HttpException;
-import org.osaf.caldav4j.methods.DeleteMethod;
-import org.osaf.caldav4j.CalDAV4JException;
-import org.osaf.caldav4j.CalDAVCalendarCollection;
-import org.osaf.caldav4j.CaldavCredential;
-import org.osaf.caldav4j.ResourceNotFoundException;
-import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
-import org.osaf.caldav4j.methods.GetMethod;
-import org.osaf.caldav4j.methods.HttpClient;
-import org.osaf.caldav4j.methods.MkCalendarMethod;
+import org.osaf.caldav4j.CalDAVCollection;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
+import org.osaf.caldav4j.methods.*;
+import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.CalendarComparator;
 import org.osaf.caldav4j.util.ICalendarUtils;
-import org.osaf.caldav4j.util.CaldavStatus;;
-
 
 /**
  * this class binds a CalendarCollection (a folder of events) to a Caldav Client
@@ -46,7 +38,7 @@ import org.osaf.caldav4j.util.CaldavStatus;;
  * @author rpolli@babel.it
  *
  */
-public class CalDavCollectionManager extends CalDAVCalendarCollection {
+public class CalDavCollectionManager extends CalDAVCollection {
 
 	private BaseCaldavClient client = null;
 	private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
@@ -107,7 +99,7 @@ public class CalDavCollectionManager extends CalDAVCalendarCollection {
      * @throws Exception
      */
     public int mkDirectory(String path){
-        MkCalendarMethod mk = new MkCalendarMethod();
+        MkCalendarMethod mk = methodFactory.createMkCalendarMethod(client.COLLECTION_PATH);
         mk.setPath(path);
        
         try {
@@ -133,7 +125,7 @@ public class CalDavCollectionManager extends CalDAVCalendarCollection {
      */
     public  int listCalendar(String path) throws IOException {
         //now let's try and get it, make sure it's there
-        GetMethod get = new GetMethod();
+        GetMethod get = methodFactory.createGetMethod();
         get.setPath(path);
         
         try {
@@ -216,7 +208,7 @@ public class CalDavCollectionManager extends CalDAVCalendarCollection {
 			ve.getProperties().add(uid);
 		}
 
-		addEvent(client, ve, null);
+		//addEvent(client, ve, null);
 		return ve;
 
     }
@@ -281,47 +273,7 @@ public class CalDavCollectionManager extends CalDAVCalendarCollection {
 
 
     
-    /**
-     * @see super
-     * @param propertyName
-     * @param beginDate
-     * @param endDate
-     * @throws CalDAV4JException
-     * @Deprecated  {@link getComponentPropertyByTimestamp} 
-     */
-    public List <String> getEventPropertyByTimestamp(String propertyName, Date beginDate, Date endDate)
-    	throws CalDAV4JException 
-    {
-    	return super.getEventPropertyByTimestamp(client, propertyName, beginDate, endDate);
-    }
     
-    /**
-     * see super
-     * @param componentName
-     * @param propertyName
-     * @param propertyFilter
-     * @param beginDate
-     * @param endDate
-     * @throws CalDAV4JException if can't connect
-     */
-    public List <String> getComponentPropertyByTimestamp(String componentName, String propertyName, String propertyFilter, Date beginDate, Date endDate)
-    	throws CalDAV4JException 
-    {
-    	return super.getComponentPropertyByTimestamp(client, componentName, propertyName, propertyFilter, beginDate, endDate);
-    }
-    
-	/**
-	 * 
-	 * @param uid
-	 * @return
-	 * @throws CalDAV4JException if can't connect
-	 * @throws ResourceNotFoundException if can't find object
-	 * @see super
-	 */
-	public String getPathToResourceForEventId(String uid) 
-		throws CalDAV4JException, ResourceNotFoundException {
-			return  super.getPathToResourceForEventId(client, uid);
-	}
 	
 	
 	
@@ -338,15 +290,8 @@ public class CalDavCollectionManager extends CalDAVCalendarCollection {
      */
 		public static void main(String[] args) throws CalDAV4JException, SocketException, URISyntaxException {
 			
-			final String CALDAV_SERVER = CaldavCredential.CALDAV_SERVER_HOST;
-			final String CALDAV_PORT = String.valueOf(CaldavCredential.CALDAV_SERVER_PORT); 
-			final String CALDAV_USER = CaldavCredential.CALDAV_SERVER_USERNAME; 
-			final String CALDAV_PASS = CaldavCredential.CALDAV_SERVER_PASSWORD;
-			
 			System.out.println("Creating Caldav Client..");
-			BaseCaldavClient cli = new BaseCaldavClient(CALDAV_SERVER, CALDAV_PORT,
-					CaldavCredential.CALDAV_SERVER_PROTOCOL,
-					CaldavCredential.CALDAV_SERVER_WEBDAV_ROOT, CALDAV_USER, CALDAV_PASS);
+			BaseCaldavClient cli = new BaseCaldavClient();
 			
 			System.out.println("Opening a collection..");
         	CalDavCollectionManager cdm = new CalDavCollectionManager(cli);
@@ -394,12 +339,7 @@ public class CalDavCollectionManager extends CalDAVCalendarCollection {
 				e.printStackTrace();
 			}
 			System.out.println("dump the event..\n"+pippo.toString()+"\n");
-
-
-			List <String> lc = cdm.getEventPropertyByTimestamp( cdm.client, Property.UID, beginDate, endDate);
-			for (String cal : lc) {
-				System.out.println( "UID="+cal);
-			} 
+ 
         }
     
 

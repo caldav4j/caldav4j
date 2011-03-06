@@ -4,24 +4,19 @@ import java.io.InputStream;
 import java.net.SocketException;
 import java.net.URISyntaxException;
 import java.util.Properties;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
-
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
-import org.osaf.caldav4j.CalDAV4JException;
-import org.osaf.caldav4j.CalDAVCalendarCollection;
-import org.osaf.caldav4j.CaldavCredential;
+import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
-
 
 
 
@@ -34,14 +29,15 @@ import org.osaf.caldav4j.methods.PutMethod;
 	 */
 	public class BaseCaldavClient extends HttpClient {
 	    protected HostConfiguration hostConfig = new HostConfiguration();
+	    protected CaldavCredential caldavCredential = new CaldavCredential();
+	    private String serverHost = caldavCredential.host;
+	    private int serverPort = caldavCredential.port;
+	    private String serverProtocol = caldavCredential.protocol;
+	    private String serverWebDavRoot = caldavCredential.home;
+	    private String serverUserName = caldavCredential.user;
+	    private String serverPassword = caldavCredential.password;
 	    
-	    private String serverHost = CaldavCredential.CALDAV_SERVER_HOST;
-	    private int serverPort = CaldavCredential.CALDAV_SERVER_PORT;
-	    private String serverProtocol = CaldavCredential.CALDAV_SERVER_PROTOCOL;
-	    private String serverWebDavRoot = CaldavCredential.CALDAV_SERVER_WEBDAV_ROOT;
-	    private String serverUserName = CaldavCredential.CALDAV_SERVER_USERNAME;
-	    private String serverPassword = CaldavCredential.CALDAV_SERVER_PASSWORD;
-	    
+	    public final String COLLECTION_PATH = caldavCredential.home + caldavCredential.collection;
 	    public CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
 	    public BaseCaldavClient() {
@@ -215,7 +211,7 @@ import org.osaf.caldav4j.methods.PutMethod;
 	    }
 	    
 	    protected void mkdir(String path) {
-	        MkCalendarMethod mk = new MkCalendarMethod();
+	        MkCalendarMethod mk = new MkCalendarMethod(COLLECTION_PATH);
 	        mk.setPath(path);
 	        try {
 	        	executeMethod(hostConfig, mk);
@@ -225,7 +221,7 @@ import org.osaf.caldav4j.methods.PutMethod;
 	    }
 	    
 	    // ************* test *****************
-		public static void main(String[] args) throws CalDAV4JException, SocketException, URISyntaxException {
+		public static void main(String[] args) throws SocketException, URISyntaxException {
 			
 			BaseCaldavClient cli = new BaseCaldavClient();
 			
