@@ -25,6 +25,9 @@ import org.apache.commons.httpclient.HttpMethod;
 
 public class UrlUtils {
     public static String stripHost(String href){
+        if (href==null){
+            return null;
+        }
         if (!href.startsWith("http")){
             return href;
         }
@@ -34,6 +37,9 @@ public class UrlUtils {
     }
     
     public static String removeDoubleSlashes(String s) {
+      if (s==null){
+          return null;
+      }
     	return s.replaceAll("([^:])/{2,}","$1/");
     }
     

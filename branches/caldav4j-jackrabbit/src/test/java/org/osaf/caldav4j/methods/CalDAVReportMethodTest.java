@@ -5,12 +5,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 
 public class CalDAVReportMethodTest extends BaseTestCase {
-    public CalDAVReportMethodTest(String method) {
-		super(method);
-		// TODO Auto-generated constructor stub
+    public CalDAVReportMethodTest() {
+		super();
 	}
 
 	private static final Log log = LogFactory.getLog(CalDAVReportMethodTest.class);
@@ -36,9 +36,9 @@ public class CalDAVReportMethodTest extends BaseTestCase {
         del(COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
         del(COLLECTION_PATH);
     }
-    
+    @Test
     public void testCheckTrailingSlash() throws Exception{
-    	CalDAVReportMethod method = methodFactory.createCalDAVReportMethod();
+    	CalDAVReportMethod method = methodFactory.createCalDAVReportMethod(COLLECTION_PATH);
     	assertNotNull(method);
     	
     	method.setPath(COLLECTION_PATH);

@@ -29,12 +29,12 @@ public class MkCalendarTest extends BaseTestCase {
         mk.addDescription("this is my default calendar", "en");
         mk.addDescription("this is my default calendar");
 
-        log.info(mk.generateRequestBody());
+        log.info(new String(mk.generateRequestBody()));
         
     }
 	@Test
     public void testCreateRemoveCalendarCollection() throws Exception{
-        MkCalendarMethod mk = new MkCalendarMethod(caldavCredential.home + caldavCredential.collection);
+        MkCalendarMethod mk = methodFactory.createMkCalendarMethod(caldavCredential.home + caldavCredential.collection);
         mk.addDisplayName("My display Name");
         mk.addDescription("this is my default calendar", "en");
         
@@ -43,6 +43,7 @@ public class MkCalendarTest extends BaseTestCase {
         http.executeMethod(hostConfig, mk);
         
         int statusCode = mk.getStatusCode();
+        log.info("status returned:"+mk.getStatusLine());
         assertEquals("Status code for mk:", CaldavStatus.SC_CREATED, statusCode);
         
         //now let's try and get it, make sure it's there

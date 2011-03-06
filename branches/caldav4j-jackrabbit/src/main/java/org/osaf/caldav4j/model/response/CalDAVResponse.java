@@ -21,20 +21,23 @@ import net.fortuna.ical4j.model.Calendar;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 
 
-public class //CalDAVMultiResponse 
-//extends 
-CalDAVResponse //implements ResponseEntity 
+public class CalDAVResponse 
 {
-
-
- 
     private Calendar calendar = null;
-    private String calData;
+    private String calData = null;
+    private String etag = null;
+    private String href = null;
     private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
     public CalDAVResponse(String calData) {
        super();
        this.calData=calData;
    }
+    public CalDAVResponse(String calData,String etag,String href) {
+       this(calData);
+       this.etag=etag;
+       this.href=href;
+    }
+
     private CalendarBuilder getCalendarBuilderInstance(){
        CalendarBuilder builder = calendarBuilderThreadLocal.get();
        if (builder == null){
@@ -73,5 +76,12 @@ CalDAVResponse //implements ResponseEntity
           throw new CalDAV4JException("Problem building calendar", e);
        }
     }
+    
+   public String getETag() {
+      return etag;
+   }
+   public String getHref() {
+      return href;
+   }
  
 }

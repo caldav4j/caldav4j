@@ -18,6 +18,15 @@ package org.osaf.caldav4j.methods;
 import static org.osaf.caldav4j.CalDAVConstants.NS_CALDAV;
 import static org.osaf.caldav4j.CalDAVConstants.NS_DAV;
 
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.jackrabbit.webdav.DavException;
+
+import org.apache.jackrabbit.webdav.xml.DomUtil;
+
+import org.w3c.dom.Element;
+
+import org.apache.jackrabbit.webdav.security.AclProperty.Ace;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,8 +35,10 @@ import java.util.Map;
 import java.util.Vector;
 import javax.xml.namespace.QName;
 import org.apache.commons.httpclient.HttpConnection;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.MultiStatus;
@@ -52,6 +63,8 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
     protected Collection<String> responseURLs = new Vector<String>();
     private static Map<QName, Error> errorMap = null;
     private Error error = null;
+    protected MultiStatus multiStatus;
+    private int depth;
     
     public enum ErrorType{PRECONDITION, POSTCONDITON}
 
@@ -63,11 +76,41 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
     public void setPropFindRequest(OutputsDOM myprop) {
         this.propFindRequest = myprop;
     }
+    /**
+     * Generate additional headers needed by the request.
+     *
+     * @param state State token
+     * @param conn The connection being used to make the request.
+     */
+    public void addRequestHeaders(HttpState state, HttpConnection conn)
+    throws IOException, HttpException 
+    {
+       //first add headers generate RequestEntity or 
+       //addContentLengthRequestHeader() will mess up things > result "400 Bad Request"
+       //can not override generateRequestBody(), because called to often
+        setRequestEntity(new ByteArrayRequestEntity(generateRequestBytes()));
+        super.addRequestHeaders(state, conn);
 
+        switch (depth) {
+        case DEPTH_0:
+            super.setRequestHeader("Depth", "0");
+            break;
+        case DEPTH_1:
+            super.setRequestHeader("Depth", "1");
+            break;
+        case DEPTH_INFINITY:
+            super.setRequestHeader("Depth", CalDAVConstants.INFINITY_STRING);
+            break;
+        }
+
+        if (getRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE) == null) {
+         addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE,CalDAVConstants.CONTENT_TYPE_TEXT_XML);
+        }
+    }
     /**
      * Generates a request body from the calendar query.
      */
-    protected byte[] generateRequestBody() {
+    protected byte[] generateRequestBytes() {
         Document doc = null;
         try {
             doc = propFindRequest.createNewDocument(XMLUtils
@@ -128,17 +171,25 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
      * @param urlPath
      * @return AclProperty xml response or null if missing
      */
-    public org.apache.jackrabbit.webdav.security.AclProperty getAcl(String urlPath) {
-    	return (AclProperty) getWebDavProperty(urlPath, new QName(NS_DAV, "acl"));
+    public DavProperty<?> getAcl(String urlPath) {
+    	return getWebDavProperty(urlPath, new QName(NS_DAV, "acl"));
     }
-    public List<org.apache.jackrabbit.webdav.security.AclProperty.Ace> getAces(String urlPath) throws CalDAV4JException {
-
-    	AclProperty acls = (AclProperty) getWebDavProperty(urlPath,new QName(NS_DAV, "acl"));
-    	if (acls != null) {
-        	return acls.getValue();
-	
-    	}
-    	throw new CalDAV4JException("Error gettinh ACLs. PROPFIND status is: ?");
+    public List<Ace> getAces(String urlPath) throws CalDAV4JException {
+       DavProperty<?> acl = getAcl(urlPath);
+       
+       try {
+         org.w3c.dom.Document d = DomUtil.createDocument();
+          //Element root = (Element) d.getFirstChild();
+          Element els = acl.toXml(d);
+          AclProperty aclp = AclProperty.createFromXml( els);
+          
+          List<Ace> aces =  aclp.getValue();
+          return aces;
+      } catch (ParserConfigurationException e) {
+         throw new CalDAV4JException("Error gettinh ACLs. PROPFIND status is: ?",e);
+      } catch (DavException e) {
+         throw new CalDAV4JException("Error gettinh ACLs. PROPFIND status is: ?",e);
+      }
     }
     public String getCalendarDescription(String urlPath) {
        DavProperty<?> p= getWebDavProperty(urlPath, 
@@ -151,7 +202,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
     }
     public String getDisplayName(String urlPath) {
        DavProperty<?> p= getWebDavProperty(urlPath, 
-    	     new QName(NS_CALDAV,CalDAVConstants.DAV_DISPLAYNAME));
+    	     new QName(NS_DAV,CalDAVConstants.DAV_DISPLAYNAME));
     	if (p != null) {
     		return  p.getValue().toString();
     	} else {
@@ -160,35 +211,74 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
     }
 
     private DavProperty<?> getWebDavProperty(String urlPath, QName property) {
-
+       if (multiStatus == null)
+          return  null;
       for (MultiStatusResponse response : multiStatus.getResponses()){
          int status = HttpStatus.SC_OK;// && status <= HttpStatus.SC_MULTI_STATUS) {
          DavPropertySet set =response.getProperties(status);
          if(set ==null)continue;
-         DavProperty<?> dp=set.get(CalDAVConstants.DAV_PROP,
+         DavProperty<?> dp=set.get(property.getLocalPart(),
                Namespace.getNamespace(  property.getPrefix(),property.getNamespaceURI()));
          if(dp ==null)continue;
-         Object  caldata = dp.getValue();
-        if(caldata ==null)continue;
+         Object  data = dp.getValue();
+        if(data ==null)continue;
          return dp;
       }
       return null;
     }
   
-
+    protected DavProperty<?> getResponseProperty(QName property) {
+     for (DavProperty<?> response :responseTable){
+       String name =  response.getName()==null?"":response.getName().getName();
+       //String val =  "" +response.getValue();
+       if(property.getLocalPart().equals(name)){
+          return response;
+       }
+     }
+     return null;      
+    }
+    
     protected Collection<String> getResponseURLs() {
         checkUsed();
     
         return responseURLs;
     }
     
-    protected MultiStatus multiStatus;
+    public Collection<DavProperty<?>> getResponseTable() {
+      return responseTable;
+   }
+    
     @Override
     protected void processMultiStatusBody(MultiStatus multiStatus, HttpState httpState, HttpConnection httpConnection) {
       this. multiStatus=multiStatus;
       for (MultiStatusResponse response : multiStatus.getResponses()){
          responseURLs.add( response.getHref());
+         DavPropertySet set =response.getProperties(HttpStatus.SC_OK);
+         if(set ==null)continue;
+         for (DavProperty<?> prop : set) {
+            responseTable.add(prop);
+         }
       }
+      
        
     }
+
+    /**
+     * Depth setter.
+     *
+     * @param depth New depth value
+     */
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    /**
+     * Depth getter.
+     *
+     * @return int depth value
+     */
+    public int getDepth() {
+        return depth;
+    }
+    
 }

@@ -16,9 +16,12 @@
 
 package org.osaf.caldav4j.methods;
 
+import java.io.IOException;
+
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.model.request.TicketRequest;
 
 public class CalDAV4JMethodFactory {
 
@@ -59,21 +62,21 @@ public class CalDAV4JMethodFactory {
         return mkCalendarMethod;
     }
     
-//    public MkTicketMethod createMkTicketMethod(){
-//        MkTicketMethod mkTicketMethod = new MkTicketMethod();
-//        return mkTicketMethod;
-//    }
-//    
-//    public DelTicketMethod createDelTicketMethod(){
-//        DelTicketMethod delTicketMethod = new DelTicketMethod();
-//        return delTicketMethod;
-//    }
+    public MkTicketMethod createMkTicketMethod(String uri, TicketRequest ticketRequest){
+        MkTicketMethod mkTicketMethod = new MkTicketMethod(uri,ticketRequest);
+        return mkTicketMethod;
+    }
     
-//    public PropFindMethod createPropFindMethod(){
-//        PropFindMethod propFindMethod = new PropFindMethod();
-//        return propFindMethod;
-//        
-//    }
+    public DelTicketMethod createDelTicketMethod(String uri, String ticket){
+        DelTicketMethod delTicketMethod = new DelTicketMethod(uri,ticket);
+        return delTicketMethod;
+    }
+    
+    public PropFindMethod createPropFindMethod(String uri) throws IOException{
+        PropFindMethod propFindMethod = new PropFindMethod(uri);
+        return propFindMethod;
+        
+    }
     
     public GetMethod createGetMethod(){
         GetMethod getMethod = new GetMethod();

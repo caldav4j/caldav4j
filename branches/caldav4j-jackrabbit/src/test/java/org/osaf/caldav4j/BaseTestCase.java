@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 package org.osaf.caldav4j;
-import static org.junit.Assert.*;
-
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.Locale;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
-
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -34,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.DeleteMethod;
@@ -43,7 +34,6 @@ import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
-import org.junit.*;
 
 public abstract class BaseTestCase   implements TestConstants {
     protected static final Log log = LogFactory.getLog(BaseTestCase.class);
@@ -191,8 +181,8 @@ public abstract class BaseTestCase   implements TestConstants {
     }
     
     protected void mkcalendar(String path){
-        MkCalendarMethod mk = new MkCalendarMethod(path);
-        mk.addDescription(CALENDAR_DESCRIPTION, "en");
+        MkCalendarMethod mk = methodFactory.createMkCalendarMethod(path);
+        mk.addDescription(CALENDAR_DESCRIPTION);//, "en");
         try {
         	testHttpClient.executeMethod(hostConfig, mk);
         } catch (Exception e){

@@ -16,8 +16,13 @@
 
 package org.osaf.caldav4j.methods;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.httpclient.HttpConnection;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
@@ -49,7 +54,16 @@ public class MkCalendarMethod extends DavMethodBase{
     	super(uri);
     	addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
 	}
-
+    
+    public void addRequestHeaders(HttpState state, HttpConnection conn)
+    throws IOException, HttpException 
+    {
+       //first add headers generate RequestEntity or 
+       //addContentLengthRequestHeader() will mess up things > result "400 Bad Request"
+       //can not override generateRequestBody(), because called to often
+        setRequestEntity(new ByteArrayRequestEntity(generateRequestBody()));
+        super.addRequestHeaders(state, conn);
+    }
     public void addDisplayName(String s) {
     	propertiesToSet.add(new DisplayName(s));
     }
@@ -102,6 +116,6 @@ public class MkCalendarMethod extends DavMethodBase{
 	@Override
 	protected boolean isSuccess(int statusCode) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 }

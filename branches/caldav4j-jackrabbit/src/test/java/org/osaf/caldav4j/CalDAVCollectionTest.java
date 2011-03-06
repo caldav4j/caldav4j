@@ -3,10 +3,17 @@
  */
 package org.osaf.caldav4j;
 
-import java.text.ParseException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.apache.jackrabbit.webdav.security.AclProperty;
+
 import java.util.ArrayList;
 import java.util.List;
-
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
@@ -20,14 +27,13 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Ace;
-import org.apache.webdav.lib.Privilege;
-import org.apache.webdav.lib.methods.AclMethod;
+import org.apache.jackrabbit.webdav.client.methods.AclMethod;
+import org.apache.jackrabbit.webdav.security.Privilege;
+import org.apache.jackrabbit.webdav.security.AclProperty.Ace;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +45,6 @@ import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
-import static org.junit.Assert.*;
 
 public class CalDAVCollectionTest extends BaseTestCase {
 	public CalDAVCollectionTest() {
@@ -442,13 +447,14 @@ public class CalDAVCollectionTest extends BaseTestCase {
 			log.info(h.getName() + ":" + h.getValue());
 		}
 
-		Privilege privilege = Privilege.WRITE;
+		Privilege privilege = Privilege.PRIVILEGE_WRITE;
 
 
-		Ace ace = new Ace("principal");
-		ace.addPrivilege(privilege);
-		AclMethod aclMethod = new AclMethod("path_to_resource");
-		aclMethod.addAce(ace);
+//		Ace ace = AclProperty.createGrantAce(principal, privileges, invert, isProtected, inheritedFrom) 
+//		new Ace("principal");
+//		ace.addPrivilege(privilege);
+//		AclMethod aclMethod = new AclMethod("path_to_resource");
+//		aclMethod.addAce(ace);
 
 		if (calendarCollection.allows(httpClient, "MKCOL", headerList)) {
 			log.info("MKCOL exists");
