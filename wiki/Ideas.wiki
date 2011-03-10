@@ -38,16 +38,26 @@
 
 = Ideas = 
 
+ == Android sync plugin ==
+ * Summary: extend the Android Sync Plugin for the Android Calendar.apk contributed by Samsung.
+ * Level: medium
+ * Skill: java, android, gcc
+ * Description: the Calendar.apk is a working proof of concept. We want to make it stable and installable without overwriting the default Calendar.apk
+ * Strategy: simplify code and dependencies, improve caldav backend and user interface
+  # improve user interface and Calendar menus
+  # remove external libraries' sources from the Calendar.apk project
+  # review all backend methods 
+  # more and more junits
+
  == Jackrabbit migration == 
- * Summary: migrate the webdav layer from slide to jackrabbit
- * Level: hard
- * Skill: java (interfaces, abstract classes), httpclient
- * Description: caldav4j is based on top of the old apache-slide library instead of the new jackrabbit one. This is the main obstacle to caldav4j adoption in newer project. 
- * Strategy: isolate all slide code out of the main caldav4j package, and replace it with jackrabbit.
-   # create a webdav interface package: the actual classes will be an interface slide implementation
-   # let the main package use the interface instead of the implementation
-   # replace the slide implementation with the new jackrabbit one
-   # Junit testing will ensure the compatibility with caldav server
+ * Summary: migrate the webdav layer from slide to jackrabbit and test with android
+ * Level: medium
+ * Skill: java, httpclient, http protocol 
+ * Description: caldav4j is based on top of the old apache-slide library instead of the new jackrabbit one. This is the main obstacle to caldav4j adoption in newer projects. 
+ * Strategy: develop missing methods in jackrabbit branch
+   # remove slide dependencies from junits, so that we can test our changes
+   # work on the caldav4j-jackrabbit branch implementing missing methods
+   # test new code for android compatibility
 
  == CalDAV scheduling support ==
  * Summary: improving CaldDAV scheduling support
