@@ -24,7 +24,7 @@ public class MkCalendarTestSuite extends MkCalendarTest {
 	@Parameters
 	public static Collection<Object[]> getCaldavCredentials() {
 		return Arrays.asList(new Object[][] {
-			//	{new BedeworkCaldavCredential(), new BedeworkCalDavDialect()},
+				{new BedeworkCaldavCredential(), new BedeworkCalDavDialect()},
 				{new CaldavCredential(), new ChandlerCalDavDialect()}
 		});
 	}

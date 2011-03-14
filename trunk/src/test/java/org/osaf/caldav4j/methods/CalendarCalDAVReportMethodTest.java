@@ -26,12 +26,13 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 
-import org.apache.webdav.lib.util.WebdavStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.support.HttpClientTestUtils;
+import org.osaf.caldav4j.util.CaldavStatus;
 
 /**
  * Tests {@code CalendarCalDAVReportMethod}.
@@ -40,7 +41,7 @@ import org.osaf.caldav4j.support.HttpClientTestUtils;
  * @version $Id$
  * @see CalendarCalDAVReportMethod
  */
-public class CalendarCalDAVReportMethodTest
+public class CalendarCalDAVReportMethodTest extends CaldavStatus
 {
 	// public methods ---------------------------------------------------------
 	
@@ -83,7 +84,7 @@ public class CalendarCalDAVReportMethodTest
 			+ "END:VCALENDAR\n";
 		
 		HttpClientTestUtils.setFakeSocketImpl(expectedRequest, response);
-		Calendar actual = executeMethod(WebdavStatus.SC_OK, method, calendarReportCallback());
+		Calendar actual = executeMethod(SC_OK, method, calendarReportCallback());
 		
 		assertEquals("Calendar", createCalendar(), actual);
 	}
