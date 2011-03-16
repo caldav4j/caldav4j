@@ -17,6 +17,8 @@ import net.fortuna.ical4j.model.property.XProperty;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.methods.HttpClient;
@@ -27,11 +29,10 @@ import org.osaf.caldav4j.scheduling.methods.SchedulePostMethod;
 import org.osaf.caldav4j.scheduling.util.ITipUtils;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
+// TODO: work in progress
+@Ignore
 public class SchedulePostMethodTest extends BaseTestCase {
-	public SchedulePostMethodTest(String method) {
-		super(method);
-		// TODO Auto-generated constructor stub
-	}
+
 
 	private CalDAV4JScheduleMethodFactory scheduleMethodFactory = new CalDAV4JScheduleMethodFactory();
 
@@ -43,15 +44,16 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * create a simple meeting POSTing to /Outbox
 	 * and process a response
 	 */
-	public void _testSimpeMeetingInvite_Accept() {
+    @Test
+	public void testSimpeMeetingInvite_Accept() {
 
 
 		Calendar invite = this
-		.getCalendarResource("meeting_invitation.ics");
+		.getCalendarResource("scheduling/meeting_invitation.ics");
 		Uid myUid = new Uid(new DateTime().toString());
 		ICalendarUtils.addOrReplaceProperty(invite.getComponent(Component.VEVENT), myUid);
 		Calendar refreshEvent = this
-		.getCalendarResource("meeting_reply.ics");
+		.getCalendarResource("scheduling/meeting_reply.ics");
 		ICalendarUtils.addOrReplaceProperty(refreshEvent.getComponent(Component.VEVENT), myUid);
 
 		SchedulePostMethod request = scheduleMethodFactory.createSchedulePostMethod();
@@ -61,9 +63,9 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		try {
 			http.executeMethod(request);
 			if (request.getStatusCode() != 200) {
-				System.out.println("error: " + request.getStatusText()); 
+				log.info("error: " + request.getStatusText()); 
 			}
-			System.out.println(request.getResponseBodyAsString());
+			log.info(request.getResponseBodyAsString());
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,9 +85,9 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		try {
 			http.executeMethod(refresh);
 			if (refresh.getStatusCode() != 200) {
-				System.out.println("error: " + refresh.getStatusText()); 
+				log.info("error: " + refresh.getStatusText()); 
 			}
-			System.out.println(refresh.getResponseBodyAsString());
+			log.info(refresh.getResponseBodyAsString());
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,11 +101,12 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * POST a meeting in r@r.it Outbox using this user to provide invitation to g@r.it
 	 * @throws URISyntaxException 
 	 */
-	public void _testRealTimeScheduling_SimpleMeetingInvitation() throws URISyntaxException {
+    @Test
+	public void testRealTimeScheduling_SimpleMeetingInvitation() throws URISyntaxException {
 
 
 		Calendar invite = this
-		.getCalendarResource("meeting_invitation.ics");
+		.getCalendarResource("scheduling/meeting_invitation.ics");
 
 
 		// replace fields from template
@@ -130,9 +133,9 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		try {
 			http.executeMethod(request);
 			if (request.getStatusCode() != 200) {
-				System.out.println("error: " + request.getStatusText()); 
+				log.info("error: " + request.getStatusText()); 
 			}
-			System.out.println(request.getResponseBodyAsString());
+			log.info(request.getResponseBodyAsString());
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -150,11 +153,12 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * @throws HttpException 
 	 * @throws ParseException 
 	 */
+    @Test
 	public void testRealTimeScheduling_SimpleMeetingReply() 
 	throws URISyntaxException, HttpException, IOException, ParseException, CalDAV4JException
 	{
-		Calendar invite = this
-		.getCalendarResource("iCal-20081127-092400.ics");
+		Calendar invite = BaseTestCase
+		.getCalendarResource("scheduling/meeting_invitation.ics");
 
 		VEvent event = (VEvent) invite.getComponent(Component.VEVENT);
 
@@ -167,7 +171,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 			Uid myUid = new Uid(new DateTime().toString() + j);
 			ICalendarUtils.addOrReplaceProperty(event, myUid);
 			// Create meeting in /calendar 
-			System.out.println("PUT...");
+			log.info("PUT...");
 
 			PutMethod request = methodFactory.createPutMethod();
 			request.setPath(caldavCredential.home + "/calendar/" + event.getUid().getValue() + ".ics");
@@ -176,15 +180,15 @@ public class SchedulePostMethodTest extends BaseTestCase {
 
 			http.executeMethod(request);
 			if (request.getStatusCode() != 200) {
-				System.out.println("error: " + request.getStatusText()); 
+				log.info("error: " + request.getStatusText()); 
 			}
-			System.out.println(request.getResponseBodyAsString());
+			log.info(request.getResponseBodyAsString());
 
 			// update event like a REPLY from robipolli@gmail.com
 			Calendar response = ITipUtils.ReplyInvitation(invite, new Attendee("mailto:robipolli@gmail.com"), PartStat.ACCEPTED);
 
 			// POST to /rtsvc a REPLY from GMAIL
-			System.out.println("REPLY...#" + j);
+			log.info("REPLY...#" + j);
 			PostMethod reply = methodFactory.createPostMethod();
 			reply.setPath(BEDEWORK_RTSVC_URL);
 			reply.setHostConfiguration(hostConfig);
@@ -194,9 +198,9 @@ public class SchedulePostMethodTest extends BaseTestCase {
 
 			http.executeMethod(reply);
 			if (request.getStatusCode() != 200) {
-				System.out.println("error: " + reply.getStatusText()); 
+				log.info("error: " + reply.getStatusText()); 
 			}
-			System.out.println(reply.getResponseBodyAsString());
+			log.info(reply.getResponseBodyAsString());
 		}
 
 	}
@@ -205,12 +209,13 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * POST a meeting in an user's inbox
 	 * @throws URISyntaxException 
 	 */
-	public void _testSimpleMeetingInvitation() throws URISyntaxException {
+    @Test
+	public void testSimpleMeetingInvitation() throws URISyntaxException {
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
 
 		Calendar invite = this
-		.getCalendarResource("meeting_invitation.ics");
+		.getCalendarResource("scheduling/meeting_invitation.ics");
 
 
 		VEvent event = (VEvent) invite.getComponent(Component.VEVENT);
@@ -236,9 +241,9 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		try {
 			http.executeMethod(request);
 			if (request.getStatusCode() != 200) {
-				System.out.println("error: " + request.getStatusText()); 
+				log.info("error: " + request.getStatusText()); 
 			}
-			System.out.println(request.getResponseBodyAsString());
+			log.info(request.getResponseBodyAsString());
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -17,6 +17,8 @@ import net.fortuna.ical4j.model.property.Summary;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.util.CaldavStatus;
@@ -32,12 +34,13 @@ public class PutGetTest extends BaseTestCase {
     
 
 
-    
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         mkcalendar(COLLECTION_PATH);
     }
 
+    @After
     public void tearDown() throws Exception {
         super.tearDown();
         del(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
@@ -59,7 +62,7 @@ public class PutGetTest extends BaseTestCase {
         HostConfiguration hostConfig = createHostConfiguration();
         String eventPath = String.format("%s/%s.ics", COLLECTION_PATH,BaseTestCase.ICS_DAILY_NY_5PM_UID);
 
-        Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM);
+        Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM_PATH);
         PutMethod put = methodFactory.createPutMethod();
         put.setIfNoneMatch(true);
         put.setAllEtags(true);

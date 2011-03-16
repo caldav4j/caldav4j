@@ -15,18 +15,23 @@
  */
 package org.osaf.caldav4j;
 import java.io.InputStream;
+
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.osaf.caldav4j.credential.CaldavCredential;
+import org.osaf.caldav4j.dialect.CalDavDialect;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.methods.HttpClient;
@@ -44,11 +49,12 @@ public abstract class BaseTestCase   implements TestConstants {
     protected CaldavCredential caldavCredential = new CaldavCredential();
     public  String COLLECTION_PATH;
     protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+	protected CalDavDialect caldavDialect;
 
 
     @Before
     public void setUp() throws Exception {
-        COLLECTION_PATH = caldavCredential.home + caldavCredential.collection;
+        COLLECTION_PATH = UrlUtils.removeDoubleSlashes(caldavCredential.home + caldavCredential.collection);
         hostConfig = createHostConfiguration();
         testHttpClient  = createHttpClient();
         httpClient = createHttpClient();    	
@@ -118,6 +124,7 @@ public abstract class BaseTestCase   implements TestConstants {
         
         try {
             cal = cb.build(stream);
+            Assert.assertNotNull("Missing entry " + resourceName, cal);
         } catch (Exception e) {        	
             throw new RuntimeException("Problems opening file:" + resourceName + "\n" + e);
         }
@@ -149,16 +156,13 @@ public abstract class BaseTestCase   implements TestConstants {
             
             switch (statusCode) {
 			case CaldavStatus.SC_CREATED:
-				
-				break;
 			case CaldavStatus.SC_NO_CONTENT:
 				break;
 			case CaldavStatus.SC_PRECONDITION_FAILED:
 				log.error("item exists?");
 				break;
 			case CaldavStatus.SC_CONFLICT:
-				log.error("conflict: item still on server" + put.getResponseBodyAsString());
-				break;
+				log.error("conflict: item still on server");
 			default:
                 log.error(put.getResponseBodyAsString());
 				throw new Exception("trouble executing PUT of " +resourceFileName + "\nresponse:" + put.getResponseBodyAsString());
@@ -181,8 +185,8 @@ public abstract class BaseTestCase   implements TestConstants {
     }
     
     protected void mkcalendar(String path){
-        MkCalendarMethod mk = methodFactory.createMkCalendarMethod(path);
-        mk.addDescription(CALENDAR_DESCRIPTION);//, "en");
+        MkCalendarMethod mk = new MkCalendarMethod(path);
+        mk.addDescription(CALENDAR_DESCRIPTION, "en");
         try {
         	testHttpClient.executeMethod(hostConfig, mk);
         } catch (Exception e){
@@ -190,6 +194,16 @@ public abstract class BaseTestCase   implements TestConstants {
         }
     }
     
+    
+    protected void mkcol(String path) {
+    	MkColMethod mk = new MkColMethod(path);
+        try {
+        	testHttpClient.executeMethod(hostConfig, mk);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+    }
 	/**
 	 * put an event on a caldav store using UID.ics
 	 */
@@ -212,7 +226,7 @@ public abstract class BaseTestCase   implements TestConstants {
 
 	 }
 	 
-		protected CalDAVCollection createCalDAVCollection() {
+		public CalDAVCollection createCalDAVCollection() {
 			CalDAVCollection calendarCollection = new CalDAVCollection(
 					COLLECTION_PATH, createHostConfiguration(), methodFactory,
 					CalDAVConstants.PROC_ID_DEFAULT);

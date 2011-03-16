@@ -1,21 +1,20 @@
 package org.osaf.caldav4j;
 
-import java.util.Vector;
-import javax.xml.namespace.QName;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.parameter.Value;
+
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.methods.HttpClient;
-import org.osaf.caldav4j.methods.PropFindMethod;
 
+@Ignore
 public class FunTest extends BaseTestCase {
     public FunTest() {
 		super();
@@ -35,12 +34,12 @@ public class FunTest extends BaseTestCase {
         	e.printStackTrace();
         	log.warn("MKCAL not supported?");
 		}
-        put(ICS_DAILY_NY_5PM, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
-        put(ICS_ALL_DAY_JAN1, COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
-        put(ICS_NORMAL_PACIFIC_1PM, COLLECTION_PATH + "/"
+        put(ICS_DAILY_NY_5PM_PATH, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
+        put(ICS_ALL_DAY_JAN1_PATH, COLLECTION_PATH + "/" + ICS_ALL_DAY_JAN1);
+        put(ICS_NORMAL_PACIFIC_1PM_PATH, COLLECTION_PATH + "/"
                 + ICS_NORMAL_PACIFIC_1PM);
-        put(ICS_SINGLE_EVENT, COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
-        put(ICS_FLOATING_JAN2_7PM, COLLECTION_PATH + "/"
+        put(ICS_SINGLE_EVENT_PATH, COLLECTION_PATH + "/" + ICS_SINGLE_EVENT);
+        put(ICS_FLOATING_JAN2_7PM_PATH, COLLECTION_PATH + "/"
                 + ICS_FLOATING_JAN2_7PM);
     }
 
@@ -54,30 +53,45 @@ public class FunTest extends BaseTestCase {
         del(COLLECTION_PATH);
     }
 
+    @Ignore
     @Test
-    public void testFun() throws Exception{
+    public void testCaldavServerFunctionality() throws Exception{
         HttpClient http = createHttpClient();
         HostConfiguration hostConfig = createHostConfiguration();
-
-        PropFindMethod propFindMethod = new PropFindMethod(caldavCredential.home);
-        QName propName = new QName(CalDAVConstants.NS_DAV, "resourcetype");
-        propFindMethod.setDepth(PropFindMethod.DEPTH_INFINITY);
+/*
+        PropFindMethod propFindMethod = new PropFindMethod();
+        PropertyName propName = new PropertyName(CalDAVConstants.NS_DAV, "resourcetype");
+        propFindMethod.setDepth(DepthSupport.DEPTH_INFINITY);
         propFindMethod.setPath(caldavCredential.home);
-        //TODO propFindMethod.setType(PropFindMethod.PROPFIND_BY_PROPERTY);
-        Vector<QName> v = new Vector<QName>();
+        propFindMethod.setType(PropFindMethod.BY_NAME);
+        Vector<PropertyName> v = new Vector<PropertyName>();
         v.add(propName);
-        //TODO ?? propFindMethod.setPropertyNames(v.elements());
+        propFindMethod.setPropertyNames(v.elements());
         http.executeMethod(hostConfig, propFindMethod);
-     
-        for (DavProperty<?> eProp :propFindMethod.getResponseTable()){
-                String nodeName = eProp.getName().getName();
-                String localName = eProp.getName().getNamespace().getPrefix();
-                String tagName = eProp.getValue().toString();
-                String namespaceURI = eProp.getName().getNamespace().getURI();
-                log.info("nodename: " + nodeName);            
+        Enumeration<Response> e = propFindMethod.getResponses();
+        while (e.hasMoreElements()){
+            Response response = (Response) e.nextElement();
+            Enumeration<Property> eProp = response.getProperties();
+            while (eProp.hasMoreElements()){
+                Property property = (Property) eProp.nextElement();
+                String nodeName = property.getElement().getNodeName();
+                String localName = property.getElement().getLocalName();
+                String tagName = property.getElement().getTagName();
+                String namespaceURI = property.getElement().getNamespaceURI();
+                log.info("nodename: " + nodeName);
+            }
+            
         }
+        */
     }
-
+    
+    @Override
+    public CalDAVCollection createCalDAVCollection() {
+        CalDAVCollection calendarCollection = new CalDAVCollection(
+                COLLECTION_PATH,  createHostConfiguration(),
+                methodFactory, CalDAVConstants.PROC_ID_DEFAULT);
+        return calendarCollection;
+    }
     
     public static void main (String args[]){
         try {
@@ -89,7 +103,7 @@ public class FunTest extends BaseTestCase {
                 = recur.getDates(baseDate, startDate, endDate, Value.DATE_TIME);
             for (int x = 0; x < dateList.size(); x++){
                 DateTime d = (DateTime) dateList.get(x);
-                System.out.println(d);
+                log.info(d);
             }
         } catch (Exception e){
             throw new RuntimeException(e);

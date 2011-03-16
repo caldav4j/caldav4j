@@ -1,5 +1,5 @@
 package org.osaf.caldav4j.scheduling.util;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,25 +12,27 @@ import net.fortuna.ical4j.model.property.Method;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
+// test resource missing and all test methods are currently ignored
+@Ignore
 public class ITipUtilsTest extends BaseTestCase {
-    public ITipUtilsTest(String method) {
-		super(method);
-		// TODO Auto-generated constructor stub
-	}
 
 	private static final Log log = LogFactory.getLog(ITipUtilsTest.class);
 
 	// load a sample meeting request
 	Calendar inviteComplexWithTimezone = this
-	.getCalendarResource("meeting_invitation_1.ics");
+	.getCalendarResource("scheduling/meeting_invitation_1.ics");
 	
 	Attendee mySelf = null;
 	Attendee nobody = null;
 	
+	@Before
 	public void setUp() {
 		try {
 			super.setUp();
@@ -49,6 +51,8 @@ public class ITipUtilsTest extends BaseTestCase {
 	 * @throws URISyntaxException 
 	 *  
 	 */
+    @Test
+    @Ignore
 	public void testRequestReplyAccept() throws URISyntaxException {
 		try {
 			Calendar reply = null;
@@ -78,6 +82,8 @@ public class ITipUtilsTest extends BaseTestCase {
 
 	}
 
+    @Test
+    @Ignore
 	public void testRequestReplyDeclined() throws URISyntaxException {
 		// load a sample meeting request
 		Calendar reply = null;
@@ -110,7 +116,9 @@ public class ITipUtilsTest extends BaseTestCase {
 	}
 
 	// TODO to be implemented
-	public void _testRequestReplyDelegated() {
+    @Test
+    @Ignore
+	public void testRequestReplyDelegated() {
 		// load a sample meeting request
 		// add a set of attendees
 		// set different partstats
