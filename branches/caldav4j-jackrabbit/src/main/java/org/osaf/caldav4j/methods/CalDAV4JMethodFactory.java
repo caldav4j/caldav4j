@@ -21,6 +21,7 @@ import java.io.IOException;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.exceptions.UnimplementedException;
 import org.osaf.caldav4j.model.request.TicketRequest;
 
 public class CalDAV4JMethodFactory {
@@ -114,4 +115,9 @@ public class CalDAV4JMethodFactory {
         }
         return builder;
     }
+
+	public CalendarCalDAVReportMethod createCalendarCalDAVReportMethod() {
+		// TODO Auto-generated method stub
+		throw new UnimplementedException();
+	}
 }
