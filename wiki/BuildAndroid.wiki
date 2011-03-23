@@ -4,7 +4,12 @@
 = Introduction =
 
 
-Sudheer used caldav4j to write a caldav client for Android. To use that client, which is based on default Android package, you have to follow these steps:
+
+Sudheer used caldav4j to write a caldav client for Android froyo.
+
+you can [http://code.google.com/p/caldav4j/source/browse/android/bin/Calendar.apk download the .apk] or rebuild it 
+
+To use that client, which is based on default Android package, you have to follow these steps:
  # checkout android sources v 2.2
  # build android from scratch and check that everything is ok
  # replace the Calendar android sources with the one provided by Sudheer
