@@ -45,11 +45,11 @@ Experimental methods are made to create one-line queries.
 == Usage ==
 {{{
 // create a simple query getting UID, ATTENDEE, DTSTART, DTEND
-QueryGenerator qg = new QueryGenerator();
+GenerateQuery qg = new GenerateQuery();
 gg.setComponent("VEVENT"); // retrieve the whole VEVENT
 qg.setComponent("VEVENT : UID, ATTENDEE, DTSTART, DTEND"); // retrieve the given properties
 
-CalendarQuery query=gq.generateQuery();
+CalendarQuery query=gq.generate();
 
 // create a "complex" query
 // start and end values can be empty strings "" or RFC2445-UTC timestamp
