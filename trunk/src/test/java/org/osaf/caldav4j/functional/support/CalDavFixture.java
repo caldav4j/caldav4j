@@ -291,4 +291,5 @@ public class CalDavFixture
 	public void setHttpClient(HttpClient httpClient) {
 		this.httpClient = httpClient;
 	}
+	
 }

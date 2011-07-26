@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.dialect.CalDavDialect;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
+import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 import org.osaf.caldav4j.methods.HttpClient;
 
 public abstract class BaseTestCase   implements TestConstants {
@@ -42,10 +43,17 @@ public abstract class BaseTestCase   implements TestConstants {
 
 	protected CalDavFixture fixture;
 
+	protected CalDAVCollection collection;
+	
+	protected CalDAVCollection uncachedCollection;
+
 	@Before
 	public void setUp() throws Exception {
 		fixture = new CalDavFixture();
 		fixture.setUp(caldavCredential, caldavDialect);
+		
+		collection = CaldavFixtureHarness.createCollectionFromFixture(fixture);
+
     }
     
     @After
@@ -122,12 +130,6 @@ public abstract class BaseTestCase   implements TestConstants {
     }    
     
     
-    protected CalDAVCollection createCalDAVCollection() {
-			CalDAVCollection calendarCollection = new CalDAVCollection(
-					fixture.getCollectionPath(), createHostConfiguration(), fixture.getMethodFactory(),
-					CalDAVConstants.PROC_ID_DEFAULT);
-			return calendarCollection;
-		}
 
 		// getter+setter
 	    public String getCalDAVServerHost() {
