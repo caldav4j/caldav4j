@@ -18,7 +18,6 @@ package org.osaf.caldav4j.methods;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
@@ -35,12 +34,20 @@ import org.osaf.caldav4j.util.UrlUtils;
 
 
 public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
-    private static final Log log = LogFactory.getLog(GetMethod.class);
+    private static final String CONTEN_TYPE_TEXT_HTML = "text/html";
+
+	private static final String HEADER_ACCEPT = "Accept";
+
+	private static final Log log = LogFactory.getLog(GetMethod.class);
     
     private CalendarBuilder calendarBuilder = null;
     
     protected GetMethod (){
         super();
+        this.addRequestHeader(HEADER_ACCEPT, 
+        		"text/calendar; text/html; text/xml;"); // required for bedework
+        
+
     }
 
     public CalendarBuilder getCalendarBuilder() {
@@ -57,13 +64,14 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
     	BufferedInputStream stream = null;
         try {
 		    Header header = getResponseHeader(CalDAVConstants.HEADER_CONTENT_TYPE);
-		    String contentType = header.getValue();
-		    if (contentType.startsWith(CalDAVConstants.CONTENT_TYPE_CALENDAR)) {
+		    String contentType = (header != null) ? header.getValue() : null;
+		    if (StringUtils.isBlank(contentType) || 
+		    		contentType.startsWith(CalDAVConstants.CONTENT_TYPE_CALENDAR)) {
 		         stream = new BufferedInputStream(getResponseBodyAsStream());
 		        ret =  calendarBuilder.build(stream);
 		        return ret;		        
 		    }
-        
+
 	        log.error("Expected content-type text/calendar. Was: " + contentType);
 	        throw new CalDAV4JProtocolException("Expected content-type text/calendar. Was: " + contentType );
         } catch (IOException e) {

@@ -19,7 +19,6 @@ package org.osaf.caldav4j.model.response;
 
 import java.io.StringReader;
 
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 
