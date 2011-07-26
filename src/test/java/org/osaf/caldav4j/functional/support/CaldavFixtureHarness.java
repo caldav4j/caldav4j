@@ -1,12 +1,30 @@
 package org.osaf.caldav4j.functional.support;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osaf.caldav4j.CalDAVCollection;
+import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.TestConstants;
+import org.osaf.caldav4j.cache.EhCacheResourceCache;
 
 public class CaldavFixtureHarness implements TestConstants {
 
 	protected static final Log log = LogFactory.getLog(CaldavFixtureHarness.class);
+	
+	
+	public static CalDAVCollection createCollectionFromFixture(CalDavFixture fixture) {
+		HostConfiguration conf = (HostConfiguration) fixture.getHttpClient().getHostConfiguration().clone();
+		 return new CalDAVCollection(
+					fixture.getCollectionPath(),
+					conf,
+					fixture.getMethodFactory(),
+					CalDAVConstants.PROC_ID_DEFAULT
+		);
+	}
 	/**
 	 * @param fixture 
 	 * 
@@ -30,15 +48,36 @@ public class CaldavFixtureHarness implements TestConstants {
 	
 	
 	private static void provisionEvents(CalDavFixture fixture, String[] events) {
-		try {
-			fixture.makeCalendar(""); 
-		} catch (Exception e) {
-			log.info("MKCALENDAR unsupported?", e);
-		}
-
 		for (String eventPath :events) {
 			fixture.caldavPut(eventPath);
 		}
+	}
+	/**
+	 * 
+	 */
+	public static EhCacheResourceCache createSimpleCache() {
+		//initialize cache
+		CacheManager cacheManager = CacheManager.create();
+		EhCacheResourceCache myCache = new EhCacheResourceCache();
+		Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, false, false,
+				600, 300, false, 0);
+		Cache hrefToResourceCache = new Cache(HREF_TO_RESOURCE_CACHE, 1000,
+				false, false, 600, 300, false, 0);
+		myCache.setHrefToResourceCache(hrefToResourceCache);
+		myCache.setUidToHrefCache(uidToHrefCache);
+		cacheManager.addCache(uidToHrefCache);
+		cacheManager.addCache(hrefToResourceCache);
+		
+		return myCache;
+	}
+	/**
+	 * 
+	 */
+	public static void removeSimpleCache() {
+		CacheManager cacheManager = CacheManager.create();
+		cacheManager.removeCache(UID_TO_HREF_CACHE);
+		cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
+		cacheManager.shutdown();
 	}
 
 }

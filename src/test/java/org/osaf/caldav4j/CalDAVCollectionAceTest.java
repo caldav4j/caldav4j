@@ -6,7 +6,6 @@ package org.osaf.caldav4j;
 import java.util.List;
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
@@ -50,31 +49,15 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 
 		CaldavFixtureHarness.provisionGoogleEvents(fixture);
 
-
-		//initialize cache
-		CacheManager cacheManager = CacheManager.create();
-		myCache = new EhCacheResourceCache();
-		Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, false, false,
-				600, 300, false, 0);
-		Cache hrefToResourceCache = new Cache(HREF_TO_RESOURCE_CACHE, 1000,
-				false, false, 600, 300, false, 0);
-		myCache.setHrefToResourceCache(hrefToResourceCache);
-		myCache.setUidToHrefCache(uidToHrefCache);
-		cacheManager.addCache(uidToHrefCache);
-		cacheManager.addCache(hrefToResourceCache);
+		myCache = CaldavFixtureHarness.createSimpleCache();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		CacheManager cacheManager = CacheManager.create();
-		cacheManager.removeCache(UID_TO_HREF_CACHE);
-		cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
-		cacheManager.shutdown();
+		CaldavFixtureHarness.removeSimpleCache();
 
 		fixture.tearDown();
 	}
-
-
 
 	/**
 	 * make a OPTIONS  requesto to caldav server
@@ -82,9 +65,8 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 	 */
 	@Test
 	public void testGetOptions() throws Exception {
-		CalDAVCollection calendarCollection = createCalDAVCollection();
 
-		List<Header> headerList = calendarCollection.getOptions(fixture.getHttpClient());
+		List<Header> headerList = uncachedCollection.getOptions(fixture.getHttpClient());
 
 		for (Header h : headerList) {
 			log.info(h.getName() + ":" + h.getValue());
@@ -98,13 +80,13 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		AclMethod aclMethod = new AclMethod("path_to_resource");
 		aclMethod.addAce(ace);
 
-		if (calendarCollection.allows(fixture.getHttpClient(), "MKCOL", headerList)) {
+		if (uncachedCollection.allows(fixture.getHttpClient(), "MKCOL", headerList)) {
 			log.info("MKCOL exists");
 		}
-		if (calendarCollection.allows(fixture.getHttpClient(), "REPORT", headerList)) {
+		if (uncachedCollection.allows(fixture.getHttpClient(), "REPORT", headerList)) {
 			log.info("REPORT exists");
 		}
-		if (calendarCollection.allows(fixture.getHttpClient(), "NOOP", headerList)) {
+		if (uncachedCollection.allows(fixture.getHttpClient(), "NOOP", headerList)) {
 			log.info("NOOP exists");
 		}
 	}
@@ -115,13 +97,6 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 	//
 
 
-	protected CalDAVCollection createCalDAVCollectionWithCache() {
-
-
-		CalDAVCollection calendarCollection = createCalDAVCollection();
-		calendarCollection.setCache(myCache);
-		return calendarCollection;
-	}
 
 
 

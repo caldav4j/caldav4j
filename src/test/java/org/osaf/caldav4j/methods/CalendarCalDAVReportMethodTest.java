@@ -64,7 +64,7 @@ public class CalendarCalDAVReportMethodTest extends CaldavStatus
 		CalendarCalDAVReportMethod method = createMethod("/path", new FakeCalDAVReportRequest());
 		
 		String expectedRequest = "REPORT /path HTTP/1.1\r\n"
-			+ "User-Agent: Jakarta Commons-HttpClient/3.0\r\n"
+			+ "User-Agent: Jakarta Commons-HttpClient/3.1\r\n"
 			+ "Host: localhost\r\n"
 			+ "Content-Length: 36\r\n"
 			+ "Depth: 1\r\n"

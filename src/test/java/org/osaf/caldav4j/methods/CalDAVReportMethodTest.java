@@ -7,10 +7,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 
+@Ignore
 public class CalDAVReportMethodTest extends BaseTestCase {
 
 	private static final Log log = LogFactory.getLog(CalDAVReportMethodTest.class);

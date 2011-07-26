@@ -31,16 +31,14 @@ public class ACLCalDAVCollectionTest extends BaseTestCase {
 
 	@Test
 	public void getFolderAces() throws CalDAV4JException {
-		CalDAVCollection calendarCollection = createCalDAVCollection();
-		Ace[] aces = calendarCollection.getAces(fixture.getHttpClient(), null);
+		Ace[] aces = collection.getAces(fixture.getHttpClient(), null);
 		assertNotNull(aces);		
 		log.info(aces);			
 	}
 
 	@Test
 	public void getResourceAces() throws Exception {		
-		CalDAVCollection calendarCollection = createCalDAVCollection();		
-		Ace[] aces = calendarCollection.getAces(fixture.getHttpClient(), ICS_GOOGLE_DAILY_NY_5PM);
+		Ace[] aces = collection.getAces(fixture.getHttpClient(), ICS_GOOGLE_DAILY_NY_5PM);
 		assertNotNull(aces);		
 		log.info(aces);	
 	}
