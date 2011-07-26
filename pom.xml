@@ -22,7 +22,7 @@
  <name>CalDav4j</name>
   <groupId>org.osaf</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>0.7-SNAPSHOT</version>
+  <version>0.7</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
@@ -44,7 +44,7 @@
       <groupId>net.fortuna.ical4j</groupId>
       <artifactId>ical4j</artifactId>
       <!--version>1.0-rc1-SNAPSHOT</version--><!-- patched on localhost-->
-      <version>1.0-rc2</version>
+      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
-      <version>3.0</version>
+      <version>3.1</version>
     </dependency>
     <dependency>
       <groupId>castor</groupId>
@@ -133,6 +133,10 @@
             </configuration>
         </plugin>
 
+        <plugin>
+        	<groupId>org.codehaus.mojo</groupId>
+        	<artifactId>failsafe-maven-plugin</artifactId>
+        </plugin>
     </plugins>
     </pluginManagement>
     <plugins>
