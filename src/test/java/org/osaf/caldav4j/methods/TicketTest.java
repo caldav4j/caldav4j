@@ -49,8 +49,8 @@ public class TicketTest extends BaseTestCase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		mkcalendar(COLLECTION_PATH);
-		put(ICS_DAILY_NY_5PM_PATH, COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
+		fixture.makeCalendar("");
+		fixture.put(ICS_DAILY_NY_5PM_PATH, ICS_DAILY_NY_5PM);
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class TicketTest extends BaseTestCase {
 		boolean write = ticketRequest.getWrite();
 
 		// Make the ticket
-		MkTicketMethod mk = new MkTicketMethod(COLLECTION_PATH + "/"
+		MkTicketMethod mk = new MkTicketMethod(fixture.getCollectionPath() + "/"
 				+ ICS_DAILY_NY_5PM, ticketRequest);
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
@@ -95,7 +95,7 @@ public class TicketTest extends BaseTestCase {
 
 		// Delete the Ticket
 
-		DelTicketMethod del = new DelTicketMethod(COLLECTION_PATH + "/"
+		DelTicketMethod del = new DelTicketMethod(fixture.getCollectionPath() + "/"
 				+ ICS_DAILY_NY_5PM, ticketResponse.getID());
 		http.executeMethod(hostConfig, del);
 
@@ -116,7 +116,7 @@ public class TicketTest extends BaseTestCase {
 		properties.add(propertyName);
 		properties.add(propertyName2);
 
-		PropFindMethod propFindMethod = new PropFindMethod(COLLECTION_PATH
+		PropFindMethod propFindMethod = new PropFindMethod(fixture.getCollectionPath()
 				+ "/" + ICS_DAILY_NY_5PM, properties.elements());
 		propFindMethod.setDepth(0);
 		http.executeMethod(hostConfig, propFindMethod);
@@ -131,7 +131,7 @@ public class TicketTest extends BaseTestCase {
 		Enumeration responses = propFindMethod
 		.getResponseProperties(caldavCredential.protocol
 				+ "://" + caldavCredential.host + ":"
-				+ caldavCredential.port + COLLECTION_PATH
+				+ caldavCredential.port + fixture.getCollectionPath()
 				+ "/" + ICS_DAILY_NY_5PM);
 		List<TicketResponse> ticketResponseList = new ArrayList<TicketResponse>();
 		while (responses.hasMoreElements()) {
@@ -148,19 +148,19 @@ public class TicketTest extends BaseTestCase {
 
 		// Remake the Same Ticket
 
-		MkTicketMethod mk2 = new MkTicketMethod(COLLECTION_PATH + "/"
+		MkTicketMethod mk2 = new MkTicketMethod(fixture.getCollectionPath() + "/"
 				+ ICS_DAILY_NY_5PM, ticketRequest);
 		http.executeMethod(hostConfig, mk2);
 
 		// And Another Ticket
 
-		MkTicketMethod mk3 = new MkTicketMethod(COLLECTION_PATH + "/"
+		MkTicketMethod mk3 = new MkTicketMethod(fixture.getCollectionPath() + "/"
 				+ ICS_DAILY_NY_5PM, ticketRequest);
 		http.executeMethod(hostConfig, mk3);
 
 		// Do a PropFind on Calendar for ticketdiscovery and owner properties
 
-		propFindMethod = new PropFindMethod(COLLECTION_PATH + "/"
+		propFindMethod = new PropFindMethod(fixture.getCollectionPath() + "/"
 				+ ICS_DAILY_NY_5PM, properties.elements());
 		propFindMethod.setDepth(0);
 		http.executeMethod(hostConfig, propFindMethod);
@@ -175,7 +175,7 @@ public class TicketTest extends BaseTestCase {
 		responses = propFindMethod
 		.getResponseProperties(caldavCredential.protocol
 				+ "://" + caldavCredential.host + ":"
-				+ caldavCredential.port + COLLECTION_PATH
+				+ caldavCredential.port + fixture.getCollectionPath()
 				+ "/" + ICS_DAILY_NY_5PM);
 		ticketResponseList = new ArrayList<TicketResponse>();
 		while (responses.hasMoreElements()) {
@@ -215,7 +215,7 @@ public class TicketTest extends BaseTestCase {
 				TEST_READ, TEST_WRITE);
 
 		// Make the ticket
-		MkTicketMethod mk = new MkTicketMethod(COLLECTION_PATH + "/"
+		MkTicketMethod mk = new MkTicketMethod(fixture.getCollectionPath() + "/"
 				+ ICS_DAILY_NY_5PM, ticketRequest);
 
 		HttpClient http = createHttpClient();
@@ -231,7 +231,7 @@ public class TicketTest extends BaseTestCase {
 		// Try to get the Calendar with the Ticket
 
 		GetMethod get = methodFactory.createGetMethod();
-		get.setPath(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
+		get.setPath(fixture.getCollectionPath() + "/" + ICS_DAILY_NY_5PM);
 
 		// Setup a HttpClient with a bad username and password
 		HttpClient badhttp = createHttpClientWithNoCredentials();
@@ -248,7 +248,7 @@ public class TicketTest extends BaseTestCase {
 		// Make sure the Get method works with Bad Username/Password and valid
 		// ticket in the URI
 		GetMethod get2 = methodFactory.createGetMethod();
-		get2.setPath(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
+		get2.setPath(fixture.getCollectionPath() + "/" + ICS_DAILY_NY_5PM);
 
 		badhttp.setTicketLocation(HttpClient.TicketLocation.QUERY_PARAM);
 		badhttp.executeMethod(hostConfig, get2);
@@ -260,8 +260,7 @@ public class TicketTest extends BaseTestCase {
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();
-		del(COLLECTION_PATH + "/" + ICS_DAILY_NY_5PM);
-		del(COLLECTION_PATH);
-	}
+fixture.tearDown();
+}
 
 }

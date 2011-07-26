@@ -29,7 +29,6 @@ import net.fortuna.ical4j.model.property.Version;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.support.HttpClientTestUtils;
 import org.osaf.caldav4j.util.CaldavStatus;

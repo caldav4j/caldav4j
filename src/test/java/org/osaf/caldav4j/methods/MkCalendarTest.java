@@ -7,13 +7,13 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.DeleteMethod;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.util.CaldavStatus;
+
+@Ignore
 public class MkCalendarTest extends BaseTestCase {
-    public MkCalendarTest() {
-		super();
-	}
 
 	private static final Log log = LogFactory.getLog(MkCalendarTest.class);
     
@@ -49,7 +49,7 @@ public class MkCalendarTest extends BaseTestCase {
         assertEquals("Status code for mk:", CaldavStatus.SC_CREATED, statusCode);
         
         //now let's try and get it, make sure it's there
-        GetMethod get = methodFactory.createGetMethod();
+        GetMethod get = fixture.getMethodFactory().createGetMethod();
         get.setPath(caldavCredential.home +caldavCredential.collection);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
@@ -64,7 +64,7 @@ public class MkCalendarTest extends BaseTestCase {
         assertEquals("Status code for delete:", CaldavStatus.SC_NO_CONTENT, statusCode);
 
         //Now make sure that it goes away
-        get = methodFactory.createGetMethod();
+        get = fixture.getMethodFactory().createGetMethod();
         get.setPath( caldavCredential.home +  caldavCredential.collection);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();

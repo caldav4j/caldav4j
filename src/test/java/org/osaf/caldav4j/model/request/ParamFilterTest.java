@@ -1,11 +1,14 @@
 package org.osaf.caldav4j.model.request;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.util.XMLUtils;
-import static org.junit.Assert.*;
 
 public class ParamFilterTest extends BaseTestCase {
 	@Test
