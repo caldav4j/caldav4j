@@ -9,8 +9,8 @@ import org.osaf.caldav4j.exceptions.AuthorizationException;
 import org.osaf.caldav4j.exceptions.BadStatusException;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
-import org.osaf.caldav4j.exceptions.ResourceOutOfDateException;
 import org.osaf.caldav4j.exceptions.ResourceNotFoundException.IdentifierType;
+import org.osaf.caldav4j.exceptions.ResourceOutOfDateException;
 
 public class MethodUtil {
 	private static final Log log = LogFactory.getLog(MethodUtil.class);

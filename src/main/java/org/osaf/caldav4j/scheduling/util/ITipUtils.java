@@ -9,10 +9,8 @@ package org.osaf.caldav4j.scheduling.util;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.AbstractCollection;
 import java.util.TimeZone;
 
-import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
@@ -26,7 +24,6 @@ import net.fortuna.ical4j.model.property.Method;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
-import org.osaf.caldav4j.util.ICalendarUtils;
 
 public class ITipUtils {
 	private static final Log log = LogFactory.getLog(ITipUtils.class);    
