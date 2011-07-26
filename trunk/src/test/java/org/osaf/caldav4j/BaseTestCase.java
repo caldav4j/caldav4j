@@ -18,7 +18,6 @@ import java.io.InputStream;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.DateTime;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HostConfiguration;
@@ -26,38 +25,27 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.methods.MkcolMethod;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.dialect.CalDavDialect;
-import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
-import org.osaf.caldav4j.methods.DeleteMethod;
+import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.methods.HttpClient;
-import org.osaf.caldav4j.methods.MkCalendarMethod;
-import org.osaf.caldav4j.methods.PutMethod;
-import org.osaf.caldav4j.util.CaldavStatus;
-import org.osaf.caldav4j.util.UrlUtils;
 
 public abstract class BaseTestCase   implements TestConstants {
     protected static final Log log = LogFactory.getLog(BaseTestCase.class);
-    protected HttpClient testHttpClient;
-    protected HttpClient httpClient;
 
-    protected HostConfiguration hostConfig;
     protected CaldavCredential caldavCredential = new CaldavCredential();
-    public  String COLLECTION_PATH;
-    protected CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+
 	protected CalDavDialect caldavDialect;
 
+	protected CalDavFixture fixture;
 
-    @Before
-    public void setUp() throws Exception {
-        COLLECTION_PATH = UrlUtils.removeDoubleSlashes(caldavCredential.home + caldavCredential.collection);
-        hostConfig = createHostConfiguration();
-        testHttpClient  = createHttpClient();
-        httpClient = createHttpClient();    	
+	@Before
+	public void setUp() throws Exception {
+		fixture = new CalDavFixture();
+		fixture.setUp(caldavCredential, caldavDialect);
     }
     
     @After
@@ -68,11 +56,12 @@ public abstract class BaseTestCase   implements TestConstants {
 
 
     // constructor
-    public BaseTestCase(String method) {
-	}
     public BaseTestCase() {
 	}
-
+	public BaseTestCase(CaldavCredential credential, CalDavDialect dialect) {
+		this.caldavCredential = credential;
+		this.caldavDialect = dialect;	
+	}
 	public HttpClient createHttpClient(){
         HttpClient http = new HttpClient();
 
@@ -132,105 +121,10 @@ public abstract class BaseTestCase   implements TestConstants {
         return cal;
     }    
     
-    /***
-     * FIXME this put updates automatically the timestamp of the event 
-     * @param resourceFileName
-     * @param path
-     */
-    protected void put(String resourceFileName, String path) {    	
-        PutMethod put = methodFactory.createPutMethod();
-        InputStream stream = this.getClass().getClassLoader()
-        .getResourceAsStream(resourceFileName);
-        String event = UrlUtils.parseISToString(stream);
-        event = event.replaceAll("DTSTAMP:.*", "DTSTAMP:" + new DateTime(true).toString());
-        log.debug(new DateTime(true).toString());
-        //log.trace(event);        
-        
-        put.setRequestEntity(event);
-        put.setPath(path);
-    	log.debug("\nPUT " + put.getPath());
-        try {
-            testHttpClient.executeMethod(hostConfig, put);
-            
-            int statusCode =  put.getStatusCode();
-            
-            switch (statusCode) {
-			case CaldavStatus.SC_CREATED:
-			case CaldavStatus.SC_NO_CONTENT:
-				break;
-			case CaldavStatus.SC_PRECONDITION_FAILED:
-				log.error("item exists?");
-				break;
-			case CaldavStatus.SC_CONFLICT:
-				log.error("conflict: item still on server");
-			default:
-                log.error(put.getResponseBodyAsString());
-				throw new Exception("trouble executing PUT of " +resourceFileName + "\nresponse:" + put.getResponseBodyAsString());
-
-			}
-        } catch (Exception e){
-        	log.info("Error while put():" + e.getMessage());
-            throw new RuntimeException(e);
-        }
-
-    }
     
-    protected void del(String path){
-        DeleteMethod delete = new DeleteMethod();
-        delete.setPath(path);
-        try {
-        	testHttpClient.executeMethod(hostConfig, delete);
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }
-    }
-    
-    protected void mkcalendar(String path){
-        MkCalendarMethod mk = new MkCalendarMethod();
-        mk.setPath(path);
-        mk.addDescription(CALENDAR_DESCRIPTION, "en");
-        try {
-        	testHttpClient.executeMethod(hostConfig, mk);
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }
-    }
-    
-    
-    protected void mkcol(String path) {
-    	MkcolMethod mk = new MkcolMethod(path);
-        try {
-        	testHttpClient.executeMethod(hostConfig, mk);
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }
-
-    }
-	/**
-	 * put an event on a caldav store using UID.ics
-	 */
-	 protected void caldavPut(String s) {    	 
-		 Calendar cal = getCalendarResource(s);
-
-		 String resPath = COLLECTION_PATH + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
-		 put (s, resPath );
-
-	 }
-
-	 /**
-	  * remove an event on a caldav store using UID.ics
-	  */
-	 protected void caldavDel(String s) {
-		 Calendar cal = getCalendarResource(s);
-		 String delPath = COLLECTION_PATH + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
-		 log.debug("DEL " + delPath);
-		 del(delPath);
-
-	 }
-	 
-		protected CalDAVCollection createCalDAVCollection() {
+    protected CalDAVCollection createCalDAVCollection() {
 			CalDAVCollection calendarCollection = new CalDAVCollection(
-					COLLECTION_PATH, createHostConfiguration(), methodFactory,
+					fixture.getCollectionPath(), createHostConfiguration(), fixture.getMethodFactory(),
 					CalDAVConstants.PROC_ID_DEFAULT);
 			return calendarCollection;
 		}

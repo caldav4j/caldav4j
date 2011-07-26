@@ -5,14 +5,12 @@ import static org.junit.Assert.fail;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 
+@Ignore
 public class OptionsTest extends BaseTestCase {
-
-	public OptionsTest( ) {
-		super();
-	}
 
 	public static final String OUTBOX = "/Outbox";
 	public static final String INBOX = "/Inbox";

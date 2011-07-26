@@ -1,8 +1,8 @@
 package org.osaf.caldav4j.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class UrlUtilsTest  {
 	

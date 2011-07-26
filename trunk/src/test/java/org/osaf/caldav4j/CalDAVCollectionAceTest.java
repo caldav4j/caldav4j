@@ -18,6 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
+import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 
 public class CalDAVCollectionAceTest extends BaseTestCase {
 	public CalDAVCollectionAceTest() {
@@ -42,20 +43,13 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 	public static final Integer TEST_VISITS = CalDAVConstants.INFINITY;
 
 	public static final String  TEST_TIMEOUT_UNITS = "Second";
-	
+
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 
-		try {
-			mkcalendar(COLLECTION_PATH); 
-		} catch (Exception e) {
-			log.info("MKCALENDAR unsupported?", e);
-		}
-		caldavPut(ICS_GOOGLE_DAILY_NY_5PM_PATH);
-		caldavPut(ICS_GOOGLE_ALL_DAY_JAN1_PATH);
-		caldavPut(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
-		caldavPut(ICS_GOOGLE_SINGLE_EVENT_PATH);
+		CaldavFixtureHarness.provisionGoogleEvents(fixture);
+
 
 		//initialize cache
 		CacheManager cacheManager = CacheManager.create();
@@ -77,15 +71,7 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
 		cacheManager.shutdown();
 
-		caldavDel(ICS_GOOGLE_DAILY_NY_5PM_PATH);
-		caldavDel(ICS_GOOGLE_ALL_DAY_JAN1_PATH);
-		caldavDel(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
-		caldavDel(ICS_GOOGLE_SINGLE_EVENT_PATH);
-		try {
-			del(COLLECTION_PATH);
-		} catch (Exception e) {
-			log.info("DELETE Collection unsupported", e);
-		}
+		fixture.tearDown();
 	}
 
 
@@ -98,7 +84,7 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 	public void testGetOptions() throws Exception {
 		CalDAVCollection calendarCollection = createCalDAVCollection();
 
-		List<Header> headerList = calendarCollection.getOptions(httpClient);
+		List<Header> headerList = calendarCollection.getOptions(fixture.getHttpClient());
 
 		for (Header h : headerList) {
 			log.info(h.getName() + ":" + h.getValue());
@@ -112,13 +98,13 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		AclMethod aclMethod = new AclMethod("path_to_resource");
 		aclMethod.addAce(ace);
 
-		if (calendarCollection.allows(httpClient, "MKCOL", headerList)) {
+		if (calendarCollection.allows(fixture.getHttpClient(), "MKCOL", headerList)) {
 			log.info("MKCOL exists");
 		}
-		if (calendarCollection.allows(httpClient, "REPORT", headerList)) {
+		if (calendarCollection.allows(fixture.getHttpClient(), "REPORT", headerList)) {
 			log.info("REPORT exists");
 		}
-		if (calendarCollection.allows(httpClient, "NOOP", headerList)) {
+		if (calendarCollection.allows(fixture.getHttpClient(), "NOOP", headerList)) {
 			log.info("NOOP exists");
 		}
 	}

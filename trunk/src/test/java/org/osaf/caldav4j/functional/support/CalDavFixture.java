@@ -18,27 +18,35 @@ package org.osaf.caldav4j.functional.support;
 import static org.osaf.caldav4j.support.HttpMethodCallbacks.nullCallback;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.component.VEvent;
 
 import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.MkcolMethod;
+import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.TestConstants;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.dialect.CalDavDialect;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.DeleteMethod;
+import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.support.HttpClientTestUtils;
 import org.osaf.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
+import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
 
 /**
@@ -50,6 +58,7 @@ import org.osaf.caldav4j.util.UrlUtils;
 public class CalDavFixture
 {
 	// fields -----------------------------------------------------------------
+    protected static final Log log = LogFactory.getLog(CalDavFixture.class);
 	
 	private HttpClient httpClient;
 	
@@ -93,6 +102,13 @@ public class CalDavFixture
 	
 	public void makeCalendar(String relativePath) throws IOException
 	{
+		/*
+		GoogleCalDavDialect gdialect = new GoogleCalDavDialect();
+		if (dialect.equals(gdialect.getProdId())) {
+			log.warn("Google Caldav Server doesn't support MKCALENDAR");
+			return;
+		}
+		*/
 		MkCalendarMethod method = methodFactory.createMkCalendarMethod();
 		method.setPath(relativePath);
 
@@ -162,5 +178,117 @@ public class CalDavFixture
 
 	public CalDavDialect getDialect() {
 		return dialect;
+	}
+
+	protected void mkcalendar(String path){
+	    MkCalendarMethod mk = new MkCalendarMethod();
+	    mk.setPath(path);
+	    mk.addDescription(TestConstants.CALENDAR_DESCRIPTION, "en");
+	    try {
+	    	executeMethod(HttpStatus.SC_CREATED,  mk, true);
+	    } catch (Exception e){
+	        throw new RuntimeException(e);
+	    }
+	}
+
+	protected void mkcol(String path) {
+		MkcolMethod mk = new MkcolMethod(path);
+	    try {
+	    	executeMethod(HttpStatus.SC_CREATED,  mk, true);
+	    } catch (Exception e){
+	        throw new RuntimeException(e);
+	    }
+	
+	}
+
+	/***
+	 * FIXME this put updates automatically the timestamp of the event 
+	 * @param resourceFileName
+	 * @param path
+	 */
+	public void put(String resourceFileName, String path) {    	
+	    PutMethod put = methodFactory.createPutMethod();
+	    InputStream stream = this.getClass().getClassLoader()
+	    .getResourceAsStream(resourceFileName);
+	    String event = UrlUtils.parseISToString(stream);
+	    event = event.replaceAll("DTSTAMP:.*", "DTSTAMP:" + new DateTime(true).toString());
+	    log.debug(new DateTime(true).toString());
+	    //log.trace(event);        
+	    
+	    put.setRequestEntity(event);
+	    put.setPath(path);
+		log.debug("\nPUT " + put.getPath());
+	    try {
+	        executeMethod(CaldavStatus.SC_CREATED, put, true);
+	        
+	        int statusCode =  put.getStatusCode();
+	        
+	        switch (statusCode) {
+			case CaldavStatus.SC_CREATED:
+			case CaldavStatus.SC_NO_CONTENT:
+				break;
+			case CaldavStatus.SC_PRECONDITION_FAILED:
+				log.error("item exists?");
+				break;
+			case CaldavStatus.SC_CONFLICT:
+				log.error("conflict: item still on server");
+			default:
+	            log.error(put.getResponseBodyAsString());
+				throw new Exception("trouble executing PUT of " +resourceFileName + "\nresponse:" + put.getResponseBodyAsString());
+	
+			}
+	    } catch (Exception e){
+	    	log.info("Error while put():" + e.getMessage());
+	        throw new RuntimeException(e);
+	    }
+	
+	}
+
+	/**
+	  * remove an event on a caldav store using UID.ics
+	 * @throws IOException 
+	  */
+	 public void caldavDel(String s) throws IOException {
+		 Calendar cal = BaseTestCase.getCalendarResource(s);
+		 String delPath = collectionPath + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
+		 log.debug("DEL " + delPath);
+		 delete(delPath);
+	
+	 }
+
+	/**
+	 * put an event on a caldav store using UID.ics
+	 */
+	 public void caldavPut(String s) {    	 
+		 Calendar cal = BaseTestCase.getCalendarResource(s);
+	
+		 String resPath = //collectionPath + "/" +
+		 	cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
+		 
+		 put (s, resPath);
+	 }
+
+	public CalDAV4JMethodFactory getMethodFactory() {
+		return methodFactory;
+	}
+
+	public void setMethodFactory(CalDAV4JMethodFactory methodFactory) {
+		this.methodFactory = methodFactory;
+	}
+
+	public String getCollectionPath() {
+		return collectionPath;
+	}
+
+	public void setCollectionPath(String collectionPath) {
+		this.collectionPath = collectionPath;
+	}
+
+	public HttpClient getHttpClient() {
+		return httpClient;
+	}
+
+	public void setHttpClient(HttpClient httpClient) {
+		this.httpClient = httpClient;
 	}
 }

@@ -47,17 +47,17 @@ public class GooglePutGetTest extends BaseTestCase {
     public void setUp() throws Exception {
         super.setUp();
         // Google doesn't allow us to create collections
-        // mkdir(COLLECTION_PATH);
+        // mkdir(fixture.getCollectionPath());
     }
 
     @After
     public void tearDown() throws Exception {
         super.tearDown();
         for (String s: addedEvents) {
-        	del(COLLECTION_PATH + "/" + s);	
+        	fixture.caldavDel(s);	
         }
         
-        //del(COLLECTION_PATH);
+        //del(fixture.getCollectionPath());
     }
 	@Test
 	@Ignore // Google doesn't allow deletion of recurring events
@@ -71,8 +71,8 @@ public class GooglePutGetTest extends BaseTestCase {
         put.setAllEtags(true);
         put.setRequestBody(cal);
         
-        log.info("putting " + COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
+        log.info("putting " + fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
+        put.setPath(fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();
         // google used SC_NO_CONTENT instead of SC_CREATED
@@ -81,7 +81,7 @@ public class GooglePutGetTest extends BaseTestCase {
 
         //ok, so we created it...let's make sure it's there!
         GetMethod get = methodFactory.createGetMethod();
-        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
+        get.setPath(fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
         assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
@@ -98,7 +98,7 @@ public class GooglePutGetTest extends BaseTestCase {
         put.setAllEtags(true);
         ICalendarUtils.addOrReplaceProperty(cal.getComponent(Component.VEVENT), new DtStamp());
         put.setRequestBody(cal);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
+        put.setPath(fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM);
         http.executeMethod(hostConfig, put);
         statusCode = put.getStatusCode();
 
@@ -118,8 +118,8 @@ public class GooglePutGetTest extends BaseTestCase {
         put.setAllEtags(true);
         put.setRequestBody(cal);
         
-        log.info("putting " + COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_ALL_DAY_JAN1);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_ALL_DAY_JAN1);
+        log.info("putting " + fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_ALL_DAY_JAN1);
+        put.setPath(fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_ALL_DAY_JAN1);
         http.executeMethod(hostConfig, put);
         int statusCode = put.getStatusCode();
         // google used SC_NO_CONTENT instead of SC_CREATED
@@ -128,7 +128,7 @@ public class GooglePutGetTest extends BaseTestCase {
 
         //ok, so we created it...let's make sure it's there!
         GetMethod get = methodFactory.createGetMethod();
-        get.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_ALL_DAY_JAN1);
+        get.setPath(fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_ALL_DAY_JAN1);
         http.executeMethod(hostConfig, get);
         statusCode = get.getStatusCode();
         assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
@@ -145,7 +145,7 @@ public class GooglePutGetTest extends BaseTestCase {
         put.setAllEtags(true);
         ICalendarUtils.addOrReplaceProperty(cal.getComponent(Component.VEVENT), new DtStamp());
         put.setRequestBody(cal);
-        put.setPath(COLLECTION_PATH + "/" + BaseTestCase.ICS_GOOGLE_ALL_DAY_JAN1);
+        put.setPath(fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_ALL_DAY_JAN1);
         http.executeMethod(hostConfig, put);
         statusCode = put.getStatusCode();
 

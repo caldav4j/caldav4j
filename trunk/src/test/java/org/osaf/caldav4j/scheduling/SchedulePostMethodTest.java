@@ -75,7 +75,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		}
 
 		//refresh invitation
-		PostMethod refresh = methodFactory.createPostMethod();
+		PostMethod refresh = fixture.getMethodFactory().createPostMethod();
 		refresh.setPath(BEDEWORK_RTSVC_URL);
 		refresh.setHostConfiguration(hostConfig);
 		refresh.setRequestBody(refreshEvent);
@@ -173,7 +173,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 			// Create meeting in /calendar 
 			log.info("PUT...");
 
-			PutMethod request = methodFactory.createPutMethod();
+			PutMethod request = fixture.getMethodFactory().createPutMethod();
 			request.setPath(caldavCredential.home + "/calendar/" + event.getUid().getValue() + ".ics");
 			request.setHostConfiguration(hostConfig);
 			request.setRequestBody(invite);
@@ -189,7 +189,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 
 			// POST to /rtsvc a REPLY from GMAIL
 			log.info("REPLY...#" + j);
-			PostMethod reply = methodFactory.createPostMethod();
+			PostMethod reply = fixture.getMethodFactory().createPostMethod();
 			reply.setPath(BEDEWORK_RTSVC_URL);
 			reply.setHostConfiguration(hostConfig);
 			reply.setRequestBody(response);

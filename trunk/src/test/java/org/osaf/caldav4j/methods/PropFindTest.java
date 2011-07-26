@@ -35,26 +35,22 @@ import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+@Ignore // to be run under functional
 public class PropFindTest extends BaseTestCase {
 
-
-	public PropFindTest() {
-		super();
-	}
 	private static final Log log = LogFactory.getLog(PropFindTest.class);
 
-    @Before
+	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		mkcalendar(COLLECTION_PATH);
+		fixture.makeCalendar("");
 	}
 
-    @After
+	@After
 	public void tearDown() throws Exception {
 		super.tearDown();
-//		del(COLLECTION_PATH + "/" + BaseTestCase.ICS_DAILY_NY_5PM);
-		del(COLLECTION_PATH);
-	}
+fixture.tearDown();
+}
 
 	@SuppressWarnings("unchecked")
 	@Test
@@ -70,14 +66,14 @@ public class PropFindTest extends BaseTestCase {
 		PropProperty aclTag = PropertyFactory.createProperty(PropertyFactory.ACL);
 		PropProperty propTag = new PropProperty(CalDAVConstants.NS_DAV,"D","prop");
 		propTag.addChild(aclTag);
-//		propTag.addChild(new DisplayName());
-//		propTag.addChild(new CalendarDescription());
+		//		propTag.addChild(new DisplayName());
+		//		propTag.addChild(new CalendarDescription());
 		propFindTag.addChild(propTag);
 		propfind.setPropFindRequest(propFindTag);
 		propfind.setDepth(0);
 		try {
 			http.executeMethod(hostConfig,propfind);
-			
+
 			Enumeration<Property> myEnum = propfind.getResponseProperties(caldavCredential.home);
 			/*
 			 * response
@@ -117,14 +113,14 @@ public class PropFindTest extends BaseTestCase {
 							parseNode(o1);
 						}
 					}
-					 nl1 = o.getElementsByTagName("principal");
-						for ( int l=0; l<nl1.getLength(); l++) {
-							Element o1 = (Element) nl1.item(l);
-							log.info("O:" +o1.getTagName() );
-							if (o1.getNodeValue() == null) {
-								parseNode(o1);
-							}
+					nl1 = o.getElementsByTagName("principal");
+					for ( int l=0; l<nl1.getLength(); l++) {
+						Element o1 = (Element) nl1.item(l);
+						log.info("O:" +o1.getTagName() );
+						if (o1.getNodeValue() == null) {
+							parseNode(o1);
 						}
+					}
 				} // aces
 
 				for (int k=0; k<prop.getAces().length; k++) {
@@ -133,7 +129,7 @@ public class PropFindTest extends BaseTestCase {
 					log.info("ace:" + prop.getElement().getChildNodes());
 					log.info("inherited by: " + ace.getInheritedFrom() + ";" +
 							"principal is: " + ace.getPrincipal() + ";" +
-									"localname (if principal==property) e':" + ace.getProperty().getLocalName()+ ";" );
+							"localname (if principal==property) e':" + ace.getProperty().getLocalName()+ ";" );
 					Enumeration<Privilege> privs = ace.enumeratePrivileges();
 					while (privs.hasMoreElements()) {
 						Privilege priv = privs.nextElement();
@@ -157,9 +153,9 @@ public class PropFindTest extends BaseTestCase {
 		}
 
 	}
-	
-    @Test
-    @Ignore
+
+	@Test
+	@Ignore
 	public void testGetAcl_1() {
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
@@ -212,12 +208,12 @@ public class PropFindTest extends BaseTestCase {
 		}
 
 	}
-	
+
 	/**
 	 * @throws CalDAV4JException 
 	 */
-    // TODO: this test will work only on bedework which has a set of permission set
-    @Ignore
+	// TODO: this test will work only on bedework which has a set of permission set
+	@Ignore
 	@Test
 	public void testNewPropfind() throws CalDAV4JException {
 		log.info("New Propfind");
@@ -225,7 +221,7 @@ public class PropFindTest extends BaseTestCase {
 		HostConfiguration hostConfig = createHostConfiguration();
 
 		PropFindMethod propfind = new PropFindMethod();
-		propfind.setPath(COLLECTION_PATH);
+		propfind.setPath(fixture.getCollectionPath());
 
 		PropProperty propFindTag = new PropProperty(CalDAVConstants.NS_DAV,"D","propfind");
 		PropProperty aclTag = new PropProperty(CalDAVConstants.NS_DAV,"D","acl");
@@ -238,18 +234,18 @@ public class PropFindTest extends BaseTestCase {
 		propfind.setDepth(0);
 		try {
 			http.executeMethod(hostConfig,propfind);
-			
-			// check that Calendar-description and DisplayName matches
-			log.debug("DisplayName: " + propfind.getDisplayName(COLLECTION_PATH));
-			assertEquals(caldavCredential.collection.replaceAll("/$", ""), propfind.getDisplayName(COLLECTION_PATH).replaceAll("/$", ""));			
 
-			log.debug("CalendarDescription: " +  propfind.getCalendarDescription(COLLECTION_PATH));
-			assertEquals(CALENDAR_DESCRIPTION, propfind.getCalendarDescription(COLLECTION_PATH));
+			// check that Calendar-description and DisplayName matches
+			log.debug("DisplayName: " + propfind.getDisplayName(fixture.getCollectionPath()));
+			assertEquals(caldavCredential.collection.replaceAll("/$", ""), propfind.getDisplayName(fixture.getCollectionPath()).replaceAll("/$", ""));			
+
+			log.debug("CalendarDescription: " +  propfind.getCalendarDescription(fixture.getCollectionPath()));
+			assertEquals(CALENDAR_DESCRIPTION, propfind.getCalendarDescription(fixture.getCollectionPath()));
 
 			// check that ACLs matches
-			org.apache.webdav.lib.Ace[] aces = propfind.getAces(COLLECTION_PATH);
+			org.apache.webdav.lib.Ace[] aces = propfind.getAces(fixture.getCollectionPath());
 			log.info("There are aces # "+ aces.length );
-			
+
 			for (int k=0; k<aces.length; k++) {
 				Ace ace = aces[k];
 				assertEquals("/user", ace.getInheritedFrom());
@@ -283,30 +279,30 @@ public class PropFindTest extends BaseTestCase {
 		}
 
 	}
-	
+
 	@Test
 	public void testAclMethod() {
 		log.info("New Propfind");
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
 
-		AclMethod method = new AclMethod(COLLECTION_PATH);
-		
+		AclMethod method = new AclMethod(fixture.getCollectionPath());
+
 		Ace ace;
 		ace = AceUtils.createAce(new Principal("owner"));
 		ace.addPrivilege(org.osaf.caldav4j.model.request.Privilege.SCHEDULE_DELIVER);
 		ace.addPrivilege(org.osaf.caldav4j.model.request.Privilege.WRITE);
 		ace.addPrivilege(org.osaf.caldav4j.model.request.Privilege.READ);
 		method.addAce(ace);
-		
-		
+
+
 		try {
 			http.executeMethod(hostConfig,method);
-			
-			
+
+
 			// verify output
 			PropFindMethod propfind = new PropFindMethod();
-			propfind.setPath(COLLECTION_PATH);
+			propfind.setPath(fixture.getCollectionPath());
 			PropProperty propFindTag = new PropProperty(CalDAVConstants.NS_DAV,"D","propfind");
 			PropProperty aclTag = new PropProperty(CalDAVConstants.NS_DAV,"D","acl");
 			PropProperty propTag = new PropProperty(CalDAVConstants.NS_DAV,"D","prop");
@@ -349,7 +345,7 @@ public class PropFindTest extends BaseTestCase {
 			for (int i=0; i< nl.getLength(); i++) {
 				Element el =  DOMUtils.getFirstElement(nl.item(i) , "DAV:", "privilege");
 				log.info("child is:" + el.getClass().getName());
-			//	log.info("parseNode:" + el.getNodeName() + el.getNodeType() + el.getNodeValue()+el.getTextContent());
+				//	log.info("parseNode:" + el.getNodeName() + el.getNodeType() + el.getNodeValue()+el.getTextContent());
 			}
 		} catch (Exception ex) {
 			log.warn("Error while parsing node: "+ e);
