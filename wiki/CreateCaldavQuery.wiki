@@ -54,7 +54,7 @@ CalendarQuery query=gq.generate();
 // create a "complex" query
 // start and end values can be empty strings "" or RFC2445-UTC timestamp
 qg.setFilter("VEVENT"); //request on VEVENT
-qg.setFilter("VEVENT [start;end] : UID==value1 , DTSTART==[start,end],DESCRIPTION==UNDEF, SUMMARY!=not my summary,")
+qg.setFilter("VEVENT [start;end] : UID==value1 , DTSTART==[start;end],DESCRIPTION==UNDEF, SUMMARY!=not my summary,")
 
 
 // more complex queries can be made with GenerateQuery
