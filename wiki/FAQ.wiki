@@ -60,6 +60,15 @@ Q: How to build a caldav client?
 
 A: Please check junits and code in [http://code.google.com/p/caldav4j/source/browse/#svn/trunk/src/example/org/osaf/caldav4j/example example/ directory]
 
+=== FAQ 2.2 ===
+Q: I cannot run the tests, getting errors like org.osaf.caldav4j.exceptions.CalDAV4JException: Unexpected status code: 400
+
+A: Ensure you're pointing to the right caldav uri, eventually testing the uri with your browser.
+eg. 
+ * this is a correct bedework uri: "http://calendar.example.com/ucaldav/user/rpolli/"
+ * this is a WRONG uri: "http://calendar.example.com/user/rpolli/"
+ 
+
 == FAQ 3 ==
 Q: I got some strange XML error/exception while running caldav4j
 
