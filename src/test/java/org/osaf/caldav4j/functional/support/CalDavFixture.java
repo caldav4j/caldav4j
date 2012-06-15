@@ -170,6 +170,11 @@ public class CalDavFixture
 		httpClient.getState().setCredentials(AuthScope.ANY, httpCredentials);
 		
 		httpClient.getParams().setAuthenticationPreemptive(true);
+
+		if (credential.getProxyHost() != null) {
+			httpClient.getHostConfiguration().setProxy(credential.getProxyHost(), (credential.getProxyPort() > 0) ? credential.getProxyPort() : 8080);
+		}
+
 	}
 
 	public void setDialect(CalDavDialect dialect) {
@@ -249,10 +254,8 @@ public class CalDavFixture
 	 * @throws IOException 
 	  */
 	 public void caldavDel(String s) throws IOException {
-		 Calendar cal = BaseTestCase.getCalendarResource(s);
-		 String delPath = collectionPath + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
-		 log.debug("DEL " + delPath);
-		 delete(delPath);
+	     String resPath = getCaldavPutPath(s);
+		 delete(resPath);
 	
 	 }
 
@@ -260,12 +263,21 @@ public class CalDavFixture
 	 * put an event on a caldav store using UID.ics
 	 */
 	 public void caldavPut(String s) {    	 
-		 Calendar cal = BaseTestCase.getCalendarResource(s);
-	
-		 String resPath = //collectionPath + "/" +
-		 	cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
+		 String resPath = getCaldavPutPath(s);
 		 
 		 put (s, resPath);
+	 }
+	 
+	 /**
+	  * put an event on a caldav store using UID.ics
+	  * This method returns the path assocuated.
+	 */
+	 public String getCaldavPutPath(String s) {       
+	     Calendar cal = BaseTestCase.getCalendarResource(s);
+	    
+	     String resPath = //collectionPath + "/" +
+	            cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
+	     return resPath;
 	 }
 
 	public CalDAV4JMethodFactory getMethodFactory() {
