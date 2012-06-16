@@ -33,18 +33,16 @@ public class ICalendarUtilTest extends BaseTestCase{
 	private List<String> calendarList = new ArrayList<String>();
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		log.trace("setUp");
-		super.setUp();
 		calendarList.add("icalendar/DAY-VTODO-123123.ics");
 		calendarList.add(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
 
 	}
 
 	@After
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
+	public void tearDown() throws Exception {}
 
 
 	//
