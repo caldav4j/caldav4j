@@ -39,7 +39,6 @@ public class PutGetTest extends BaseTestCase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		fixture.makeCalendar("");
 	}
 
 	@After
@@ -78,7 +77,7 @@ public class PutGetTest extends BaseTestCase {
 		http.executeMethod(hostConfig, put);
 		int statusCode = put.getStatusCode();
 		assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
-		addedEventsFile.add(BaseTestCase.ICS_DAILY_NY_5PM_UID+".ics");
+		addedEventsFile.add(BaseTestCase.ICS_DAILY_NY_5PM_UID + ".ics");
 		//ok, so we created it...let's make sure it's there!
 		GetMethod get = fixture.getMethodFactory().createGetMethod();
 		get.setPath(eventPath);
@@ -130,18 +129,19 @@ public class PutGetTest extends BaseTestCase {
 
 		// create a PUT request with the given ICS
 		PutMethod put = fixture.getMethodFactory().createPutMethod();
+		String eventPath =  BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics"; 
 		put.setIfNoneMatch(true);
 		put.setAllEtags(true);
 		put.setRequestBody(cal);
-		put.setPath(fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+		put.setPath(fixture.getCollectionPath() + "/" + eventPath);
 		http.executeMethod(hostConfig, put);
 		int statusCode = put.getStatusCode();
 		assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
-		addedEventsFile.add(BaseTestCase.ICS_DAILY_NY_5PM_UID+".ics");
+		addedEventsFile.add(eventPath);
 
 		//ok, so we created it...let's make sure it's there!
 		GetMethod get = fixture.getMethodFactory().createGetMethod();
-		get.setPath(fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+		get.setPath(fixture.getCollectionPath() + "/" +eventPath);
 		http.executeMethod(hostConfig, get);
 		statusCode = get.getStatusCode();
 		assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
@@ -160,7 +160,7 @@ public class PutGetTest extends BaseTestCase {
 		put.setIfNoneMatch(true);
 		put.setAllEtags(true);
 		put.setRequestBody(cal);
-		put.setPath(fixture.getCollectionPath() + "/" + BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID);
+		put.setPath(fixture.getCollectionPath() + "/" +eventPath);
 		http.executeMethod(hostConfig, put);
 		statusCode = put.getStatusCode();
 		assertEquals("Status code for put:",
