@@ -43,21 +43,21 @@ public class PropFindTest extends BaseTestCase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		fixture.makeCalendar("");
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();
-fixture.tearDown();
-}
+		fixture.tearDown();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	@Ignore
 	public void testGetAcl() throws CalDAV4JException {
-		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
+		// TODO here we should use fixture.getHttpClient()
+		HttpClient http = fixture.getHttpClient();;
+		HostConfiguration hostConfig = http.getHostConfiguration();
 
 		PropFindMethod propfind = new PropFindMethod();
 		propfind.setPath(caldavCredential.home);
@@ -280,11 +280,16 @@ fixture.tearDown();
 
 	}
 
+	/**
+	 * 
+	 * 
+	 * FIXME This test won't check for the result, just run some ACL methods
+	 */
 	@Test
 	public void testAclMethod() {
 		log.info("New Propfind");
-		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
+		HttpClient http = fixture.getHttpClient();
+		HostConfiguration hostConfig = http.getHostConfiguration();
 
 		AclMethod method = new AclMethod(fixture.getCollectionPath());
 
@@ -322,6 +327,9 @@ fixture.tearDown();
 
 	}
 
+	//
+	// private methods
+	//
 	@SuppressWarnings("unchecked")
 	private void printAce(Ace ace) {
 		PropProperty principal =	new PropProperty(CalDAVConstants.NS_DAV, CalDAVConstants.NS_QUAL_DAV, "property");
