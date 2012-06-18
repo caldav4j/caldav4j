@@ -72,6 +72,14 @@ public class CalDavFixture
 	
 	// public methods ---------------------------------------------------------
 	
+	/**
+	 * Configure httpclient and eventually create the base calendar collection
+	 *   according to CaldavDialect
+	 *   
+	 * @param credential
+	 * @param dialect
+	 * @throws IOException
+	 */
 	public void setUp(CaldavCredential credential, CalDavDialect dialect) throws IOException
 	{
 		httpClient = new HttpClient();
@@ -87,7 +95,17 @@ public class CalDavFixture
 			makeCalendar("");
 		}
 	}
-	
+	public void setUp(CaldavCredential credential, CalDavDialect dialect, boolean skipCreateEvent) throws IOException
+	{
+		httpClient = new HttpClient();
+		configure(httpClient, credential);
+		
+		methodFactory = new CalDAV4JMethodFactory();
+		collectionPath = UrlUtils.removeDoubleSlashes(credential.home + credential.collection);
+		deleteOnTearDownPaths = new ArrayList<String>();
+		this.dialect = dialect;
+
+	}
 	public void tearDown() throws IOException
 	{
 		// clean up in reverse order

@@ -7,9 +7,12 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.DeleteMethod;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.util.CaldavStatus;
 
 @Ignore
@@ -17,6 +20,17 @@ public class MkCalendarTest extends BaseTestCase {
 
 	private static final Log log = LogFactory.getLog(MkCalendarTest.class);
     
+    @Before
+    @Override
+    //skip colletion creation while initializing
+    public void setUp() throws Exception {
+		fixture = new CalDavFixture();
+		fixture.setUp(caldavCredential, caldavDialect, true);
+    }
+
+    @After
+    @Override
+    public void tearDown() throws Exception {}
     
     /**
      * this should return something like
