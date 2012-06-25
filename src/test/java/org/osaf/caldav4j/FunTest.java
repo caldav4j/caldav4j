@@ -33,12 +33,7 @@ public class FunTest extends BaseTestCase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		try {
-			fixture.makeCalendar("");
-		} catch (Exception e) {
-			log.warn("MKCAL not supported?", e);
-		}
-
+		
 		for (String eventPath : new String[] {
 				ICS_DAILY_NY_5PM_PATH,
 				ICS_ALL_DAY_JAN1_PATH,
