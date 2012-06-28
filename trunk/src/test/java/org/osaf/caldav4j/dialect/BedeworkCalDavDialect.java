@@ -57,6 +57,6 @@ public class BedeworkCalDavDialect implements CalDavDialect
 
 	@Override
 	public boolean isCreateCollection() {
-		return false;
+		return true;
 	}
 }

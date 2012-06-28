@@ -82,20 +82,9 @@ public class CalDavFixture
 	 */
 	public void setUp(CaldavCredential credential, CalDavDialect dialect) throws IOException
 	{
-		httpClient = new HttpClient();
-		configure(httpClient, credential);
-		
-		methodFactory = new CalDAV4JMethodFactory();
-		collectionPath = UrlUtils.removeDoubleSlashes(credential.home + credential.collection);
-		deleteOnTearDownPaths = new ArrayList<String>();
-		this.dialect = dialect;
-
-		// eventually make collection
-		if (getDialect() != null && getDialect().isCreateCollection()) {
-			makeCalendar("");
-		}
+		setUp(credential, dialect, false);
 	}
-	public void setUp(CaldavCredential credential, CalDavDialect dialect, boolean skipCreateEvent) throws IOException
+	public void setUp(CaldavCredential credential, CalDavDialect dialect, boolean skipCreateCollection) throws IOException
 	{
 		httpClient = new HttpClient();
 		configure(httpClient, credential);
@@ -104,7 +93,11 @@ public class CalDavFixture
 		collectionPath = UrlUtils.removeDoubleSlashes(credential.home + credential.collection);
 		deleteOnTearDownPaths = new ArrayList<String>();
 		this.dialect = dialect;
-
+		
+		// eventually make collection, unless skipCreateCollection
+		if (!skipCreateCollection && (getDialect() != null ) && getDialect().isCreateCollection()) {
+			makeCalendar("");
+		}
 	}
 	public void tearDown() throws IOException
 	{
@@ -154,7 +147,14 @@ public class CalDavFixture
 
 		executeMethod(HttpStatus.SC_NO_CONTENT, method, false);
 	}
-	
+	public void delete(String path, boolean isAbsolutePath) throws IOException
+	{
+		DeleteMethod method = new DeleteMethod();
+		method.setPath(path);
+
+		executeMethod(HttpStatus.SC_NO_CONTENT, method, false, nullCallback(), isAbsolutePath);
+	}
+
 	public void executeMethod(int expectedStatus, HttpMethod method, boolean deleteOnTearDown) throws IOException
 	{
 		executeMethod(expectedStatus, method, deleteOnTearDown, nullCallback());
@@ -177,7 +177,26 @@ public class CalDavFixture
 		
 		return response;
 	}
-	
+	public <R, M extends HttpMethod, E extends Exception> R executeMethod(int expectedStatus, M method,
+			boolean deleteOnTearDown, HttpMethodCallback<R, M, E> methodCallback, boolean absolutePath) throws IOException, E
+		{
+			String relativePath = method.getPath();
+			
+			// prefix path with collection path
+			if (!absolutePath) {
+				method.setPath(collectionPath + relativePath);
+			}
+			
+			R response = HttpClientTestUtils.executeMethod(expectedStatus, httpClient, method, methodCallback);
+			
+			if (deleteOnTearDown)
+			{
+				deleteOnTearDownPaths.add(relativePath);
+			}
+			
+			return response;
+		}
+
 	// private methods --------------------------------------------------------
 	
 	private static void configure(HttpClient httpClient, CaldavCredential credential)
