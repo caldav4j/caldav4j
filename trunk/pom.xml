@@ -22,7 +22,7 @@
  <name>CalDav4j</name>
   <groupId>org.osaf</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>0.7</version>
+  <version>0.8-SNAPSHOT</version>
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
@@ -41,21 +41,20 @@
       <version>2.1.1</version>
     </dependency>
     <dependency>
-      <groupId>net.fortuna.ical4j</groupId>
+      <groupId>org.mnode.ical4j</groupId>
       <artifactId>ical4j</artifactId>
-      <!--version>1.0-rc1-SNAPSHOT</version--><!-- patched on localhost-->
-      <version>1.0</version>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.8</version>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>servletapi</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.4-20040521</version>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>slide</groupId>
       <artifactId>jakarta-slide-webdavlib</artifactId>
