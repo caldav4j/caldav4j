@@ -10,6 +10,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.methods.DeleteMethod;
+import org.apache.webdav.lib.methods.MkcolMethod;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -44,7 +45,7 @@ public class MkCalendarTest extends BaseTestCase {
 	public void tearDown() throws Exception {
 		log.debug("Removing base collection created during this test.");    	
 		for (String p : addedItems) {
-			fixture.delete(p);			
+			fixture.delete(p, false);			
 		}
 	}
 
@@ -62,6 +63,22 @@ public class MkCalendarTest extends BaseTestCase {
 		mk.addDescription("this is my default calendar");
 
 		log.info(mk.generateRequestBody());
+
+	}
+
+	@Test
+	@Ignore
+	public void testCreateSubCollection() throws Exception {
+		String collectionPath = caldavCredential.home + caldavCredential.collection;
+		addedItems.add(collectionPath+ "/root1/");
+
+		MkcolMethod mk = new MkcolMethod();
+		mk.setPath(collectionPath+ "/root1/");
+		fixture.executeMethod(CaldavStatus.SC_CREATED, mk, true, null, true);
+
+		mk.setPath( collectionPath + "/root1/sub/");
+		fixture.executeMethod(CaldavStatus.SC_CREATED, mk, false, null, true );
+
 
 	}
 	@Test
@@ -82,8 +99,19 @@ public class MkCalendarTest extends BaseTestCase {
 		//   the base collection is created, and should be removed.
 		//   TODO CaldavFixture may handle it automagically
 		if ((statusCode < 300) && (statusCode >=200)) {
-			addedItems.add("");
+			addedItems.add("");			
 		}
+		// if resource already exists, remove it on teardown
+
+		switch (statusCode) {
+		case CaldavStatus.SC_METHOD_NOT_ALLOWED:
+		case CaldavStatus.SC_FORBIDDEN:
+			addedItems.add("");			
+			break;
+		default:
+			break;
+		}
+
 		/// Test if the caldav server return the right status code
 		assertEquals("Status code for mk:", CaldavStatus.SC_CREATED, statusCode);
 
