@@ -95,3 +95,15 @@ The test class ensures the patch won't change the old behavior.
 Q: can I use caldav4j on Android?
 
 A: yes. Samsung has written Caldav support for Android Calendar  using  caldav4j. You can get more info here: BuildAndroid
+
+== FAQ 8 ==
+Q: how can I trace the communication between client and server?
+
+A: Tracing the client-server communication is crucial to debug your application. The best way to do it is to:
+ * set httpclient.wire logging to DEBUG in [http://code.google.com/p/caldav4j/source/browse/trunk/src/test/resources/log4j.xml src/test/resources/log4j.xml]
+{{{
+  <logger name="httpclient.wire">
+    <level value="DEBUG"/>
+  </logger>
+}}}
+ * check if request-responses are caldav compliant
