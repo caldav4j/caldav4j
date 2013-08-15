@@ -32,7 +32,6 @@ import org.apache.webdav.lib.properties.AclProperty;
 import org.apache.webdav.lib.properties.PropertyFactory;
 import org.apache.webdav.lib.util.DOMUtils;
 import org.apache.webdav.lib.util.QName;
-import org.apache.webdav.lib.util.WebdavStatus;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
@@ -293,7 +292,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
         // Also accept OK sent by buggy servers in reply to a PROPFIND
         // or REPORT (Xythos, Catacomb, ...?).
         int statusCode = getStatusCode();
-        if (statusCode == WebdavStatus.SC_MULTI_STATUS) {
+        if (statusCode == CaldavStatus.SC_MULTI_STATUS) {
 
 
             Document rdoc = getResponseDocument();
@@ -323,7 +322,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
                     }
                 }
             }
-        } else if (statusCode == WebdavStatus.SC_CONFLICT || statusCode == WebdavStatus
+        } else if (statusCode == CaldavStatus.SC_CONFLICT || statusCode == CaldavStatus
                 .SC_FORBIDDEN){
             Document rdoc = getResponseDocument();
             Element errorElement = rdoc.getDocumentElement();

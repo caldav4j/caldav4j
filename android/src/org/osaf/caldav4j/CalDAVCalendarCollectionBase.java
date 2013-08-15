@@ -121,25 +121,31 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	  * TODO check hostConfiguration.getUri()
 	  * @param path
 	  * @return the URI of the path resource
+	  * 
+	  * XXX maybe it will be faster to write down the whole url including port...
 	  */
 	 String getHref(String path){
-		 /* Sudheer Peddireddy, for Android
-	    return UrlUtils.removeDoubleSlashes(
-	    		String.format("%s://%s:%d/%s", hostConfiguration.getProtocol().getScheme(),
-		    		hostConfiguration.getHost(),
-		    		hostConfiguration.getPort() == 80 ? "" : hostConfiguration.getPort(), path )
-	    		);
-	      */
-		 String temp =  hostConfiguration.getProtocol().getScheme() + "://" + 
-		 				hostConfiguration.getHost();
-		 if (hostConfiguration.getPort() != 80 &&
-		     hostConfiguration.getPort() != 443 )
-			 temp +=  ":" + hostConfiguration.getPort();
+		 int port = hostConfiguration.getPort();
+		 String scheme = hostConfiguration.getProtocol().getScheme();
+		 String temp =  scheme + "://" + hostConfiguration.getHost();
+		 if ( (port != 80 && "http".equals(scheme)) || 
+				 (port != 443 && "https".equals(scheme))
+		 ) {
+			 temp += ":" + port;
+		 } 
 		 temp += path;
 		 return UrlUtils.removeDoubleSlashes(temp);
 
+		 /* Sudheer Peddireddy, for Android
+		 return UrlUtils.removeDoubleSlashes(
+				 String.format("%s://%s%s/%s", scheme,
+						 hostConfiguration.getHost(),
+						 portString, path )
+		 );
+	      */
+
 	 }
-	 
+
 		
 
 		/**

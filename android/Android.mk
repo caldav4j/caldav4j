@@ -13,7 +13,7 @@ LOCAL_JAVA_LIBRARIES := android.test.runner
 
 LOCAL_STATIC_JAVA_LIBRARIES += android-common
 
-LOCAL_PACKAGE_NAME := Calendar
+LOCAL_PACKAGE_NAME := CalDAV
 
 #LOCAL_JNI_SHARED_LIBRARIES := libcloudfs
 

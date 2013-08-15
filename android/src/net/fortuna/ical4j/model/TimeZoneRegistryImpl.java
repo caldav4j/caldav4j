@@ -53,8 +53,8 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
 // For Android, Sudheer Peddireddy
 import android.content.Context; 
 import android.content.res.Resources; 
-import com.android.calendar.R;
-import com.android.calendar.caldav.CalDAVService;
+import org.osaf.caldav4j.R;
+import org.osaf.caldav4j.caldav.CalDAVService;
 
 /**
  * $Id: TimeZoneRegistryImpl.java,v 1.22 2009/09/16 14:16:46 fortuna Exp $
