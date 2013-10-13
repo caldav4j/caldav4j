@@ -4,12 +4,15 @@
 = Introduction =
 
 you can [http://code.google.com/p/caldav4j/source/browse/android/bin/CalDAV.apk download the .apk] or rebuild it.
-To build it, get the android branch code, import the project into eclipse, and you should be able to build it and run.
-
-
-= obsolete =
+To build it yourself, 
+ # get the android branch code, 
+   svn checkout http://caldav4j.googlecode.com/svn/android/ caldav4j-android
+ # import the project into eclipse as existing android code 
+ # build it and run.
 
 The following instructions were for older version (froyo) and no longer relevant.
+
+= obsolete =
 
 Sudheer used caldav4j to write a caldav client for Android froyo.
 
