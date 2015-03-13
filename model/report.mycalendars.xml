@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<D:principal-match xmlns:D="DAV:">
+	<D:self />
+	<D:prop>
+		<C:calendar-home-set xmlns:C="urn:ietf:params:xml:ns:caldav" />
+	    <D:principal-collection-set/> 
+	</D:prop>
+</D:principal-match>
