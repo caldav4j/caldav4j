@@ -88,12 +88,12 @@
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>serializer</artifactId>
-      <version>2.7.0</version>
+      <version>2.7.2</version>
     </dependency>
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>xalan</artifactId>
-      <version>2.7.0</version> 
+      <version>2.7.2</version> 
     </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -177,15 +177,6 @@
           <releases>
             <enabled>true</enabled>
           </releases>
-          <snapshots>
-              <enabled>true</enabled>
-          </snapshots>
-      </repository>
-      <repository>
-          <id>osafoundation.org</id>
-          <name>OSAF's repository</name>
-          <layout>default</layout>
-          <url>http://builds.osafoundation.org/maven2</url>
           <snapshots>
               <enabled>true</enabled>
           </snapshots>
