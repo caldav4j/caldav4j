@@ -24,7 +24,7 @@ import java.net.SocketImplFactory;
  * Fake {@code SocketImplFactory} test double that creates {@code FakeSocketImpl}s.
  * 
  * @author Mark Hobson
- * @version $Id: FakeSocketImplFactory.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  * @see FakeSocketImpl
  */
 class FakeSocketImplFactory implements SocketImplFactory

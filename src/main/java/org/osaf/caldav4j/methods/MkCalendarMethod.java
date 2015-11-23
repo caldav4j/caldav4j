@@ -27,6 +27,7 @@ import org.osaf.caldav4j.model.request.DisplayName;
 import org.osaf.caldav4j.model.request.MkCalendar;
 import org.osaf.caldav4j.model.request.Prop;
 import org.osaf.caldav4j.model.request.PropProperty;
+import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
 
@@ -73,6 +74,11 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
         propertiesToSet.add(propertyToSet);
     }
 
+    // remove double slashes
+	public void setPath(String path) {
+    	super.setPath(UrlUtils.removeDoubleSlashes(path));
+    }
+    
     // --------------------------------------------------- WebdavMethod Methods
 
     public String getName() {

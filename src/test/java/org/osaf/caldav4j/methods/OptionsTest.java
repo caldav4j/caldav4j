@@ -5,16 +5,22 @@ import static org.junit.Assert.fail;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 
-@Ignore
+@Ignore // run thru functional OptionITCase
 public class OptionsTest extends BaseTestCase {
 
 	public static final String OUTBOX = "/Outbox";
 	public static final String INBOX = "/Inbox";
     // private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
+
+    @Before
+    @Override
+    //do not need the initialization in the base class
+    public void setUp() throws Exception {}
 
 	/**
 	   >> Request <<
@@ -66,6 +72,5 @@ public class OptionsTest extends BaseTestCase {
         }
         
 	}
-	
 	
 }

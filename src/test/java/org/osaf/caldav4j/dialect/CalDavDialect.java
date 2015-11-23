@@ -22,7 +22,7 @@ import net.fortuna.ical4j.model.property.ProdId;
  * Defines the implementation-specific aspects of a CalDAV server.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: CalDavDialect.java 305 2011-02-23 10:59:11Z robipolli@gmail.com $
+ * @version $Id$
  */
 public interface CalDavDialect
 {

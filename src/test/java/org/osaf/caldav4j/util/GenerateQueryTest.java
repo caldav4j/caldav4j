@@ -35,15 +35,13 @@ public class GenerateQueryTest extends BaseTestCase {
     private static final Log log = LogFactory.getLog(PutGetTest.class);
  
     @Before
-    public void setUp() throws Exception {    	
-        super.setUp();
-    }
+    @Override
+    public void setUp() throws Exception {}
 
     @After
-    public void tearDown() throws Exception {
-        super.tearDown();
-
-    }
+    @Override
+    public void tearDown() throws Exception {}
+    
     private String printQuery(CalendarQuery query) {			
         try {
     		query.validate();

@@ -25,7 +25,7 @@ import org.osaf.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
  * Factory for producing {@code HttpMethodCallback} implementations.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: HttpMethodCallbacks.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  */
 public final class HttpMethodCallbacks
 {

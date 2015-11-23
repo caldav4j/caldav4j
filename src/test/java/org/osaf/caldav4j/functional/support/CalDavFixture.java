@@ -53,7 +53,7 @@ import org.osaf.caldav4j.util.UrlUtils;
  * Provides fixture support for CalDAV functional tests.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: CalDavFixture.java 323 2011-07-26 16:30:44Z robipolli@gmail.com $
+ * @version $Id$
  */
 public class CalDavFixture
 {
@@ -72,7 +72,19 @@ public class CalDavFixture
 	
 	// public methods ---------------------------------------------------------
 	
+	/**
+	 * Configure httpclient and eventually create the base calendar collection
+	 *   according to CaldavDialect
+	 *   
+	 * @param credential
+	 * @param dialect
+	 * @throws IOException
+	 */
 	public void setUp(CaldavCredential credential, CalDavDialect dialect) throws IOException
+	{
+		setUp(credential, dialect, false);
+	}
+	public void setUp(CaldavCredential credential, CalDavDialect dialect, boolean skipCreateCollection) throws IOException
 	{
 		httpClient = new HttpClient();
 		configure(httpClient, credential);
@@ -81,13 +93,12 @@ public class CalDavFixture
 		collectionPath = UrlUtils.removeDoubleSlashes(credential.home + credential.collection);
 		deleteOnTearDownPaths = new ArrayList<String>();
 		this.dialect = dialect;
-
-		// eventually make collection
-		if (getDialect() != null && getDialect().isCreateCollection()) {
+		
+		// eventually make collection, unless skipCreateCollection
+		if (!skipCreateCollection && (getDialect() != null ) && getDialect().isCreateCollection()) {
 			makeCalendar("");
 		}
 	}
-	
 	public void tearDown() throws IOException
 	{
 		// clean up in reverse order
@@ -136,7 +147,14 @@ public class CalDavFixture
 
 		executeMethod(HttpStatus.SC_NO_CONTENT, method, false);
 	}
-	
+	public void delete(String path, boolean isAbsolutePath) throws IOException
+	{
+		DeleteMethod method = new DeleteMethod();
+		method.setPath(path);
+
+		executeMethod(HttpStatus.SC_NO_CONTENT, method, false, nullCallback(), isAbsolutePath);
+	}
+
 	public void executeMethod(int expectedStatus, HttpMethod method, boolean deleteOnTearDown) throws IOException
 	{
 		executeMethod(expectedStatus, method, deleteOnTearDown, nullCallback());
@@ -159,7 +177,26 @@ public class CalDavFixture
 		
 		return response;
 	}
-	
+	public <R, M extends HttpMethod, E extends Exception> R executeMethod(int expectedStatus, M method,
+			boolean deleteOnTearDown, HttpMethodCallback<R, M, E> methodCallback, boolean absolutePath) throws IOException, E
+		{
+			String relativePath = method.getPath();
+			
+			// prefix path with collection path
+			if (!absolutePath) {
+				method.setPath(collectionPath + relativePath);
+			}
+			
+			R response = HttpClientTestUtils.executeMethod(expectedStatus, httpClient, method, methodCallback);
+			
+			if (deleteOnTearDown)
+			{
+				deleteOnTearDownPaths.add(relativePath);
+			}
+			
+			return response;
+		}
+
 	// private methods --------------------------------------------------------
 	
 	private static void configure(HttpClient httpClient, CaldavCredential credential)
@@ -170,6 +207,11 @@ public class CalDavFixture
 		httpClient.getState().setCredentials(AuthScope.ANY, httpCredentials);
 		
 		httpClient.getParams().setAuthenticationPreemptive(true);
+
+		if (credential.getProxyHost() != null) {
+			httpClient.getHostConfiguration().setProxy(credential.getProxyHost(), (credential.getProxyPort() > 0) ? credential.getProxyPort() : 8080);
+		}
+
 	}
 
 	public void setDialect(CalDavDialect dialect) {
@@ -249,10 +291,8 @@ public class CalDavFixture
 	 * @throws IOException 
 	  */
 	 public void caldavDel(String s) throws IOException {
-		 Calendar cal = BaseTestCase.getCalendarResource(s);
-		 String delPath = collectionPath + "/" +cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
-		 log.debug("DEL " + delPath);
-		 delete(delPath);
+	     String resPath = getCaldavPutPath(s);
+		 delete(resPath);
 	
 	 }
 
@@ -260,12 +300,21 @@ public class CalDavFixture
 	 * put an event on a caldav store using UID.ics
 	 */
 	 public void caldavPut(String s) {    	 
-		 Calendar cal = BaseTestCase.getCalendarResource(s);
-	
-		 String resPath = //collectionPath + "/" +
-		 	cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
+		 String resPath = getCaldavPutPath(s);
 		 
 		 put (s, resPath);
+	 }
+	 
+	 /**
+	  * put an event on a caldav store using UID.ics
+	  * This method returns the path assocuated.
+	 */
+	 public String getCaldavPutPath(String s) {       
+	     Calendar cal = BaseTestCase.getCalendarResource(s);
+	    
+	     String resPath = //collectionPath + "/" +
+	            cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
+	     return resPath;
 	 }
 
 	public CalDAV4JMethodFactory getMethodFactory() {

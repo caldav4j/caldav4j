@@ -32,7 +32,7 @@ import java.util.Map;
  * Fake {@code SocketImpl} test double that expects a given output and produces a stub input.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: FakeSocketImpl.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  */
 class FakeSocketImpl extends SocketImpl
 {

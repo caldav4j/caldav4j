@@ -11,6 +11,14 @@ import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.util.XMLUtils;
 
 public class ParamFilterTest extends BaseTestCase {
+	
+	/**
+	 * Don't need setUp here
+	 */
+	@Override
+	public void setUp() throws Exception {};
+	
+	
 	@Test
         public void testSimpleConstructor() {
                 ParamFilter p = new ParamFilter("C");
@@ -65,4 +73,5 @@ public class ParamFilterTest extends BaseTestCase {
             }
             
     }
+        
 }

@@ -48,7 +48,7 @@ import org.w3c.dom.Document;
  * qg.setComponent("VEVENT : UID, ATTENDEE, DTSTART, DTEND"); // retrieve the given properties
  * 
  * qg.setFilter("VEVENT"); //request on VEVENT
- * qg.setFilter("VEVENT [start;end] : UID==value1 , DTSTART==[start,end], DESCRIPTION==UNDEF, SUMMARY!=not my summary,")
+ * qg.setFilter("VEVENT [start;end] : UID==value1 , DTSTART==[start;end], DESCRIPTION==UNDEF, SUMMARY!=not my summary,")
  * 
  * start and end values can be empty strings "" or RFC2445-UTC timestamp
  */

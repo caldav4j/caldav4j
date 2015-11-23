@@ -22,7 +22,7 @@ import net.fortuna.ical4j.model.Calendar;
  * Provides calendar-specific assertions for use by tests.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: CalendarAssert.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  */
 public final class CalendarAssert
 {

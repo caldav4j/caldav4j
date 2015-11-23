@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  * Fake report request used by tests.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: FakeCalDAVReportRequest.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  */
 public class FakeCalDAVReportRequest implements CalDAVReportRequest
 {

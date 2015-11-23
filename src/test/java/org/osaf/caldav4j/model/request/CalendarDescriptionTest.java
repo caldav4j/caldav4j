@@ -9,7 +9,13 @@ public class CalendarDescriptionTest extends BaseTestCase {
 	public CalendarDescriptionTest() {
 		super();
 	}
-
+    
+    /**
+     *  Don't need BaseTestCase.setUp() here
+     */
+	@Override
+    public void setUp() throws Exception {}
+    
 	@Test
 	public void testPrintCalendarDescription() {
 		CalendarDescription d = new CalendarDescription();

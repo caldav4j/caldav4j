@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * Tests {@code FreeBusyQuery}.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: FreeBusyQueryTest.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  * @see FreeBusyQuery
  */
 public class FreeBusyQueryTest

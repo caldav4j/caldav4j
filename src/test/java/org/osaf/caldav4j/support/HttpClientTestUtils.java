@@ -30,7 +30,7 @@ import org.apache.commons.httpclient.HttpState;
  * Provides support for testing with HttpClient.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: HttpClientTestUtils.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  */
 public final class HttpClientTestUtils
 {

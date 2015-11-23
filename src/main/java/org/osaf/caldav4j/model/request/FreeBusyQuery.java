@@ -35,7 +35,7 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
  *                      end   CDATA #IMPLIED>
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: FreeBusyQuery.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  * @see <a href="http://tools.ietf.org/html/rfc4791#section-7.10">7.10. CALDAV:free-busy-query REPORT</a>
  */
 public class FreeBusyQuery extends OutputsDOMBase implements CalDAVReportRequest

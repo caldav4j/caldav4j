@@ -24,7 +24,7 @@ import java.net.SocketImplFactory;
  * {@code SocketImplFactory} that produces {@code java.net.SocksSocketImpl} socket implementations.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: SocksSocketImplFactory.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  */
 class SocksSocketImplFactory implements SocketImplFactory
 {

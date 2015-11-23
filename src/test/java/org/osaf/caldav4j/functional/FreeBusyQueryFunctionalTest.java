@@ -35,6 +35,7 @@ import net.fortuna.ical4j.model.property.Uid;
 import org.apache.commons.httpclient.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.dialect.CalDavDialect;
@@ -51,9 +52,10 @@ import org.osaf.caldav4j.util.ICalendarUtils;
  * Functional test for {@code FreeBusyQuery}.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: FreeBusyQueryFunctionalTest.java 305 2011-02-23 10:59:11Z robipolli@gmail.com $
+ * @version $Id$
  * @see FreeBusyQuery
  */
+@Ignore
 public class FreeBusyQueryFunctionalTest
 {
 	// fields -----------------------------------------------------------------

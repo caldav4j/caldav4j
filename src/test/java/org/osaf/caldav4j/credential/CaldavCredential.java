@@ -16,7 +16,9 @@ public class CaldavCredential {
     public  String user = "caldav4j";
     public  String home = "/dav/"+user+"/";
     public  String password = "CalDAV4J";
-    public  String collection      = "collection/";
+    public  String collection      = "collection_changeme/";
+	private String proxyHost = null;
+	private int	proxyPort = 0;
 
     public CaldavCredential() {
     	
@@ -42,6 +44,36 @@ public class CaldavCredential {
     	this.user = user;
     	this.password = pass;
     }
+
+    public CaldavCredential(String proto, String server, int  port, String base, String collection, String user, String pass, String proxyHost, int proxyPort) {
+    	this.host = server;
+    	this.port = port;
+    	this.protocol = proto;
+    	this.home = base;
+    	this.collection = collection;
+    	this.user = user;
+    	this.password = pass;
+    	
+    	// constructor supporting http proxy
+    	this.proxyHost = proxyHost;
+    	this.proxyPort = proxyPort;
+    }
+
+	public int getProxyPort() {
+		return proxyPort;
+	}
+
+	public void setProxyPort(int proxyPort) {
+		this.proxyPort = proxyPort;
+	}
+
+	public String getProxyHost() {
+		return proxyHost;
+	}
+
+	public void setProxyHost(String proxyHost) {
+		this.proxyHost = proxyHost;
+	}
     
 }
 

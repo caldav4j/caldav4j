@@ -23,7 +23,7 @@ import org.junit.Test;
  * Tests {@code CalDAV4JMethodFactory}.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: CalDAV4JMethodFactoryTest.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  * @see CalDAV4JMethodFactory
  */
 public class CalDAV4JMethodFactoryTest

@@ -31,7 +31,7 @@ import net.fortuna.ical4j.transform.Transformer;
  * Calendar transformer that removes specified properties.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: RemovePropertyTransformer.java 294 2011-02-22 11:50:25Z markhobson $
+ * @version $Id$
  */
 class RemovePropertyTransformer extends Transformer
 {

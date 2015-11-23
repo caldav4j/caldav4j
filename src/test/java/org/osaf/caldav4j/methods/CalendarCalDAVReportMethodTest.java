@@ -37,7 +37,7 @@ import org.osaf.caldav4j.util.CaldavStatus;
  * Tests {@code CalendarCalDAVReportMethod}.
  * 
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
- * @version $Id: CalendarCalDAVReportMethodTest.java 323 2011-07-26 16:30:44Z robipolli@gmail.com $
+ * @version $Id$
  * @see CalendarCalDAVReportMethod
  */
 public class CalendarCalDAVReportMethodTest extends CaldavStatus
