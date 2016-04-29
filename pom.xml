@@ -181,13 +181,13 @@
               <enabled>true</enabled>
           </snapshots>
       </repository>
-      <repository>
-        <id>sourceforge</id>
-        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        <snapshots>
-          <enabled>true</enabled>
-        </snapshots>
-      </repository>
+      <!--<repository>-->
+        <!--<id>sourceforge</id>-->
+        <!--<url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
+        <!--<snapshots>-->
+          <!--<enabled>true</enabled>-->
+        <!--</snapshots>-->
+      <!--</repository>-->
       <!--<repository>-->
           <!--<id>modularity-releases</id>-->
           <!--<name>Modularity Releases Repository</name>-->
