@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: slide:jakarta-slide-webdavlib:2.2pre1-httpclient-3.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/slide/jakarta-slide-webdavlib/2.2pre1-httpclient-3.0/jakarta-slide-webdavlib-2.2pre1-httpclient-3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/slide/jakarta-slide-webdavlib/2.2pre1-httpclient-3.0/jakarta-slide-webdavlib-2.2pre1-httpclient-3.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/slide/jakarta-slide-webdavlib/2.2pre1-httpclient-3.0/jakarta-slide-webdavlib-2.2pre1-httpclient-3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
