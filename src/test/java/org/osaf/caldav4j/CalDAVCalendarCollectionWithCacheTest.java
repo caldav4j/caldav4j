@@ -1,29 +1,12 @@
 package org.osaf.caldav4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.List;
-
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.Date;
-import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
+import net.sf.ehcache.*;
 import net.sf.ehcache.event.CacheEventListener;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
@@ -36,6 +19,10 @@ import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 import org.osaf.caldav4j.util.ICalendarUtils;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests CalDAVCalendarCollection with caching on. Mostly the same tests, but
@@ -74,13 +61,26 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
 
 		public Element lastHreftoResourceElementUpdated = null;
 
+
+		public void notifyElementEvicted(Ehcache cache, Element element) {
+		}
+
+
+		public void notifyRemoveAll(Ehcache cache) {
+		}
+
+		public Object clone(){
+			return (Object) (new TestingCacheEventListener());
+		}
 		public void dispose() {
 		}
 
-		public void notifyElementExpired(Cache cache, Element element) {
+
+		public void notifyElementExpired(Ehcache cache, Element element) {
 		}
 
-		public void notifyElementPut(Cache cache, Element element)
+
+		public void notifyElementPut(Ehcache cache, Element element)
 		throws CacheException {
 			if (cache.getName().equals(UID_TO_HREF_CACHE)) {
 				lastUidToHrefElementPut = element;
@@ -89,7 +89,8 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
 			}
 		}
 
-		public void notifyElementRemoved(Cache cache, Element element)
+
+		public void notifyElementRemoved(Ehcache cache, Element element)
 		throws CacheException {
 			if (cache.getName().equals(UID_TO_HREF_CACHE)) {
 				lastUidToHrefElementRemoved = element;
@@ -98,7 +99,7 @@ public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
 			}
 		}
 
-		public void notifyElementUpdated(Cache cache, Element element)
+		public void notifyElementUpdated(Ehcache cache, Element element)
 		throws CacheException {
 			if (cache.getName().equals(UID_TO_HREF_CACHE)) {
 				lastUidToHrefElementUpdated = element;
