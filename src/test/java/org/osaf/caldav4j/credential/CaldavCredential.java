@@ -31,6 +31,11 @@ public class CaldavCredential {
 			host = server.getHost();
 			port = server.getPort() != -1 ? server.getPort() : (server.getScheme().endsWith("s") ? 443: 80);
 			home = server.getPath().replace("\\w+/$", "");
+			String userInfo = server.getUserInfo();
+			if (userInfo != null) {
+				user = userInfo.split(":")[0];
+				password = userInfo.split(":")[1];
+			}
 		} catch (Exception e) {
 			// noop
 		}
