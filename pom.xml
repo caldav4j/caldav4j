@@ -181,35 +181,17 @@
               <enabled>true</enabled>
           </snapshots>
       </repository>
-      <!--<repository>-->
-        <!--<id>sourceforge</id>-->
-        <!--<url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
-        <!--<snapshots>-->
-          <!--<enabled>true</enabled>-->
-        <!--</snapshots>-->
-      <!--</repository>-->
-      <!--<repository>-->
-          <!--<id>modularity-releases</id>-->
-          <!--<name>Modularity Releases Repository</name>-->
-          <!--<url>http://m2.modularity.net.au/releases</url>-->
-          <!--<releases>-->
-            <!--<enabled>true</enabled>-->
-          <!--</releases>-->
-          <!--<snapshots>-->
-            <!--<enabled>false</enabled>-->
-          <!--</snapshots>-->
-      <!--</repository>-->
   </repositories>
   <distributionManagement>
       <repository>
           <id>local-m2</id>
           <name>local M2 Repository</name>
-          <url>file:///home/emanon/workspace/caldav4j-maven</url>
+          <url>file:///${user.home}/workspace/caldav4j-maven</url>
       </repository>
       <snapshotRepository>
           <id>local-m2</id>
           <name>local M2 Repository</name>
-          <url>file:///home/emanon/workspace/caldav4j-maven</url>
+          <url>file:///${user.home}/workspace/caldav4j-maven</url>
       </snapshotRepository>
   </distributionManagement>
 </project>
