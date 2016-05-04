@@ -3,16 +3,10 @@
  */
 package org.osaf.caldav4j.google.methods;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.DtStamp;
-
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +23,11 @@ import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+
 // TODO: fix; see issue 47
 public class GooglePutGetTest extends BaseTestCase {
 
@@ -42,7 +41,7 @@ public class GooglePutGetTest extends BaseTestCase {
 
     private List<String> addedEvents = new ArrayList<String>();
 
-    
+    @Ignore
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -50,6 +49,7 @@ public class GooglePutGetTest extends BaseTestCase {
         // mkdir(fixture.getCollectionPath());
     }
 
+    @Ignore
     @After
     public void tearDown() throws Exception {
         super.tearDown();
@@ -106,7 +106,8 @@ public class GooglePutGetTest extends BaseTestCase {
         assertEquals("Status code for put:",
                 CaldavStatus.SC_CONFLICT, statusCode);  
    }
-    
+
+    @Ignore
 	@Test
     public void testAddRemoveCalendarResource() throws Exception{
         HttpClient http = createHttpClient();
