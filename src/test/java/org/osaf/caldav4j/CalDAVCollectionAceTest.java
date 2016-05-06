@@ -3,10 +3,6 @@
  */
 package org.osaf.caldav4j;
 
-import java.util.List;
-
-import net.sf.ehcache.Cache;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
+
+import java.util.List;
 
 public class CalDAVCollectionAceTest extends BaseTestCase {
 	public CalDAVCollectionAceTest() {
@@ -50,6 +48,10 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		CaldavFixtureHarness.provisionGoogleEvents(fixture);
 
 		myCache = CaldavFixtureHarness.createSimpleCache();
+
+		//TODO: Not Entirely sure, why uncachedCollection is required
+		uncachedCollection = CaldavFixtureHarness.createCollectionFromFixture(fixture);
+		uncachedCollection.disableSimpleCache();
 	}
 
 	@After
@@ -65,7 +67,6 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 	 */
 	@Test
 	public void testGetOptions() throws Exception {
-
 		List<Header> headerList = uncachedCollection.getOptions(fixture.getHttpClient());
 
 		for (Header h : headerList) {
