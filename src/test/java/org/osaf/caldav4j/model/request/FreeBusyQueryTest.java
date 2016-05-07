@@ -15,19 +15,18 @@
  */
 package org.osaf.caldav4j.model.request;
 
-import static org.junit.Assert.assertEquals;
-import static org.osaf.caldav4j.CalDAVConstants.NS_QUAL_CALDAV;
-
-import java.text.ParseException;
-
 import net.fortuna.ical4j.model.DateTime;
-
 import org.junit.Test;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.osaf.caldav4j.xml.OutputsDOM;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+
+import java.text.ParseException;
+
+import static org.junit.Assert.assertEquals;
+import static org.osaf.caldav4j.CalDAVConstants.NS_QUAL_CALDAV;
 
 /**
  * Tests {@code FreeBusyQuery}.
@@ -45,7 +44,7 @@ public class FreeBusyQueryTest
 	{
 		FreeBusyQuery query = createFreeBusyQuery("20000101T000000Z", "20000201T000000Z");
 
-		String expected = "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n"
+		String expected = "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
 			+ "<C:free-busy-query xmlns:C=\"urn:ietf:params:xml:ns:caldav\">"
 				+ "<C:time-range end=\"20000201T000000Z\" start=\"20000101T000000Z\"/>"
 			+ "</C:free-busy-query>";
