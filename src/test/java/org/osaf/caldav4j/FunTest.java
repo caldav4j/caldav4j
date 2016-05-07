@@ -33,15 +33,7 @@ public class FunTest extends BaseTestCase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		
-//		for (String eventPath : new String[] {
-//				ICS_DAILY_NY_5PM_PATH,
-//				ICS_ALL_DAY_JAN1_PATH,
-//				ICS_NORMAL_PACIFIC_1PM_PATH,
-//				ICS_SINGLE_EVENT_PATH,ICS_FLOATING_JAN2_7PM_PATH
-//		}) {
-//			fixture.caldavPut(eventPath);
-//		}
+
 		CaldavFixtureHarness.provisionSimpleEvents(fixture);
 	}
 
@@ -56,7 +48,7 @@ public class FunTest extends BaseTestCase {
 		HostConfiguration hostConfig = createHostConfiguration();
 
 		PropFindMethod propFindMethod = new PropFindMethod();
-		PropertyName propName = new PropertyName(CalDAVConstants.NS_DAV, "allprop");//"resourcetype");
+		PropertyName propName = new PropertyName(CalDAVConstants.NS_DAV, "resourcetype");
 		propFindMethod.setDepth(DepthSupport.DEPTH_INFINITY);
 		propFindMethod.setPath(caldavCredential.home + "collection_changeme/");
 		propFindMethod.setType(PropFindMethod.BY_NAME);
