@@ -1,13 +1,9 @@
 package org.osaf.caldav4j;
 
-import java.util.Enumeration;
-import java.util.Vector;
-
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.parameter.Value;
-
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +15,11 @@ import org.apache.webdav.lib.methods.XMLResponseMethodBase.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 import org.osaf.caldav4j.methods.HttpClient;
+
+import java.util.Enumeration;
+import java.util.Vector;
 
 public class FunTest extends BaseTestCase {
 	public FunTest() {
@@ -33,15 +33,8 @@ public class FunTest extends BaseTestCase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		
-		for (String eventPath : new String[] {
-				ICS_DAILY_NY_5PM_PATH,
-				ICS_ALL_DAY_JAN1_PATH,
-				ICS_NORMAL_PACIFIC_1PM_PATH,
-				ICS_SINGLE_EVENT_PATH,ICS_FLOATING_JAN2_7PM_PATH        	
-		}) {
-			fixture.caldavPut(eventPath);
-		}
+
+		CaldavFixtureHarness.provisionSimpleEvents(fixture);
 	}
 
 	@After
@@ -57,7 +50,7 @@ public class FunTest extends BaseTestCase {
 		PropFindMethod propFindMethod = new PropFindMethod();
 		PropertyName propName = new PropertyName(CalDAVConstants.NS_DAV, "resourcetype");
 		propFindMethod.setDepth(DepthSupport.DEPTH_INFINITY);
-		propFindMethod.setPath(caldavCredential.home);
+		propFindMethod.setPath(caldavCredential.home + "collection_changeme/");
 		propFindMethod.setType(PropFindMethod.BY_NAME);
 		Vector<PropertyName> v = new Vector<PropertyName>();
 		v.add(propName);
