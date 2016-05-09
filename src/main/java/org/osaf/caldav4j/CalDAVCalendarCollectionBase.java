@@ -5,12 +5,8 @@ package org.osaf.caldav4j;
  * 
  * @author rpolli
  * */
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import net.fortuna.ical4j.model.Calendar;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
@@ -26,6 +22,11 @@ import org.osaf.caldav4j.methods.OptionsMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.regex.Pattern;
 
 public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	
@@ -56,7 +57,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 
 	/**
 	 * remove double slashes
-	 * @return
+	 * @return String
 	 */
 	public String getCalendarCollectionRoot() {
 	    return UrlUtils.removeDoubleSlashes(calendarCollectionRoot);
@@ -270,7 +271,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	public boolean allows(HttpClient httpClient, String action, List<Header> hList)
 			throws CalDAV4JException {		
 		for (Header h : hList) {
-			if ("Allow".equals(h.getName()) && (h.getValue() != null) && h.getValue().matches("\b"+action+"\b") ) {
+			if ("Allow".equals(h.getName()) && (h.getValue() != null) && Pattern.compile("\\b"+action+"\\b").matcher(h.getValue()).find()) {
 				return true;
 			}
 		}
