@@ -15,23 +15,22 @@
  */
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertEquals;
-import static org.osaf.caldav4j.support.HttpClientTestUtils.executeMethod;
-import static org.osaf.caldav4j.support.HttpMethodCallbacks.calendarReportCallback;
-
-import java.io.IOException;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.support.HttpClientTestUtils;
 import org.osaf.caldav4j.util.CaldavStatus;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.osaf.caldav4j.support.HttpClientTestUtils.executeMethod;
+import static org.osaf.caldav4j.support.HttpMethodCallbacks.calendarReportCallback;
 
 /**
  * Tests {@code CalendarCalDAVReportMethod}.
@@ -40,7 +39,7 @@ import org.osaf.caldav4j.util.CaldavStatus;
  * @version $Id$
  * @see CalendarCalDAVReportMethod
  */
-public class CalendarCalDAVReportMethodTest extends CaldavStatus
+public class CalendarCalDAVReportMethodTest //extends CaldavStatus
 {
 	// public methods ---------------------------------------------------------
 	
@@ -83,7 +82,7 @@ public class CalendarCalDAVReportMethodTest extends CaldavStatus
 			+ "END:VCALENDAR\n";
 		
 		HttpClientTestUtils.setFakeSocketImpl(expectedRequest, response);
-		Calendar actual = executeMethod(SC_OK, method, calendarReportCallback());
+		Calendar actual = executeMethod(CaldavStatus.SC_OK, method, calendarReportCallback());
 		
 		assertEquals("Calendar", createCalendar(), actual);
 	}

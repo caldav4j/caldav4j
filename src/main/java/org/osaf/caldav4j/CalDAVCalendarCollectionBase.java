@@ -233,8 +233,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 		throws CalDAV4JException {
 		List<Header> hList = new ArrayList<Header>();
 		
-		OptionsMethod optMethod = new OptionsMethod();
-		optMethod.setPath(this.calendarCollectionRoot);
+		OptionsMethod optMethod = new OptionsMethod(this.calendarCollectionRoot);
 		optMethod.setRequestHeader(new Header("Host",
 										hostConfiguration.getHost()));
 		

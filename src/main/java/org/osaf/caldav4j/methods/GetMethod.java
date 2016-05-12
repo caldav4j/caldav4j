@@ -16,13 +16,9 @@
 
 package org.osaf.caldav4j.methods;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -32,9 +28,12 @@ import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
 import org.osaf.caldav4j.util.UrlUtils;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+
 
 public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
-    private static final String CONTEN_TYPE_TEXT_HTML = "text/html";
+    private static final String CONTENT_TYPE_TEXT_HTML = "text/html";
 
 	private static final String HEADER_ACCEPT = "Accept";
 

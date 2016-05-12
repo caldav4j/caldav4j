@@ -1,21 +1,10 @@
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
-
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Summary;
-
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +16,12 @@ import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 import org.osaf.caldav4j.util.MethodUtil;
+
+import java.nio.charset.Charset;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Ignore // to be run under functional
 public class PutGetTest extends BaseTestCase {
@@ -57,8 +52,8 @@ public class PutGetTest extends BaseTestCase {
 		// load an ICS and substitute summary with non-latin chars
 		Locale mylocale = new Locale("ru", "RU");
 		ResourceBundle messages = PropertyResourceBundle.getBundle("messages",mylocale);
-		String myLocalSummary = messages.getString("summary"); 
-		log.info("default charser: "+ Charset.defaultCharset());
+		String myLocalSummary = messages.getString("summary");
+		log.info("default charset: "+ Charset.defaultCharset());
 		assertTrue(true);
 	}
 
@@ -66,7 +61,7 @@ public class PutGetTest extends BaseTestCase {
 	public void testAddRemoveCalendarResource() throws Exception{
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
-		String eventPath = String.format("%s/%s.ics", fixture.getCollectionPath(),BaseTestCase.ICS_DAILY_NY_5PM_UID);
+		String eventPath = String.format("%s%s.ics", fixture.getCollectionPath(),BaseTestCase.ICS_DAILY_NY_5PM_UID);
 
 		Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM_PATH);
 		PutMethod put = fixture.getMethodFactory().createPutMethod();
@@ -118,7 +113,7 @@ public class PutGetTest extends BaseTestCase {
 		Locale mylocale = new Locale("ru", "RU");
 		messages = PropertyResourceBundle.getBundle("messages",mylocale);
 		String myLocalSummary = messages.getString("summary"); 
-		log.info("default charser: "+ Charset.defaultCharset());
+		log.info("default charset: "+ Charset.defaultCharset());
 
 		Calendar cal = getCalendarResource(BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_PATH);
 		Component calendarComponent =  cal.getComponent(Component.VEVENT);

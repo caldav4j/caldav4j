@@ -18,17 +18,6 @@
 
 package org.osaf.caldav4j;
 
-import static org.osaf.caldav4j.util.ICalendarUtils.getMasterEvent;
-import static org.osaf.caldav4j.util.ICalendarUtils.getUIDValue;
-import static org.osaf.caldav4j.util.UrlUtils.stripHost;
-
-import java.io.IOException;
-import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
-
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -41,7 +30,6 @@ import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
@@ -57,30 +45,24 @@ import org.osaf.caldav4j.exceptions.BadStatusException;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
 import org.osaf.caldav4j.exceptions.ResourceNotFoundException.IdentifierType;
-import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
-import org.osaf.caldav4j.methods.CalDAVReportMethod;
-import org.osaf.caldav4j.methods.DelTicketMethod;
-import org.osaf.caldav4j.methods.DeleteMethod;
-import org.osaf.caldav4j.methods.GetMethod;
-import org.osaf.caldav4j.methods.HttpClient;
-import org.osaf.caldav4j.methods.MkCalendarMethod;
-import org.osaf.caldav4j.methods.MkTicketMethod;
-import org.osaf.caldav4j.methods.PropFindMethod;
-import org.osaf.caldav4j.methods.PutMethod;
-import org.osaf.caldav4j.model.request.CalendarData;
-import org.osaf.caldav4j.model.request.CalendarMultiget;
-import org.osaf.caldav4j.model.request.CalendarQuery;
-import org.osaf.caldav4j.model.request.PropProperty;
-import org.osaf.caldav4j.model.request.TicketRequest;
+import org.osaf.caldav4j.methods.*;
+import org.osaf.caldav4j.model.request.*;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.model.util.PropertyFactory;
-import org.osaf.caldav4j.util.CaldavStatus;
-import org.osaf.caldav4j.util.GenerateQuery;
-import org.osaf.caldav4j.util.ICalendarUtils;
-import org.osaf.caldav4j.util.MethodUtil;
-import org.osaf.caldav4j.util.UrlUtils;
+import org.osaf.caldav4j.util.*;
+
+import java.io.IOException;
+import java.net.ConnectException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+
+import static org.osaf.caldav4j.util.ICalendarUtils.getMasterEvent;
+import static org.osaf.caldav4j.util.ICalendarUtils.getUIDValue;
+import static org.osaf.caldav4j.util.UrlUtils.stripHost;
 
 /**
  * This class provides a high level API to a calendar collection on a CalDAV server.
@@ -265,8 +247,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 *
 	 */
 	public void createCalendar(HttpClient httpClient) throws CalDAV4JException{
-		MkCalendarMethod mkCalendarMethod = new MkCalendarMethod();
-		mkCalendarMethod.setPath(getCalendarCollectionRoot());
+		MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(getCalendarCollectionRoot());
+		//mkCalendarMethod.setPath(getCalendarCollectionRoot());
 		try {
 			httpClient.executeMethod(hostConfiguration, mkCalendarMethod);
 			int statusCode = mkCalendarMethod.getStatusCode();

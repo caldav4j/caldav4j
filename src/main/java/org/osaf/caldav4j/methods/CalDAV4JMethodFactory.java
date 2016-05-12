@@ -55,8 +55,8 @@ public class CalDAV4JMethodFactory {
         return postMethod;
     }
     
-    public MkCalendarMethod createMkCalendarMethod(){
-        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod();
+    public MkCalendarMethod createMkCalendarMethod(String uri){
+        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri);
         return mkCalendarMethod;
     }
     
