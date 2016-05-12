@@ -113,13 +113,13 @@
         </dependency>  
     </dependencies>
   <description>The Caldav Java Library</description>
-  <url>http://code.google.com/p/caldav4j/</url>
+  <url>https://github.com/caldav4j/caldav4j.git</url>
   <issueManagement>
-  	<system>Google Code</system>
-  	<url>http://code.google.com/p/caldav4j/issues/list</url>
+  	<system>github</system>
+  	<url>https://github.com/caldav4j/caldav4j/issues</url>
   </issueManagement>
   <scm>
-  	<url>https://caldav4j.googlecode.com/svn/trunk</url>
+  	<url>https://github.com/caldav4j/caldav4j.git</url>
   </scm>
   <build>
     <pluginManagement>
@@ -183,7 +183,7 @@
       <repository>
           <id>caldav4j</id>
           <name>Caldav4j repos</name>
-          <url>http://caldav4j.googlecode.com/svn/maven/</url>
+          <url>https://raw.github.com/caldav4j/maven/master/repo</url>
           <releases>
             <enabled>true</enabled>
           </releases>
@@ -198,10 +198,15 @@
           <name>local M2 Repository</name>
           <url>file:///${user.home}/workspace/caldav4j-maven</url>
       </repository>
-      <snapshotRepository>
+  <snapshotRepository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+
+      <!-- snapshotRepository>
           <id>local-m2</id>
           <name>local M2 Repository</name>
           <url>file:///${user.home}/workspace/caldav4j-maven</url>
-      </snapshotRepository>
+      </snapshotRepository-->
   </distributionManagement>
 </project>
