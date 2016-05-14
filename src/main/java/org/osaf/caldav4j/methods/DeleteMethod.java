@@ -6,7 +6,7 @@ import org.osaf.caldav4j.util.UrlUtils;
 public class DeleteMethod extends org.apache.jackrabbit.webdav.client.methods.DeleteMethod {
 
 	public DeleteMethod(String s) {
-		super(s);
+		super(UrlUtils.removeDoubleSlashes(s));
 	}
 
     // remove double slashes

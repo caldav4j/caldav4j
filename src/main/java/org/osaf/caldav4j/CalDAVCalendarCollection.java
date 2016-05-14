@@ -403,9 +403,8 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		ticketRequest.setWrite(write);
 
 		// Make the ticket
-		MkTicketMethod mkTicketMethod = methodFactory.createMkTicketMethod();
-		mkTicketMethod.setPath(getAbsolutePath(relativePath));
-		mkTicketMethod.setTicketRequest(ticketRequest);
+		MkTicketMethod mkTicketMethod = methodFactory.createMkTicketMethod(getAbsolutePath(relativePath), ticketRequest);
+
 		try {
 			httpClient.executeMethod(hostConfiguration, mkTicketMethod);
 			int statusCode = mkTicketMethod.getStatusCode();
@@ -442,9 +441,8 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 */
 	public void deleteTicket(HttpClient httpClient, String relativePath, String ticketId)
 	throws CalDAV4JException {
-		DelTicketMethod delTicketMethod = methodFactory.createDelTicketMethod();
-		delTicketMethod.setPath(getAbsolutePath(relativePath));
-		delTicketMethod.setTicket(ticketId);
+		DelTicketMethod delTicketMethod = methodFactory.createDelTicketMethod(getAbsolutePath(relativePath), ticketId);
+
 		try {
 			httpClient.executeMethod(hostConfiguration, delTicketMethod);
 			int statusCode = delTicketMethod.getStatusCode();

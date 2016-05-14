@@ -15,15 +15,6 @@
  */
 package org.osaf.caldav4j.methods;
 
-import static org.osaf.caldav4j.CalDAVConstants.NS_CALDAV;
-import static org.osaf.caldav4j.CalDAVConstants.NS_DAV;
-
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Vector;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.Ace;
@@ -44,6 +35,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.util.*;
+
+import static org.osaf.caldav4j.CalDAVConstants.NS_CALDAV;
+import static org.osaf.caldav4j.CalDAVConstants.NS_DAV;
 
 /**
  * This method is overwritten in order to register the ticketdiscovery element
@@ -242,7 +238,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
     }
     /**
      * 
-     * @param caldavProperty can be CaldavConstants.QNAME_XXXXX
+     * @param property can be CaldavConstants.QNAME_XXXXX
      * @return
      * 
      * TODO check equivalent URIs (eg. duplicate|trailing "/")

@@ -16,19 +16,23 @@
 
 package org.osaf.caldav4j.methods;
 
-import org.apache.jackrabbit.webdav.DavServletResponse;
+import org.apache.commons.httpclient.HttpConnection;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpState;
 import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.*;
+import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MkCalendarMethod extends DavMethodBase {//XMLResponseMethodBase{
+public class MkCalendarMethod extends DavMethodBase {
     
 	
 	/**
@@ -46,18 +50,20 @@ public class MkCalendarMethod extends DavMethodBase {//XMLResponseMethodBase{
     public MkCalendarMethod(String uri) {
 		// Add Headers Content-Type: text/xml
     	super(UrlUtils.removeDoubleSlashes(uri));
-    	addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
+
 	}
 
-//    public void addRequestHeaders(HttpState state, HttpConnection conn)
-//            throws IOException, HttpException
-//    {
-//        //first add headers generate RequestEntity or
-//        //addContentLengthRequestHeader() will mess up things > result "400 Bad Request"
-//        //can not override generateRequestBody(), because called to often
-//        setRequestEntity(new ByteArrayRequestEntity(generateRequestBody()));
-//        super.addRequestHeaders(state, conn);
-//    }
+    public void addRequestHeaders(HttpState state, HttpConnection conn)
+            throws IOException, HttpException
+    {
+        //first add headers generate RequestEntity or
+        //addContentLengthRequestHeader() will mess up things > result "400 Bad Request"
+        //can not override generateRequestBody(), because called to often
+
+        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
+        //setRequestEntity(new ByteArrayRequestEntity(generateRequestBody()));
+        super.addRequestHeaders(state, conn);
+    }
 
     public void addDisplayName(String s) {
     	propertiesToSet.add(new DisplayName(s));
@@ -114,6 +120,6 @@ public class MkCalendarMethod extends DavMethodBase {//XMLResponseMethodBase{
 
     @Override
     protected boolean isSuccess(int statusCode) {
-        return statusCode == DavServletResponse.SC_CREATED;
+        return statusCode == CaldavStatus.SC_CREATED;
     }
 }

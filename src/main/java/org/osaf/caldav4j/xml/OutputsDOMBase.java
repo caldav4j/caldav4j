@@ -15,11 +15,6 @@
  */
 package org.osaf.caldav4j.xml;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
@@ -27,6 +22,11 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public abstract class OutputsDOMBase implements OutputsDOM{
 
@@ -101,8 +101,7 @@ public abstract class OutputsDOMBase implements OutputsDOM{
             Iterator<Entry<String, String>> i = attributes.entrySet().iterator();
             while (i.hasNext()) {
                 Entry<String, String> entry = i.next();
-                e.setAttribute(entry.getKey().toString(), entry.getValue()
-                        .toString());
+                e.setAttribute(entry.getKey().toString(), entry.getValue().toString());
             }
         }
     }

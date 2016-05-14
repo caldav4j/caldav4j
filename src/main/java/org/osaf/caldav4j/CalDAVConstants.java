@@ -16,6 +16,7 @@
 
 package org.osaf.caldav4j;
 
+import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.apache.webdav.lib.util.QName;
 import org.osaf.caldav4j.model.request.PropProperty;
 
@@ -102,5 +103,8 @@ public interface CalDAVConstants {
 	public static final QName QNAME_DISPLAYNAME = new QName(NS_DAV, DAV_DISPLAYNAME);
 	public static final QName QNAME_CALENDAR_DESCRIPTION = new QName(NS_CALDAV,CALDAV_CALENDAR_DESCRIPTION);
 	public static final QName QNAME_ACL = new QName(NS_DAV, "acl");
+
+    //Jackrabbit Namespaces
+    public static final Namespace CALDAV_NS = Namespace.getNamespace(NS_QUAL_CALDAV, NS_CALDAV);
 	
 }

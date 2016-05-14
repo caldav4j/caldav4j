@@ -20,6 +20,7 @@ import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.model.request.TicketRequest;
 
 public class CalDAV4JMethodFactory {
 
@@ -60,13 +61,13 @@ public class CalDAV4JMethodFactory {
         return mkCalendarMethod;
     }
     
-    public MkTicketMethod createMkTicketMethod(){
-        MkTicketMethod mkTicketMethod = new MkTicketMethod();
+    public MkTicketMethod createMkTicketMethod(String uri, TicketRequest tr){
+        MkTicketMethod mkTicketMethod = new MkTicketMethod(uri, tr);
         return mkTicketMethod;
     }
     
-    public DelTicketMethod createDelTicketMethod(){
-        DelTicketMethod delTicketMethod = new DelTicketMethod();
+    public DelTicketMethod createDelTicketMethod(String uri, String tr){
+        DelTicketMethod delTicketMethod = new DelTicketMethod(uri, tr);
         return delTicketMethod;
     }
     

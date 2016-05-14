@@ -32,7 +32,7 @@ public  class PropertyFactory implements CalDAVConstants {
 		
 		if (ArrayUtils.contains((Object[])davProperties, property)) {
 			return new PropProperty(NS_DAV, NS_QUAL_DAV, property);
-		} else if (ArrayUtils.contains((Object[])davProperties, property)) {
+		} else if (ArrayUtils.contains((Object[])caldavProperties, property)) {
 			return new PropProperty(NS_DAV, NS_QUAL_DAV, property);
 		} 
 		

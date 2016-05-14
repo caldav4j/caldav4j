@@ -40,7 +40,8 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
 	private static final Log log = LogFactory.getLog(GetMethod.class);
     
     private CalendarBuilder calendarBuilder = null;
-    
+
+    //TODO: Public Constructor?
     protected GetMethod (){
         super();
         this.addRequestHeader(HEADER_ACCEPT, 

@@ -15,13 +15,7 @@
  */
 package org.osaf.caldav4j.model.response;
 
-import java.io.StringWriter;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
-
 import net.fortuna.ical4j.model.Calendar;
-
 import org.apache.webdav.lib.Property;
 import org.apache.webdav.lib.ResponseEntity;
 import org.apache.webdav.lib.properties.PropertyFactory;
@@ -33,6 +27,11 @@ import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.io.StringWriter;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 public class CalDAVResponse implements ResponseEntity {
@@ -128,9 +127,9 @@ public class CalDAVResponse implements ResponseEntity {
     }
     
     /**
-     * Return a Calendar object or null if calendarDataPropery wasn't defined
+     * Return a Calendar object or null if calendarDataProperty wasn't defined
      * @author rpolli
-     * @return a Calendar object is calendarDataPropery exists
+     * @return a Calendar object is calendarDataProperty exists
      * @throws CalDAV4JException
      */
     public Calendar getCalendar() throws CalDAV4JException{

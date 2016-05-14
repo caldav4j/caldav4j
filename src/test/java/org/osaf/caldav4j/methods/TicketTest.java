@@ -1,13 +1,5 @@
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertEquals;
-import static org.osaf.caldav4j.CalDAVConstants.INFINITY;
-
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,7 +7,6 @@ import org.apache.webdav.lib.Property;
 import org.apache.webdav.lib.PropertyName;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
@@ -23,13 +14,21 @@ import org.osaf.caldav4j.model.request.TicketRequest;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.util.CaldavStatus;
+
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+
+import static org.junit.Assert.assertEquals;
+import static org.osaf.caldav4j.CalDAVConstants.INFINITY;
 /**
  * 
  * @author EdBindl
  * 
  */
 // tickets are not currently supported
-@Ignore
+//@Ignore
 public class TicketTest extends BaseTestCase {
 
 	public static final Integer TEST_TIMEOUT = 3600;
@@ -49,7 +48,7 @@ public class TicketTest extends BaseTestCase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		fixture.makeCalendar("");
+		//fixture.makeCalendar("");
 		fixture.put(ICS_DAILY_NY_5PM_PATH, ICS_DAILY_NY_5PM);
 	}
 

@@ -16,6 +16,7 @@ import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 import org.osaf.caldav4j.util.MethodUtil;
+import org.osaf.caldav4j.util.UrlUtils;
 
 import java.nio.charset.Charset;
 import java.util.*;
@@ -61,7 +62,7 @@ public class PutGetTest extends BaseTestCase {
 	public void testAddRemoveCalendarResource() throws Exception{
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
-		String eventPath = String.format("%s%s.ics", fixture.getCollectionPath(),BaseTestCase.ICS_DAILY_NY_5PM_UID);
+		String eventPath = UrlUtils.removeDoubleSlashes(String.format("%s/%s.ics", fixture.getCollectionPath(),BaseTestCase.ICS_DAILY_NY_5PM_UID));
 
 		Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM_PATH);
 		PutMethod put = fixture.getMethodFactory().createPutMethod();

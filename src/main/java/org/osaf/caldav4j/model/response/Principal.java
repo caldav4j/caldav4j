@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.webdav.lib.PropertyName;
 import org.osaf.caldav4j.CalDAVConstants;
 
-/*
+/**
 Principal encapsulates the DAV:principal element which identifies the principal to which this ACE applies. RFC 3744 defines the following structure for this element:
 
 	 <!ELEMENT principal (href | all | authenticated | unauthenticated | property | self)>
