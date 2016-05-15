@@ -106,5 +106,6 @@ public interface CalDAVConstants {
 
     //Jackrabbit Namespaces
     public static final Namespace CALDAV_NS = Namespace.getNamespace(NS_QUAL_CALDAV, NS_CALDAV);
+    public static final Namespace WEBDAV_NS = Namespace.getNamespace(NS_QUAL_DAV, NS_DAV);
 	
 }

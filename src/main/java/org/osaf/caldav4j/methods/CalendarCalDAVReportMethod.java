@@ -15,13 +15,9 @@
  */
 package org.osaf.caldav4j.methods;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
@@ -39,6 +35,9 @@ import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This method implements the REPORT method described in 
@@ -68,7 +67,7 @@ public class CalendarCalDAVReportMethod extends HttpRequestBodyMethodBase implem
     private int debug = 0;
 
     /**
-     * XML Debug Outputer
+     * XML Debug Outputter
      */
     private XMLDebugOutputer xo = new XMLDebugOutputer();
     
