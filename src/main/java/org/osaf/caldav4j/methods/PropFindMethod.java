@@ -218,7 +218,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
 				break;
 			}
     	}
-    	throw new CalDAV4JException("Error gettinh ACLs. PROPFIND status is: " + status);
+    	throw new CalDAV4JException("Error getting ACLs. PROPFIND status is: " + status);
     }
     public String getCalendarDescription(String urlPath) {
     	Property p =  getWebDavProperty(urlPath, CalDAVConstants.QNAME_CALENDAR_DESCRIPTION);

@@ -105,7 +105,7 @@ public interface CalDAVConstants {
 	public static final QName QNAME_ACL = new QName(NS_DAV, "acl");
 
     //Jackrabbit Namespaces
-    public static final Namespace CALDAV_NS = Namespace.getNamespace(NS_QUAL_CALDAV, NS_CALDAV);
-    public static final Namespace WEBDAV_NS = Namespace.getNamespace(NS_QUAL_DAV, NS_DAV);
+    public static final Namespace NAMESPACE_CALDAV = Namespace.getNamespace(NS_QUAL_CALDAV, NS_CALDAV);
+    public static final Namespace NAMESPACE_WEBDAV = Namespace.getNamespace(NS_QUAL_DAV, NS_DAV);
 	
 }
