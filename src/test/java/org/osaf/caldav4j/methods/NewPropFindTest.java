@@ -54,26 +54,25 @@ public class NewPropFindTest extends BaseTestCase{
         DavPropertyNameSet props = new DavPropertyNameSet();
         props.add(DavPropertyName.DISPLAYNAME);
 
-        NewPropFindMethod p = new NewPropFindMethod(caldavCredential.home + "collection_changeme/", props, DavConstants.DEPTH_0);
+        NewPropFindMethod p = new NewPropFindMethod(fixture.getCollectionPath(), props, DavConstants.DEPTH_0);
 
         http.executeMethod(hostConfig, p);
         log.info(p.getStatusLine());
         MultiStatusResponse[] responses = p.getResponseBodyAsMultiStatus().getResponses();
         for(MultiStatusResponse r: responses){
-            log.info(r.getHref().equals(caldavCredential.home + "collection_changeme/"));
+            log.info(r.getHref().equals(fixture.getCollectionPath()));
         }
-        log.info(p.getDisplayName(caldavCredential.home + "collection_changeme/"));
+        log.info(p.getDisplayName(fixture.getCollectionPath()));
     }
 
     @Test
     public  void testGetAcl() throws IOException, DavException, ParserConfigurationException, CalDAV4JException {
-        String collectionPath = caldavCredential.home + "collection_changeme/";
+        String collectionPath = fixture.getCollectionPath();
         HttpClient http = fixture.getHttpClient();;
         HostConfiguration hostConfig = http.getHostConfiguration();
         DavPropertyNameSet props = new DavPropertyNameSet();
         props.add(CalDAVConstants.DAV_ACL, CalDAVConstants.NAMESPACE_WEBDAV);
 
-        System.out.println(fixture.getCollectionPath());
         NewPropFindMethod p = new NewPropFindMethod(collectionPath, props, DavConstants.DEPTH_0);
 
         http.executeMethod(hostConfig, p);
