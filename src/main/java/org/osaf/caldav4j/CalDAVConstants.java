@@ -107,5 +107,10 @@ public interface CalDAVConstants {
     //Jackrabbit Namespaces
     public static final Namespace NAMESPACE_CALDAV = Namespace.getNamespace(NS_QUAL_CALDAV, NS_CALDAV);
     public static final Namespace NAMESPACE_WEBDAV = Namespace.getNamespace(NS_QUAL_DAV, NS_DAV);
+
+    //Jackrabbit Constants
+    public static final int DEPTH_INFINITY = Integer.MAX_VALUE;
+    public static final int DEPTH_0 = 0;
+    public static final int DEPTH_1 = 1;
 	
 }
