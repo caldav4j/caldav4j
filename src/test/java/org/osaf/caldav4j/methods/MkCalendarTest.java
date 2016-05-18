@@ -73,7 +73,7 @@ public class MkCalendarTest extends BaseTestCase {
 	@Test
 	@Ignore
 	public void testCreateSubCollection() throws Exception {
-		String collectionPath = caldavCredential.home + caldavCredential.collection;
+		String collectionPath = fixture.getCollectionPath();
 		addedItems.add("root1/");
 
 		MkColMethod mk = new MkColMethod(collectionPath + "root1/");

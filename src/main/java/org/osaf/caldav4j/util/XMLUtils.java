@@ -16,16 +16,14 @@
 
 package org.osaf.caldav4j.util;
 
-import java.io.StringWriter;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.jackrabbit.webdav.xml.DomUtil;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.response.TicketResponse;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,6 +31,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
+
+import java.io.StringWriter;
 
 public class XMLUtils {
 	private static final Log log = LogFactory.getLog(XMLUtils.class);
@@ -115,14 +115,12 @@ public class XMLUtils {
 	/**
 	 * Create a string representation of an DOM document
 	 */
-	public static String prettyPrint(OutputsDOMBase xml) {
+	public static String prettyPrint(XmlSerializable xml) {
 		try {
-			Document doc = xml.createNewDocument(XMLUtils
-					.getDOMImplementation());
+			Document doc = DomUtil.createDocument();
+			doc.appendChild(xml.toXml(doc));
 			return XMLUtils.toPrettyXML(doc);
 
-		} catch (DOMValidationException domve) {
-			throw new RuntimeException(domve);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();

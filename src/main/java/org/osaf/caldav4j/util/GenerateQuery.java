@@ -195,7 +195,7 @@ public class GenerateQuery implements CalDAVConstants  {
 			
 			for (String propertyName : requestedComponentProperties ) {
 				// add properties to VCALENDAR.VEVENT
-				vEventComp.addProp(new CalDAVProp(NS_QUAL_CALDAV, "name", propertyName, false, false)); // @see modification to CalDAVProp
+				vEventComp.addProp(new CalDAVProp(propertyName, false, false)); // @see modification to CalDAVProp
 			}
 			// add only one component...maybe more ;)
 			List <Comp> comps = new ArrayList<Comp> ();			
@@ -355,21 +355,21 @@ public class GenerateQuery implements CalDAVConstants  {
 	/**
 	 * this should parse QueryGenerator attributes
 	 * and create the CalendarQuery
-	 * @param recurrenceSetStart 
-	 * @throws CalDAV4JException 
+	 * @param recurrenceSetStart
+	 * @throws CalDAV4JException
 	 * @throws ParseException 
 	 */
 	public CalendarQuery generate() 
 		throws  CalDAV4JException {
 
-		CalendarQuery query = new CalendarQuery(NS_QUAL_CALDAV, NS_QUAL_DAV);				
+		CalendarQuery query = new CalendarQuery();
 		query.addProperty(CalDAVConstants.PROP_GETETAG);
 		if (allProp) {
 			query.addProperty(CalDAVConstants.PROP_ALLPROP);
 		}
 		if (!noCalendarData) {
 			// TODO limit-recurrence-set
-			CalendarData calendarData = new CalendarData(NS_QUAL_CALDAV);
+			CalendarData calendarData = new CalendarData();
 			if (recurrenceSetEnd!=null || recurrenceSetStart!=null ) {
 				calendarData.setExpandOrLimitRecurrenceSet(expandOrLimit);
 				calendarData.setRecurrenceSetStart(recurrenceSetStart);
@@ -390,7 +390,7 @@ public class GenerateQuery implements CalDAVConstants  {
 	}
 
     public String prettyPrint() {
-		//query.validate();			
+		//query.validate();
 	    try {
 	    	Document doc = generate().createNewDocument(XMLUtils
 	                .getDOMImplementation());
@@ -486,7 +486,7 @@ public class GenerateQuery implements CalDAVConstants  {
 
 				} catch (DOMException e) {
 					throw new DOMValidationException(e.getMessage(), e);
-				} 	        
+				}
 	}
 	
 	/**

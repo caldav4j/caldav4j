@@ -1,20 +1,10 @@
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.Enumeration;
-
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Ace;
-import org.apache.webdav.lib.BaseProperty;
-import org.apache.webdav.lib.Privilege;
-import org.apache.webdav.lib.Property;
-import org.apache.webdav.lib.PropertyName;
+import org.apache.webdav.lib.*;
 import org.apache.webdav.lib.methods.AclMethod;
 import org.apache.webdav.lib.properties.AclProperty;
 import org.apache.webdav.lib.util.DOMUtils;
@@ -34,6 +24,12 @@ import org.osaf.caldav4j.util.AceUtils;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import java.io.IOException;
+import java.util.Enumeration;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Ignore // to be run under functional
 public class PropFindTest extends BaseTestCase {
@@ -167,8 +163,8 @@ public class PropFindTest extends BaseTestCase {
 		PropProperty aclTag = new PropProperty(CalDAVConstants.NS_DAV,"D","acl");
 		PropProperty propTag = new PropProperty(CalDAVConstants.NS_DAV,"D","prop");
 		propTag.addChild(aclTag);
-		propTag.addChild(new DisplayName());
-		propTag.addChild(new CalendarDescription());
+		propTag.addChild(new DisplayName("DISPLAY"));
+		propTag.addChild(new CalendarDescription("DESCRIPTION"));
 		propFindTag.addChild(propTag);
 		propfind.setPropFindRequest(propFindTag);
 		propfind.setDepth(0);

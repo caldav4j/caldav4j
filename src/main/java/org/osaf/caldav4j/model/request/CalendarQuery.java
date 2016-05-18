@@ -16,16 +16,17 @@
 
 package org.osaf.caldav4j.model.request;
 
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
+import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOMBase;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.xml.OutputsDOM;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
  * 
@@ -42,62 +43,79 @@ import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
  * 
  */
 public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest{
-    
+
     public static final String ELEMENT_NAME = "calendar-query";
-    public static final String ELEM_ALLPROP = "allprop";    
+    public static final String ELEM_ALLPROP = "allprop";
     public static final String ELEM_PROPNAME = "propname";
     public static final String ELEM_FILTER = "filter";
-    
-    private String caldavNamespaceQualifier = null;
-    private String webdavNamespaceQualifier = null;
+
     private boolean allProp = false;
     private boolean propName = false;
-    private List<PropProperty> properties = new ArrayList<PropProperty>();
+    private Prop properties = new Prop();
     private CompFilter compFilter = null;
     private CalendarData calendarDataProp = null;
-    
-    public CalendarQuery(String caldavNamespaceQualifier, String webdavNamespaceQualifer) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.webdavNamespaceQualifier = webdavNamespaceQualifer;
+
+    public CalendarQuery() {
+
     }
+
+    public CalendarQuery(Prop properties, CompFilter compFilter, CalendarData calendarData,
+                         boolean allProp, boolean propName) {
+        this(compFilter, calendarData, allProp, propName);
+        if(properties != null)
+            this.properties.addChildren(properties);
+    }
+
+    public CalendarQuery(DavPropertyNameSet properties, CompFilter compFilter, CalendarData calendarData,
+                         boolean allProp, boolean propName) {
+        this(compFilter, calendarData, allProp, propName);
+        if(properties != null)
+            this.properties.addChildren(properties);
+    }
+
+    public CalendarQuery(Collection<? extends XmlSerializable> properties, CompFilter compFilter, CalendarData calendarData,
+                         boolean allProp, boolean propName) {
+        this(compFilter, calendarData, allProp, propName);
+        if(properties != null)
+            this.properties.addChildren(properties);
+    }
+
+    public CalendarQuery(CompFilter compFilter, CalendarData calendarData, boolean allProp, boolean propName){
+        this.calendarDataProp = calendarData;
+        this.allProp = allProp;
+        this.propName = propName;
+    }
+
 
     protected String getElementName() {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
-    }
+    protected Collection<XmlSerializable> getChildren() {
+        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
 
-    protected Collection<OutputsDOM> getChildren() {
-        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
-        if (allProp){
-            children.add(new SimpleDOMOutputtingObject(CalDAVConstants.NS_DAV,
-                    webdavNamespaceQualifier, ELEM_ALLPROP));
-        } else if (propName){
-            children.add(new SimpleDOMOutputtingObject(CalDAVConstants.NS_DAV,
-                    webdavNamespaceQualifier, ELEM_PROPNAME));
-        } else if ((properties != null && properties.size() > 0)
+        if (allProp) {
+            children.add(new PropProperty(ELEM_ALLPROP, CalDAVConstants.NAMESPACE_WEBDAV));
+        } else if (propName) {
+            children.add(new PropProperty(ELEM_PROPNAME, CalDAVConstants.NAMESPACE_WEBDAV));
+        } else if ((properties != null && !properties.isEmpty())
                 || calendarDataProp != null) {
-            Prop prop = new Prop(webdavNamespaceQualifier, properties);
-            children.add(prop);
-            if (calendarDataProp != null){
-              prop.getChildren().add(calendarDataProp);
+            if (calendarDataProp != null) {
+                properties.add(calendarDataProp);
             }
+            children.add(properties);
         }
-        
+
         if (compFilter != null) {
-            SimpleDOMOutputtingObject filter = new SimpleDOMOutputtingObject(
-                    CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
-                    ELEM_FILTER);
+            PropProperty filter = new PropProperty(ELEM_FILTER, CalDAVConstants.NAMESPACE_CALDAV);
             filter.addChild(compFilter);
             children.add(filter);
         }
-       return children;
+        return children;
     }
 
     protected String getTextContent() {
@@ -120,22 +138,20 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
         this.propName = propName;
     }
 
-    public List<PropProperty> getProperties() {
+    public Prop getProperties() {
         return properties;
     }
 
     public void setProperties(List<PropProperty> properties) {
-        this.properties = properties;
+        this.properties.addChildren(properties);
     }
-    
-    public void addProperty(PropProperty propProperty){
+
+    public void addProperty(XmlSerializable propProperty){
         properties.add(propProperty);
     }
-    
-    public void addProperty(String namespaceURI, String namespaceQualifier,
-            String propertyName) {
-        PropProperty propProperty = new PropProperty(namespaceURI,
-                namespaceQualifier, propertyName);
+
+    public void addProperty(String propertyName, Namespace namespace) {
+        PropProperty propProperty = new PropProperty(propertyName, namespace);
         properties.add(propProperty);
     }
     protected Map<String, String> getAttributes() {
@@ -157,10 +173,10 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
     public void setCalendarDataProp(CalendarData calendarDataProp) {
         this.calendarDataProp = calendarDataProp;
     }
-    
+
     /**
      * Validates that the object validates against the following dtd:
-     * 
+     *
      * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)? filter>
      */
     public void validate() throws DOMValidationException{
@@ -170,7 +186,7 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
         if (compFilter == null){
             throwValidationException("CompFilter cannot be null.");
         }
-        
+
         compFilter.validate();
     }
 

@@ -127,7 +127,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 			Date beginDate, Date endDate)
 			throws CalDAV4JException {
 		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
+		CalendarQuery query = new CalendarQuery();
 
 		query.addProperty(CalDAVConstants.PROP_GETETAG);
 		CompFilter vCalendarCompFilter = new CompFilter("C");
@@ -135,7 +135,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 
 		CompFilter vEventCompFilter = new CompFilter("C");
 		vEventCompFilter.setName(Component.VEVENT);
-		vEventCompFilter.setTimeRange(new TimeRange("C", beginDate, endDate));
+		vEventCompFilter.setTimeRange(new TimeRange(beginDate, endDate));
 
 		vCalendarCompFilter.addCompFilter(vEventCompFilter);
 		query.setCompFilter(vCalendarCompFilter);
@@ -490,7 +490,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		propFindMethod.setDepth(0);
 		propFindMethod.setType(0);
 		propFindMethod.setPath(getAbsolutePath(relativePath));
-		propFindMethod.setPropFindRequest(propFind);
+//		propFindMethod.setPropFindRequest(propFind);
 		httpClient.executeMethod(hostConfiguration, propFindMethod);
 
 		int statusCode = propFindMethod.getStatusCode();
@@ -525,7 +525,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 	 */
 	protected String getPathToResourceForEventId(HttpClient httpClient, String uid) throws CalDAV4JException{
 		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
+		CalendarQuery query = new CalendarQuery();
 
 		query.addProperty(CalDAVConstants.PROP_GETETAG);
 
@@ -537,7 +537,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 
 		PropFilter propFilter = new PropFilter("C");
 		propFilter.setName(Property.UID);
-		propFilter.setTextMatch(new TextMatch("C", false,null,null, uid));
+		propFilter.setTextMatch(new TextMatch(false,null,null, uid));
 		vEventCompFilter.addPropFilter(propFilter);
 
 		vCalendarCompFilter.addCompFilter(vEventCompFilter);
@@ -590,9 +590,9 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		}
 
 		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
-		query.setCalendarDataProp(new CalendarData("C"));
-		query.addProperty(CalDAVConstants.PROP_GETETAG);
+		CalendarQuery query = new CalendarQuery();
+		query.setCalendarDataProp(new CalendarData());
+//		query.addProperty(CalDAVConstants.PROP_GETETAG);
 
 		CompFilter vCalendarCompFilter = new CompFilter("C");
 		vCalendarCompFilter.setName(Calendar.VCALENDAR);
@@ -602,7 +602,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 
 		PropFilter propFilter = new PropFilter("C");
 		propFilter.setName(Property.UID);
-		propFilter.setTextMatch(new TextMatch("C", null, null, null, uid)); // rpolli s/false/null/
+		propFilter.setTextMatch(new TextMatch(null, null, null, uid)); // rpolli s/false/null/
 		vEventCompFilter.addPropFilter(propFilter);
 
 		vCalendarCompFilter.addCompFilter(vEventCompFilter);
@@ -785,7 +785,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 			Date beginDate, Date endDate)
 			throws CalDAV4JException {
 		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
+		CalendarQuery query = new CalendarQuery();
 
 		query.addProperty(CalDAVConstants.PROP_GETETAG);
 		CompFilter vCalendarCompFilter = new CompFilter("C");
@@ -850,19 +850,19 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 			Date beginDate, Date endDate)
 			throws CalDAV4JException {
 		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
+		CalendarQuery query = new CalendarQuery();
 
 		query.addProperty(CalDAVConstants.PROP_GETETAG);
 
 		// create the query fields 
-		CalendarData calendarData = new CalendarData("C");
+		CalendarData calendarData = new CalendarData();
 
-		Comp vCalendarComp = new Comp("C");
+		Comp vCalendarComp = new Comp();
 		vCalendarComp.setName(Calendar.VCALENDAR);
 
-		Comp vEventComp = new Comp("C");
+		Comp vEventComp = new Comp();
 		vEventComp.setName(Component.VEVENT);
-		vEventComp.addProp(new CalDAVProp("C", "name", propertyName, false, false)); // @see modification to CalDAVProp  
+		vEventComp.addProp(new CalDAVProp(propertyName, false, false)); // @see modification to CalDAVProp
 
 		List <Comp> comps = new ArrayList<Comp> ();
 		comps.add(vEventComp);
@@ -939,19 +939,19 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 			Date beginDate, Date endDate)
 			throws CalDAV4JException {
 		// first create the calendar query
-		CalendarQuery query = new CalendarQuery("C", "D");
+		CalendarQuery query = new CalendarQuery();
 
 		query.addProperty(CalDAVConstants.PROP_GETETAG);
 
 		// create the query fields 
-		CalendarData calendarData = new CalendarData("C");
+		CalendarData calendarData = new CalendarData();
 
-		Comp vCalendarComp = new Comp("C");
+		Comp vCalendarComp = new Comp();
 		vCalendarComp.setName(Calendar.VCALENDAR);
 
-		Comp vEventComp = new Comp("C");
+		Comp vEventComp = new Comp();
 		vEventComp.setName(componentName);
-		vEventComp.addProp(new CalDAVProp("C", "name", propertyName, false, false)); // @see modification to CalDAVProp  
+		vEventComp.addProp(new CalDAVProp(propertyName, false, false)); // @see modification to CalDAVProp
 
 		List <Comp> comps = new ArrayList<Comp> ();
 		comps.add(vEventComp);
@@ -1037,8 +1037,8 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 			List<String> calendarUris )
 			throws CalDAV4JException {
 		// first create the calendar query
-		CalendarMultiget query = new CalendarMultiget("C", "D");
-		CalendarData calendarData = new CalendarData("C");
+		CalendarMultiget query = new CalendarMultiget();
+		CalendarData calendarData = new CalendarData();
 
 		query.addProperty(CalDAVConstants.PROP_GETETAG);
 		query.setCalendarDataProp(calendarData);

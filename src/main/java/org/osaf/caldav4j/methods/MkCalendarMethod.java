@@ -20,6 +20,7 @@ import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.*;
@@ -77,13 +78,10 @@ public class MkCalendarMethod extends DavMethodBase {
     /**
      * 
      */
-    public void addPropertyToSet(String namespaceURI, String qualifiedName,
+    public void addPropertyToSet(String name, Namespace namespace,
             String value) {
         checkNotUsed();
-        PropProperty propertyToSet = new PropProperty();
-        propertyToSet.setQualifiedName(qualifiedName);
-        propertyToSet.setTextContent(value);
-        propertyToSet.setNamespaceURI(namespaceURI);
+        PropProperty propertyToSet = new PropProperty<String>(name, value, namespace);
         propertiesToSet.add(propertyToSet);
     }
 
@@ -106,7 +104,7 @@ public class MkCalendarMethod extends DavMethodBase {
             return null;
         }
         
-        Prop prop = new Prop(CalDAVConstants.NS_QUAL_DAV, propertiesToSet);
+        Prop prop = new Prop(propertiesToSet);
         MkCalendar mkCalendar = new MkCalendar("C",CalDAVConstants.NS_QUAL_DAV, prop);
         Document d = null;
         try {

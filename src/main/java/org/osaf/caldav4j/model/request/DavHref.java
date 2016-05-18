@@ -13,14 +13,14 @@
  * */
 package org.osaf.caldav4j.model.request;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
+
+import java.util.Collection;
+import java.util.Map;
 
 
 
@@ -35,25 +35,19 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
 public class DavHref extends OutputsDOMBase {
     
     public static final String ELEMENT_NAME = "href";
-    
-    private String davNamespaceQualifier = null;
+
     private String uri = null;
 
-    public DavHref(String davNapespaceQualifier, String uri) {
-        this.davNamespaceQualifier = davNapespaceQualifier;
-        this.uri = uri.toString();
+    public DavHref(String uri) {
+        this.uri = uri;
     }
 
     protected String getElementName() {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return davNamespaceQualifier;
-    }
-
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_DAV;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_WEBDAV;
     }
     
     protected String getUri() {
@@ -65,7 +59,7 @@ public class DavHref extends OutputsDOMBase {
 	}
     
 	protected String getTextContent() {
-		return uri.toString();
+		return uri;
 	}
     
    
@@ -81,15 +75,11 @@ public class DavHref extends OutputsDOMBase {
 
 	@Override
 	protected Map<String, String> getAttributes() {
-		// TODO Auto-generated method stub
-        Map<String, String> m = null;
-        m = new HashMap<String, String>();
-		return m;
+		return null;
 	}
 
 	@Override // it has no children
-	protected Collection<? extends OutputsDOM> getChildren() {
-		// TODO Auto-generated method stub
+	protected Collection<XmlSerializable> getChildren() {
 		return null;
 	}
 

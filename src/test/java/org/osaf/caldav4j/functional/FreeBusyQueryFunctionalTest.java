@@ -15,13 +15,6 @@
  */
 package org.osaf.caldav4j.functional;
 
-import static org.osaf.caldav4j.CalDAVConstants.NS_QUAL_CALDAV;
-import static org.osaf.caldav4j.support.CalendarAssert.assertEqualsIgnoring;
-import static org.osaf.caldav4j.support.HttpMethodCallbacks.calendarReportCallback;
-
-import java.io.IOException;
-import java.text.ParseException;
-
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
@@ -31,7 +24,6 @@ import net.fortuna.ical4j.model.component.VFreeBusy;
 import net.fortuna.ical4j.model.parameter.FbType;
 import net.fortuna.ical4j.model.property.FreeBusy;
 import net.fortuna.ical4j.model.property.Uid;
-
 import org.apache.commons.httpclient.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
@@ -47,6 +39,12 @@ import org.osaf.caldav4j.model.request.FreeBusyQuery;
 import org.osaf.caldav4j.model.request.TimeRange;
 import org.osaf.caldav4j.support.CalendarBuilder;
 import org.osaf.caldav4j.util.ICalendarUtils;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+import static org.osaf.caldav4j.support.CalendarAssert.assertEqualsIgnoring;
+import static org.osaf.caldav4j.support.HttpMethodCallbacks.calendarReportCallback;
 
 /**
  * Functional test for {@code FreeBusyQuery}.
@@ -144,8 +142,8 @@ public class FreeBusyQueryFunctionalTest
 		CalendarCalDAVReportMethod method = new CalDAV4JMethodFactory().createCalendarCalDAVReportMethod();
 		method.setPath(relativePath);
 		
-		FreeBusyQuery query = new FreeBusyQuery(NS_QUAL_CALDAV);
-		query.setTimeRange(new TimeRange(NS_QUAL_CALDAV, new DateTime(rangeStart), new DateTime(rangeEnd)));
+		FreeBusyQuery query = new FreeBusyQuery();
+		query.setTimeRange(new TimeRange(new DateTime(rangeStart), new DateTime(rangeEnd)));
 		method.setReportRequest(query);
 		
 		return method;

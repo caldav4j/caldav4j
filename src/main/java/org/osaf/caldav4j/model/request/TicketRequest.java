@@ -15,16 +15,17 @@
  */
 package org.osaf.caldav4j.model.request;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * This class will hold all pertinent information for the request of MkTicket.
@@ -122,9 +123,8 @@ public class TicketRequest extends OutputsDOMBase {
 		return CalDAVConstants.NS_QUAL_TICKET;
 	}
 
-	protected String getNamespaceURI() {
-		return CalDAVConstants.NS_XYTHOS;
-
+	protected Namespace getNamespace() {
+		return CalDAVConstants.NAMESPACE_XYTHOS;
 	}
 
 	/**

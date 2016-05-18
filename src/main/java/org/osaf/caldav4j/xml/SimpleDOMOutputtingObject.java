@@ -15,50 +15,57 @@
  */
 package org.osaf.caldav4j.xml;
 
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * @deprecated Use PropProperty instead.
+ */
 public class SimpleDOMOutputtingObject extends OutputsDOMBase{
     
     private String elementName = null;
-    private String namespaceQualifier = null;
-    private String namespaceURI = null;
+    private Namespace namespace = null;
     private String textContent = null;
-    private List<OutputsDOM> children = new ArrayList<OutputsDOM>();
+    private List<XmlSerializable> children = new ArrayList<XmlSerializable>();
     private Map<String, String> attributes = new HashMap<String, String>();
     
     public SimpleDOMOutputtingObject(){
         
     }
-    
-    public SimpleDOMOutputtingObject(String namespaceURI,
-            String namespaceQualifier, String elementName) {
-        this.namespaceURI = namespaceURI;
-        this.namespaceQualifier = namespaceQualifier;
-        this.elementName = elementName;
+
+    public SimpleDOMOutputtingObject(String namespaceU, String namespaceQ, String elementName) {
+        this(Namespace.getNamespace(namespaceQ, namespaceU), elementName, null);
+    }
+
+    public SimpleDOMOutputtingObject(String namespaceU,
+                                     String namespaceQ, String elementName, Map<String, String> attributes) {
+        this(Namespace.getNamespace(namespaceQ, namespaceU), elementName, attributes);
+    }
+
+    public SimpleDOMOutputtingObject(Namespace namespace, String elementName) {
+        this(namespace, elementName, null);
     }
     
-    public SimpleDOMOutputtingObject(String namespaceURI,
-            String namespaceQualifier, String elementName, Map<String,String> attributes) {
-        this.namespaceURI = namespaceURI;
-        this.namespaceQualifier = namespaceQualifier;
+    public SimpleDOMOutputtingObject(Namespace namespace
+            , String elementName, Map<String,String> attributes) {
+        this.namespace = namespace;
         this.elementName = elementName;
         this.attributes = attributes;
     }
     
-    public Collection<? extends OutputsDOM> getChildren() {
+    public Collection<? extends XmlSerializable> getChildren() {
         return children;
     }
 
-    public void setNamespaceQualifier(String namespaceQualifier) {
-        this.namespaceQualifier = namespaceQualifier;
-    }
-
-    public void setNamespaceURI(String namespaceURI) {
-        this.namespaceURI = namespaceURI;
+    public void setNamespace(Namespace namespace) {
+        this.namespace = namespace;
     }
 
     public String getElementName() {
@@ -69,19 +76,15 @@ public class SimpleDOMOutputtingObject extends OutputsDOMBase{
         this.elementName = elementName;
     }
 
-    public String getNamespaceQualifier() {
-        return namespaceQualifier;
-    }
-
-    public String getNamespaceURI() {
-        return namespaceURI;
+    public Namespace getNamespace() {
+        return namespace;
     }
     
-    public void setChildren(List<OutputsDOM> children) {
+    public void setChildren(List<XmlSerializable> children) {
         this.children = children;
     }
     
-    public void addChild(OutputsDOM outputsDOM) {
+    public void addChild(XmlSerializable outputsDOM) {
         children.add(outputsDOM);
     }
 
@@ -97,7 +100,7 @@ public class SimpleDOMOutputtingObject extends OutputsDOMBase{
         int colonLocation = qualifiedName.indexOf(":");
         String qualifier = qualifiedName.substring(0, colonLocation);
         String localName = qualifiedName.substring(colonLocation + 1);
-        this.namespaceQualifier = qualifier;
+        this.namespace = Namespace.getNamespace(qualifier, namespace.getURI());
         this.elementName = localName;
     }
 

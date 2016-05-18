@@ -68,15 +68,19 @@ public class NewPropFindTest extends BaseTestCase{
     @Test
     public  void testGetAcl() throws IOException, DavException, ParserConfigurationException, CalDAV4JException {
         String collectionPath = fixture.getCollectionPath();
-        HttpClient http = fixture.getHttpClient();;
+        HttpClient http = fixture.getHttpClient();
         HostConfiguration hostConfig = http.getHostConfiguration();
         DavPropertyNameSet props = new DavPropertyNameSet();
+        //Propfind for only DAV:acl
         props.add(CalDAVConstants.DAV_ACL, CalDAVConstants.NAMESPACE_WEBDAV);
+
 
         NewPropFindMethod p = new NewPropFindMethod(collectionPath, props, DavConstants.DEPTH_0);
 
         http.executeMethod(hostConfig, p);
         log.info(p.getStatusLine());
+
+        //Get all the processed aces and print them to log.
         List<AclProperty.Ace> aces = p.getAces(collectionPath);
         try {
             print_Ace(aces);
@@ -84,6 +88,8 @@ public class NewPropFindTest extends BaseTestCase{
             e.printStackTrace();
         }
     }
+
+
 
     private void print_Ace(List<AclProperty.Ace> aces) throws ParserConfigurationException, TransformerException {
         Document document = DomUtil.createDocument();
@@ -105,5 +111,6 @@ public class NewPropFindTest extends BaseTestCase{
         log.info(xmlString);
         return xmlString;
     }
+
 
 }

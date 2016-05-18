@@ -16,17 +16,20 @@
 
 package org.osaf.caldav4j.model.request;
 
+import org.apache.jackrabbit.webdav.property.DavPropertyName;
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
+import org.apache.jackrabbit.webdav.property.DavPropertySet;
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
+import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
+import org.osaf.caldav4j.util.UrlUtils;
+import org.osaf.caldav4j.xml.OutputsDOMBase;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.util.UrlUtils;
-import org.osaf.caldav4j.xml.OutputsDOM;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
  *  @see http://tools.ietf.org/html/rfc4791#section-9.5
@@ -48,55 +51,69 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
     public static final String ELEM_FILTER = "filter";
     public static final String ELEM_HREF = CalDAVConstants.ELEM_HREF;
     
-    private String caldavNamespaceQualifier = null;
-    private String webdavNamespaceQualifier = null;
     private boolean allProp = false;
     private boolean propName = false;
-    private List<PropProperty> properties = new ArrayList<PropProperty>();
-    private CompFilter compFilter = null;
     private CalendarData calendarDataProp = null;
     private List<String> hrefs = null;
-    
-    public CalendarMultiget(String caldavNamespaceQualifier, String webdavNamespaceQualifer) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.webdavNamespaceQualifier = webdavNamespaceQualifer;
+    private Prop properties = new Prop();
+
+    public CalendarMultiget() {
+
+    }
+
+    public CalendarMultiget(DavPropertyNameSet properties,
+                            CalendarData calendarData, boolean allProp, boolean propName){
+        this(calendarData, allProp, propName);
+        this.properties.addChildren(properties);
+    }
+
+    public CalendarMultiget(Prop properties,
+                            CalendarData calendarData, boolean allProp, boolean propName){
+        this(calendarData, allProp, propName);
+        this.properties.addChildren(properties);
+    }
+
+    public CalendarMultiget(CalendarData calendarData, boolean allProp, boolean propName){
+        this.calendarDataProp = calendarData;
+        this.allProp = allProp;
+        this.propName = propName;
+    }
+
+    public CalendarMultiget(Collection<? extends XmlSerializable> properties, CalendarData calendarData,
+                            boolean allProp, boolean propName) {
+        this(calendarData, allProp, propName);
+        this.properties.addChildren(properties);
     }
 
     protected String getElementName() {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
-    }
+    protected Collection<XmlSerializable> getChildren() {
+        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
 
-    protected Collection<OutputsDOM> getChildren() {
-        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
-        
         if (allProp){
-            children.add(new SimpleDOMOutputtingObject(CalDAVConstants.NS_DAV,
-                    webdavNamespaceQualifier, CalDAVConstants.ELEM_ALLPROP));
+            children.add(new PropProperty(CalDAVConstants.ELEM_ALLPROP, CalDAVConstants.NAMESPACE_WEBDAV));
         } else if (propName){
-            children.add(new SimpleDOMOutputtingObject(CalDAVConstants.NS_DAV,
-                    webdavNamespaceQualifier, ELEM_PROPNAME));
-        } else if ((properties != null && properties.size() > 0)
+            children.add(new PropProperty(ELEM_PROPNAME, CalDAVConstants.NAMESPACE_WEBDAV));
+        } else if ((properties != null && !properties.isEmpty())
                 || calendarDataProp != null) {
-            Prop prop = new Prop(webdavNamespaceQualifier, properties);
-            children.add(prop);
+
             if (calendarDataProp != null){
-              prop.getChildren().add(calendarDataProp);
+              properties.addChild(calendarDataProp);
             }
+            children.add(properties);
         }
         
         // remove double "//" from paths
         if ( hrefs != null ) { 
 	        for (String uri : hrefs) {
 	        	DavHref href = 
-	        		new DavHref(webdavNamespaceQualifier, UrlUtils.removeDoubleSlashes(uri));
+	        		new DavHref(UrlUtils.removeDoubleSlashes(uri));
 	        	children.add(href);
 			}
         }
@@ -124,35 +141,25 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
         this.propName = propName;
     }
 
-    public List<PropProperty> getProperties() {
+    public Prop getProperties() {
         return properties;
     }
 
-    public void setProperties(List<PropProperty> properties) {
-        this.properties = properties;
+    public void setProperties(Collection<PropProperty> properties) {
+        this.properties.addChildren(properties);
     }
-    
-    public void addProperty(PropProperty propProperty){
+
+    public void addProperty(XmlSerializable propProperty){
         properties.add(propProperty);
     }
-    
-    public void addProperty(String namespaceURI, String namespaceQualifier,
-            String propertyName) {
-        PropProperty propProperty = new PropProperty(namespaceURI,
-                namespaceQualifier, propertyName);
+
+    public void addProperty(String propertyName, Namespace namespace) {
+        PropProperty propProperty = new PropProperty(propertyName, namespace);
         properties.add(propProperty);
     }
-    
+
     protected Map<String, String> getAttributes() {
         return null;
-    }
-
-    public CompFilter getCompFilter() {
-        return compFilter;
-    }
-
-    public void setCompFilter(CompFilter compFilter) {
-        this.compFilter = compFilter;
     }
 
     public CalendarData getCalendarDataProp() {
@@ -170,6 +177,12 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
     public List<String> getHrefs() {
     	return hrefs;
     }
+
+    public void addHref(String name) {
+        if(getHrefs() == null) hrefs = new ArrayList<String>();
+        this.hrefs.add(name);
+    }
+
     /**
      * Validates that the object validates against the following dtd:
      * 

@@ -17,6 +17,8 @@ package org.osaf.caldav4j.methods;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.jackrabbit.webdav.xml.DomUtil;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.apache.webdav.lib.Ace;
 import org.apache.webdav.lib.Property;
 import org.apache.webdav.lib.properties.AclProperty;
@@ -25,17 +27,16 @@ import org.apache.webdav.lib.util.DOMUtils;
 import org.apache.webdav.lib.util.QName;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.response.CalDAVResponse;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.XMLUtils;
-import org.osaf.caldav4j.xml.OutputsDOM;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.*;
 
 import static org.osaf.caldav4j.CalDAVConstants.NS_CALDAV;
@@ -51,7 +52,7 @@ import static org.osaf.caldav4j.CalDAVConstants.NS_DAV;
 public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod {
     private static final Log log = LogFactory
     	.getLog(PropFindMethod.class);
-    private OutputsDOM propFindRequest;
+    private XmlSerializable propFindRequest;
 
 
     /**
@@ -117,7 +118,7 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
 //    	}
 //    }
     
-    public void setPropFindRequest(OutputsDOM myprop) {
+    public void setPropFindRequest(XmlSerializable myprop) {
         this.propFindRequest = myprop;
     }
 
@@ -127,12 +128,14 @@ public class PropFindMethod extends org.apache.webdav.lib.methods.PropFindMethod
     protected String generateRequestBody() {
         Document doc = null;
         try {
-            doc = propFindRequest.createNewDocument(XMLUtils
-                    .getDOMImplementation());
-        } catch (DOMValidationException domve) {
-            log.error("Error trying to create DOM from CalDAVPropfindRequest: ", domve);
-            throw new RuntimeException(domve);
+            doc = DomUtil.createDocument();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
         }
+
+        Element root = propFindRequest.toXml(doc);
+        doc.appendChild(root);
+
         return XMLUtils.toPrettyXML(doc);
     }
 

@@ -24,6 +24,6 @@ import org.osaf.caldav4j.xml.OutputsDOM;
  * 
  * @author bobbyrullo
  */
-public interface CalDAVReportRequest extends OutputsDOM{
+public interface CalDAVReportRequest extends OutputsDOM {
 
 }

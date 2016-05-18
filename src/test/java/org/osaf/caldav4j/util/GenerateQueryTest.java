@@ -48,7 +48,7 @@ public class GenerateQueryTest extends BaseTestCase {
         	Document doc = query.createNewDocument(XMLUtils
                     .getDOMImplementation());
 			return XMLUtils.toPrettyXML(doc);
-        	
+
         } catch (DOMValidationException domve) {
             log.error("Error trying to create DOM from CalDAVReportRequest: ", domve);
             throw new RuntimeException(domve);
@@ -107,7 +107,7 @@ public class GenerateQueryTest extends BaseTestCase {
 			
 			// modify to conform RFC example 7.8.1. 
 			//    Example: Partial Retrieval of Events by Time Range
-			Comp compVtimezone = new Comp("C");
+			Comp compVtimezone = new Comp();
 			compVtimezone.setName(Component.VTIMEZONE);
 			query.getCalendarDataProp().getComp().getComps().add(compVtimezone);
 			log.info("no calendar-data:\n" + printQuery(query));
@@ -271,7 +271,7 @@ public void testDateTime() throws ParseException {
 			 */
 			ParamFilter paramSentBy = new ParamFilter(CalDAVConstants.NS_QUAL_CALDAV);
 			paramSentBy.setName("PARTSTAT");
-			paramSentBy.setTextMatch(new TextMatch(CalDAVConstants.NS_QUAL_CALDAV,null,null,null, "NEEDS-ACTION"));
+			paramSentBy.setTextMatch(new TextMatch(null,null,null, "NEEDS-ACTION"));
 
 			// append into ATTENDEE prop-filter
 			query.getCompFilter().getCompFilters().get(0)

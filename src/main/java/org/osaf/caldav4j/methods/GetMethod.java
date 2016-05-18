@@ -41,7 +41,6 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
     
     private CalendarBuilder calendarBuilder = null;
 
-    //TODO: Public Constructor?
     protected GetMethod (){
         super();
         this.addRequestHeader(HEADER_ACCEPT, 

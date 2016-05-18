@@ -34,7 +34,7 @@ public class FakeCalDAVReportRequest implements CalDAVReportRequest
 	/**
 	 * {@inheritDoc}
 	 */
-	public Element outputDOM(Document document) throws DOMValidationException
+	public Element toXml(Document document)
 	{
 		return document.createElement("fake-query");
 	}
@@ -46,7 +46,7 @@ public class FakeCalDAVReportRequest implements CalDAVReportRequest
 	{
 		Document document = dom.createDocument(null, null, null);
 		
-		Element documentElement = outputDOM(document);
+		Element documentElement = toXml(document);
 		document.appendChild(documentElement);
 		
 		return document;

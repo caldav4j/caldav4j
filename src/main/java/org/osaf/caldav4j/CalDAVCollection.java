@@ -1135,8 +1135,8 @@ if (isSkipGoogleTombstones()) {
 			List<String> calendarUris )
 			throws CalDAV4JException {
 		// first create the calendar query
-		CalendarMultiget query = new CalendarMultiget("C", "D");
-		CalendarData calendarData = new CalendarData("C");
+		CalendarMultiget query = new CalendarMultiget();
+		CalendarData calendarData = new CalendarData();
 
 		query.addProperty(CalDAVConstants.PROP_GETETAG);
 		query.setCalendarDataProp(calendarData);
@@ -1178,7 +1178,7 @@ if (isSkipGoogleTombstones()) {
 
 	public Ace[] getAces(HttpClient httpClient, String path) throws CalDAV4JException{
 		PropFindMethod method = methodFactory.createPropFindMethod();
-		method.setPath(getCalendarCollectionRoot() + StringUtils.defaultString(path, ""));	
+		method.setPath(getCalendarCollectionRoot() + StringUtils.defaultString(path, ""));
 		method.setDepth(DepthSupport.DEPTH_0);
 		try {
 			PropProperty propfind = PropertyFactory.createProperty(PropertyFactory.PROPFIND);
@@ -1186,19 +1186,19 @@ if (isSkipGoogleTombstones()) {
 			prop.addChild(PropertyFactory.createProperty(PropertyFactory.ACL));
 			propfind.addChild(prop);
 
-			method.setPropFindRequest(propfind);
+//			method.setPropFindRequest(propfind);
 			httpClient.executeMethod(getHostConfiguration(),method);
 
 		} catch (CalDAV4JException e) {
 			throw new RuntimeException("Error in source code", e);
 		} catch (Exception e) {
 			throw new CalDAV4JException("Error in PROPFIND " +  getCalendarCollectionRoot(), e);
-		} 
+		}
 
 		int status =  method.getStatusCode();
 
 		switch (status) {
-		case CaldavStatus.SC_MULTI_STATUS:			
+		case CaldavStatus.SC_MULTI_STATUS:
 			return method.getAces(method.getPath());
 		default:
 			MethodUtil.StatusToExceptions(method);
