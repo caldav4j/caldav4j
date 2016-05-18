@@ -180,20 +180,9 @@
     </plugins>
   </build>
   <repositories>
-      <!-- repository>
-          <id>caldav4j</id>
-          <name>Caldav4j repos</name>
-          <url>https://raw.github.com/caldav4j/maven/master/repo</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-              <enabled>true</enabled>
-          </snapshots>
-      </repository-->
     <repository>
         <id>project.local</id>
-        <name>slide</name>
+        <name>Local Repository for jackarta-slide-webdavlib</name>
         <url>file:${project.basedir}/repo</url>
     </repository>
   </repositories>
