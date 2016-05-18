@@ -490,7 +490,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		propFindMethod.setDepth(0);
 		propFindMethod.setType(0);
 		propFindMethod.setPath(getAbsolutePath(relativePath));
-//		propFindMethod.setPropFindRequest(propFind);
+		propFindMethod.setPropFindRequest(propFind);
 		httpClient.executeMethod(hostConfiguration, propFindMethod);
 
 		int statusCode = propFindMethod.getStatusCode();
@@ -592,7 +592,7 @@ public class CalDAVCalendarCollection extends CalDAVCalendarCollectionBase{
 		// first create the calendar query
 		CalendarQuery query = new CalendarQuery();
 		query.setCalendarDataProp(new CalendarData());
-//		query.addProperty(CalDAVConstants.PROP_GETETAG);
+		query.addProperty(CalDAVConstants.PROP_GETETAG);
 
 		CompFilter vCalendarCompFilter = new CompFilter("C");
 		vCalendarCompFilter.setName(Calendar.VCALENDAR);
