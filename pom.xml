@@ -20,7 +20,7 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 <modelVersion>4.0.0</modelVersion> 
  <name>CalDav4j</name>
-  <groupId>org.osaf</groupId>
+  <groupId>com.github.caldav4j</groupId>
   <artifactId>caldav4j</artifactId>
   <version>0.8-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -66,7 +66,7 @@
       <version>2.4-20040521</version>
     </dependency-->
     <dependency>
-      <groupId>slide</groupId>
+      <groupId>com.github.caldav4j</groupId>
       <artifactId>jakarta-slide-webdavlib</artifactId>
       <version>2.2pre1-httpclient-3.0</version>
     </dependency>
@@ -180,7 +180,7 @@
     </plugins>
   </build>
   <repositories>
-      <repository>
+      <!-- repository>
           <id>caldav4j</id>
           <name>Caldav4j repos</name>
           <url>https://raw.github.com/caldav4j/maven/master/repo</url>
@@ -190,7 +190,12 @@
           <snapshots>
               <enabled>true</enabled>
           </snapshots>
-      </repository>
+      </repository-->
+    <repository>
+        <id>project.local</id>
+        <name>slide</name>
+        <url>file:${project.basedir}/repo</url>
+    </repository>
   </repositories>
   <distributionManagement>
       <repository>
@@ -198,15 +203,10 @@
           <name>local M2 Repository</name>
           <url>file:///${user.home}/workspace/caldav4j-maven</url>
       </repository>
-  <snapshotRepository>
-    <id>ossrh</id>
-    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-  </snapshotRepository>
-
-      <!-- snapshotRepository>
+      <snapshotRepository>
           <id>local-m2</id>
           <name>local M2 Repository</name>
           <url>file:///${user.home}/workspace/caldav4j-maven</url>
-      </snapshotRepository-->
+      </snapshotRepository>
   </distributionManagement>
 </project>
