@@ -28,7 +28,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * @author thantimist
+ * CalDAV Report Method, which extends DavMethodBase
+ * @author <a href="mailto:ankushmishra9@gmail.com">Ankush Mishra</a>
  */
 public class NewCalDAVReportMethod extends DavMethodBase {
 

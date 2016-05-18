@@ -17,12 +17,14 @@
 package org.osaf.caldav4j.model.request;
 
 import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.DateTime;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
 
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -93,7 +95,13 @@ public class TimeRange extends OutputsDOMBase {
     public void setStart(Date start) {
         this.start = start;
     }
-    
+
+    public void setTimeRange(String start, String end) throws ParseException {
+        this.start = new DateTime(start);
+        this.end = new DateTime(end);
+    }
+
+
     /**
      * <!ELEMENT time-range EMPTY>
      * 

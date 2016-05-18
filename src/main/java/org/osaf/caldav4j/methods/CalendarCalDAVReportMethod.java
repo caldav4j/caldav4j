@@ -30,6 +30,7 @@ import org.apache.webdav.lib.util.XMLDebugOutputer;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;
@@ -214,13 +215,13 @@ public class CalendarCalDAVReportMethod extends HttpRequestBodyMethodBase implem
      */
     protected String generateRequestBody() {
         Document doc = null;
-//        try {
-//            doc = reportRequest.createNewDocument(XMLUtils
-//                    .getDOMImplementation());
-//        } catch (DOMValidationException domve) {
-//            log.error("Error trying to create DOM from CalDAVReportRequest: ", domve);
-//            throw new RuntimeException(domve);
-//        }
+        try {
+            doc = reportRequest.createNewDocument(XMLUtils
+                    .getDOMImplementation());
+        } catch (DOMValidationException domve) {
+            log.error("Error trying to create DOM from CalDAVReportRequest: ", domve);
+            throw new RuntimeException(domve);
+        }
         return XMLUtils.toPrettyXML(doc);
     }
     

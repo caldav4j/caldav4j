@@ -1186,7 +1186,7 @@ if (isSkipGoogleTombstones()) {
 			prop.addChild(PropertyFactory.createProperty(PropertyFactory.ACL));
 			propfind.addChild(prop);
 
-//			method.setPropFindRequest(propfind);
+			method.setPropFindRequest(propfind);
 			httpClient.executeMethod(getHostConfiguration(),method);
 
 		} catch (CalDAV4JException e) {

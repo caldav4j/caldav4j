@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
+/*
  * @deprecated Use PropProperty instead.
  */
 public class SimpleDOMOutputtingObject extends OutputsDOMBase{
