@@ -117,10 +117,10 @@ public class NewCalDAVReportTest extends BaseTestCase{
         HostConfiguration hostConfig = http.getHostConfiguration();
 
         CalendarQuery calendarQuery = new CalendarQuery();
-        CalendarData calendarData = new CalendarData();
+        CalendarData calendarData = new CalendarData(CalendarData.EXPAND, new DateTime("20060101T000000Z"), new DateTime("20060105T230000Z"), null);
         CompFilter vcalendar = new CompFilter("C", "VCALENDAR");
         vcalendar.addCompFilter(new CompFilter("", "VEVENT"));
-        vcalendar.getCompFilters().get(0).setTimeRange(new TimeRange(new DateTime("20060101T170000Z"), new DateTime("20060103T230000Z")));
+        vcalendar.getCompFilters().get(0).setTimeRange(new TimeRange(new DateTime("20060101T000000Z"), new DateTime("20060105T230000Z")));
 
         calendarQuery.setCalendarDataProp(calendarData);
         calendarQuery.setCompFilter(vcalendar);
@@ -130,9 +130,11 @@ public class NewCalDAVReportTest extends BaseTestCase{
         http.executeMethod(hostConfig, calDAVReportMethod);
         log.info(calDAVReportMethod.getStatusLine());
 
-        Collection<DavProperty> p = calDAVReportMethod.getDavProperty(DavPropertyName.create(CalDAVConstants.CALDAV_CALENDAR_DATA, CalDAVConstants.NAMESPACE_CALDAV));
+        Collection<DavProperty> calendars = calDAVReportMethod.getDavProperty(DavPropertyName.create(CalDAVConstants.CALDAV_CALENDAR_DATA, CalDAVConstants.NAMESPACE_CALDAV));
 
-        assertEquals(2, p.size());
+        for(DavProperty property: calendars)
+            printXml(property);
+        assertEquals(2, calendars.size());
     }
 
 

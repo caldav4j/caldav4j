@@ -81,6 +81,7 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
     }
 
     public CalendarQuery(CompFilter compFilter, CalendarData calendarData, boolean allProp, boolean propName){
+        this.compFilter = compFilter;
         this.calendarDataProp = calendarData;
         this.allProp = allProp;
         this.propName = propName;

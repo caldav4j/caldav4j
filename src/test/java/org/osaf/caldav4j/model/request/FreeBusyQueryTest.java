@@ -48,7 +48,7 @@ public class FreeBusyQueryTest
 				+ "<C:time-range end=\"20000201T000000Z\" start=\"20000101T000000Z\"/>"
 			+ "</C:free-busy-query>";
 		
-//		assertCreateNewDocument(expected, query);
+		assertCreateNewDocument(expected, query);
 	}
 	
 	@Test(expected = DOMValidationException.class)
