@@ -16,6 +16,7 @@
 
 package org.osaf.caldav4j;
 
+import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.apache.webdav.lib.util.QName;
 import org.osaf.caldav4j.model.request.PropProperty;
@@ -116,5 +117,13 @@ public interface CalDAVConstants {
     public static final PropProperty PROP_GETETAG = new PropProperty(ELEM_GETETAG, NAMESPACE_WEBDAV);
     public static final PropProperty PROP_ALLPROP = new PropProperty(ELEM_ALLPROP, NAMESPACE_WEBDAV);
 
+    //DavPropertyNames
+    public static final DavPropertyName DNAME_CALENDAR_DESCRIPTION = DavPropertyName.create(CALDAV_CALENDAR_DESCRIPTION, NAMESPACE_CALDAV);
+    public static final DavPropertyName DNAME_ACL = DavPropertyName.create(CalDAVConstants.DAV_ACL, CalDAVConstants.NAMESPACE_WEBDAV);
 
+    //-------------------------------------------------< PropFind Constants >---
+    public static final int PROPFIND_BY_PROPERTY = 0;
+    public static final int PROPFIND_ALL_PROP = 1;
+    public static final int PROPFIND_PROPERTY_NAMES = 2;
+    public static final int PROPFIND_ALL_PROP_INCLUDE = 3; // RFC 4918, Section 9.1
 }

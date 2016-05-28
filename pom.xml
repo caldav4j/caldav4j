@@ -20,7 +20,7 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 <modelVersion>4.0.0</modelVersion>
  <name>CalDav4j</name>
-  <groupId>org.osaf</groupId>
+  <groupId>com.github.caldav4j</groupId>
   <artifactId>caldav4j</artifactId>
   <version>0.8-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -76,7 +76,7 @@
           <version>2.12.1</version>
       </dependency>
     <dependency>
-      <groupId>slide</groupId>
+      <groupId>com.github.caldav4j</groupId>
       <artifactId>jakarta-slide-webdavlib</artifactId>
       <version>2.2pre1-httpclient-3.0</version>
     </dependency>
@@ -123,13 +123,13 @@
         </dependency>
     </dependencies>
   <description>The Caldav Java Library</description>
-  <url>http://code.google.com/p/caldav4j/</url>
+  <url>https://github.com/caldav4j/caldav4j.git</url>
   <issueManagement>
-  	<system>Google Code</system>
-  	<url>http://code.google.com/p/caldav4j/issues/list</url>
+  	<system>github</system>
+  	<url>https://github.com/caldav4j/caldav4j/issues</url>
   </issueManagement>
   <scm>
-  	<url>https://caldav4j.googlecode.com/svn/trunk</url>
+  	<url>https://github.com/caldav4j/caldav4j.git</url>
   </scm>
   <build>
     <pluginManagement>
@@ -190,17 +190,11 @@
     </plugins>
   </build>
   <repositories>
-      <repository>
-          <id>caldav4j</id>
-          <name>Caldav4j repos</name>
-          <url>http://caldav4j.googlecode.com/svn/maven/</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-              <enabled>true</enabled>
-          </snapshots>
-      </repository>
+    <repository>
+        <id>project.local</id>
+        <name>Local Repository for jakarta-slide-webdavlib</name>
+        <url>file:${project.basedir}/repo</url>
+    </repository>
   </repositories>
   <distributionManagement>
       <repository>

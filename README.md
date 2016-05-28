@@ -36,6 +36,14 @@ Compliance: We aim to be implement the following specs
 
 Consider joining: WhyJoin
 
+# Testing
+
+You can test your caldav server replacing the `caldav4jUri` with your one.
+
+```
+mvn package -Dcaldav4jUri='https//user:password@hostname.fqdn.com/base/user/collections/'
+```
+
 # Status
 
 CalDAV4j 0.7 is the current (tagged) release.

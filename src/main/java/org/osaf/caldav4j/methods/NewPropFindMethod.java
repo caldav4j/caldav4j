@@ -59,7 +59,6 @@ public class NewPropFindMethod extends PropFindMethod {
         super(uri, propfindType, propNameSet, depth);
     }
 
-
     /**
      * return the AclProperty relative to a given url
      * @author rpolli
@@ -67,7 +66,7 @@ public class NewPropFindMethod extends PropFindMethod {
      * @return AclProperty xml response or null if missing
      */
     public AclProperty getAcl(String urlPath) throws ParserConfigurationException, DavException {
-        DavProperty p = getDavProperty(urlPath, DavPropertyName.create(CalDAVConstants.DAV_ACL, CalDAVConstants.NAMESPACE_WEBDAV));
+        DavProperty p = getDavProperty(urlPath, CalDAVConstants.DNAME_ACL);
         return AclProperty.createFromXml(p.toXml(DomUtil.createDocument()));
     }
 
@@ -80,7 +79,7 @@ public class NewPropFindMethod extends PropFindMethod {
     }
 
     public String getCalendarDescription(String urlPath) {
-        DavProperty p =  getDavProperty(urlPath, DavPropertyName.create(CalDAVConstants.CALDAV_CALENDAR_DESCRIPTION, CalDAVConstants.NAMESPACE_CALDAV));
+        DavProperty p =  getDavProperty(urlPath, CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
         if (p!= null) {
             return p.getValue().toString();
         } else {
