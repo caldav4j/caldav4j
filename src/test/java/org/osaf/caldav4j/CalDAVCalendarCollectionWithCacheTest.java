@@ -31,6 +31,7 @@ import static org.junit.Assert.*;
  * @author bobbyrullo
  * 
  */
+@Ignore
 public class CalDAVCalendarCollectionWithCacheTest extends BaseTestCase {
 
 	private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";

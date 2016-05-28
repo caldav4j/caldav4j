@@ -1179,7 +1179,7 @@ if (isSkipGoogleTombstones()) {
 	public Ace[] getAces(HttpClient httpClient, String path) throws CalDAV4JException{
 		PropFindMethod method = methodFactory.createPropFindMethod();
 		method.setPath(getCalendarCollectionRoot() + StringUtils.defaultString(path, ""));
-		method.setDepth(DepthSupport.DEPTH_0);
+		method.setDepth(CalDAVConstants.DEPTH_0);
 		try {
 			PropProperty propfind = PropertyFactory.createProperty(PropertyFactory.PROPFIND);
 			PropProperty prop = PropertyFactory.createProperty(PropertyFactory.PROP);

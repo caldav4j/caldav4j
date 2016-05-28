@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.Property;
 import org.apache.webdav.lib.PropertyName;
-import org.apache.webdav.lib.methods.DepthSupport;
 import org.apache.webdav.lib.methods.PropFindMethod;
 import org.apache.webdav.lib.methods.XMLResponseMethodBase.Response;
 import org.junit.After;
@@ -49,7 +48,7 @@ public class FunTest extends BaseTestCase {
 
 		PropFindMethod propFindMethod = new PropFindMethod();
 		PropertyName propName = new PropertyName(CalDAVConstants.NS_DAV, "resourcetype");
-		propFindMethod.setDepth(DepthSupport.DEPTH_INFINITY);
+		propFindMethod.setDepth(CalDAVConstants.DEPTH_INFINITY);
 		propFindMethod.setPath(caldavCredential.home + "collection_changeme/");
 		propFindMethod.setType(PropFindMethod.BY_NAME);
 		Vector<PropertyName> v = new Vector<PropertyName>();
@@ -71,15 +70,6 @@ public class FunTest extends BaseTestCase {
 
 		}
 	}
-
-	/*
-	private CalDAVCalendarCollection createCalDAVCalendarCollection() {
-		CalDAVCalendarCollection calendarCollection = new CalDAVCalendarCollection(
-				COLLECTION_PATH,  createHostConfiguration(),
-				methodFactory, CalDAVConstants.PROC_ID_DEFAULT);
-		return calendarCollection;
-	}
-	*/
 
 	public static void main (String args[]){
 		try {
