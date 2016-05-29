@@ -37,7 +37,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-//@Ignore // to be run under functional
+@Ignore // to be run under functional
 public class PropFindTest extends BaseTestCase {
 
 	private static final Log log = LogFactory.getLog(PropFindTest.class);
@@ -54,22 +54,23 @@ public class PropFindTest extends BaseTestCase {
 	}
 
 	@Test
-	//@Ignore
+	@Ignore
 	public void testGetAcl() throws CalDAV4JException, IOException, TransformerException, ParserConfigurationException {
 		// TODO here we should use fixture.getHttpClient()
+		String path = fixture.getCollectionPath();
 		HttpClient http = fixture.getHttpClient();;
 		HostConfiguration hostConfig = http.getHostConfiguration();
 
 		DavPropertyNameSet set = new DavPropertyNameSet();
         set.add(CalDAVConstants.DNAME_ACL);
 
-        PropFindMethod propfind = new PropFindMethod(caldavCredential.home, set, CalDAVConstants.DEPTH_0);
+        PropFindMethod propfind = new PropFindMethod(path, set, CalDAVConstants.DEPTH_0);
 
 
 		try {
 			http.executeMethod(hostConfig,propfind);
 
-			AclProperty aclProperty = propfind.getAcl(caldavCredential.home);
+			AclProperty aclProperty = propfind.getAcl(path);
 			/*
 			 * response
 			 *   href
@@ -89,7 +90,7 @@ public class PropFindTest extends BaseTestCase {
 			 */
 
 				print_Xml(aclProperty);
-				List<AclProperty.Ace> aces =  propfind.getAces(caldavCredential.home);
+				List<AclProperty.Ace> aces =  propfind.getAces(path);
 				print_Xml(aces.get(0));
 
 				log.info("There are aces # "+ aces.size() );
@@ -112,12 +113,9 @@ public class PropFindTest extends BaseTestCase {
 								"; ");
 				}
 
-        } catch (ParserConfigurationException e1) {
-            e1.printStackTrace();
-        }
-         catch (TransformerException e1) {
-            e1.printStackTrace();
-        }
+        } catch (Exception e1) {
+			e1.printStackTrace();
+		}
 
         Privilege[] privileges = { Privilege.PRIVILEGE_READ };
         AclProperty.Ace test = AclProperty.createGrantAce(Principal.getPropertyPrincipal(DavPropertyName.create(DavPropertyName.XML_OWNER)),
@@ -128,6 +126,7 @@ public class PropFindTest extends BaseTestCase {
 	@Test
 	@Ignore
 	public void testGetAcl_1() throws IOException {
+        String path = fixture.getCollectionPath();
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
 
@@ -136,35 +135,27 @@ public class PropFindTest extends BaseTestCase {
         set.add(CalDAVConstants.DNAME_DISPLAYNAME);
         set.add(CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
 
-		PropFindMethod propfind = new PropFindMethod(caldavCredential.home, set, CalDAVConstants.DEPTH_0);
+		PropFindMethod propfind = new PropFindMethod(path, set, CalDAVConstants.DEPTH_0);
 
 		try {
 			http.executeMethod(hostConfig,propfind);
 
-			AclProperty responses= propfind.getAcl(caldavCredential.home);
+			AclProperty responses= propfind.getAcl(path);
 
 
 				log.info("new Property element");
-				List<AclProperty.Ace> aces = propfind.getAces(caldavCredential.home);
+				List<AclProperty.Ace> aces = propfind.getAces(path);
 				log.info("There are aces # "+ aces.size() );
                 print_ListAce(aces);
 
             Privilege[] privileges = { Privilege.PRIVILEGE_READ };
-			AclProperty.Ace test = AclProperty.createGrantAce(Principal.getHrefPrincipal(caldavCredential.home),
+			AclProperty.Ace test = AclProperty.createGrantAce(Principal.getHrefPrincipal(path),
                     privileges, false, false, null);
 			print_Xml(test);
 
-		} catch (HttpException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (CalDAV4JException e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
+		}
 
     }
 
@@ -266,7 +257,8 @@ public class PropFindTest extends BaseTestCase {
 			PropFindMethod propfind = new PropFindMethod(fixture.getCollectionPath(), set, CalDAVConstants.DEPTH_0);
 			http.executeMethod(hostConfig,propfind);
 
-			log.info("post setacl returns: "+ propfind.getResponseBodyAsString());
+			log.info("post setacl returns: ");
+            print_Xml(propfind.getResponseBodyAsMultiStatus());
 			// TODO check returned ACIS
 		} catch (Exception e) {
 			e.printStackTrace();

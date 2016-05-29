@@ -8,6 +8,7 @@ import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
@@ -29,7 +30,7 @@ import static org.osaf.caldav4j.CalDAVConstants.INFINITY;
  * 
  */
 // tickets are not currently supported
-//@Ignore
+@Ignore
 public class TicketTest extends BaseTestCase {
 
 	public static final Integer TEST_TIMEOUT = 3600;

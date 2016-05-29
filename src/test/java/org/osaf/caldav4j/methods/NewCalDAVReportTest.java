@@ -116,7 +116,7 @@ public class NewCalDAVReportTest extends BaseTestCase{
         HostConfiguration hostConfig = http.getHostConfiguration();
 
         CalendarQuery calendarQuery = new CalendarQuery();
-        CalendarData calendarData = new CalendarData(CalendarData.EXPAND, new DateTime("20060101T000000Z"), new DateTime("20060105T230000Z"), null);
+        CalendarData calendarData = new CalendarData(CalendarData.EXPAND, new DateTime("20060101T000000Z"), new DateTime("20060105T230000Z"), null);//new Comp("VCALENDAR"));
         CompFilter vcalendar = new CompFilter("C", "VCALENDAR");
         vcalendar.addCompFilter(new CompFilter("", "VEVENT"));
         vcalendar.getCompFilters().get(0).setTimeRange(new TimeRange(new DateTime("20060101T000000Z"), new DateTime("20060105T230000Z")));
@@ -135,6 +135,4 @@ public class NewCalDAVReportTest extends BaseTestCase{
             printXml(property);
         assertEquals(2, calendars.getContentSize());
     }
-
-
 }

@@ -903,34 +903,40 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			throw new CalDAV4JException("Problem executing method", he);
 		}
 
-		MultiStatusResponse[] set = reportMethod.getResponseBodyAsMultiStatusResponse();
-		for(MultiStatusResponse response: set){
-			String etag = CalendarDataProperty.getEtagfromResponse(response);
+		try {
+			MultiStatusResponse[] set = reportMethod.getResponseBodyAsMultiStatusResponse();
+			for(MultiStatusResponse response: set){
+				String etag = CalendarDataProperty.getEtagfromResponse(response);
 
-			if (isCacheEnabled()) {
-				CalDAVResource resource = getCalDAVResource(httpClient,
-						stripHost(response.getHref()), etag);
-				Calendar cal = resource.getCalendar();
+				if (isCacheEnabled()) {
+					CalDAVResource resource = getCalDAVResource(httpClient,
+							stripHost(response.getHref()), etag);
+					Calendar cal = resource.getCalendar();
 
-				if ( !isGoogleTombstone(cal)) {
-					list.add(resource.getCalendar());
+					if ( !isGoogleTombstone(cal)) {
+						list.add(resource.getCalendar());
 
-					// XXX check if getCalDAVResource does its caching job
-					cache.putResource(resource);
+						// XXX check if getCalDAVResource does its caching job
+						cache.putResource(resource);
+					}
+
+				} else {
+					Calendar cal = CalendarDataProperty.getCalendarfromResponse(response);
+					if (cal != null)
+						list.add(cal);
 				}
-
-			} else {
-                Calendar cal = CalendarDataProperty.getCalendarfromResponse(response);
-				if (cal != null)
-					list.add(cal);
-			}			
+			}
+		} catch (Exception e) {
+			log.error("Unable to Parse Responses.");
+			e.printStackTrace();
 		}
+
 
 		return list;
 	}
 
 	// FIXME test speed
-	public MultiStatusResponse[] getResponse(HttpClient httpClient, CalendarQuery query) throws CalDAV4JException, IOException {
+	public MultiStatusResponse[] getResponse(HttpClient httpClient, CalendarQuery query) throws CalDAV4JException, IOException, DavException {
 		List <Calendar> list = new ArrayList<Calendar>();
 
 		if (isCacheEnabled()) {
@@ -986,9 +992,10 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		}
 
 		log.trace("Parsing response.. " );
-		MultiStatusResponse[] responses= reportMethod.getResponseBodyAsMultiStatusResponse();
 		List<CalDAVResource> list = new ArrayList<CalDAVResource>();
-		for(MultiStatusResponse response: responses){
+		try {
+			MultiStatusResponse[] responses = reportMethod.getResponseBodyAsMultiStatusResponse();
+			for(MultiStatusResponse response: responses){
 				String etag = CalendarDataProperty.getEtagfromResponse(response);
 
 				if (usingCache) {
@@ -1001,6 +1008,10 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 						list.add(new CalDAVResource(response));
 					}
 				}
+			}
+		} catch (Exception e) {
+			log.error("Unable to Parse Responses for CalDavResources.");
+			e.printStackTrace();
 		}
 
 		return list;
@@ -1036,26 +1047,31 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			throw new CalDAV4JException("Problem executing method", he);
 		}
 
-		MultiStatusResponse[] e = reportMethod.getResponseBodyAsMultiStatusResponse();
 		List<Calendar> list = new ArrayList<Calendar>();
+		try {
+			MultiStatusResponse[] e = reportMethod.getResponseBodyAsMultiStatusResponse();
 
-		for(MultiStatusResponse response: e){
+			for(MultiStatusResponse response: e){
 				CalDAVResource resource = null;
 
 				if (isCacheEnabled()) {
 					String etag = CalendarDataProperty.getEtagfromResponse(response);
 					try{
-						resource = 
-							getCalDAVResource(httpClient, stripHost(response.getHref()), etag);
+						resource =
+								getCalDAVResource(httpClient, stripHost(response.getHref()), etag);
 
 						list.add(resource.getCalendar());
 					} catch(Exception e1) {
 						log.warn("Unable to get CalDAVResource for etag: " + etag);
 						e1.printStackTrace();
-					}						
+					}
 				} else {
 					list.add(CalendarDataProperty.getCalendarfromResponse(response));
 				}
+			}
+		} catch (DavException e1) {
+			log.error("Unable to Parse Responses.");
+			e1.printStackTrace();
 		}
 
 		return list;

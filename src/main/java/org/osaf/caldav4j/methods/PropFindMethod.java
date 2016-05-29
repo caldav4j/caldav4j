@@ -99,6 +99,8 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
             return "";
         }
     }
+
+
     /**
      *
      * @param urlPath Location of the CalendarResource
@@ -108,20 +110,23 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
      *
      */
     public DavProperty getDavProperty(String urlPath, DavPropertyName property) {
-        MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
-        if(responses != null && succeeded()) {
-            for (MultiStatusResponse r : responses) {
-                if(r.getHref().equals(urlPath)){
-                    DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
-                    return props.get(property);
+        try {
+            MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
+            if(responses != null && succeeded()) {
+                for (MultiStatusResponse r : responses) {
+                    if(r.getHref().equals(urlPath)){
+                        DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
+                        return props.get(property);
+                    }
                 }
             }
+        } catch (Exception e) {
+            log.warn("Unable to get MultiStatusResponse. Status: " + getStatusCode());
         }
 
         log.warn("Can't find object at: " + urlPath);
         return null;
     }
-
 
     /**
      * Returns all the set of properties and their value, for all the hrefs
@@ -129,13 +134,18 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
      * @return
      */
     public DavPropertySet getDavProperties(DavPropertyName property) {
-        MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
         DavPropertySet set = new DavPropertySet(); //TODO: Use Collection instead of Set?
-        if(responses != null && succeeded()) {
-            for (MultiStatusResponse r : responses) {
-                DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
-                if(!props.isEmpty()) set.add(props.get(property));
+
+        try {
+            MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
+            if(responses != null && succeeded()) {
+                for (MultiStatusResponse r : responses) {
+                    DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
+                    if(!props.isEmpty()) set.add(props.get(property));
+                }
             }
+        } catch (Exception e) {
+            log.warn("Unable to get MultiStatusResponse. Status: " + getStatusCode());
         }
 
         return set;
@@ -145,16 +155,8 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
      * Returns the responses as an array of MultiStatusResponses
      * @return MultiStatusResponse[]
      */
-    public MultiStatusResponse[] getResponseBodyAsMultiStatusResponse(){
-        try {
-            return getResponseBodyAsMultiStatus().getResponses();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (DavException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    public MultiStatusResponse[] getResponseBodyAsMultiStatusResponse() throws DavException, IOException {
+        return getResponseBodyAsMultiStatus().getResponses();
     }
 
     /**
@@ -163,7 +165,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
      * @param uri
      * @return
      */
-    public MultiStatusResponse getResponseBodyAsMultiStatusResponse(String uri){
+    public MultiStatusResponse getResponseBodyAsMultiStatusResponse(String uri) throws IOException, DavException {
         MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
         for(MultiStatusResponse response: responses)
             if(response.getHref().equals(uri))

@@ -40,8 +40,6 @@ public class PropFilter extends OutputsDOMBase {
     public static final String ELEM_IS_DEFINED = "is-defined";
     public static final String ELEM_IS_NOT_DEFINED = "is-not-defined";
     public static final String ATTR_NAME = "name";
-    
-    private String caldavNamespaceQualifier = null;
 
     private String name = null;
     private Boolean isDefined = null;
@@ -51,15 +49,14 @@ public class PropFilter extends OutputsDOMBase {
     private List<ParamFilter> paramFilters = new ArrayList<ParamFilter>();
     
     public PropFilter(String caldavNamespaceQualifier) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
     }
     
     public PropFilter(String caldavNamespaceQualifier, String name, 
             Boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
             Boolean textmatchCaseless, boolean negateCondition,
             String textMatchCollation, String textMatchString, List<ParamFilter> paramFilters){
-    	
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
         this.name = name;
 
         
@@ -90,8 +87,7 @@ public class PropFilter extends OutputsDOMBase {
     public PropFilter(String caldavNamespaceQualifier, String name, 
             boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
             Boolean textmatchCaseless, String textMatchString, List<ParamFilter> paramFilters){
-    	
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
         this.name = name;
         this.isDefined = isDefined;
         if (timeRangeStart != null && timeRangeEnd != null){
@@ -109,10 +105,6 @@ public class PropFilter extends OutputsDOMBase {
 
     protected String getElementName() {
         return ELEMENT_NAME;
-    }
-
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
     }
 
     protected Namespace getNamespace() {

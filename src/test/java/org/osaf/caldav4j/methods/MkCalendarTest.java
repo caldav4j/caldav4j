@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
  * TODO This whole class can be fixturized and shortened. The only reason not to do so
  * 				is to keep things simple when testing bare methods.
  */
-//@Ignore
+@Ignore
 public class MkCalendarTest extends BaseTestCase {
 
 	private static final Log log = LogFactory.getLog(MkCalendarTest.class);
@@ -59,7 +59,6 @@ public class MkCalendarTest extends BaseTestCase {
 	@Test
 	public void testPrintMkCalendar() throws UnsupportedEncodingException {
 		MkCalendarMethod mk = new MkCalendarMethod(caldavCredential.home + caldavCredential.collection);
-//		mk.setPath(caldavCredential.home + caldavCredential.collection);
 
 		mk.addDisplayName("My display Name");
 		mk.addDescription("this is my default calendar", "en");

@@ -1,7 +1,6 @@
 package org.osaf.caldav4j.methods;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.commons.httpclient.HeaderElement;
 import org.apache.commons.httpclient.HttpConnection;
@@ -131,10 +130,7 @@ public class CalDAVReportMethod extends DavMethodBase {
             try {
                 InputStream stream = getResponseBodyAsStream();
                 calendarResponse = calendarBuilder.build(stream);
-            } catch (IOException e) {
-                e.printStackTrace();
-                log.error("Error while parsing Calendar response: " + e);
-            } catch (ParserException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 log.error("Error while parsing Calendar response: " + e);
             }
@@ -143,15 +139,27 @@ public class CalDAVReportMethod extends DavMethodBase {
             super.processResponseBody(httpState, httpConnection);
     }
 
+    /**
+     *
+     * @param urlPath Location of the CalendarResource
+     * @param property DavPropertyName of the property whose value is to be returned.
+     * @return DavProperty
+     *
+     *
+     */
     public DavProperty getDavProperty(String urlPath, DavPropertyName property) {
-        MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
-        if(responses != null && succeeded()) {
-            for (MultiStatusResponse r : responses) {
-                if(r.getHref().equals(urlPath)){
-                    DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
-                    return props.get(property);
+        try {
+            MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
+            if(responses != null && succeeded()) {
+                for (MultiStatusResponse r : responses) {
+                    if(r.getHref().equals(urlPath)){
+                        DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
+                        return props.get(property);
+                    }
                 }
             }
+        } catch (Exception e) {
+            log.warn("Unable to get MultiStatusResponse. Status: " + getStatusCode());
         }
 
         log.warn("Can't find object at: " + urlPath);
@@ -163,32 +171,39 @@ public class CalDAVReportMethod extends DavMethodBase {
      * @param property
      * @return
      */
-    public DavPropertySet getDavProperty(DavPropertyName property) {
-        MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
+    public DavPropertySet getDavProperties(DavPropertyName property) {
         DavPropertySet set = new DavPropertySet(); //TODO: Use Collection instead of Set?
-        if(responses != null && succeeded()) {
-            for (MultiStatusResponse r : responses) {
-                DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
-                if(!props.isEmpty()) set.add(props.get(property));
+
+        try {
+            MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
+            if(responses != null && succeeded()) {
+                for (MultiStatusResponse r : responses) {
+                    DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
+                    if(!props.isEmpty()) set.add(props.get(property));
+                }
             }
+        } catch (Exception e) {
+            log.warn("Unable to get MultiStatusResponse. Status: " + getStatusCode());
         }
 
         return set;
     }
 
-    public MultiStatusResponse[] getResponseBodyAsMultiStatusResponse(){
-        try {
-            return getResponseBodyAsMultiStatus().getResponses();
-        } catch (IOException e) {
-            log.error("Unable to get MultiStatusResponses.");
-        } catch (DavException e) {
-            log.error("Unable to get MultiStatusResponses.");
-        }
-
-        return null;
+    /**
+     * Returns the responses as an array of MultiStatusResponses
+     * @return MultiStatusResponse[]
+     */
+    public MultiStatusResponse[] getResponseBodyAsMultiStatusResponse() throws DavException, IOException {
+        return getResponseBodyAsMultiStatus().getResponses();
     }
 
-    public MultiStatusResponse getResponseBodyAsMultiStatusResponse(String uri){
+    /**
+     * Returns the MultiStatusResponse to the corresponding uri.
+     * Note: Can be only used once.
+     * @param uri
+     * @return
+     */
+    public MultiStatusResponse getResponseBodyAsMultiStatusResponse(String uri) throws IOException, DavException {
         MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
         for(MultiStatusResponse response: responses)
             if(response.getHref().equals(uri))

@@ -156,8 +156,8 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		calendar = null;
 		gq.setFilter("VEVENT : UID=="+ICS_GOOGLE_DAILY_NY_5PM_UID );
 		gq.setRecurrenceSet("20060101T170000Z","20060103T230000Z", CalendarData.EXPAND);
-
-		List<Calendar> calendars = collection.queryCalendars(fixture.getHttpClient(), gq.generate());
+		CalendarQuery query = gq.generate();
+		List<Calendar> calendars = collection.queryCalendars(fixture.getHttpClient(), query);
 		assertNotNull(calendars);
 		assertEquals("bad number of responses: ",3,calendars.size());
 		for (Calendar c : calendars) {
