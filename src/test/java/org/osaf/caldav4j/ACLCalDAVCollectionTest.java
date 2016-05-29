@@ -1,15 +1,17 @@
 package org.osaf.caldav4j;
-import static org.junit.Assert.assertNotNull;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Ace;
+import org.apache.jackrabbit.webdav.security.AclProperty;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
+
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
 
 public class ACLCalDAVCollectionTest extends BaseTestCase {
 
@@ -31,14 +33,14 @@ public class ACLCalDAVCollectionTest extends BaseTestCase {
 
 	@Test
 	public void getFolderAces() throws CalDAV4JException {
-		Ace[] aces = collection.getAces(fixture.getHttpClient(), null);
+		List<AclProperty.Ace> aces = collection.getAces(fixture.getHttpClient(), null);
 		assertNotNull(aces);		
 		log.info(aces);			
 	}
 
 	@Test
 	public void getResourceAces() throws Exception {		
-		Ace[] aces = collection.getAces(fixture.getHttpClient(), ICS_GOOGLE_DAILY_NY_5PM);
+		List<AclProperty.Ace> aces = collection.getAces(fixture.getHttpClient(), ICS_GOOGLE_DAILY_NY_5PM);
 		assertNotNull(aces);		
 		log.info(aces);	
 	}

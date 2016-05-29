@@ -122,7 +122,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
 	// get a Calendar by uid, then by summary, then by recurrence-id
 	@Test
-	public void queryCalendar() throws CalDAV4JException {
+	public void queryCalendar() throws CalDAV4JException, IOException {
 		Calendar calendar = null;
 		GenerateQuery gq=new GenerateQuery();
 
@@ -148,7 +148,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	// TODO: this is work in progress; see issue 48
 	@Ignore
 	@Test
-	public void queryPartialCalendar() throws CalDAV4JException {
+	public void queryPartialCalendar() throws CalDAV4JException, IOException {
 		Calendar calendar = null;
 		GenerateQuery gq=new GenerateQuery();
 

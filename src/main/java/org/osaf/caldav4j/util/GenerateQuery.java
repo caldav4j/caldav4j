@@ -363,9 +363,9 @@ public class GenerateQuery implements CalDAVConstants  {
 		throws  CalDAV4JException {
 
 		CalendarQuery query = new CalendarQuery();
-		query.addProperty(CalDAVConstants.PROP_GETETAG);
+		query.addProperty(CalDAVConstants.DNAME_GETETAG);
 		if (allProp) {
-			query.addProperty(CalDAVConstants.PROP_ALLPROP);
+			query.addProperty(CalDAVConstants.DNAME_ALLPROP);
 		}
 		if (!noCalendarData) {
 			// TODO limit-recurrence-set

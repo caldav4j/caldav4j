@@ -15,9 +15,11 @@
  */
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests {@code CalDAV4JMethodFactory}.
@@ -26,17 +28,17 @@ import org.junit.Test;
  * @version $Id$
  * @see CalDAV4JMethodFactory
  */
+
 public class CalDAV4JMethodFactoryTest
 {
 	// tests ------------------------------------------------------------------
 	
 	// TODO: test other factory methods
-	
 	@Test
-	public void createCalendarCalDAVReportMethod()
-	{
+	public void createCalDAVReportMethod() throws IOException {
 		CalDAV4JMethodFactory factory = new CalDAV4JMethodFactory();
-		CalendarCalDAVReportMethod method = factory.createCalendarCalDAVReportMethod();
+
+		CalDAVReportMethod method = factory.createCalDAVReportMethod("url");
 		
 		assertNotNull("Method", method);
 		assertNotNull("Calendar builder", method.getCalendarBuilder());

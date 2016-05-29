@@ -15,7 +15,6 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.osaf.caldav4j.CalDAV4JException;
-import org.osaf.caldav4j.CalDAVCalendarCollection;
 import org.osaf.caldav4j.CaldavCredential;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpClient;

@@ -28,7 +28,6 @@ import net.fortuna.ical4j.model.property.Uid;
 import org.apache.commons.httpclient.HttpException;
 import org.osaf.caldav4j.methods.DeleteMethod;
 import org.osaf.caldav4j.CalDAV4JException;
-import org.osaf.caldav4j.CalDAVCalendarCollection;
 import org.osaf.caldav4j.CaldavCredential;
 import org.osaf.caldav4j.ResourceNotFoundException;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;

@@ -54,7 +54,7 @@ public class NewPropFindTest extends BaseTestCase{
         DavPropertyNameSet props = new DavPropertyNameSet();
         props.add(DavPropertyName.DISPLAYNAME);
 
-        NewPropFindMethod p = new NewPropFindMethod(fixture.getCollectionPath(), props, DavConstants.DEPTH_0);
+        PropFindMethod p = new PropFindMethod(fixture.getCollectionPath(), props, DavConstants.DEPTH_0);
 
         http.executeMethod(hostConfig, p);
         log.info(p.getStatusLine());
@@ -75,7 +75,7 @@ public class NewPropFindTest extends BaseTestCase{
         props.add(CalDAVConstants.DAV_ACL, CalDAVConstants.NAMESPACE_WEBDAV);
 
 
-        NewPropFindMethod p = new NewPropFindMethod(collectionPath, props, DavConstants.DEPTH_0);
+        PropFindMethod p = new PropFindMethod(collectionPath, props, DavConstants.DEPTH_0);
 
         http.executeMethod(hostConfig, p);
         log.info(p.getStatusLine());
@@ -111,6 +111,4 @@ public class NewPropFindTest extends BaseTestCase{
         log.info(xmlString);
         return xmlString;
     }
-
-
 }

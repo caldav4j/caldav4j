@@ -34,7 +34,7 @@ import org.osaf.caldav4j.dialect.CalDavDialect;
 import org.osaf.caldav4j.dialect.ChandlerCalDavDialect;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
-import org.osaf.caldav4j.methods.CalendarCalDAVReportMethod;
+import org.osaf.caldav4j.methods.CalDAVReportMethod;
 import org.osaf.caldav4j.model.request.FreeBusyQuery;
 import org.osaf.caldav4j.model.request.TimeRange;
 import org.osaf.caldav4j.support.CalendarBuilder;
@@ -102,7 +102,7 @@ public class FreeBusyQueryFunctionalTest
 	@Test
 	public void freeBusyQueryReportWithEmptyCalendar() throws Exception
 	{
-		CalendarCalDAVReportMethod method = createFreeBusyQueryMethod("", "20000101T000000Z", "20000201T000000Z");
+		CalDAVReportMethod method = createFreeBusyQueryMethod("", "20000101T000000Z", "20000201T000000Z");
 		
 		Calendar expected = createFreeBusyCalendar("20000101T000000Z", "20000201T000000Z", null);
 
@@ -116,7 +116,7 @@ public class FreeBusyQueryFunctionalTest
 	{
 		fixture.putEvent("a.ics", createEvent("a","20000107T000000Z", "P1D", "a"));
 		
-		CalendarCalDAVReportMethod method = createFreeBusyQueryMethod("", "20000101T000000Z", "20000201T000000Z");
+		CalDAVReportMethod method = createFreeBusyQueryMethod("", "20000101T000000Z", "20000201T000000Z");
 		
 		Calendar expected = createFreeBusyCalendar("20000101T000000Z", "20000201T000000Z",
 			"20000107T000000Z/20000108T000000Z");
@@ -136,15 +136,11 @@ public class FreeBusyQueryFunctionalTest
 		return  e;
 	}
 	
-	private CalendarCalDAVReportMethod createFreeBusyQueryMethod(String relativePath, String rangeStart,
-		String rangeEnd) throws ParseException
-	{
-		CalendarCalDAVReportMethod method = new CalDAV4JMethodFactory().createCalendarCalDAVReportMethod();
-		method.setPath(relativePath);
-		
+	private CalDAVReportMethod createFreeBusyQueryMethod(String relativePath, String rangeStart,
+		String rangeEnd) throws ParseException, IOException {
 		FreeBusyQuery query = new FreeBusyQuery();
 		query.setTimeRange(new TimeRange(new DateTime(rangeStart), new DateTime(rangeEnd)));
-		method.setReportRequest(query);
+		CalDAVReportMethod method = new CalDAV4JMethodFactory().createCalDAVReportMethod(relativePath, query);
 		
 		return method;
 	}

@@ -119,10 +119,6 @@ public class TicketRequest extends OutputsDOMBase {
 		return CalDAVConstants.ELEM_TICKETINFO;
 	}
 
-	protected String getNamespaceQualifier() {
-		return CalDAVConstants.NS_QUAL_TICKET;
-	}
-
 	protected Namespace getNamespace() {
 		return CalDAVConstants.NAMESPACE_XYTHOS;
 	}

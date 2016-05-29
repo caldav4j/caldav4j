@@ -18,7 +18,7 @@ package org.osaf.caldav4j.support;
 import net.fortuna.ical4j.model.Calendar;
 
 import org.apache.commons.httpclient.HttpMethod;
-import org.osaf.caldav4j.methods.CalendarCalDAVReportMethod;
+import org.osaf.caldav4j.methods.CalDAVReportMethod;
 import org.osaf.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
 
 /**
@@ -40,10 +40,10 @@ public final class HttpMethodCallbacks
 			}
 		};
 
-	private static final HttpMethodCallback<Calendar, CalendarCalDAVReportMethod, Exception> CALENDAR_REPORT_CALLBACK =
-		new HttpMethodCallback<Calendar, CalendarCalDAVReportMethod, Exception>()
+	private static final HttpMethodCallback<Calendar, CalDAVReportMethod, Exception> CALENDAR_REPORT_CALLBACK =
+		new HttpMethodCallback<Calendar, CalDAVReportMethod, Exception>()
 		{
-			public Calendar getResponse(CalendarCalDAVReportMethod method) throws Exception
+			public Calendar getResponse(CalDAVReportMethod method) throws Exception
 			{
 				return method.getResponseBodyAsCalendar();
 			}
@@ -63,7 +63,7 @@ public final class HttpMethodCallbacks
 		return NULL_CALLBACK;
 	}
 	
-	public static HttpMethodCallback<Calendar, CalendarCalDAVReportMethod, Exception> calendarReportCallback()
+	public static HttpMethodCallback<Calendar, CalDAVReportMethod, Exception> calendarReportCallback()
 	{
 		return CALENDAR_REPORT_CALLBACK;
 	}
