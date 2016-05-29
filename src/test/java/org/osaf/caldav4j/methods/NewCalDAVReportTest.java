@@ -5,9 +5,9 @@ import net.fortuna.ical4j.model.DateTime;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
+import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.junit.After;
@@ -32,7 +32,6 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.ParseException;
-import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
@@ -109,7 +108,7 @@ public class NewCalDAVReportTest extends BaseTestCase{
     }
 
     @Test
-    public void queryPartialCalendar() throws CalDAV4JException, IOException, TransformerException, ParserConfigurationException, DavException, ParseException {
+    public void queryPartialCalendar() throws CalDAV4JException, IOException, TransformerException, ParserConfigurationException, ParseException {
         String collectionPath = fixture.getCollectionPath();
         Calendar calendar = null;
 
@@ -125,16 +124,16 @@ public class NewCalDAVReportTest extends BaseTestCase{
         calendarQuery.setCalendarDataProp(calendarData);
         calendarQuery.setCompFilter(vcalendar);
         printXml(calendarQuery);
-        NewCalDAVReportMethod calDAVReportMethod = new NewCalDAVReportMethod(collectionPath, calendarQuery);
+        CalDAVReportMethod calDAVReportMethod = new CalDAVReportMethod(collectionPath, calendarQuery);
 
         http.executeMethod(hostConfig, calDAVReportMethod);
         log.info(calDAVReportMethod.getStatusLine());
 
-        Collection<DavProperty> calendars = calDAVReportMethod.getDavProperty(DavPropertyName.create(CalDAVConstants.CALDAV_CALENDAR_DATA, CalDAVConstants.NAMESPACE_CALDAV));
+        DavPropertySet calendars = calDAVReportMethod.getDavProperty(CalDAVConstants.DNAME_CALENDAR_DATA);
 
         for(DavProperty property: calendars)
             printXml(property);
-        assertEquals(2, calendars.size());
+        assertEquals(2, calendars.getContentSize());
     }
 
 
