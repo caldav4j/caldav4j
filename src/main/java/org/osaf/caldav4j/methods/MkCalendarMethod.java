@@ -20,15 +20,16 @@ import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
+import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.*;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,14 +106,15 @@ public class MkCalendarMethod extends DavMethodBase {
         }
         
         Prop prop = new Prop(propertiesToSet);
-        MkCalendar mkCalendar = new MkCalendar("C",CalDAVConstants.NS_QUAL_DAV, prop);
+        MkCalendar mkCalendar = new MkCalendar(prop);
         Document d = null;
         try {
-            d = mkCalendar.createNewDocument(XMLUtils
-                    .getDOMImplementation());
-        } catch (DOMValidationException domve) {
-            throw new RuntimeException(domve);
+            d = DomUtil.createDocument();
+            d.appendChild(mkCalendar.toXml(d));
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
         }
+
         return XMLUtils.toPrettyXML(d).getBytes();
     }
 

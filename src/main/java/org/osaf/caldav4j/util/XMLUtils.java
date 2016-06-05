@@ -20,8 +20,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.apache.jackrabbit.webdav.xml.XmlSerializable;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.response.TicketResponse;
 import org.w3c.dom.DOMImplementation;
@@ -32,6 +30,11 @@ import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 
 public class XMLUtils {
@@ -93,18 +96,26 @@ public class XMLUtils {
 		return s;
 	}
 
-	public static String toPrettyXML(Document document) {
-		StringWriter stringWriter = new StringWriter();
-		OutputFormat outputFormat = new OutputFormat(document, null, true);
-		XMLSerializer xmlSerializer = new XMLSerializer(stringWriter,
-				outputFormat);
-		xmlSerializer.setNamespaces(true);
-		try {
-			xmlSerializer.asDOMSerializer().serialize(document);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return stringWriter.toString();
+    /**
+     * Updated to use Transformer, instead of XmlSerializer because it is deprecated
+     * @param doc
+     * @return
+     */
+	public static String toPrettyXML(Document doc) {
+        DOMSource domSource = new DOMSource(doc);
+        StringWriter writer = new StringWriter();
+        StreamResult result = new StreamResult(writer);
+        try {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.transform(domSource, result);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return writer.toString();
 
 	}
 

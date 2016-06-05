@@ -100,11 +100,9 @@ public class MkTicketMethod extends DavMethodBase {
     protected byte[] generateRequestBody() {
         Document doc = null;
         try {
-            doc = ticketRequest.createNewDocument(XMLUtils
-                    .getDOMImplementation());
+            doc = ticketRequest.createNewDocument();
         } catch (DOMValidationException domve) {
-            log
-                    .error("Error trying to create DOM from MkTicketMethod: ",
+            log.error("Error trying to create DOM from MkTicketMethod: ",
                             domve);
             throw new RuntimeException(domve);
         }
