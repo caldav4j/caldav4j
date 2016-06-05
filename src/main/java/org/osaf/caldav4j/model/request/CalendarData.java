@@ -86,19 +86,6 @@ public class CalendarData extends OutputsDOMBase {
     public CalendarData() {
     }
 
-    /*
-    Compatibility Constructors.
-     */
-
-    public CalendarData(String caldavnamespaceQualifier){
-        this();
-    }
-
-    public CalendarData(String caldavnamespaceQualifier, Integer expandOrLimitRecurrenceSet, Date recurrenceSetStart,
-                        Date recurrenceSetEnd, Comp comp){
-        this(expandOrLimitRecurrenceSet, recurrenceSetStart, recurrenceSetEnd, comp);
-    }
-
     public Comp getComp() {
         return comp;
     }

@@ -46,13 +46,11 @@ public class CompFilter extends OutputsDOMBase {
     private List<PropFilter> propFilters = new ArrayList<PropFilter>();
     private String name = null;
 
-    public CompFilter(String namespacequalifier) {
 
-    }
-
-    public CompFilter(String namespacequal, String name){
+    public CompFilter(String name){
         this.name = name;
     }
+
     public CompFilter(){
 
     }

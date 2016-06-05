@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.osaf.caldav4j.xml.OutputsDOM;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import java.text.ParseException;
@@ -94,8 +93,7 @@ public class FreeBusyQueryTest
 	
 	private static void assertCreateNewDocument(String expected, OutputsDOM output) throws DOMValidationException
 	{
-		DOMImplementation domImplementation = XMLUtils.getDOMImplementation();
-		Document document = output.createNewDocument(domImplementation);
+		Document document = output.createNewDocument();
 		
 		String actual = XMLUtils.toXML(document);
 		

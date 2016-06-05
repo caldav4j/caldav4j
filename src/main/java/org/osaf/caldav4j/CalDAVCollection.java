@@ -39,10 +39,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
+import org.apache.jackrabbit.webdav.client.methods.AclMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.security.AclProperty;
-import org.apache.webdav.lib.Ace;
-import org.apache.webdav.lib.methods.AclMethod;
 import org.osaf.caldav4j.exceptions.BadStatusException;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
@@ -91,7 +90,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	}
 
 	/**
-	 * Creates a new CalDAVCalendar collection with the specified paramters
+	 * Creates a new CalDAVCalendar collection with the specified parameters
 	 * 
 	 * @param path The path to the collection 
 	 * @param hostConfiguration Host information for the CalDAV Server 
@@ -1173,13 +1172,9 @@ propfind, CalDAVConstants.DEPTH_0);
 
 	}
 
-	public void setAces(HttpClient client, Ace[] aces, String path) throws CalDAV4JException{
-		AclMethod method = new AclMethod();
-		method.setPath(getCalendarCollectionRoot() + StringUtils.defaultString(path, ""));	
-
-		for (Ace a: aces) {
-			method.addAce(a);
-		}
+	public void setAces(HttpClient client, AclProperty.Ace[] aces, String path) throws CalDAV4JException, IOException {
+		AclMethod method = new AclMethod(getCalendarCollectionRoot() + StringUtils.defaultString(path, "")
+		, new AclProperty(aces));
 
 		try {
 			client.executeMethod(method);

@@ -18,10 +18,9 @@ package org.osaf.caldav4j.model.request;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -127,43 +126,32 @@ public class TicketRequest extends OutputsDOMBase {
 	 * Creates and returns a Collection of all the TicketRequest's Children
 	 */
 
-	protected Collection<OutputsDOM> getChildren() {
-		ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
+	protected Collection<XmlSerializable> getChildren() {
+		ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
 		if (timeout != null) {
-			SimpleDOMOutputtingObject tempTimeout = new SimpleDOMOutputtingObject(
-					getNamespaceURI(), getNamespaceQualifier(),
-					CalDAVConstants.ELEM_TIMEOUT);
-			tempTimeout.setTextContent(CalDAVConstants.TIMEOUT_UNITS_SECONDS
-					+ timeout.toString());
+			PropProperty<String> tempTimeout = new PropProperty<String>(
+					CalDAVConstants.ELEM_TIMEOUT, CalDAVConstants.TIMEOUT_UNITS_SECONDS
+					+ timeout.toString(), getNamespace());
 			children.add(tempTimeout);
 		}
 		if (visits != null) {
-			SimpleDOMOutputtingObject tempVisits = new SimpleDOMOutputtingObject(
-					getNamespaceURI(), getNamespaceQualifier(),
-					CalDAVConstants.ELEM_VISITS);
-			if (visits == CalDAVConstants.INFINITY) {
-				tempVisits.setTextContent(CalDAVConstants.INFINITY_STRING);
-			}
-
-			else {
-				tempVisits.setTextContent(visits.toString());
-			}
+			PropProperty tempVisits = new PropProperty<String>(CalDAVConstants.ELEM_VISITS,
+                    (visits == CalDAVConstants.INFINITY)? CalDAVConstants.INFINITY_STRING : visits.toString()
+					,getNamespace());
 			children.add(tempVisits);
 		}
 		if (read != false || write != false) {
-			SimpleDOMOutputtingObject tempPrivliges = new SimpleDOMOutputtingObject(
-					CalDAVConstants.NS_DAV, CalDAVConstants.NS_QUAL_DAV,
-					CalDAVConstants.ELEM_PRIVILIGE);
+			PropProperty tempPrivliges = new PropProperty(
+					CalDAVConstants.ELEM_PRIVILIGE, CalDAVConstants.NAMESPACE_WEBDAV);
 			if (read) {
-				tempPrivliges.addChild(new SimpleDOMOutputtingObject(
-						CalDAVConstants.NS_DAV, CalDAVConstants.NS_QUAL_DAV,
-						CalDAVConstants.ELEM_READ));
+				tempPrivliges.addChild(new PropProperty(
+						CalDAVConstants.ELEM_READ, CalDAVConstants.NAMESPACE_WEBDAV));
 			}
 			if (write) {
-				tempPrivliges.addChild(new SimpleDOMOutputtingObject(
-						CalDAVConstants.NS_DAV, CalDAVConstants.NS_QUAL_DAV,
-						CalDAVConstants.ELEM_WRITE));
+				tempPrivliges.addChild(new PropProperty(CalDAVConstants.ELEM_WRITE,
+						CalDAVConstants.NAMESPACE_WEBDAV));
 			}
+
 			children.add(tempPrivliges);
 		}
 		return children;

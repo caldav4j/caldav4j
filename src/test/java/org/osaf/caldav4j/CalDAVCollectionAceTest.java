@@ -6,9 +6,6 @@ package org.osaf.caldav4j;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Ace;
-import org.apache.webdav.lib.Privilege;
-import org.apache.webdav.lib.methods.AclMethod;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,14 +69,6 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		for (Header h : headerList) {
 			log.info(h.getName() + ":" + h.getValue());
 		}
-
-		Privilege privilege = Privilege.WRITE;
-
-
-		Ace ace = new Ace("principal");
-		ace.addPrivilege(privilege);
-		AclMethod aclMethod = new AclMethod("path_to_resource");
-		aclMethod.addAce(ace);
 
 		if (uncachedCollection.allows(fixture.getHttpClient(), "MKCOL", headerList)) {
 			log.info("MKCOL exists");

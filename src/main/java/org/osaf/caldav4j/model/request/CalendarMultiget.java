@@ -16,9 +16,7 @@
 
 package org.osaf.caldav4j.model.request;
 
-import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
-import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
@@ -34,8 +32,8 @@ import java.util.Map;
 /**
  *  @see http://tools.ietf.org/html/rfc4791#section-9.5
  *          <!ELEMENT calendar-multiget ((DAV:allprop |
-                                      DAV:propname |
-                                      DAV:prop)?, DAV:href+)>
+                                         DAV:propname |
+                                         DAV:prop)?, DAV:href+)>
  * [differently from calendar-query...] it takes a list of DAV:href elements,
  * instead of a CALDAV:filter element, to determine which calendar
  * object resources to return.

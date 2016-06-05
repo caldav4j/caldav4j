@@ -23,11 +23,8 @@ import net.fortuna.ical4j.model.Calendar;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
-import org.apache.webdav.lib.BaseProperty;
-import org.apache.webdav.lib.ResponseEntity;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.util.CaldavStatus;
-import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -36,17 +33,13 @@ import java.io.StringReader;
  * @author pventura_at_babel.it changed getCalendar
  *
  */
-public class CalendarDataProperty extends BaseProperty {
+public class CalendarDataProperty {
 
 	public static final String ELEMENT_CALENDAR_DATA = "calendar-data";
 
-	private Calendar calendar = null;
+/*	private Calendar calendar = null;
     private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
 
-
-	public CalendarDataProperty(ResponseEntity response, Element element) {
-		super(response, element);
-	}
     private CalendarBuilder getCalendarBuilderInstance(){
         ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
         CalendarBuilder builder = calendarBuilderThreadLocal.get();
@@ -55,7 +48,7 @@ public class CalendarDataProperty extends BaseProperty {
             calendarBuilderThreadLocal.set(builder);
         }
         return builder;
-    }
+    }*/
 
     public static Calendar getCalendarfromProperty(DavProperty property){
         Calendar calendar = null;
@@ -69,6 +62,11 @@ public class CalendarDataProperty extends BaseProperty {
 
         ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
         CalendarBuilder calendarBuilder = calendarBuilderThreadLocal.get();
+        if (calendarBuilder == null){
+            calendarBuilder = new CalendarBuilder();
+            calendarBuilderThreadLocal.set(calendarBuilder);
+        }
+
         StringReader stringReader = new StringReader(text);
         try {
             calendar = calendarBuilder.build(stringReader);

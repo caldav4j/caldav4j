@@ -45,10 +45,6 @@ public class ParamFilter extends OutputsDOMBase {
     private TextMatch textMatch = null;
     private String name = null;
 
-    public ParamFilter(String caldavNamespaceQualifier) {
-
-    }
-
     public ParamFilter(){
 
     }

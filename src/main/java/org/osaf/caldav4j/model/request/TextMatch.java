@@ -55,13 +55,6 @@ public class TextMatch extends OutputsDOMBase {
     private Boolean caseless = null;
     private Boolean negateCondition = null;
 
-
-    public TextMatch(String caldavNamespaceQualifier, Boolean caseless, Boolean negateCondition,
-                     String collation,
-                     String textToMatch){
-        this(caseless, negateCondition, collation, textToMatch);
-    }
-
     public TextMatch(Boolean caseless, Boolean negateCondition,
     		String collation,
             String textToMatch) {

@@ -278,7 +278,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		Calendar calendar = collection.queryCalendar(fixture.getHttpClient(), Component.VEVENT, newUid, null);
 		assertNotNull(calendar);
 
-		log.info("Delete event with uid" + newUid);
+		log.info("Delete event with uid " + newUid);
 		collection.delete(fixture.getHttpClient(), Component.VEVENT, newUid);
 
 		log.info("Check if event is still on server");

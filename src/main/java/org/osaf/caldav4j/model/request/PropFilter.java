@@ -48,11 +48,11 @@ public class PropFilter extends OutputsDOMBase {
     private TextMatch textMatch = null;
     private List<ParamFilter> paramFilters = new ArrayList<ParamFilter>();
     
-    public PropFilter(String caldavNamespaceQualifier) {
+    public PropFilter() {
 
     }
     
-    public PropFilter(String caldavNamespaceQualifier, String name, 
+    public PropFilter(String name,
             Boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
             Boolean textmatchCaseless, boolean negateCondition,
             String textMatchCollation, String textMatchString, List<ParamFilter> paramFilters){
@@ -75,7 +75,6 @@ public class PropFilter extends OutputsDOMBase {
     
     /**
      * @deprecated The Full constructor should be used
-     * @param caldavNamespaceQualifier
      * @param name
      * @param isDefined
      * @param timeRangeStart
@@ -84,7 +83,7 @@ public class PropFilter extends OutputsDOMBase {
      * @param textMatchString
      * @param paramFilters
      */
-    public PropFilter(String caldavNamespaceQualifier, String name, 
+    public PropFilter(String name,
             boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
             Boolean textmatchCaseless, String textMatchString, List<ParamFilter> paramFilters){
 

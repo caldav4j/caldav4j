@@ -57,6 +57,13 @@ public class Comp extends OutputsDOMBase {
     private boolean allProp = false;
     private String name = null;
 
+    public Comp() {
+
+    }
+
+    public Comp(String name){
+        this(name, false, false);
+    }
 
     public Comp(String name, boolean allComp,
                 boolean allProp, List<Comp> comps, List<CalDAVProp> props) {
@@ -84,23 +91,6 @@ public class Comp extends OutputsDOMBase {
         this.name = name;
         this.allComp = allComp;
         this.allProp = allProp;
-    }
-
-    public Comp() {
-
-    }
-
-    /*
-    Compatibility Constructors
-     */
-
-    public Comp(String name){
-        this(name, false, false);
-    }
-
-    public Comp(String caldavNamespaceQualifier, String name, boolean allComp,
-                boolean allProp, List<Comp> comps, List<CalDAVProp> props) {
-            this(name, allComp, allProp, comps, props);
     }
 
     public boolean isAllComp() {

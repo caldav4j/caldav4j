@@ -7,18 +7,18 @@ import net.fortuna.ical4j.model.parameter.Value;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Property;
-import org.apache.webdav.lib.PropertyName;
-import org.apache.webdav.lib.methods.PropFindMethod;
-import org.apache.webdav.lib.methods.XMLResponseMethodBase.Response;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
+import org.apache.jackrabbit.webdav.property.DavProperty;
+import org.apache.jackrabbit.webdav.property.DavPropertyName;
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
+import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 import org.osaf.caldav4j.methods.HttpClient;
-
-import java.util.Enumeration;
-import java.util.Vector;
+import org.osaf.caldav4j.methods.PropFindMethod;
+import org.osaf.caldav4j.util.CaldavStatus;
 
 public class FunTest extends BaseTestCase {
 	public FunTest() {
@@ -46,29 +46,24 @@ public class FunTest extends BaseTestCase {
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
 
-		PropFindMethod propFindMethod = new PropFindMethod();
-		PropertyName propName = new PropertyName(CalDAVConstants.NS_DAV, "resourcetype");
-		propFindMethod.setDepth(CalDAVConstants.DEPTH_INFINITY);
-		propFindMethod.setPath(caldavCredential.home + "collection_changeme/");
-		propFindMethod.setType(PropFindMethod.BY_NAME);
-		Vector<PropertyName> v = new Vector<PropertyName>();
-		v.add(propName);
-		propFindMethod.setPropertyNames(v.elements());
-		http.executeMethod(hostConfig, propFindMethod);
-		Enumeration<Response> e = propFindMethod.getResponses();
-		while (e.hasMoreElements()){
-			Response response = (Response) e.nextElement();
-			Enumeration<Property> eProp = response.getProperties();
-			while (eProp.hasMoreElements()){
-				Property property = (Property) eProp.nextElement();
-				String nodeName = property.getElement().getNodeName();
-				String localName = property.getElement().getLocalName();
-				String tagName = property.getElement().getTagName();
-				String namespaceURI = property.getElement().getNamespaceURI();
-				log.info("nodename: " + nodeName);
-			}
+		DavPropertyNameSet set = new DavPropertyNameSet();
+        DavPropertyName resourcetype= DavPropertyName.create("resourcetype");
+		set.add(resourcetype);
+		PropFindMethod propFindMethod = new PropFindMethod(fixture.getCollectionPath(), set,
+				CalDAVConstants.DEPTH_INFINITY);
 
-		}
+		http.executeMethod(hostConfig, propFindMethod);
+		MultiStatusResponse[] e = propFindMethod.getResponseBodyAsMultiStatusResponse();
+
+        for(MultiStatusResponse response : e){
+            DavPropertySet properties = response.getProperties(CaldavStatus.SC_OK);
+            log.info("HREF: " + response.getHref());
+            for(DavProperty property: properties) {
+                String nodeName = property.getName().toString();
+                log.info("nodename: " + nodeName + "\n"
+                        + "value: " + property.getValue());
+            }
+        }
 	}
 
 	public static void main (String args[]){

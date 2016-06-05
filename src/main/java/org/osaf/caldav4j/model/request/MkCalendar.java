@@ -36,10 +36,6 @@ public class MkCalendar extends OutputsDOMBase{
     public static final String SET_ELEMENT_NAME = "set";
 
     private Prop prop = null;
-    
-    public MkCalendar(String caldavNamespaceQualifier, String webdavNamespaceQualifier, Prop prop){
-        this(prop);
-    }
 
     public MkCalendar(Prop prop){
         this.prop = prop;

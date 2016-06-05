@@ -18,7 +18,7 @@ public class ParamFilterTest extends BaseTestCase {
 	
 	@Test
         public void testSimpleConstructor() {
-                ParamFilter p = new ParamFilter("C");
+                ParamFilter p = new ParamFilter();
                 try {
                         //This won't work because name will be null
                         p.validate();
@@ -29,7 +29,7 @@ public class ParamFilterTest extends BaseTestCase {
         }
 	@Test
         public void testName() {
-                ParamFilter p = new ParamFilter("C");
+                ParamFilter p = new ParamFilter();
                 p.setName("newname");
                 assertEquals(p.getName(), "newname");
                 try {
@@ -43,7 +43,7 @@ public class ParamFilterTest extends BaseTestCase {
         }
 	@Test
         public void testDefined() {
-            ParamFilter p = new ParamFilter("C");
+            ParamFilter p = new ParamFilter();
             p.setName("testDefined");
             assertEquals(p.getName(), "testDefined");
             p.setDefined(true);
@@ -58,7 +58,7 @@ public class ParamFilterTest extends BaseTestCase {
     }	
         @Test
         public void testTextMatch() {
-            ParamFilter p = new ParamFilter("C");
+            ParamFilter p = new ParamFilter();
             p.setName("testDefined");
             assertEquals(p.getName(), "testDefined");
             p.setTextMatch(new TextMatch(null,null,null,"testTextMatch"));

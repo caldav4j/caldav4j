@@ -26,7 +26,6 @@ import org.osaf.caldav4j.util.UrlUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	
@@ -270,7 +269,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	public boolean allows(HttpClient httpClient, String action, List<Header> hList)
 			throws CalDAV4JException {		
 		for (Header h : hList) {
-			if ("Allow".equals(h.getName()) && (h.getValue() != null) && Pattern.compile("\\b"+action+"\\b").matcher(h.getValue()).find()) {
+			if ("Allow".equals(h.getName()) && (h.getValue() != null) && h.getValue().contains(action)) {
 				return true;
 			}
 		}

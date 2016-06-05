@@ -1,30 +1,24 @@
 package org.osaf.caldav4j.util;
 
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.DateTime;
+import org.apache.commons.lang.StringUtils;
+import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
+import org.osaf.caldav4j.model.request.*;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.Date;
-import net.fortuna.ical4j.model.DateTime;
-
-import org.apache.commons.lang.StringUtils;
-import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
-import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.model.request.CalDAVProp;
-import org.osaf.caldav4j.model.request.CalendarData;
-import org.osaf.caldav4j.model.request.CalendarQuery;
-import org.osaf.caldav4j.model.request.Comp;
-import org.osaf.caldav4j.model.request.CompFilter;
-import org.osaf.caldav4j.model.request.PropFilter;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
 
 
 
@@ -58,10 +52,7 @@ import org.w3c.dom.Document;
  * @since 0.5
  * @experimental this class is experimental
  */
-public class GenerateQuery implements CalDAVConstants  {
-	
-	// constants
-	private static final String caldavNameSpaceQualifier = NS_QUAL_CALDAV;
+public class GenerateQuery  {
 	
 	// component attributes
 	String requestedComponent = null; // VEVENT, VTODO
@@ -91,8 +82,8 @@ public class GenerateQuery implements CalDAVConstants  {
 	/**
 	 * Create a GenerateQuery object with the given parameters
 	 * NB: DON'T use spaces in comp and filter unless you REALLY need spaces
-     * @param comp COMPONENT : PROP1,PROP2,..,PROPn
-	 * @param filter COMPONENT : PROP1==VALUE1,PROP2!=VALUE2
+     * @param component COMPONENT : PROP1,PROP2,..,PROPn
+	 * @param filterComponent COMPONENT : PROP1==VALUE1,PROP2!=VALUE2
 	 * @throws CalDAV4JException 
 	 */
 	public GenerateQuery(String component, String filterComponent) 
@@ -302,7 +293,7 @@ public class GenerateQuery implements CalDAVConstants  {
 						Component.VALARM, Component.VEVENT, Component.VFREEBUSY, Component.VJOURNAL, Component.VTIMEZONE, Component.VTODO, Component.VVENUE }); 
 				
 				if (! componentList.contains(name)) {
-					pf.add(new PropFilter(NS_QUAL_CALDAV, name, isDefined,
+					pf.add(new PropFilter(name, isDefined,
 							timeRangeStart, timeRangeEnd, 
 							isTextmatchcaseless, negateCondition, this.collation, textmatchString,  null));			
 				} else {
@@ -325,12 +316,12 @@ public class GenerateQuery implements CalDAVConstants  {
 			throws CalDAV4JException {
 		
 		// search for VCALENDAR matching...
-		CompFilter vCalendarCompFilter = new CompFilter(NS_QUAL_CALDAV);
+		CompFilter vCalendarCompFilter = new CompFilter();
 		vCalendarCompFilter.setName(Calendar.VCALENDAR);
 
 		// parse filterComponent
 		if (this.filterComponent != null ) {
-			CompFilter vEventCompFilter = new CompFilter(NS_QUAL_CALDAV, this.filterComponent,
+			CompFilter vEventCompFilter = new CompFilter(this.filterComponent,
 					false, timeRangeStart, timeRangeEnd,												/// isDefined, dateStart, dateEnd
 					null,getPropFilters().size()==0 ? null : getPropFilters());
 			try {
@@ -355,7 +346,6 @@ public class GenerateQuery implements CalDAVConstants  {
 	/**
 	 * this should parse QueryGenerator attributes
 	 * and create the CalendarQuery
-	 * @param recurrenceSetStart
 	 * @throws CalDAV4JException
 	 * @throws ParseException 
 	 */
@@ -392,8 +382,7 @@ public class GenerateQuery implements CalDAVConstants  {
     public String prettyPrint() {
 		//query.validate();
 	    try {
-	    	Document doc = generate().createNewDocument(XMLUtils
-	                .getDOMImplementation());
+	    	Document doc = generate().createNewDocument();
 			return XMLUtils.toPrettyXML(doc);
 	    	
 	    } catch (DOMValidationException domve) {
@@ -480,8 +469,7 @@ public class GenerateQuery implements CalDAVConstants  {
 	{	
 				try {
 					query.validate();
-					Document doc = query.createNewDocument(XMLUtils
-					        .getDOMImplementation());
+					Document doc = query.createNewDocument();
 					return XMLUtils.toPrettyXML(doc);
 
 				} catch (DOMException e) {

@@ -45,8 +45,7 @@ public class GenerateQueryTest extends BaseTestCase {
     private String printQuery(CalendarQuery query) {			
         try {
     		query.validate();
-        	Document doc = query.createNewDocument(XMLUtils
-                    .getDOMImplementation());
+        	Document doc = query.createNewDocument();
 			return XMLUtils.toPrettyXML(doc);
 
         } catch (DOMValidationException domve) {
@@ -110,7 +109,7 @@ public class GenerateQueryTest extends BaseTestCase {
 			Comp compVtimezone = new Comp();
 			compVtimezone.setName(Component.VTIMEZONE);
 			query.getCalendarDataProp().getComp().getComps().add(compVtimezone);
-			log.info("no calendar-data:\n" + printQuery(query));
+			log.info("calendar-data with VTIMEZONE:\n" + printQuery(query));
 			
 			// now remove calendar data
 			gq.setNoCalendarData(true);			
@@ -269,7 +268,7 @@ public void testDateTime() throws ParseException {
 			 * compose 
 			 * <param-filter name="PARTSTAT"><text-match>NEEDS-ACTION</text-match></param-filter>
 			 */
-			ParamFilter paramSentBy = new ParamFilter(CalDAVConstants.NS_QUAL_CALDAV);
+			ParamFilter paramSentBy = new ParamFilter();
 			paramSentBy.setName("PARTSTAT");
 			paramSentBy.setTextMatch(new TextMatch(null,null,null, "NEEDS-ACTION"));
 

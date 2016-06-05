@@ -21,8 +21,6 @@ import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -55,43 +53,28 @@ public abstract class OutputsDOMBase implements OutputsDOM{
     public String getQualifiedName(){
         return getNamespaceQualifier() + ":" + getElementName();
     }
-    
-//    public Element outputDOM(Document document) throws DOMValidationException{
-//        Element e = document.createElementNS(getNamespaceURI(),
-//                getQualifiedName());
-//
-//        fillElement(e);
-//        return e;
-//    }
 
-    
-    public Document createNewDocument(DOMImplementation domImplementation)
-            throws DOMException, DOMValidationException {
-        validate();
-
-        Document d = domImplementation.createDocument(getNamespaceURI(),
-                getQualifiedName(), null);
-
-        Element root = (Element) d.getFirstChild();
-
-        fillElement(root, d);
-
-        return d;
-
+    public Document createNewDocument() throws DOMValidationException {
+        try {
+            validate();
+            Document d = DomUtil.createDocument();
+            Element root = toXml(d);
+            d.appendChild(root);
+            return d;
+        } catch (Exception e) {
+            log.error("Error creating Document.");
+            throw new DOMValidationException("Error creating Document.");
+        }
     }
 
     public Element toXml(Document document) {
+        Element root = null;
         try {
             validate();
-        } catch (DOMValidationException e) {
-            e.printStackTrace();
-        }
-
-        Element root = DomUtil.createElement(document, getElementName(), getNamespace());
-
-        try {
+            root = DomUtil.createElement(document, getElementName(), getNamespace());
             fillElement(root, document);
         } catch (DOMValidationException e) {
+            log.error("Error creating element. Validation failed.");
             e.printStackTrace();
         }
 

@@ -165,10 +165,10 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
      *         from the Value of the property.
      */
 
-    public static DavPropertySet getChildrenfromValue(DavProperty property) {
+    public static Collection<DavProperty> getChildrenfromValue(DavProperty property) {
 
+        Collection<DavProperty> coll = new ArrayList<DavProperty>();
         if(property != null) {
-            DavPropertySet coll = new DavPropertySet();
 
             if (property.getValue() instanceof DavProperty) {
                 coll.add((DavProperty) property.getValue());
@@ -189,11 +189,9 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
                     }
                 }
             }
-
-            return (coll.isEmpty()) ? null : coll;
         }
 
-        return null;
+        return coll;
     }
 
     protected void fillElement(Element e, Document document) {

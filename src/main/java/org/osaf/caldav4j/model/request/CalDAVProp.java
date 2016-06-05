@@ -64,21 +64,6 @@ public class CalDAVProp extends OutputsDOMBase {
         this(name, false, false);
     }
 
-    /*
-    Compatibility Constructors.
-     */
-    public CalDAVProp(String caldavNamespaceQualifier, String attrName, String name, boolean novalue, boolean attrNoValueEnabled){
-        this(name, novalue, attrNoValueEnabled);
-    }
-
-    public CalDAVProp(String caldavNamespaceQualifier, String name){
-        this(name);
-    }
-
-    public CalDAVProp(String caldavNamespaceQualifier, String name, boolean novalue){
-        this(name, novalue);
-    }
-
     protected String getElementName() {
         return ELEMENT_NAME;
     }
