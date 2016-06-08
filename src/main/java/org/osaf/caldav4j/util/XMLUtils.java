@@ -22,14 +22,11 @@ import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.response.TicketResponse;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.bootstrap.DOMImplementationRegistry;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -40,30 +37,6 @@ import java.io.StringWriter;
 public class XMLUtils {
 	private static final Log log = LogFactory.getLog(XMLUtils.class);
 
-	private static DOMImplementation implementation = null;
-
-	static {
-		try {
-			DOMImplementationRegistry registry = DOMImplementationRegistry
-			.newInstance();
-			implementation = registry.getDOMImplementation("XML 3.0");
-			if (implementation == null) {
-				log.error("Could not instantiate a DOMImplementation! Make sure you have "
-						+ " a version of Xerces 2.7.0 or greater or a DOM impl that "
-						+ " implements DOM 3.0");
-				throw new RuntimeException(
-				"Could not instantiate a DOMImplementation!");
-			}
-		} catch (Exception e) {
-			log
-			.error("Could not instantiate a DOMImplementation! Make sure you have "
-					+ " a version of Xerces 2.7.0 or greater or a DOM impl that "
-					+ " implements DOM 3.0");
-			throw new RuntimeException(
-					"Could not instantiate a DOMImplementation!", e);
-		}
-	}
-
 	/**
 	 * Creates a new xml DOM Document using a DOM 3.0 DOM Implementation
 	 * 
@@ -73,12 +46,8 @@ public class XMLUtils {
 	 *            the qualified name of the root element
 	 * @return a new document
 	 */
-	public static Document createNewDocument(String namespaceURI,
-			String qualifiedName) {
-
-		Document document = implementation.createDocument(namespaceURI,
-				qualifiedName, null);
-		return document;
+	public static Document createNewDocument() throws ParserConfigurationException {
+		return  DomUtil.createDocument();
 	}
 
 	/**
@@ -89,11 +58,13 @@ public class XMLUtils {
 	 * @return the Document serialized to XML
 	 */
 	public static String toXML(Document document) {
-		DOMImplementationLS domLS = (DOMImplementationLS) implementation;
-		LSSerializer serializer = domLS.createLSSerializer();
-		String s = serializer.writeToString(document);
-
-		return s;
+		StringWriter writer = new StringWriter();
+		try {
+			DomUtil.transformDocument(document, writer);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return writer.toString();
 	}
 
     /**
@@ -116,11 +87,6 @@ public class XMLUtils {
             throw new RuntimeException(e);
         }
         return writer.toString();
-
-	}
-
-	public static DOMImplementation getDOMImplementation() {
-		return implementation;
 	}
 
 	/**

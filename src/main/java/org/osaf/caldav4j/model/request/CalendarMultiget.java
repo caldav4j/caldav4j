@@ -52,7 +52,7 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
     private boolean allProp = false;
     private boolean propName = false;
     private CalendarData calendarDataProp = null;
-    private List<String> hrefs = null;
+    private List<String> hrefs = new ArrayList<String>();
     private Prop properties = new Prop();
 
     public CalendarMultiget() {
@@ -108,7 +108,7 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
         }
         
         // remove double "//" from paths
-        if ( hrefs != null ) { 
+        if ( hrefs != null && !hrefs.isEmpty()) {
 	        for (String uri : hrefs) {
 	        	DavHref href = 
 	        		new DavHref(UrlUtils.removeDoubleSlashes(uri));
@@ -147,6 +147,10 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
         this.properties.addChildren(properties);
     }
 
+    public void setProperties(DavPropertyNameSet properties) {
+        this.properties.addChildren(properties.getContent());
+    }
+
     public void addProperty(XmlSerializable propProperty){
         properties.add(propProperty);
     }
@@ -169,7 +173,7 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
     }
 
     public void setHrefs(List<String> l) {
-    	hrefs = l;
+    	hrefs.addAll(l);
     }
     
     public List<String> getHrefs() {
@@ -177,7 +181,6 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
     }
 
     public void addHref(String name) {
-        if(getHrefs() == null) hrefs = new ArrayList<String>();
         this.hrefs.add(name);
     }
 

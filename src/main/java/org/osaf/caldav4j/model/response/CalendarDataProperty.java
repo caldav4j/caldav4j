@@ -51,6 +51,8 @@ public class CalendarDataProperty {
     }*/
 
     public static Calendar getCalendarfromProperty(DavProperty property){
+        if(property == null) return null;
+
         Calendar calendar = null;
         String text = property.getValue().toString();
 
@@ -75,7 +77,7 @@ public class CalendarDataProperty {
         } catch (ParserException e) {
             e.printStackTrace();
         }
-
+        calendarBuilderThreadLocal.remove();
         return calendar;
     }
 
@@ -85,6 +87,11 @@ public class CalendarDataProperty {
 
 
     public static String getEtagfromResponse(MultiStatusResponse response){
-        return response.getProperties(CaldavStatus.SC_OK).get(DavPropertyName.GETETAG).getValue().toString();
+        return getEtagfromProperty(response.getProperties(CaldavStatus.SC_OK).get(DavPropertyName.GETETAG));
+    }
+
+    public static String getEtagfromProperty(DavProperty property){
+        if(property == null || !property.getName().equals(DavPropertyName.GETETAG)) return null;
+        return property.getValue().toString().replaceAll("^\"|\"$", "");
     }
 }

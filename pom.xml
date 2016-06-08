@@ -24,6 +24,9 @@
   <artifactId>caldav4j</artifactId>
   <version>0.8-SNAPSHOT</version>
   <packaging>jar</packaging>
+    <properties>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+    </properties>
   <dependencies>
       <dependency>
           <groupId>org.slf4j</groupId>
@@ -86,11 +89,6 @@
       <version>3.1</version>
     </dependency>
     <dependency>
-      <groupId>castor</groupId>
-      <artifactId>castor</artifactId>
-      <version>0.9.9.1</version>
-    </dependency>
-    <dependency>
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache</artifactId>
       <version>2.10.2</version>
@@ -105,22 +103,12 @@
       <artifactId>xml-apis</artifactId>
       <version>1.3.02</version>
     </dependency>
-    <dependency>
-      <groupId>xalan</groupId>
-      <artifactId>serializer</artifactId>
-      <version>2.7.2</version>
-    </dependency>
-    <dependency>
-      <groupId>xalan</groupId>
-      <artifactId>xalan</artifactId>
-      <version>2.7.2</version>
-    </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.4</version>
-            <scope>test</scope>
-        </dependency>
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>4.4</version>
+          <scope>test</scope>
+      </dependency>
     </dependencies>
   <description>The Caldav Java Library</description>
   <url>https://github.com/caldav4j/caldav4j.git</url>

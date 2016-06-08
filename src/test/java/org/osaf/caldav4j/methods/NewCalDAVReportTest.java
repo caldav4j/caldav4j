@@ -42,6 +42,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by emanon on 5/18/16.
  */
+
 public class NewCalDAVReportTest extends BaseTestCase{
 
     private static final Log log = LogFactory.getLog(NewCalDAVReportTest.class);
@@ -51,9 +52,6 @@ public class NewCalDAVReportTest extends BaseTestCase{
     public void setUp() throws Exception {
         super.setUp();
         CaldavFixtureHarness.provisionGoogleEvents(fixture);
-
-        myCache = CaldavFixtureHarness.createSimpleCache();
-        collection.setCache(myCache);
     }
 
     @After

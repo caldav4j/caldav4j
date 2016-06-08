@@ -20,10 +20,7 @@ package org.osaf.caldav4j.methods;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
-import org.apache.commons.httpclient.HeaderElement;
-import org.apache.commons.httpclient.HttpConnection;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.DavException;
@@ -129,14 +126,19 @@ public class CalDAVReportMethod extends DavMethodBase {
     @Override
     protected void processResponseHeaders(HttpState state, HttpConnection conn) {
         super.processResponseHeaders(state, conn);
-        HeaderElement[] elements = getResponseHeader(CalDAVConstants.HEADER_CONTENT_TYPE).getElements();
-        for (HeaderElement element : elements) {
-            if (element.getName().equals(CalDAVConstants.CONTENT_TYPE_CALENDAR)) {
-                isCalendarResponse = true;
-                log.info("Response Content-Type: text/calendar");
-            } else if (element.getName().equals(CalDAVConstants.CONTENT_TYPE_TEXT_XML)) {
-                log.info("Response Content-Type: text/xml");
-            } else log.warn("Response Content-Type is not text/xml or text/calendar");
+        Header header = getResponseHeader(CalDAVConstants.HEADER_CONTENT_TYPE);
+
+        //Note: Sometimes this does not happen. To take that into account.
+        if(header != null) {
+            HeaderElement[] elements = header.getElements();
+            for (HeaderElement element : elements) {
+                if (element.getName().equals(CalDAVConstants.CONTENT_TYPE_CALENDAR)) {
+                    isCalendarResponse = true;
+                    log.info("Response Content-Type: text/calendar");
+                } else if (element.getName().equals(CalDAVConstants.CONTENT_TYPE_TEXT_XML)) {
+                    log.info("Response Content-Type: text/xml");
+                } else log.warn("Response Content-Type is not text/xml or text/calendar");
+            }
         }
     }
 

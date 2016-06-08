@@ -25,7 +25,6 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -143,7 +142,11 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
         return properties;
     }
 
-    public void setProperties(List<PropProperty> properties) {
+    public void setProperties(Collection<PropProperty> properties) {
+        this.properties.addChildren(properties);
+    }
+
+    public void setProperties(DavPropertyNameSet properties) {
         this.properties.addChildren(properties);
     }
 

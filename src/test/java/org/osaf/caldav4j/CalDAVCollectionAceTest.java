@@ -44,8 +44,6 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 
 		CaldavFixtureHarness.provisionGoogleEvents(fixture);
 
-		myCache = CaldavFixtureHarness.createSimpleCache();
-
 		//TODO: Not Entirely sure, why uncachedCollection is required
 		uncachedCollection = CaldavFixtureHarness.createCollectionFromFixture(fixture);
 		uncachedCollection.disableSimpleCache();
