@@ -42,7 +42,7 @@ public class FreeBusyQueryTest
 	{
 		FreeBusyQuery query = createFreeBusyQuery("20000101T000000Z", "20000201T000000Z");
 
-		String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
+		String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<C:free-busy-query xmlns:C=\"urn:ietf:params:xml:ns:caldav\">"
 				+ "<C:time-range end=\"20000201T000000Z\" start=\"20000101T000000Z\"/>"
 			+ "</C:free-busy-query>";
