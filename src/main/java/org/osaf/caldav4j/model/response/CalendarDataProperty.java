@@ -18,7 +18,6 @@
 package org.osaf.caldav4j.model.response;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
@@ -26,7 +25,6 @@ import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.util.CaldavStatus;
 
-import java.io.IOException;
 import java.io.StringReader;
 /**
  * 
@@ -36,6 +34,13 @@ import java.io.StringReader;
 public class CalendarDataProperty {
 
 	public static final String ELEMENT_CALENDAR_DATA = "calendar-data";
+
+    private static ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>(){
+        @Override
+        protected CalendarBuilder initialValue(){
+            return new CalendarBuilder();
+        }
+    };
 
 /*	private Calendar calendar = null;
     private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
@@ -61,20 +66,12 @@ public class CalendarDataProperty {
         //this fix the problem occurred when lines are breaked only with \n
         text=text.replaceAll("\n","\r\n").replaceAll("\r\r\n", "\r\n");
 
-
-        ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
         CalendarBuilder calendarBuilder = calendarBuilderThreadLocal.get();
-        if (calendarBuilder == null){
-            calendarBuilder = new CalendarBuilder();
-            calendarBuilderThreadLocal.set(calendarBuilder);
-        }
 
         StringReader stringReader = new StringReader(text);
         try {
             calendar = calendarBuilder.build(stringReader);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParserException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         calendarBuilderThreadLocal.remove();
@@ -92,6 +89,6 @@ public class CalendarDataProperty {
 
     public static String getEtagfromProperty(DavProperty property){
         if(property == null || !property.getName().equals(DavPropertyName.GETETAG)) return null;
-        return property.getValue().toString().replaceAll("^\"|\"$", "");
+        return property.getValue().toString();
     }
 }

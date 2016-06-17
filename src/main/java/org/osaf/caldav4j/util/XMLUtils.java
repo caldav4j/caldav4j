@@ -39,11 +39,7 @@ public class XMLUtils {
 
 	/**
 	 * Creates a new xml DOM Document using a DOM 3.0 DOM Implementation
-	 * 
-	 * @param namespaceURI
-	 *            the default XML Namespace for the document
-	 * @param qualifiedName
-	 *            the qualified name of the root element
+	 *
 	 * @return a new document
 	 */
 	public static Document createNewDocument() throws ParserConfigurationException {

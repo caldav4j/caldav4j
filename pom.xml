@@ -68,21 +68,11 @@
        <artifactId>servlet-api</artifactId>
        <version>2.5</version>
      </dependency>
-    <!--dependency>
-      <groupId>servletapi</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.4-20040521</version>
-    </dependency-->
       <dependency>
           <groupId>org.apache.jackrabbit</groupId>
           <artifactId>jackrabbit-webdav</artifactId>
           <version>2.12.1</version>
       </dependency>
-    <dependency>
-      <groupId>com.github.caldav4j</groupId>
-      <artifactId>jakarta-slide-webdavlib</artifactId>
-      <version>2.2pre1-httpclient-3.0</version>
-    </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
@@ -103,12 +93,22 @@
       <artifactId>xml-apis</artifactId>
       <version>1.3.02</version>
     </dependency>
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>4.4</version>
-          <scope>test</scope>
-      </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>serializer</artifactId>
+      <version>2.7.2</version>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.7.2</version>
+    </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.4</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
   <description>The Caldav Java Library</description>
   <url>https://github.com/caldav4j/caldav4j.git</url>
@@ -177,13 +177,6 @@
     	</plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-        <id>project.local</id>
-        <name>Local Repository for jakarta-slide-webdavlib</name>
-        <url>file:${project.basedir}/repo</url>
-    </repository>
-  </repositories>
   <distributionManagement>
       <repository>
           <id>local-m2</id>

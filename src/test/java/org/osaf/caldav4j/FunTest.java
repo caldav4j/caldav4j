@@ -53,7 +53,7 @@ public class FunTest extends BaseTestCase {
 				CalDAVConstants.DEPTH_INFINITY);
 
 		http.executeMethod(hostConfig, propFindMethod);
-		MultiStatusResponse[] e = propFindMethod.getResponseBodyAsMultiStatusResponse();
+		MultiStatusResponse[] e = propFindMethod.getResponseBodyAsMultiStatus().getResponses();
 
         for(MultiStatusResponse response : e){
             DavPropertySet properties = response.getProperties(CaldavStatus.SC_OK);

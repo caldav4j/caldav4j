@@ -12,23 +12,7 @@ import org.apache.jackrabbit.webdav.security.Principal;
 public class AceUtils {
 
 	/**
-	 * Create an ACE given a Principal
-	 * @param p
-	 * @return
-	 */
-/*	public static Ace createAce(Principal p) {
-		Ace a = null;
-		if (p.getPropertyName()!=null) {
-			a = new Ace("property");
-			a.setProperty(p.getPropertyName());
-		} else if (p.isAll()||p.isAuthenticated()||p.isSelf()||p.isUnauthenticated()) {
-			a= new Ace(p.getValue());
-		}
-		return a;
-	}*/
-
-	/**
-	 * Retrieve a Caldav Principal from a slide Ace.
+	 * Retrieve a Caldav Principal from a jackrabbit-webdav Ace.
 	 * If  ace.getprincipal is set to "property", it returns directly the underlying property
 	 * @param ace
 	 * @return

@@ -131,7 +131,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
      */
     public DavProperty getDavProperty(String urlPath, DavPropertyName property) {
         try {
-            MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
+            MultiStatusResponse[] responses = getResponseBodyAsMultiStatus().getResponses();
             if(responses != null && succeeded()) {
                 for (MultiStatusResponse r : responses) {
                     if(r.getHref().equals(urlPath)){
@@ -157,7 +157,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
         Collection<DavProperty> set = new ArrayList<DavProperty>();
 
         try {
-            MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
+            MultiStatusResponse[] responses = getResponseBodyAsMultiStatus().getResponses();
             if(responses != null && succeeded()) {
                 for (MultiStatusResponse r : responses) {
                     DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
@@ -172,21 +172,13 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
     }
 
     /**
-     * Returns the responses as an array of MultiStatusResponses
-     * @return MultiStatusResponse[]
-     */
-    public MultiStatusResponse[] getResponseBodyAsMultiStatusResponse() throws DavException, IOException {
-        return getResponseBodyAsMultiStatus().getResponses();
-    }
-
-    /**
      * Returns the MultiStatusResponse to the corresponding uri.
      * Note: Can be only used once.
      * @param uri
      * @return
      */
     public MultiStatusResponse getResponseBodyAsMultiStatusResponse(String uri) throws IOException, DavException {
-        MultiStatusResponse[] responses = getResponseBodyAsMultiStatusResponse();
+        MultiStatusResponse[] responses = getResponseBodyAsMultiStatus().getResponses();
         for(MultiStatusResponse response: responses)
             if(response.getHref().equals(uri))
                 return response;

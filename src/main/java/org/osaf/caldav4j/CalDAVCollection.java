@@ -903,7 +903,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		}
 
 		try {
-			MultiStatusResponse[] set = reportMethod.getResponseBodyAsMultiStatusResponse();
+			MultiStatusResponse[] set = reportMethod.getResponseBodyAsMultiStatus().getResponses();
 			for(MultiStatusResponse response: set){
 				String etag = CalendarDataProperty.getEtagfromResponse(response);
 
@@ -952,7 +952,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		}
 
 
-        return reportMethod.getResponseBodyAsMultiStatusResponse();
+        return reportMethod.getResponseBodyAsMultiStatus().getResponses();
 	}
 
 	/**
@@ -993,7 +993,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		log.trace("Parsing response.. " );
 		List<CalDAVResource> list = new ArrayList<CalDAVResource>();
 		try {
-			MultiStatusResponse[] responses = reportMethod.getResponseBodyAsMultiStatusResponse();
+			MultiStatusResponse[] responses = reportMethod.getResponseBodyAsMultiStatus().getResponses();
 			for(MultiStatusResponse response: responses){
 				String etag = CalendarDataProperty.getEtagfromResponse(response);
 
@@ -1048,7 +1048,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 		List<Calendar> list = new ArrayList<Calendar>();
 		try {
-			MultiStatusResponse[] e = reportMethod.getResponseBodyAsMultiStatusResponse();
+			MultiStatusResponse[] e = reportMethod.getResponseBodyAsMultiStatus().getResponses();
 
 			for(MultiStatusResponse response: e){
 				CalDAVResource resource = null;
