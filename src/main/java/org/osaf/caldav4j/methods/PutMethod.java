@@ -231,7 +231,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
                 }
                 value = buf.toString();
             }
-            addRequestHeader(name, value);
+            setRequestHeader(name, value);
         }
 
         super.addRequestHeaders(state, conn);
