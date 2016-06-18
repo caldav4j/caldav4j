@@ -213,7 +213,6 @@ public class CalDAVReportMethod extends DavMethodBase {
 
     /**
      * Returns the MultiStatusResponse to the corresponding uri.
-     * Note: Can be only used once.
      * @param uri
      * @return
      */

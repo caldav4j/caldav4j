@@ -173,7 +173,6 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
 
     /**
      * Returns the MultiStatusResponse to the corresponding uri.
-     * Note: Can be only used once.
      * @param uri
      * @return
      */
