@@ -32,7 +32,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@Ignore
 public class CalDAVCollectionTest extends BaseTestCase {
 	public CalDAVCollectionTest() {
 		super();

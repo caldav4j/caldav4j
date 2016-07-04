@@ -202,24 +202,30 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	        httpClient.executeMethod(hostConfiguration, putMethod);
 	        int statusCode = putMethod.getStatusCode();
 	        switch(statusCode) {
-	        case CaldavStatus.SC_NO_CONTENT:
-	        case CaldavStatus.SC_CREATED:
-	        	break;
-	        case CaldavStatus.SC_PRECONDITION_FAILED:
-	            throw new ResourceOutOfDateException("Etag was not matched: "+ etag);
-            default:
-            	throw new BadStatusException(statusCode, putMethod.getName(), path);
-	        }	        
-	    } catch (Exception e){
+                case CaldavStatus.SC_NO_CONTENT:
+                case CaldavStatus.SC_CREATED:
+                    break;
+                case CaldavStatus.SC_PRECONDITION_FAILED:
+                    throw new ResourceOutOfDateException("Etag was not matched: "+ etag);
+                default:
+                    throw new BadStatusException(statusCode, putMethod.getName(), path);
+            }
+
+            Header h = putMethod.getResponseHeader("ETag");
+
+            if (h != null) {
+                String newEtag = h.getValue();
+                cache.putResource(new CalDAVResource(calendar, newEtag, getHref(putMethod.getPath())));
+            }
+	    } catch (ResourceOutOfDateException e){
+            throw e;
+        } catch (BadStatusException e){
+            throw e;
+        } catch (Exception e){
 	        throw new CalDAV4JException("Problem executing put method",e);
-	    }
-	
-	    Header h = putMethod.getResponseHeader("ETag");
-	
-	    if (h != null) {
-	        String newEtag = h.getValue();
-	        cache.putResource(new CalDAVResource(calendar, newEtag, getHref(putMethod.getPath())));
-	    } 	    	
+	    } finally {
+			putMethod.releaseConnection();
+		}
 	}
 
 	/**
