@@ -59,10 +59,10 @@ public class CaldavFixtureHarness implements TestConstants {
 		//initialize cache
 		CacheManager cacheManager = CacheManager.create();
 		EhCacheResourceCache myCache = new EhCacheResourceCache();
-		Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, false, false,
-				600, 300, false, 0);
+		Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, null, false,
+				System.getProperty("java.io.tmpdir"), false, 600, 300, false, 0, null);
 		Cache hrefToResourceCache = new Cache(HREF_TO_RESOURCE_CACHE, 1000,
-				false, false, 600, 300, false, 0);
+				null, false, System.getProperty("java.io.tmpdir"), false, 600, 300, false, 0, null);
 		myCache.setHrefToResourceCache(hrefToResourceCache);
 		myCache.setUidToHrefCache(uidToHrefCache);
 		cacheManager.addCache(uidToHrefCache);

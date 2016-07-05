@@ -26,7 +26,6 @@ import org.osaf.caldav4j.util.UrlUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	
@@ -203,24 +202,30 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	        httpClient.executeMethod(hostConfiguration, putMethod);
 	        int statusCode = putMethod.getStatusCode();
 	        switch(statusCode) {
-	        case CaldavStatus.SC_NO_CONTENT:
-	        case CaldavStatus.SC_CREATED:
-	        	break;
-	        case CaldavStatus.SC_PRECONDITION_FAILED:
-	            throw new ResourceOutOfDateException("Etag was not matched: "+ etag);
-            default:
-            	throw new BadStatusException(statusCode, putMethod.getName(), path);
-	        }	        
-	    } catch (Exception e){
+                case CaldavStatus.SC_NO_CONTENT:
+                case CaldavStatus.SC_CREATED:
+                    break;
+                case CaldavStatus.SC_PRECONDITION_FAILED:
+                    throw new ResourceOutOfDateException("Etag was not matched: "+ etag);
+                default:
+                    throw new BadStatusException(statusCode, putMethod.getName(), path);
+            }
+
+            Header h = putMethod.getResponseHeader("ETag");
+
+            if (h != null) {
+                String newEtag = h.getValue();
+                cache.putResource(new CalDAVResource(calendar, newEtag, getHref(putMethod.getPath())));
+            }
+	    } catch (ResourceOutOfDateException e){
+            throw e;
+        } catch (BadStatusException e){
+            throw e;
+        } catch (Exception e){
 	        throw new CalDAV4JException("Problem executing put method",e);
-	    }
-	
-	    Header h = putMethod.getResponseHeader("ETag");
-	
-	    if (h != null) {
-	        String newEtag = h.getValue();
-	        cache.putResource(new CalDAVResource(calendar, newEtag, getHref(putMethod.getPath())));
-	    } 	    	
+	    } finally {
+			putMethod.releaseConnection();
+		}
 	}
 
 	/**
@@ -233,8 +238,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 		throws CalDAV4JException {
 		List<Header> hList = new ArrayList<Header>();
 		
-		OptionsMethod optMethod = new OptionsMethod();
-		optMethod.setPath(this.calendarCollectionRoot);
+		OptionsMethod optMethod = new OptionsMethod(this.calendarCollectionRoot);
 		optMethod.setRequestHeader(new Header("Host",
 										hostConfiguration.getHost()));
 		
@@ -271,7 +275,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	public boolean allows(HttpClient httpClient, String action, List<Header> hList)
 			throws CalDAV4JException {		
 		for (Header h : hList) {
-			if ("Allow".equals(h.getName()) && (h.getValue() != null) && Pattern.compile("\\b"+action+"\\b").matcher(h.getValue()).find()) {
+			if ("Allow".equals(h.getName()) && (h.getValue() != null) && h.getValue().contains(action)) {
 				return true;
 			}
 		}

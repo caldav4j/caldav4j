@@ -15,14 +15,14 @@
  */
 package org.osaf.caldav4j.model.request;
 
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
+import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.xml.OutputsDOMBase;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-
-import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.xml.OutputsDOM;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
  *
@@ -34,14 +34,10 @@ import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 public class MkCalendar extends OutputsDOMBase{
     public static final String ELEMENT_NAME = "mkcalendar";
     public static final String SET_ELEMENT_NAME = "set";
-    
-    private String caldavNamespaceQualifier = null;
-    private String webdavNamespaceQualifier = null;
+
     private Prop prop = null;
-    
-    public MkCalendar(String caldavNamespaceQualifier, String webdavNamespaceQualifier, Prop prop){
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.webdavNamespaceQualifier = webdavNamespaceQualifier;
+
+    public MkCalendar(Prop prop){
         this.prop = prop;
     }
     
@@ -49,21 +45,14 @@ public class MkCalendar extends OutputsDOMBase{
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
-    }
-
-    protected Collection<OutputsDOM> getChildren() {
-        Collection<OutputsDOM> c  = new ArrayList<OutputsDOM>();
-        SimpleDOMOutputtingObject set = new SimpleDOMOutputtingObject();
+    protected Collection<XmlSerializable> getChildren() {
+        Collection<XmlSerializable> c  = new ArrayList<XmlSerializable>();
+        PropProperty set = new PropProperty(SET_ELEMENT_NAME, CalDAVConstants.NAMESPACE_WEBDAV);
         set.addChild(prop);
-        set.setElementName(SET_ELEMENT_NAME);
-        set.setNamespaceQualifier(webdavNamespaceQualifier);
-        set.setNamespaceURI(CalDAVConstants.NS_DAV);
         c.add(set);
         return c;
     }

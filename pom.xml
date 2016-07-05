@@ -18,12 +18,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<modelVersion>4.0.0</modelVersion> 
+<modelVersion>4.0.0</modelVersion>
  <name>CalDav4j</name>
   <groupId>com.github.caldav4j</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>0.8-SNAPSHOT</version>
+  <version>0.9-SNAPSHOT</version>
   <packaging>jar</packaging>
+    <properties>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+    </properties>
   <dependencies>
       <dependency>
           <groupId>org.slf4j</groupId>
@@ -60,25 +63,20 @@
       <artifactId>log4j</artifactId>
       <version>1.2.12</version>
     </dependency>
-    <!--dependency>
-      <groupId>servletapi</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.4-20040521</version>
-    </dependency-->
-    <dependency>
-      <groupId>com.github.caldav4j</groupId>
-      <artifactId>jakarta-slide-webdavlib</artifactId>
-      <version>2.2pre1-httpclient-3.0</version>
-    </dependency>
+     <dependency>
+       <groupId>javax.servlet</groupId>
+       <artifactId>servlet-api</artifactId>
+       <version>2.5</version>
+     </dependency>
+      <dependency>
+          <groupId>org.apache.jackrabbit</groupId>
+          <artifactId>jackrabbit-webdav</artifactId>
+          <version>2.12.1</version>
+      </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
       <version>3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>castor</groupId>
-      <artifactId>castor</artifactId>
-      <version>0.9.9.1</version>
     </dependency>
     <dependency>
       <groupId>net.sf.ehcache</groupId>
@@ -103,14 +101,14 @@
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>xalan</artifactId>
-      <version>2.7.2</version> 
+      <version>2.7.2</version>
     </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.4</version>
             <scope>test</scope>
-        </dependency>  
+        </dependency>
     </dependencies>
   <description>The Caldav Java Library</description>
   <url>https://github.com/caldav4j/caldav4j.git</url>
@@ -179,13 +177,6 @@
     	</plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-        <id>project.local</id>
-        <name>Local Repository for jackarta-slide-webdavlib</name>
-        <url>file:${project.basedir}/repo</url>
-    </repository>
-  </repositories>
   <distributionManagement>
       <repository>
           <id>local-m2</id>

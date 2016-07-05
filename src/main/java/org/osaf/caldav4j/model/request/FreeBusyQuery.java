@@ -15,14 +15,17 @@
  */
 package org.osaf.caldav4j.model.request;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Writes a CALDAV:free-busy-query REPORT. 
@@ -42,86 +45,90 @@ public class FreeBusyQuery extends OutputsDOMBase implements CalDAVReportRequest
 {
 	// constants --------------------------------------------------------------
 	
-	private static final String ELEMENT_NAME = "free-busy-query";
+	public static final String ELEMENT_NAME = "free-busy-query";
 	
 	// fields -----------------------------------------------------------------
 	
-	private final String caldavNamespaceQualifier;
-	
 	private TimeRange timeRange;
+    private Prop properties = new Prop();
+    private int depth = CalDAVConstants.DEPTH_1;
 	
 	// constructors -----------------------------------------------------------
-	
-	public FreeBusyQuery(String caldavNamespaceQualifier)
+
+    public FreeBusyQuery(){
+
+    }
+
+    public FreeBusyQuery(Prop propertyNames,
+                         TimeRange timeRange)
+    {
+        this.timeRange = timeRange;
+        properties.addChildren(propertyNames);
+    }
+
+	public FreeBusyQuery(DavPropertyNameSet propertyNames,
+						 TimeRange timeRange)
 	{
-		this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+        this.timeRange = timeRange;
+        properties.addChildren(propertyNames);
 	}
+
+    public FreeBusyQuery(Collection<? extends XmlSerializable> propertyNames,
+                         TimeRange timeRange)
+    {
+        this.timeRange = timeRange;
+        properties.addChildren(propertyNames);
+    }
 	
 	// OutputsDOMBase methods -------------------------------------------------
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+
 	protected String getElementName()
 	{
 		return ELEMENT_NAME;
 	}
 	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	protected String getNamespaceQualifier()
+
+	protected Namespace getNamespace()
 	{
-		return caldavNamespaceQualifier;
+		return CalDAVConstants.NAMESPACE_CALDAV;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	protected String getNamespaceURI()
-	{
-		return CalDAVConstants.NS_CALDAV;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+
 	protected Collection<? extends OutputsDOM> getChildren()
 	{
 		return Collections.singleton(timeRange);
 	}
-	
-	/**
+
+    @Override
+    protected Map<String, String> getAttributes() {
+        return null;
+    }
+
+    @Override
+    protected String getTextContent() {
+        return null;
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
-	@Override
-	protected Map<String, String> getAttributes()
-	{
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getTextContent()
-	{
-		return null;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+
 	public void validate() throws DOMValidationException
 	{
 		if (timeRange == null)
 		{
-			throwValidationException("Time range cannot be null");
+			throw new DOMValidationException("Time range cannot be null");
 		}
 		
 		timeRange.validate();
@@ -138,4 +145,14 @@ public class FreeBusyQuery extends OutputsDOMBase implements CalDAVReportRequest
 	{
 		this.timeRange = timeRange;
 	}
+
+    public void addProperty(XmlSerializable propProperty){
+        properties.add(propProperty);
+    }
+
+    public void addProperty(String propertyName, Namespace namespace) {
+        PropProperty propProperty = new PropProperty(propertyName, namespace);
+        properties.add(propProperty);
+    }
+
 }

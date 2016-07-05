@@ -16,19 +16,14 @@
 
 package org.osaf.caldav4j.model.request;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.fortuna.ical4j.model.Date;
-
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
+
+import java.util.*;
 
 /**
  *  <!ELEMENT prop-filter (is-defined | time-range | text-match)?
@@ -45,8 +40,6 @@ public class PropFilter extends OutputsDOMBase {
     public static final String ELEM_IS_DEFINED = "is-defined";
     public static final String ELEM_IS_NOT_DEFINED = "is-not-defined";
     public static final String ATTR_NAME = "name";
-    
-    private String caldavNamespaceQualifier = null;
 
     private String name = null;
     private Boolean isDefined = null;
@@ -55,26 +48,24 @@ public class PropFilter extends OutputsDOMBase {
     private TextMatch textMatch = null;
     private List<ParamFilter> paramFilters = new ArrayList<ParamFilter>();
     
-    public PropFilter(String caldavNamespaceQualifier) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+    public PropFilter() {
+
     }
     
-    public PropFilter(String caldavNamespaceQualifier, String name, 
+    public PropFilter(String name,
             Boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
             Boolean textmatchCaseless, boolean negateCondition,
             String textMatchCollation, String textMatchString, List<ParamFilter> paramFilters){
-    	
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
         this.name = name;
 
         
         if (isDefined != null) {
             this.isDefined = isDefined;
         } else if (timeRangeStart != null || timeRangeEnd != null){
-            this.timeRange = new TimeRange(caldavNamespaceQualifier, timeRangeStart, timeRangeEnd);
+            this.timeRange = new TimeRange(timeRangeStart, timeRangeEnd);
         } else if (textMatchString != null){
-            this.textMatch = new TextMatch(caldavNamespaceQualifier,
-            		textmatchCaseless, negateCondition, textMatchCollation, 
+            this.textMatch = new TextMatch(textmatchCaseless, negateCondition, textMatchCollation,
             		textMatchString);
         }
         if (paramFilters != null){
@@ -84,7 +75,6 @@ public class PropFilter extends OutputsDOMBase {
     
     /**
      * @deprecated The Full constructor should be used
-     * @param caldavNamespaceQualifier
      * @param name
      * @param isDefined
      * @param timeRangeStart
@@ -93,18 +83,16 @@ public class PropFilter extends OutputsDOMBase {
      * @param textMatchString
      * @param paramFilters
      */
-    public PropFilter(String caldavNamespaceQualifier, String name, 
+    public PropFilter(String name,
             boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
             Boolean textmatchCaseless, String textMatchString, List<ParamFilter> paramFilters){
-    	
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
         this.name = name;
         this.isDefined = isDefined;
         if (timeRangeStart != null && timeRangeEnd != null){
-            this.timeRange = new TimeRange(caldavNamespaceQualifier, timeRangeStart, timeRangeEnd);
+            this.timeRange = new TimeRange(timeRangeStart, timeRangeEnd);
         } else if (textMatchString != null){
-            this.textMatch = new TextMatch(caldavNamespaceQualifier,
-            		textmatchCaseless, false, null, 
+            this.textMatch = new TextMatch(textmatchCaseless, false, null,
             		textMatchString);
         }
         if (paramFilters != null){
@@ -118,21 +106,15 @@ public class PropFilter extends OutputsDOMBase {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
-    }
-
-    protected Collection<OutputsDOM> getChildren() {
-        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
+    protected Collection<XmlSerializable> getChildren() {
+        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
         
         if (isDefined != null) {
-            children.add(new SimpleDOMOutputtingObject(
-                    CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
-                    isDefined ? ELEM_IS_DEFINED :  ELEM_IS_NOT_DEFINED)); 
+            children.add(new PropProperty(isDefined ? ELEM_IS_DEFINED :  ELEM_IS_NOT_DEFINED, CalDAVConstants.NAMESPACE_CALDAV));
         } else if (timeRange != null){
             children.add(timeRange);
         } else if (textMatch != null){
@@ -180,7 +162,7 @@ public class PropFilter extends OutputsDOMBase {
     }
     
     public void setTimeRange(Date start, Date end){
-        this.timeRange = new TimeRange(caldavNamespaceQualifier, start, end);
+        this.timeRange = new TimeRange(start, end);
     }
 
     public void setTimeRange(TimeRange timeRange) {

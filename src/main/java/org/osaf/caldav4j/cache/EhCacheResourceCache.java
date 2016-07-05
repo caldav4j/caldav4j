@@ -1,18 +1,14 @@
 package org.osaf.caldav4j.cache;
 
-import static org.osaf.caldav4j.util.UrlUtils.stripHost;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.ObjectExistsException;
-
+import net.sf.ehcache.*;
 import org.osaf.caldav4j.CalDAVResource;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.util.ICalendarUtils;
 import org.osaf.caldav4j.util.UrlUtils;
+
+import static org.osaf.caldav4j.util.UrlUtils.stripHost;
 
 /**
  * 
@@ -42,10 +38,10 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 
     	CacheManager cacheManager = CacheManager.create();
         EhCacheResourceCache myCache = new EhCacheResourceCache();
-        Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, false, false,
-                600, 300, false, 0);
+        Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, null, false,
+                System.getProperty("java.io.tmpdir"), false, 600, 300, false, 0, null);
         Cache hrefToResourceCache = new Cache(HREF_TO_RESOURCE_CACHE, 1000,
-                false, false, 600, 300, false, 0);
+                null, false, System.getProperty("java.io.tmpdir"), false, 600, 300, false, 0, null);
         myCache.setHrefToResourceCache(hrefToResourceCache);
         myCache.setUidToHrefCache(uidToHrefCache);
         try {

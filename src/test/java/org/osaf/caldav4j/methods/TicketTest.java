@@ -1,18 +1,11 @@
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertEquals;
-import static org.osaf.caldav4j.CalDAVConstants.INFINITY;
-
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Property;
-import org.apache.webdav.lib.PropertyName;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
+import org.apache.jackrabbit.webdav.property.DavPropertyName;
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -23,6 +16,14 @@ import org.osaf.caldav4j.model.request.TicketRequest;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.util.CaldavStatus;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.osaf.caldav4j.CalDAVConstants.INFINITY;
+
 /**
  * 
  * @author EdBindl
@@ -36,7 +37,7 @@ public class TicketTest extends BaseTestCase {
 	public static final boolean TEST_READ = true;
 	public static final boolean TEST_WRITE = true;
 	public static final Integer TEST_VISITS = INFINITY;
-	public static final String  TEST_TIMEOUT_UNITS = "Second";
+	public static final String  TEST_TIMEOUT_UNITS = "Seconds";
 
 
 
@@ -49,7 +50,7 @@ public class TicketTest extends BaseTestCase {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		fixture.makeCalendar("");
+		//fixture.makeCalendar("");
 		fixture.put(ICS_DAILY_NY_5PM_PATH, ICS_DAILY_NY_5PM);
 	}
 
@@ -106,19 +107,16 @@ public class TicketTest extends BaseTestCase {
 
 		// Make sure the Ticket is gone
 
-		Vector<PropertyName> properties = new Vector<PropertyName>();
+		DavPropertyNameSet properties = new DavPropertyNameSet();
 
-		PropertyName propertyName = new PropertyName(CalDAVConstants.NS_XYTHOS,
-				CalDAVConstants.ELEM_TICKETDISCOVERY);
-		PropertyName propertyName2 = new PropertyName(CalDAVConstants.NS_DAV,
-				"owner");
+		DavPropertyName propertyName = DavPropertyName.create(CalDAVConstants.ELEM_TICKETDISCOVERY, CalDAVConstants.NAMESPACE_WEBDAV),
+				propertyName2 = DavPropertyName.create("owner", CalDAVConstants.NAMESPACE_WEBDAV);
 
 		properties.add(propertyName);
 		properties.add(propertyName2);
 
 		PropFindMethod propFindMethod = new PropFindMethod(fixture.getCollectionPath()
-				+ "/" + ICS_DAILY_NY_5PM, properties.elements());
-		propFindMethod.setDepth(0);
+				+ "/" + ICS_DAILY_NY_5PM, properties, CalDAVConstants.DEPTH_0);
 		http.executeMethod(hostConfig, propFindMethod);
 
 		statusCode = propFindMethod.getStatusCode();
@@ -128,20 +126,14 @@ public class TicketTest extends BaseTestCase {
 
 		// Check to make sure we get the right number of tickets
 
-		Enumeration responses = propFindMethod
-		.getResponseProperties(caldavCredential.protocol
-				+ "://" + caldavCredential.host + ":"
-				+ caldavCredential.port + fixture.getCollectionPath()
-				+ "/" + ICS_DAILY_NY_5PM);
+		MultiStatusResponse responses = propFindMethod.getResponseBodyAsMultiStatusResponse(
+                fixture.getCollectionPath()
+				+ ICS_DAILY_NY_5PM);
 		List<TicketResponse> ticketResponseList = new ArrayList<TicketResponse>();
-		while (responses.hasMoreElements()) {
-			Property item = (Property) responses.nextElement();
-			if (item.getLocalName()
-					.equals(CalDAVConstants.ELEM_TICKETDISCOVERY)) {
-				TicketDiscoveryProperty ticketDiscoveryProp = (TicketDiscoveryProperty) item;
-				ticketResponseList.addAll(ticketDiscoveryProp.getTickets());
-			}
-		}
+		TicketDiscoveryProperty ticketDiscoveryProp = new TicketDiscoveryProperty(responses);
+
+		ticketResponseList.addAll(ticketDiscoveryProp.getTickets());
+
 
 		assertEquals("Number of Tickets Returned from propFindMethod",
 				ticketResponseList.size(), 0);
@@ -161,8 +153,8 @@ public class TicketTest extends BaseTestCase {
 		// Do a PropFind on Calendar for ticketdiscovery and owner properties
 
 		propFindMethod = new PropFindMethod(fixture.getCollectionPath() + "/"
-				+ ICS_DAILY_NY_5PM, properties.elements());
-		propFindMethod.setDepth(0);
+				+ ICS_DAILY_NY_5PM, properties, CalDAVConstants.DEPTH_0);
+
 		http.executeMethod(hostConfig, propFindMethod);
 
 		statusCode = propFindMethod.getStatusCode();
@@ -173,19 +165,12 @@ public class TicketTest extends BaseTestCase {
 		// Check to make sure we get the right number of tickets
 
 		responses = propFindMethod
-		.getResponseProperties(caldavCredential.protocol
-				+ "://" + caldavCredential.host + ":"
-				+ caldavCredential.port + fixture.getCollectionPath()
-				+ "/" + ICS_DAILY_NY_5PM);
+		.getResponseBodyAsMultiStatusResponse(fixture.getCollectionPath()
+				+ ICS_DAILY_NY_5PM);
 		ticketResponseList = new ArrayList<TicketResponse>();
-		while (responses.hasMoreElements()) {
-			Property item = (Property) responses.nextElement();
-			if (item.getLocalName()
-					.equals(CalDAVConstants.ELEM_TICKETDISCOVERY)) {
-				TicketDiscoveryProperty ticketDiscoveryProp = (TicketDiscoveryProperty) item;
-				ticketResponseList.addAll(ticketDiscoveryProp.getTickets());
-			}
-		}
+        ticketDiscoveryProp = new TicketDiscoveryProperty(responses);
+
+        ticketResponseList.addAll(ticketDiscoveryProp.getTickets());
 
 		assertEquals("Number of Tickets Returned from propFindMethod",
 				ticketResponseList.size(), 2);
@@ -199,8 +184,8 @@ public class TicketTest extends BaseTestCase {
 				.getWrite());
 		assertEquals("Visits for ticketResponse2:", CalDAVConstants.INFINITY,
 				ticketResponse2.getVisits());
-		assertEquals("Timeout for ticketResponse2:",
-				TEST_TIMEOUT, ticketResponse2.getTimeout());
+		assertTrue("Timeout for ticketResponse2:",
+				TEST_TIMEOUT >= ticketResponse2.getTimeout());
 		assertEquals("Units for ticketResponse2:",
 				TEST_TIMEOUT_UNITS, ticketResponse2.getUnits());
 
@@ -260,7 +245,7 @@ public class TicketTest extends BaseTestCase {
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();
-fixture.tearDown();
-}
+        fixture.tearDown();
+    }
 
 }

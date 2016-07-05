@@ -16,66 +16,34 @@
 
 package org.osaf.caldav4j.util;
 
-import java.io.StringWriter;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
+import org.apache.jackrabbit.webdav.xml.DomUtil;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.response.TicketResponse;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.bootstrap.DOMImplementationRegistry;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 
 public class XMLUtils {
 	private static final Log log = LogFactory.getLog(XMLUtils.class);
 
-	private static DOMImplementation implementation = null;
-
-	static {
-		try {
-			DOMImplementationRegistry registry = DOMImplementationRegistry
-			.newInstance();
-			implementation = registry.getDOMImplementation("XML 3.0");
-			if (implementation == null) {
-				log.error("Could not instantiate a DOMImplementation! Make sure you have "
-						+ " a version of Xerces 2.7.0 or greater or a DOM impl that "
-						+ " implements DOM 3.0");
-				throw new RuntimeException(
-				"Could not instantiate a DOMImplementation!");
-			}
-		} catch (Exception e) {
-			log
-			.error("Could not instantiate a DOMImplementation! Make sure you have "
-					+ " a version of Xerces 2.7.0 or greater or a DOM impl that "
-					+ " implements DOM 3.0");
-			throw new RuntimeException(
-					"Could not instantiate a DOMImplementation!", e);
-		}
-	}
-
 	/**
 	 * Creates a new xml DOM Document using a DOM 3.0 DOM Implementation
-	 * 
-	 * @param namespaceURI
-	 *            the default XML Namespace for the document
-	 * @param qualifiedName
-	 *            the qualified name of the root element
+	 *
 	 * @return a new document
 	 */
-	public static Document createNewDocument(String namespaceURI,
-			String qualifiedName) {
-
-		Document document = implementation.createDocument(namespaceURI,
-				qualifiedName, null);
-		return document;
+	public static Document createNewDocument() throws ParserConfigurationException {
+		return  DomUtil.createDocument();
 	}
 
 	/**
@@ -86,43 +54,46 @@ public class XMLUtils {
 	 * @return the Document serialized to XML
 	 */
 	public static String toXML(Document document) {
-		DOMImplementationLS domLS = (DOMImplementationLS) implementation;
-		LSSerializer serializer = domLS.createLSSerializer();
-		String s = serializer.writeToString(document);
-
-		return s;
-	}
-
-	public static String toPrettyXML(Document document) {
-		StringWriter stringWriter = new StringWriter();
-		OutputFormat outputFormat = new OutputFormat(document, null, true);
-		XMLSerializer xmlSerializer = new XMLSerializer(stringWriter,
-				outputFormat);
-		xmlSerializer.setNamespaces(true);
+		StringWriter writer = new StringWriter();
 		try {
-			xmlSerializer.asDOMSerializer().serialize(document);
+			DomUtil.transformDocument(document, writer);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return stringWriter.toString();
-
+		return writer.toString();
 	}
 
-	public static DOMImplementation getDOMImplementation() {
-		return implementation;
+    /**
+     * Updated to use Transformer, instead of XmlSerializer because it is deprecated
+     * @param doc
+     * @return
+     */
+	public static String toPrettyXML(Document doc) {
+        DOMSource domSource = new DOMSource(doc);
+        StringWriter writer = new StringWriter();
+        StreamResult result = new StreamResult(writer);
+        try {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.transform(domSource, result);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return writer.toString();
 	}
 
 	/**
 	 * Create a string representation of an DOM document
 	 */
-	public static String prettyPrint(OutputsDOMBase xml) {
+	public static String prettyPrint(XmlSerializable xml) {
 		try {
-			Document doc = xml.createNewDocument(XMLUtils
-					.getDOMImplementation());
+			Document doc = DomUtil.createDocument();
+			doc.appendChild(xml.toXml(doc));
 			return XMLUtils.toPrettyXML(doc);
 
-		} catch (DOMValidationException domve) {
-			throw new RuntimeException(domve);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();

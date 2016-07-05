@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 package org.osaf.caldav4j;
-import java.io.InputStream;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
-
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -34,6 +31,8 @@ import org.osaf.caldav4j.dialect.ChandlerCalDavDialect;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 import org.osaf.caldav4j.methods.HttpClient;
+
+import java.io.InputStream;
 
 public abstract class BaseTestCase   implements TestConstants {
     protected static final Log log = LogFactory.getLog(BaseTestCase.class);

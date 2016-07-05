@@ -1,16 +1,11 @@
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.methods.DeleteMethod;
-import org.apache.webdav.lib.methods.MkcolMethod;
+import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
+import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -18,6 +13,14 @@ import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.util.CaldavStatus;
+import org.osaf.caldav4j.util.XMLUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -32,9 +35,9 @@ public class MkCalendarTest extends BaseTestCase {
 	private static final Log log = LogFactory.getLog(MkCalendarTest.class);
 
 	private List<String> addedItems = new ArrayList<String>();
-	@Before
 	@Override
-	//skip colletion creation while initializing
+    @Before
+	//skip collection creation while initializing
 	public void setUp() throws Exception {
 		fixture = new CalDavFixture();
 		fixture.setUp(caldavCredential, caldavDialect, true);
@@ -54,39 +57,37 @@ public class MkCalendarTest extends BaseTestCase {
 	 * @see http://tools.ietf.org/html/rfc4791#section-5.3.1.2
 	 */
 	@Test
-	public void testPrintMkCalendar() {
-		MkCalendarMethod mk = new MkCalendarMethod();
-		mk.setPath(caldavCredential.home + caldavCredential.collection);
+	public void testPrintMkCalendar() throws UnsupportedEncodingException {
+		MkCalendarMethod mk = new MkCalendarMethod(caldavCredential.home + caldavCredential.collection);
 
 		mk.addDisplayName("My display Name");
 		mk.addDescription("this is my default calendar", "en");
 		mk.addDescription("this is my default calendar");
 
-		log.info(mk.generateRequestBody());
+		//generateRequestBody, returns a byte array.
+		log.info(new String(mk.generateRequestBody(), "UTF-8"));
 
 	}
 
 	@Test
 	@Ignore
 	public void testCreateSubCollection() throws Exception {
-		String collectionPath = caldavCredential.home + caldavCredential.collection;
-		addedItems.add(collectionPath+ "/root1/");
+		String collectionPath = fixture.getCollectionPath();
+		addedItems.add("root1/");
 
-		MkcolMethod mk = new MkcolMethod();
-		mk.setPath(collectionPath+ "/root1/");
+		MkColMethod mk = new MkColMethod(collectionPath + "root1/");
 		fixture.executeMethod(CaldavStatus.SC_CREATED, mk, true, null, true);
 
-		mk.setPath( collectionPath + "/root1/sub/");
+		mk.setPath(collectionPath + "root1/sub/");
 		fixture.executeMethod(CaldavStatus.SC_CREATED, mk, false, null, true );
-
-
 	}
+
 	@Test
 	public void testCreateRemoveCalendarCollection() throws Exception{
 		String collectionPath = caldavCredential.home + caldavCredential.collection;
 
-		MkCalendarMethod mk = new MkCalendarMethod();
-		mk.setPath(collectionPath);
+		MkCalendarMethod mk = new MkCalendarMethod(collectionPath);
+		//mk.setPath(collectionPath);
 		mk.addDisplayName("My display Name");
 		mk.addDescription("this is my default calendar", "en");
 
@@ -123,8 +124,8 @@ public class MkCalendarTest extends BaseTestCase {
 		assertEquals("Status code for get:", CaldavStatus.SC_OK, statusCode);
 
 
-		DeleteMethod delete = new DeleteMethod();
-		delete.setPath(collectionPath);
+		DeleteMethod delete = new DeleteMethod(collectionPath);
+
 		http.executeMethod(hostConfig, delete);
 
 		statusCode = delete.getStatusCode();

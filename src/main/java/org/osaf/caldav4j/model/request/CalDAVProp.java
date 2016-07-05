@@ -16,14 +16,15 @@
 
 package org.osaf.caldav4j.model.request;
 
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
+import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOMBase;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.xml.OutputsDOM;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 /**
  * <!ELEMENT prop EMPTY>
@@ -34,71 +35,61 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
  * @author bobbyrullo
  * 
  */
-public class CalDAVProp extends OutputsDOMBase  {
-    
+public class CalDAVProp extends OutputsDOMBase {
+
     public static final String ELEMENT_NAME = "prop";
-    public static final String ATTR_NAME = "start";
+    public static final String ATTR_NAME = "name";
     public static final String ATTR_NOVALUE = "novalue";
     public static final String ATTR_VAL_YES = "yes";
     public static final String ATTR_VAL_NO = "no";
-    
+
     private boolean attrNoValueEnabled = true; //XXX used to disable the view on ATTR_NOVALUE
-    private String attrName = ATTR_NAME;
-    
-    private String caldavNamespaceQualifier = null;
+
     private String name = null;
     private boolean novalue = false;
-    
-    
-    public CalDAVProp(String caldavNamespaceQualifier, String attrName, String name, boolean novalue, boolean attrNoValueEnabled) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
+
+
+    public CalDAVProp(String name, boolean novalue, boolean attrNoValueEnabled) {
         this.name = name;
         this.novalue = novalue;
-        
-        this.attrName = attrName; //XXX see if it's ok there or if whe should use another Class
         this.attrNoValueEnabled = attrNoValueEnabled;
     }
-    
-    public CalDAVProp(String caldavNamespaceQualifier, String name, boolean novalue) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.name = name;
-        this.novalue = novalue;
+
+    public CalDAVProp(String name, boolean novalue) {
+        this(name, novalue, true);
     }
-    
-    public CalDAVProp(String caldavNamespaceQualifier, String name) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        this.name = name;
+
+    public CalDAVProp(String name) {
+        this(name, false, false);
     }
 
     protected String getElementName() {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
+    protected Map<String, String> getAttributes() {
+        Map<String, String> m =  new HashMap<String, String>();
+        m.put(ATTR_NAME, name);
+
+        if (attrNoValueEnabled) {
+            m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
+        }
+
+        return m;
     }
 
-    protected Collection<OutputsDOM> getChildren() {
-        return null;
-    }
 
     protected String getTextContent() {
         return null;
     }
-    
-    protected Map<String, String> getAttributes() {
-        Map<String, String> m =  new HashMap<String, String>();
-        m.put(attrName, name); // XXX 
-        
-        if (attrNoValueEnabled) {
-        	m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
-        }
-        
-        return m;
+
+    public Collection<XmlSerializable> getChildren() {
+        return null;
     }
     
     /**

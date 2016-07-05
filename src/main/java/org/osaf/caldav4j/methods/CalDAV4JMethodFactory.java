@@ -18,8 +18,12 @@ package org.osaf.caldav4j.methods;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
-
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.model.request.CalDAVReportRequest;
+import org.osaf.caldav4j.model.request.TicketRequest;
+
+import java.io.IOException;
 
 public class CalDAV4JMethodFactory {
 
@@ -55,25 +59,34 @@ public class CalDAV4JMethodFactory {
         return postMethod;
     }
     
-    public MkCalendarMethod createMkCalendarMethod(){
-        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod();
+    public MkCalendarMethod createMkCalendarMethod(String uri){
+        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri);
         return mkCalendarMethod;
     }
     
-    public MkTicketMethod createMkTicketMethod(){
-        MkTicketMethod mkTicketMethod = new MkTicketMethod();
+    public MkTicketMethod createMkTicketMethod(String uri, TicketRequest tr){
+        MkTicketMethod mkTicketMethod = new MkTicketMethod(uri, tr);
         return mkTicketMethod;
     }
     
-    public DelTicketMethod createDelTicketMethod(){
-        DelTicketMethod delTicketMethod = new DelTicketMethod();
+    public DelTicketMethod createDelTicketMethod(String uri, String tr){
+        DelTicketMethod delTicketMethod = new DelTicketMethod(uri, tr);
         return delTicketMethod;
     }
     
-    public PropFindMethod createPropFindMethod(){
-        PropFindMethod propFindMethod = new PropFindMethod();
+    public PropFindMethod createPropFindMethod(String uri) throws IOException {
+        PropFindMethod propFindMethod = new PropFindMethod(uri);
         return propFindMethod;
-        
+    }
+
+    public PropFindMethod createPropFindMethod(String uri, DavPropertyNameSet propertyNames, int depth) throws IOException {
+        PropFindMethod propFindMethod = new PropFindMethod(uri, propertyNames, depth);
+        return propFindMethod;
+    }
+
+    public PropFindMethod createPropFindMethod(String uri, int propfindtype, DavPropertyNameSet propertyNames, int depth) throws IOException {
+        PropFindMethod propFindMethod = new PropFindMethod(uri, propfindtype, propertyNames, depth);
+        return propFindMethod;
     }
     
     public GetMethod createGetMethod(){
@@ -81,17 +94,17 @@ public class CalDAV4JMethodFactory {
         getMethod.setCalendarBuilder(getCalendarBuilderInstance());
         return getMethod;
     }
-    
-    public CalDAVReportMethod createCalDAVReportMethod(){
-        CalDAVReportMethod reportMethod = new CalDAVReportMethod();
+
+    public CalDAVReportMethod createCalDAVReportMethod(String uri) {
+        CalDAVReportMethod reportMethod = new CalDAVReportMethod(uri);
         reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
         return reportMethod;
     }
-    
-    public CalendarCalDAVReportMethod createCalendarCalDAVReportMethod(){
-    	CalendarCalDAVReportMethod reportMethod = new CalendarCalDAVReportMethod();
-    	reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
-    	return reportMethod;
+
+    public CalDAVReportMethod createCalDAVReportMethod(String uri, CalDAVReportRequest request) throws IOException {
+        CalDAVReportMethod reportMethod = new CalDAVReportMethod(uri, request);
+        reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
+        return reportMethod;
     }
     
     public boolean isCalendarValidatingOutputter() {

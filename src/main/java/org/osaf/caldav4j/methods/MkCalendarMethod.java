@@ -16,22 +16,25 @@
 
 package org.osaf.caldav4j.methods;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.webdav.lib.methods.XMLResponseMethodBase;
+import org.apache.commons.httpclient.HttpConnection;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpState;
+import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
+import org.apache.jackrabbit.webdav.xml.DomUtil;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.model.request.CalendarDescription;
-import org.osaf.caldav4j.model.request.DisplayName;
-import org.osaf.caldav4j.model.request.MkCalendar;
-import org.osaf.caldav4j.model.request.Prop;
-import org.osaf.caldav4j.model.request.PropProperty;
+import org.osaf.caldav4j.model.request.*;
+import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
 
-public class MkCalendarMethod extends XMLResponseMethodBase{
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MkCalendarMethod extends DavMethodBase {
     
 	
 	/**
@@ -46,11 +49,23 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
 
     // --------------------------------------------------------- Public Methods
 
-    public MkCalendarMethod() {
+    public MkCalendarMethod(String uri) {
 		// Add Headers Content-Type: text/xml
-    	
-    	addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
+    	super(UrlUtils.removeDoubleSlashes(uri));
+
 	}
+
+    public void addRequestHeaders(HttpState state, HttpConnection conn)
+            throws IOException, HttpException
+    {
+        //first add headers generate RequestEntity or
+        //addContentLengthRequestHeader() will mess up things > result "400 Bad Request"
+        //can not override generateRequestBody(), because called to often
+
+        addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
+        //setRequestEntity(new ByteArrayRequestEntity(generateRequestBody()));
+        super.addRequestHeaders(state, conn);
+    }
 
     public void addDisplayName(String s) {
     	propertiesToSet.add(new DisplayName(s));
@@ -64,13 +79,10 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
     /**
      * 
      */
-    public void addPropertyToSet(String namespaceURI, String qualifiedName,
+    public void addPropertyToSet(String name, Namespace namespace,
             String value) {
         checkNotUsed();
-        PropProperty propertyToSet = new PropProperty();
-        propertyToSet.setQualifiedName(qualifiedName);
-        propertyToSet.setTextContent(value);
-        propertyToSet.setNamespaceURI(namespaceURI);
+        PropProperty propertyToSet = new PropProperty<String>(name, value, namespace);
         propertiesToSet.add(propertyToSet);
     }
 
@@ -88,21 +100,26 @@ public class MkCalendarMethod extends XMLResponseMethodBase{
     /**
      *
      */
-    protected String generateRequestBody() {
+    protected byte[] generateRequestBody() {
         if (propertiesToSet.size() == 0 ){
             return null;
         }
         
-        Prop prop = new Prop(CalDAVConstants.NS_QUAL_DAV, propertiesToSet);
-        MkCalendar mkCalendar = new MkCalendar("C",CalDAVConstants.NS_QUAL_DAV,prop);
+        Prop prop = new Prop(propertiesToSet);
+        MkCalendar mkCalendar = new MkCalendar(prop);
         Document d = null;
         try {
-            d = mkCalendar.createNewDocument(XMLUtils
-                    .getDOMImplementation());
-        } catch (DOMValidationException domve) {
-            throw new RuntimeException(domve);
+            d = DomUtil.createDocument();
+            d.appendChild(mkCalendar.toXml(d));
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
         }
-        return XMLUtils.toPrettyXML(d);
 
+        return XMLUtils.toPrettyXML(d).getBytes();
+    }
+
+    @Override
+    protected boolean isSuccess(int statusCode) {
+        return statusCode == CaldavStatus.SC_CREATED;
     }
 }

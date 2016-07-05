@@ -45,10 +45,9 @@ public class GenerateQueryTest extends BaseTestCase {
     private String printQuery(CalendarQuery query) {			
         try {
     		query.validate();
-        	Document doc = query.createNewDocument(XMLUtils
-                    .getDOMImplementation());
+        	Document doc = query.createNewDocument();
 			return XMLUtils.toPrettyXML(doc);
-        	
+
         } catch (DOMValidationException domve) {
             log.error("Error trying to create DOM from CalDAVReportRequest: ", domve);
             throw new RuntimeException(domve);
@@ -107,10 +106,10 @@ public class GenerateQueryTest extends BaseTestCase {
 			
 			// modify to conform RFC example 7.8.1. 
 			//    Example: Partial Retrieval of Events by Time Range
-			Comp compVtimezone = new Comp("C");
+			Comp compVtimezone = new Comp();
 			compVtimezone.setName(Component.VTIMEZONE);
 			query.getCalendarDataProp().getComp().getComps().add(compVtimezone);
-			log.info("no calendar-data:\n" + printQuery(query));
+			log.info("calendar-data with VTIMEZONE:\n" + printQuery(query));
 			
 			// now remove calendar data
 			gq.setNoCalendarData(true);			
@@ -269,9 +268,9 @@ public void testDateTime() throws ParseException {
 			 * compose 
 			 * <param-filter name="PARTSTAT"><text-match>NEEDS-ACTION</text-match></param-filter>
 			 */
-			ParamFilter paramSentBy = new ParamFilter(CalDAVConstants.NS_QUAL_CALDAV);
+			ParamFilter paramSentBy = new ParamFilter();
 			paramSentBy.setName("PARTSTAT");
-			paramSentBy.setTextMatch(new TextMatch(CalDAVConstants.NS_QUAL_CALDAV,null,null,null, "NEEDS-ACTION"));
+			paramSentBy.setTextMatch(new TextMatch(null,null,null, "NEEDS-ACTION"));
 
 			// append into ATTENDEE prop-filter
 			query.getCompFilter().getCompFilters().get(0)

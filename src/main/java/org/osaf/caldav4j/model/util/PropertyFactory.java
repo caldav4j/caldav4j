@@ -31,9 +31,9 @@ public  class PropertyFactory implements CalDAVConstants {
 	public static  PropProperty createProperty(String property) throws CalDAV4JException {
 		
 		if (ArrayUtils.contains((Object[])davProperties, property)) {
-			return new PropProperty(NS_DAV, NS_QUAL_DAV, property);
-		} else if (ArrayUtils.contains((Object[])davProperties, property)) {
-			return new PropProperty(NS_DAV, NS_QUAL_DAV, property);
+			return new PropProperty(property, NAMESPACE_WEBDAV);
+		} else if (ArrayUtils.contains((Object[])caldavProperties, property)) {
+			return new PropProperty(property, NAMESPACE_CALDAV);
 		} 
 		
 		throw new CalDAV4JException("Unsupported property: "+ property); 

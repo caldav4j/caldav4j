@@ -10,20 +10,19 @@ import org.osaf.caldav4j.CalDAVConstants;
  */
 public class CalendarDescription extends PropProperty {
 
-	public CalendarDescription() {
-		this(null,null);
-	}
-	public CalendarDescription(String value) {
-		this(value,null);
+	public CalendarDescription(){
+        this(null);
+    }
+
+    public CalendarDescription(String value) {
+		this(value, null);
 
 	}
+
 	public CalendarDescription(String value, String lang) {
-		super(CalDAVConstants.NS_CALDAV, CalDAVConstants.NS_QUAL_CALDAV, CalDAVConstants.CALDAV_CALENDAR_DESCRIPTION);
-		if (value != null) {
-			this.setTextContent(value);
-			if (lang != null) {
-				this.addAttribute("xml:lang", lang);
-			}
+		super(CalDAVConstants.CALDAV_CALENDAR_DESCRIPTION, value, CalDAVConstants.NAMESPACE_CALDAV);
+		if (lang != null) {
+			this.addAttribute("xml:lang", lang);
 		}
 	}
 }
