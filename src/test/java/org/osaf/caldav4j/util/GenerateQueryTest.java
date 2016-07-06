@@ -117,7 +117,7 @@ public class GenerateQueryTest extends BaseTestCase {
 			
 			// and limit recurrence set
 			gq.setNoCalendarData(false);			
-			gq.setRecurrenceSet("20060101T170000Z","20060105T240000Z", CalendarData.EXPAND);
+			gq.setRecurrenceSet("20060101T170000Z","20060105T235900Z", CalendarData.EXPAND);
 			// gq.setRecurrenceSet("20060104T000000Z","20060105T000000Z");
 			log.info("limit-recurrence-set:\n" + printQuery(gq.generate()));
 		} catch (CalDAV4JException e) {

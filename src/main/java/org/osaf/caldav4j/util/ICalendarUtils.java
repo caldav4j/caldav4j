@@ -16,27 +16,20 @@
 
 package org.osaf.caldav4j.util;
 
-import java.text.ParseException;
-import java.util.Calendar;
-
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.Date;
-import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
-import net.fortuna.ical4j.model.TimeZone;
+import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.Uid;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVResource;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
+
+import java.text.ParseException;
+import java.util.Calendar;
 
 public class ICalendarUtils {
     private static final Log log = LogFactory.getLog(ICalendarUtils.class);
@@ -100,10 +93,9 @@ public class ICalendarUtils {
     
     /**
      * get first non-timezone component
-     * @param event
      * @return null if not present
      */
-    public static Component getFirstComponent(CalDAVResource resource, String component) {
+    public static CalendarComponent getFirstComponent(CalDAVResource resource, String component) {
     	return resource.getCalendar().getComponent(component);
     }
 
@@ -114,40 +106,25 @@ public class ICalendarUtils {
      * @return
      * TODO use a parameter to eventually skip VTimeZone
      */
-    public static Component getFirstComponent(net.fortuna.ical4j.model
+    public static CalendarComponent getFirstComponent(net.fortuna.ical4j.model
     		.Calendar calendar) throws CalDAV4JException {
-    	// XXX this works only if the ics is a caldav resource
-    	Component ret = null;
-    	String compType = null;
-    	
-    	for (Object component : calendar.getComponents()) {
-    		// skip timezones
-    		if (! (component instanceof VTimeZone)) {
-    			if (ret == null) {
-    				ret = (Component) component;
-    				compType = ret.getClass().getName();
-    			} else if (! compType.equals(component.getClass().getName()) ) {
-    				throw new CalDAV4JException("Can't get first component: "
-    						+ "Calendar contains different kinds of component");
-    			}
-				
-			}
-    	}
-    	return ret;
-    } 
-    public static Component getFirstComponent(net.fortuna.ical4j.model
+        return getFirstComponent(calendar, true);
+    }
+
+    public static CalendarComponent getFirstComponent(net.fortuna.ical4j.model
     		.Calendar calendar, boolean skipTimezone) throws CalDAV4JException {
     	// XXX this works only if the ics is a caldav resource
-    	Component ret = null;
+    	CalendarComponent ret = null;
     	String compType = null;
     	
     	for (Object component : calendar.getComponents()) {
     		
     		if (!skipTimezone) {
-    			ret =  (Component) component;
-    		} else if (! (component instanceof VTimeZone)) {    		// skip timezones
+    			ret =  (CalendarComponent) component;
+    		} else if (! (component instanceof VTimeZone)) {
+                // skip timezones
     			if (ret == null) {
-    				ret = (Component) component;
+    				ret = (CalendarComponent) component;
     				compType = ret.getClass().getName();
     			} else if (! compType.equals(component.getClass().getName()) ) {
     				throw new CalDAV4JException("Can't get first component: "
