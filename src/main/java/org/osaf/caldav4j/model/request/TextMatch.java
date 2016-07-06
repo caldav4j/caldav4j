@@ -67,6 +67,8 @@ public class TextMatch extends OutputsDOMBase {
         // RFC states default collation is i;ascii-casemap
         if (collation == null) {        	
             this.collation = ATTR_VALUE_COLLATION_ASCII;        	
+        } else {
+            this.collation = collation;
         }
 
     }
