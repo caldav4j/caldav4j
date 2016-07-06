@@ -202,7 +202,8 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	@Test
 	public void testGetEventResources() throws Exception {
 		Date beginDate = ICalendarUtils.createDateTime(2006, 0, 1, null, true);
-		Date endDate = ICalendarUtils.createDateTime(2006, 11, 9, null, true);
+		Date endDate = ICalendarUtils.createDateTime(2006, 0, 9, null, true);
+		Thread.sleep(1000);
 		List<Calendar> l = collection.getEventResources(fixture.getHttpClient(),
 				beginDate, endDate);
 
