@@ -51,15 +51,14 @@ public class OptionsTest extends BaseTestCase {
 
 	        try {
 				http.executeMethod(hostConfig,options);
-				int statusCode = options.getStatusCode();
-				if (statusCode == 200) {
-					log.info(options.getResponseHeader("Allow"));
+				if (options.succeeded()) {
+					log.info(options.getResponseHeader("Allow").toString());
 					for (Header h : options.getResponseHeaders("DAV")) {
 						if (h != null) {
 							 if (h.getValue().contains("calendar-access")) { 
-								 log.info(h);
+								 log.info(h.toString());
 							 } else if (h.getValue().contains("calendar-schedule") || h.getValue().contains("calendar-auto-schedule")) {
-								 log.info(h);
+								 log.info(h.toString());
 							 } else {
 								 assertTrue(false);
 							 }

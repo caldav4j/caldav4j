@@ -4,7 +4,6 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
-import org.apache.commons.lang.StringUtils;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
@@ -55,23 +54,23 @@ import java.util.regex.Pattern;
 public class GenerateQuery  {
 	
 	// component attributes
-	String requestedComponent = null; // VEVENT, VTODO
-	List<String> requestedComponentProperties = new ArrayList<String>(); // a list of properties to be retrieved 
+	private String requestedComponent = null; // VEVENT, VTODO
+	private List<String> requestedComponentProperties = new ArrayList<String>(); // a list of properties to be retrieved
 		
 
 	// Nested object queries should be managed nesting two generated queries
-	String filterComponent = null; // VEVENT, VTODO
-	List<String> filterComponentProperties = new ArrayList<String>();
-	Date timeRangeStart = null;
-	Date timeRangeEnd = null;
-	boolean allProp = true;
-	boolean noCalendarData = false;
+	private String filterComponent = null; // VEVENT, VTODO
+	private List<String> filterComponentProperties = new ArrayList<String>();
+	private Date timeRangeStart = null;
+	private Date timeRangeEnd = null;
+	private boolean allProp = true;
+	private boolean noCalendarData = false;
 	public void setNoCalendarData(boolean p) {
 		this.noCalendarData = p;
 	}
 	
 	// other settings: collation
-	String collation = null; // use TextMatch default value
+	private String collation = null; // use TextMatch default value
 	// comp flags
 	//TODO limit-recurrence-set, limit-freebusy-set, get-etag	
 
@@ -431,7 +430,7 @@ public class GenerateQuery  {
 	
 	// TODO testme
 	public void setRecurrenceSet(String start, String end, Integer expandOrLimit) {
-		if (StringUtils.isNotBlank(start)) {
+		if (UrlUtils.isNotBlank(start)) {
 			try {
 				this.recurrenceSetStart = parseTime(start);
 			} catch (CalDAV4JException e) {
@@ -439,7 +438,7 @@ public class GenerateQuery  {
 				e.printStackTrace();
 			}
 		}
-		if (StringUtils.isNotBlank(end)) {
+		if (UrlUtils.isNotBlank(end)) {
 			try {
 				this.recurrenceSetEnd = parseTime(end);
 			} catch (CalDAV4JException e) {

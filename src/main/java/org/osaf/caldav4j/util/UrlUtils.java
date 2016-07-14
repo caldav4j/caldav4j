@@ -16,12 +16,12 @@
 
 package org.osaf.caldav4j.util;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpMethod;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpMethod;
 
 public class UrlUtils {
     public static String stripHost(String href){
@@ -67,4 +67,21 @@ public class UrlUtils {
     	return sb.toString();
     }
 
+	public static boolean equalsIgnoreCase(String str1, String str2) {
+		return (str1 == null ? str2 == null : str1.equalsIgnoreCase(str2));
+	}
+
+	public static String defaultString(String str, String defaultStr) {
+		return (str == null ? defaultStr : str);
+	}
+
+	public static boolean isBlank(String str) {
+		if (str == null || (str.length()) == 0 || "".equals(str.trim()))
+			return true;
+		else return false;
+	}
+
+	public static boolean isNotBlank(String str) {
+		return !isBlank(str);
+	}
 }

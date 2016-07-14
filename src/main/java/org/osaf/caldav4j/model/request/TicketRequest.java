@@ -15,12 +15,12 @@
  */
 package org.osaf.caldav4j.model.request;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +38,7 @@ import java.util.Map;
  */
 public class TicketRequest extends OutputsDOMBase {
 
-	private static final Log log = LogFactory.getLog(TicketRequest.class);
+	private static final Logger log = LoggerFactory.getLogger(TicketRequest.class);
 
 	private Integer timeout = null;
 

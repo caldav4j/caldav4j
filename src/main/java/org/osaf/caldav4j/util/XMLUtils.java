@@ -16,12 +16,12 @@
 
 package org.osaf.caldav4j.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.response.TicketResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,7 +35,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 
 public class XMLUtils {
-	private static final Log log = LogFactory.getLog(XMLUtils.class);
+	private static final Logger log = LoggerFactory.getLogger(XMLUtils.class);
 
 	/**
 	 * Creates a new xml DOM Document using a DOM 3.0 DOM Implementation

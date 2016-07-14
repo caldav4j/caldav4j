@@ -1,8 +1,6 @@
 package org.osaf.caldav4j.methods;
 
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
@@ -16,6 +14,8 @@ import org.osaf.caldav4j.model.request.TicketRequest;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.util.CaldavStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class TicketTest extends BaseTestCase {
 
 
 
-	private static final Log log = LogFactory.getLog(TicketTest.class);
+	private static final Logger log = LoggerFactory.getLogger(TicketTest.class);
 
 	private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 

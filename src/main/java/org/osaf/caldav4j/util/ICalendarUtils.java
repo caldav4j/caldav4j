@@ -22,17 +22,16 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.Uid;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVResource;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.Calendar;
 
 public class ICalendarUtils {
-    private static final Log log = LogFactory.getLog(ICalendarUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(ICalendarUtils.class);
     
     private static java.util.TimeZone J_TZ_GMT = TimeZone.getTimeZone("GMT");
    
@@ -248,7 +247,7 @@ public class ICalendarUtils {
             CalendarComponent curEvent = (CalendarComponent) o;
             String curUid = getUIDValue(curEvent);
             String curRid = getPropertyValue(curEvent, Property.RECURRENCE_ID);
-            if (uid.equals(curUid) && StringUtils.equalsIgnoreCase(recurrenceId, curRid) ){
+            if (uid.equals(curUid) && UrlUtils.equalsIgnoreCase(recurrenceId, curRid) ){
                 return curEvent;
             }
         }
@@ -274,7 +273,7 @@ public class ICalendarUtils {
             }
             String curUid = getUIDValue(curEvent);
             String curRid = getPropertyValue(curEvent, Property.RECURRENCE_ID);
-            if (uid.equals(curUid) && StringUtils.equalsIgnoreCase(recurrenceId, curRid) ){
+            if (uid.equals(curUid) && UrlUtils.equalsIgnoreCase(recurrenceId, curRid) ){
             	toBeRemoved = curEvent;
             	break;
             }

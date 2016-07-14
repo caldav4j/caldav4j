@@ -10,8 +10,6 @@ import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -25,6 +23,8 @@ import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,8 +37,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		super();
 	}
 
-	protected static final Log log = LogFactory
-	.getLog(CalDAVCollectionTest.class);
+	protected static final Logger log = LoggerFactory.getLogger(CalDAVCollectionTest.class);
 
 
 

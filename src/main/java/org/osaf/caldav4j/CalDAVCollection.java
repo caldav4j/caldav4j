@@ -34,9 +34,6 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.HeadMethod;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.AclMethod;
@@ -54,6 +51,8 @@ import org.osaf.caldav4j.model.response.CalendarDataProperty;
 import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
 import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -81,7 +80,7 @@ import static org.osaf.caldav4j.util.UrlUtils.stripHost;
  * no customized queries should be public in this class
  */
 public class CalDAVCollection extends CalDAVCalendarCollectionBase{
-	private static final Log log = LogFactory.getLog(CalDAVCollection.class);
+	private static final Logger log = LoggerFactory.getLogger(CalDAVCollection.class);
 	// configuration settings
 
 	public CalDAVCollection(){
@@ -1143,7 +1142,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
         PropFindMethod method = null;
 
         try {
-            method = methodFactory.createPropFindMethod(getCalendarCollectionRoot() + StringUtils.defaultString(path, ""),
+            method = methodFactory.createPropFindMethod(getCalendarCollectionRoot() + UrlUtils.defaultString(path, ""),
                     propfind, CalDAVConstants.DEPTH_0);
 			httpClient.executeMethod(getHostConfiguration(), method);
 
@@ -1170,7 +1169,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		AclMethod method = null;
 
 		try {
-            method = new AclMethod(getCalendarCollectionRoot() + StringUtils.defaultString(path, "")
+            method = new AclMethod(getCalendarCollectionRoot() + UrlUtils.defaultString(path, "")
                     , new AclProperty(aces));
 			client.executeMethod(method);
 			int status = method.getStatusCode();

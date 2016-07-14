@@ -2,8 +2,6 @@ package org.osaf.caldav4j.methods;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 import org.junit.After;
@@ -13,14 +11,14 @@ import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.util.CaldavStatus;
-import org.osaf.caldav4j.util.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -32,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 @Ignore
 public class MkCalendarTest extends BaseTestCase {
 
-	private static final Log log = LogFactory.getLog(MkCalendarTest.class);
+	private static final Logger log = LoggerFactory.getLogger(MkCalendarTest.class);
 
 	private List<String> addedItems = new ArrayList<String>();
 	@Override

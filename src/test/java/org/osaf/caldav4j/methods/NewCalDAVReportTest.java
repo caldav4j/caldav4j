@@ -5,8 +5,6 @@ import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.DateTime;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -22,6 +20,8 @@ import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 import org.osaf.caldav4j.model.request.*;
 import org.osaf.caldav4j.model.response.CalendarDataProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -45,7 +45,7 @@ import static org.junit.Assert.assertEquals;
 
 public class NewCalDAVReportTest extends BaseTestCase{
 
-    private static final Log log = LogFactory.getLog(NewCalDAVReportTest.class);
+    private static final Logger log = LoggerFactory.getLogger(NewCalDAVReportTest.class);
     private EhCacheResourceCache myCache = null;
 
     @Before
@@ -130,7 +130,7 @@ public class NewCalDAVReportTest extends BaseTestCase{
         CalDAVReportMethod calDAVReportMethod = new CalDAVReportMethod(collectionPath, calendarQuery);
 
         http.executeMethod(hostConfig, calDAVReportMethod);
-        log.info(calDAVReportMethod.getStatusLine());
+        log.info(calDAVReportMethod.getStatusLine().toString());
 
         Collection<DavProperty> calendars = calDAVReportMethod.getDavProperties(CalDAVConstants.DNAME_CALENDAR_DATA);
 

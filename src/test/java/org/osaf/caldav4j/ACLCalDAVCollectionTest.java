@@ -8,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
+import org.osaf.caldav4j.util.XMLUtils;
 
 import java.util.List;
 
@@ -34,8 +35,9 @@ public class ACLCalDAVCollectionTest extends BaseTestCase {
 	@Test
 	public void getFolderAces() throws CalDAV4JException {
 		List<AclProperty.Ace> aces = collection.getAces(fixture.getHttpClient(), null);
-		assertNotNull(aces);		
-		log.info(aces);			
+		assertNotNull(aces);
+		for(AclProperty.Ace ace : aces)
+			log.info(XMLUtils.prettyPrint(ace));
 	}
 
 	@Test

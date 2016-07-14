@@ -28,10 +28,10 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.util.UrlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -42,7 +42,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
-    private static final Log log = LogFactory.getLog(PutMethod.class);
+    private static final Logger log = LoggerFactory.getLogger(PutMethod.class);
    
     private Calendar calendar = null; 
     private String procID = CalDAVConstants.PROC_ID_DEFAULT;

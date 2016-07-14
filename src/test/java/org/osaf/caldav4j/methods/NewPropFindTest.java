@@ -1,8 +1,6 @@
 package org.osaf.caldav4j.methods;
 
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
@@ -16,6 +14,8 @@ import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -34,7 +34,7 @@ import java.util.List;
  *
  */
 public class NewPropFindTest extends BaseTestCase{
-    private static final Log log = LogFactory.getLog(PropFindTest.class);
+    private static final Logger log = LoggerFactory.getLogger(PropFindTest.class);
 
     @Before
     public void setUp() throws Exception {
@@ -57,10 +57,10 @@ public class NewPropFindTest extends BaseTestCase{
         PropFindMethod p = new PropFindMethod(fixture.getCollectionPath(), props, DavConstants.DEPTH_0);
 
         http.executeMethod(hostConfig, p);
-        log.info(p.getStatusLine());
+        log.info(p.getStatusLine().toString());
         MultiStatusResponse[] responses = p.getResponseBodyAsMultiStatus().getResponses();
         for(MultiStatusResponse r: responses){
-            log.info(r.getHref().equals(fixture.getCollectionPath()));
+            log.info(r.getHref());
         }
         log.info(p.getDisplayName(fixture.getCollectionPath()));
     }
@@ -78,7 +78,7 @@ public class NewPropFindTest extends BaseTestCase{
         PropFindMethod p = new PropFindMethod(collectionPath, props, DavConstants.DEPTH_0);
 
         http.executeMethod(hostConfig, p);
-        log.info(p.getStatusLine());
+        log.info(p.getStatusLine().toString());
 
         //Get all the processed aces and print them to log.
         List<AclProperty.Ace> aces = p.getAces(collectionPath);
@@ -102,7 +102,7 @@ public class NewPropFindTest extends BaseTestCase{
     private String ElementoString(Element node) throws TransformerException {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         StreamResult result = new StreamResult(new StringWriter());
         DOMSource source = new DOMSource(node);
         transformer.transform(source, result);
