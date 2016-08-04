@@ -295,7 +295,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
             if (h != null) {
                 newEtag = h.getValue();
             } else {
-                newEtag = getETag(httpClient, path);
+                newEtag = getETagbyMultiget(httpClient, path);
             }
             cache.putResource(new CalDAVResource(calendar, newEtag, getHref(putMethod.getPath())));
         } catch (ResourceOutOfDateException e){
@@ -374,7 +374,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				String etag = UrlUtils.getHeaderPrettyValue(putMethod, HEADER_ETAG);
 
 				if(etag == null){
-                    etag = getETag(httpClient, putMethod.getPath());
+                    etag = getETagbyMultiget(httpClient, putMethod.getPath());
 				}
 
 				CalDAVResource calDAVResource = new CalDAVResource(c,	etag, getHref((putMethod.getPath())));
@@ -787,7 +787,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 	/**
 	 * retrieve etags using HEAD /path/to/resource.ics
-	 * If, HEAD fails, then use a Multiget Query.
 	 * @param httpClient the httpClient which will make the request
 	 * @param path Path to the Calendar
 	 * @return ETag for calendar
@@ -819,24 +818,35 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		String etag = null;
 		if (h != null) {
 			etag = h.getValue();
-		} else {
-            DavPropertyNameSet props = new DavPropertyNameSet();
-            props.add(DavPropertyName.GETETAG);
-            CalendarMultiget query = new CalendarMultiget(props, null, false, false);
-            query.addHref(path);
-
-            MultiStatus multiStatus = getResponseforQuery(httpClient, query);
-            for(MultiStatusResponse response : multiStatus.getResponses()){
-                if(response.getStatus()[0].getStatusCode() == CaldavStatus.SC_OK){
-                    etag = CalendarDataProperty.getEtagfromResponse(response);
-                }
-            }
-        }
+		} else
+			etag = getETagbyMultiget(httpClient, path);
 
 		return etag;
 	}
 
+	/**
+	 * * Retrieves the Etag of the resource pointed by <code>path</code> by using a Multiget Query.
+	 * @param httpClient Client which makes the request.
+	 * @param path Path to the Calendar Resource
+	 * @return ETag Value of the Resource
+	 * @throws CalDAV4JException
+     */
+	protected String getETagbyMultiget(HttpClient httpClient, String path) throws CalDAV4JException {
+		String etag = null;
+		DavPropertyNameSet props = new DavPropertyNameSet();
+		props.add(DavPropertyName.GETETAG);
+		CalendarMultiget query = new CalendarMultiget(props, null, false, false);
+		query.addHref(path);
 
+		MultiStatus multiStatus = getResponseforQuery(httpClient, query);
+		for(MultiStatusResponse response : multiStatus.getResponses()){
+			if(response.getStatus()[0].getStatusCode() == CaldavStatus.SC_OK){
+				etag = CalendarDataProperty.getEtagfromResponse(response);
+			}
+		}
+
+		return etag;
+	}
 
 
 	/**
@@ -942,7 +952,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
      * Get Responses for a specific ReportMethod Query
      * @param httpClient Client which makes the request.
      * @param query Query for the Report Method to execute.
-     * @return MultiStatus Reponse for the Query
+     * @return MultiStatus Response for the Query
      */
 	public MultiStatus getResponseforQuery(HttpClient httpClient, CalDAVReportRequest query) throws CalDAV4JException {
 
