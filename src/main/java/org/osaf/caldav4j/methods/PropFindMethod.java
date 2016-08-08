@@ -113,7 +113,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
     }
     public String getDisplayName(String urlPath) {
         DavProperty p= getDavProperty(urlPath, DavPropertyName.DISPLAYNAME);
-        if (p != null) {
+        if (p != null && p.getValue() != null) {
             return p.getValue().toString();
         } else {
             return "";
