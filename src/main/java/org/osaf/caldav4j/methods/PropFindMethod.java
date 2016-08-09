@@ -105,7 +105,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
 
     public String getCalendarDescription(String urlPath) {
         DavProperty p =  getDavProperty(urlPath, CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
-        if (p!= null) {
+        if (p!= null && p.getValue() != null) {
             return p.getValue().toString();
         } else {
             return "";
