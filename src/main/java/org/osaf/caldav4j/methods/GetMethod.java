@@ -20,13 +20,12 @@ import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.CalDAV4JProtocolException;
 import org.osaf.caldav4j.util.UrlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -37,7 +36,7 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
 
 	private static final String HEADER_ACCEPT = "Accept";
 
-	private static final Log log = LogFactory.getLog(GetMethod.class);
+	private static final Logger log = LoggerFactory.getLogger(GetMethod.class);
     
     private CalendarBuilder calendarBuilder = null;
 
@@ -64,7 +63,7 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
         try {
 		    Header header = getResponseHeader(CalDAVConstants.HEADER_CONTENT_TYPE);
 		    String contentType = (header != null) ? header.getValue() : null;
-		    if (StringUtils.isBlank(contentType) || 
+		    if (UrlUtils.isBlank(contentType) ||
 		    		contentType.startsWith(CalDAVConstants.CONTENT_TYPE_CALENDAR)) {
 		         stream = new BufferedInputStream(getResponseBodyAsStream());
 		        ret =  calendarBuilder.build(stream);

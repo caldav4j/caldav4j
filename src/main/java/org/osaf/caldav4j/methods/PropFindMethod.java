@@ -18,8 +18,6 @@
  */
 package org.osaf.caldav4j.methods;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
@@ -31,6 +29,8 @@ import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.util.CaldavStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -43,7 +43,7 @@ import java.util.List;
  *
  */
 public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.PropFindMethod {
-    private static final Log log = LogFactory.getLog(PropFindMethod.class);
+    private static final Logger log = LoggerFactory.getLogger(PropFindMethod.class);
 
 
     public PropFindMethod(String uri) throws IOException {
@@ -105,7 +105,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
 
     public String getCalendarDescription(String urlPath) {
         DavProperty p =  getDavProperty(urlPath, CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
-        if (p!= null) {
+        if (p!= null && p.getValue() != null) {
             return p.getValue().toString();
         } else {
             return "";
@@ -113,7 +113,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
     }
     public String getDisplayName(String urlPath) {
         DavProperty p= getDavProperty(urlPath, DavPropertyName.DISPLAYNAME);
-        if (p != null) {
+        if (p != null && p.getValue() != null) {
             return p.getValue().toString();
         } else {
             return "";

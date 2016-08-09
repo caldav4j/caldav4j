@@ -21,8 +21,6 @@ package org.osaf.caldav4j.methods;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.commons.httpclient.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavMethods;
 import org.apache.jackrabbit.webdav.DavServletResponse;
@@ -35,6 +33,8 @@ import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.util.CaldavStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +47,7 @@ import java.util.Collection;
  */
 public class CalDAVReportMethod extends DavMethodBase {
 
-    private static final Log log = LogFactory.getLog(CalDAVReportMethod.class);
+    private static final Logger log = LoggerFactory.getLogger(CalDAVReportMethod.class);
 
     private boolean isCalendarResponse = false;
     private boolean isDeep = false;

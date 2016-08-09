@@ -2,8 +2,6 @@ package org.osaf.caldav4j.methods;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 import org.junit.After;
@@ -13,14 +11,14 @@ import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.util.CaldavStatus;
-import org.osaf.caldav4j.util.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -32,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 @Ignore
 public class MkCalendarTest extends BaseTestCase {
 
-	private static final Log log = LogFactory.getLog(MkCalendarTest.class);
+	private static final Logger log = LoggerFactory.getLogger(MkCalendarTest.class);
 
 	private List<String> addedItems = new ArrayList<String>();
 	@Override
@@ -141,52 +139,4 @@ public class MkCalendarTest extends BaseTestCase {
 
 
 	}
-
-	/*public void testFun() throws Exception {
-        CalendarQuery calquery = new CalendarQuery("C", "D");
-        calquery.addProperty(CalDAVConstants.NS_DAV, "D", "getetag");
-
-        CalendarData calendarData = new CalendarData("C");
-        calendarData.setExpandOrLimitRecurrenceSet(null);
-        Comp compVCAL = new Comp("C");
-        compVCAL.setAllProp(true);
-        compVCAL.setName("VCALENDAR");
-        Comp compVEVENT = new Comp("C");
-        compVEVENT.setName("VEVENT");
-        compVEVENT.addProp("X-ABC-GUID");
-        compVEVENT.addProp("UID");
-        compVEVENT.addProp("DTSTART");
-        compVEVENT.addProp("DTEND");
-        compVEVENT.addProp("DURATION");
-        compVEVENT.addProp("EXDATE");
-        compVEVENT.addProp("EXRULE");
-
-        Comp compVTIMEZONE = new Comp("C");
-        compVTIMEZONE.setName("VTIMEZONE");
-        compVTIMEZONE.setAllProp(true);
-        compVTIMEZONE.setAllComp(true);
-
-        List compList = new ArrayList();
-        compList.add(compVEVENT);
-        compList.add(compVTIMEZONE);
-        compVCAL.setComps(compList);
-        calendarData.setComp(compVCAL);
-        calquery.setCalendarDataProp(calendarData);
-        List compFilters = null;
-        CompFilter compFilterVCALENDAR = new CompFilter("C", "VCALENDAR",
-                false, null, null, compFilters, null);
-        DateTime startTime = DateUtils.createDateTime(2004, 8, 2, 0, 0, null,
-                true);
-        DateTime endTime = DateUtils.createDateTime(2004, 8, 3, 0, 0, null,
-                true);
-
-        CompFilter compFilterVEVENT = new CompFilter("C", "VEVENT", false,
-                startTime, endTime, null, null);
-        compFilterVCALENDAR.addCompFilter(compFilterVEVENT);
-        calquery.setCompFilter(compFilterVCALENDAR);
-
-        Document d = calquery
-                .createNewDocument(XMLUtils.getDOMImplementation());
-        log.debug(XMLUtils.toPrettyXML(d));
-    }*/
 }

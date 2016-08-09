@@ -4,13 +4,13 @@
 package org.osaf.caldav4j;
 
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -19,8 +19,7 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		super();
 	}
 
-	protected static final Log log = LogFactory
-	.getLog(CalDAVCollectionAceTest.class);
+	protected static final Logger log = LoggerFactory.getLogger(CalDAVCollectionAceTest.class);
 
 
 

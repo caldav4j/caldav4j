@@ -20,8 +20,6 @@ import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
@@ -32,6 +30,8 @@ import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.osaf.caldav4j.util.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -50,7 +50,7 @@ import java.util.Vector;
  * 
  */
 public class MkTicketMethod extends DavMethodBase {
-    private static final Log log = LogFactory.getLog(CalDAVReportMethod.class);
+    private static final Logger log = LoggerFactory.getLogger(CalDAVReportMethod.class);
 
     private TicketRequest ticketRequest;
 

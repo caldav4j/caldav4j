@@ -15,13 +15,13 @@
  */
 package org.osaf.caldav4j.model.response;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.util.XMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -35,8 +35,7 @@ import java.util.List;
  */
 public class TicketDiscoveryProperty {
 
-	private static final Log log = LogFactory
-			.getLog(TicketDiscoveryProperty.class);
+	private static final Logger log = LoggerFactory.getLogger(TicketDiscoveryProperty.class);
 
 	List<TicketResponse> tickets = null;
 

@@ -2,18 +2,17 @@ package org.osaf.caldav4j.functional.support;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVCollection;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.TestConstants;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CaldavFixtureHarness implements TestConstants {
 
-	protected static final Log log = LogFactory.getLog(CaldavFixtureHarness.class);
+	protected static final Logger log = LoggerFactory.getLogger(CaldavFixtureHarness.class);
 	
 	
 	public static CalDAVCollection createCollectionFromFixture(CalDavFixture fixture) {

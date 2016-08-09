@@ -23,8 +23,6 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.TestConstants;
@@ -35,6 +33,8 @@ import org.osaf.caldav4j.support.HttpClientTestUtils;
 import org.osaf.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +53,7 @@ import static org.osaf.caldav4j.support.HttpMethodCallbacks.nullCallback;
 public class CalDavFixture
 {
 	// fields -----------------------------------------------------------------
-    protected static final Log log = LogFactory.getLog(CalDavFixture.class);
+    protected static final Logger log = LoggerFactory.getLogger(CalDavFixture.class);
 	
 	private HttpClient httpClient;
 	

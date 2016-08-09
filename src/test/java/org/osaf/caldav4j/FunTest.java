@@ -5,8 +5,6 @@ import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.parameter.Value;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -19,14 +17,15 @@ import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.PropFindMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FunTest extends BaseTestCase {
 	public FunTest() {
 		super();
 	}
 
-	private static final Log log = LogFactory
-	.getLog(FunTest.class);
+	private static final Logger log = LoggerFactory.getLogger(FunTest.class);
 
 
 	@Before
@@ -76,7 +75,7 @@ public class FunTest extends BaseTestCase {
 			= recur.getDates(baseDate, startDate, endDate, Value.DATE_TIME);
 			for (int x = 0; x < dateList.size(); x++){
 				DateTime d = (DateTime) dateList.get(x);
-				log.info(d);
+				log.info(d.toString());
 			}
 		} catch (Exception e){
 			throw new RuntimeException(e);

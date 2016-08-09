@@ -2,8 +2,6 @@ package org.osaf.caldav4j.methods;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.client.methods.AclMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -21,6 +19,8 @@ import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.model.request.CalDAVPrivilege;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -40,7 +40,7 @@ import static org.junit.Assert.assertEquals;
 @Ignore // to be run under functional
 public class PropFindTest extends BaseTestCase {
 
-	private static final Log log = LogFactory.getLog(PropFindTest.class);
+	private static final Logger log = LoggerFactory.getLogger(PropFindTest.class);
 
 	@Before
 	public void setUp() throws Exception {

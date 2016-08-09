@@ -6,8 +6,6 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Summary;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +14,8 @@ import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 import org.osaf.caldav4j.util.MethodUtil;
 import org.osaf.caldav4j.util.UrlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 import java.util.*;
@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 //@Ignore // to be run under functional
 public class PutGetTest extends BaseTestCase {
 
-	private static final Log log = LogFactory.getLog(PutGetTest.class);
+	private static final Logger log = LoggerFactory.getLogger(PutGetTest.class);
 	private ResourceBundle messages;
 
 	private List<String> addedEventsFile = new ArrayList<String>();

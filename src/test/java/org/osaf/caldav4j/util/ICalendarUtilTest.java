@@ -1,14 +1,5 @@
 package org.osaf.caldav4j.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
@@ -16,18 +7,24 @@ import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.property.Uid;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.methods.PutGetTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class ICalendarUtilTest extends BaseTestCase{
-	private static final Log log = LogFactory.getLog(PutGetTest.class);
+	private static final Logger log = LoggerFactory.getLogger(PutGetTest.class);
 
 	// list of different components
 	private List<String> calendarList = new ArrayList<String>();
@@ -103,7 +100,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 		//CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
 
 		Calendar strangeIcs =  this.parseICS("icalendar/Recurrent_with_timezone.ics");
-		log.info(strangeIcs);
+		log.info(strangeIcs.toString());
 	}
 
 	/**
@@ -125,7 +122,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 			Component firstComponent = ICalendarUtils.getFirstComponent(cal);
 
 			// print it | test if matches	
-			log.debug(cal);	       
+			log.debug(cal.toString());
 			log.debug(firstComponent.toString());
 		}
 	}
