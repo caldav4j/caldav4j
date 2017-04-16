@@ -15,23 +15,30 @@
  */
 package org.osaf.caldav4j;
 
-import java.io.Serializable;
-
 import net.fortuna.ical4j.model.Calendar;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
+import org.osaf.caldav4j.model.response.CalendarDataProperty;
 
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
-import org.osaf.caldav4j.model.response.CalDAVResponse;
+import java.io.Serializable;
 
 public class CalDAVResource implements Serializable{
 	private static final long serialVersionUID = -2607152240683030192L;
 	private ResourceMetadata resourceMetadata = null;
     private Calendar calendar = null;
     
-    public CalDAVResource(CalDAVResponse response) throws CalDAV4JException{
-        this.calendar = response.getCalendar();
+//    public CalDAVResource(CalDAVResponse response) throws CalDAV4JException{
+//        this.calendar = response.getCalendar();
+//        this.resourceMetadata = new ResourceMetadata();
+//        this.resourceMetadata.setETag(response.getETag());
+//        this.resourceMetadata.setHref(response.getHref());
+//    }
+
+    public CalDAVResource(MultiStatusResponse response) {
+        this.calendar = CalendarDataProperty.getCalendarfromResponse(response);
         this.resourceMetadata = new ResourceMetadata();
-        this.resourceMetadata.setETag(response.getETag());
+        this.resourceMetadata.setETag(CalendarDataProperty.getEtagfromResponse(response));
         this.resourceMetadata.setHref(response.getHref());
+
     }
     
     public CalDAVResource(Calendar calendar, String etag, String href){

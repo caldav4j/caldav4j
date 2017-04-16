@@ -16,16 +16,19 @@
 
 package org.osaf.caldav4j.model.request;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import net.fortuna.ical4j.model.Date;
-
+import net.fortuna.ical4j.model.DateTime;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
+
+import java.text.ParseException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  *  <!ELEMENT time-range EMPTY>
@@ -40,13 +43,11 @@ public class TimeRange extends OutputsDOMBase {
     public static final String ELEMENT_NAME = "time-range";
     public static final String ATTR_START = "start";
     public static final String ATTR_END = "end";
-    
-    private String caldavNamespaceQualifier = null;
+
     private Date start = null;
     private Date end = null;
     
-    public TimeRange(String caldavNamespaceQualifier, Date start, Date end) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+    public TimeRange(Date start, Date end) {
         this.start = start;
         this.end = end;
     }
@@ -55,12 +56,8 @@ public class TimeRange extends OutputsDOMBase {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
-    }
-
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
     protected Collection<OutputsDOM> getChildren() {
@@ -76,8 +73,9 @@ public class TimeRange extends OutputsDOMBase {
         if (start != null) {
         	m.put(ATTR_START, start.toString());
         }
+
         if (end != null) {
-        	m.put(ATTR_END, end.toString());
+            m.put(ATTR_END, end.toString());
         }
         return m;
     }
@@ -97,7 +95,13 @@ public class TimeRange extends OutputsDOMBase {
     public void setStart(Date start) {
         this.start = start;
     }
-    
+
+    public void setTimeRange(String start, String end) throws ParseException {
+        this.start = new DateTime(start);
+        this.end = new DateTime(end);
+    }
+
+
     /**
      * <!ELEMENT time-range EMPTY>
      * 

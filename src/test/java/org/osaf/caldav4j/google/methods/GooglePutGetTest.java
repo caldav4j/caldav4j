@@ -8,8 +8,6 @@ import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.DtStamp;
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -22,6 +20,8 @@ import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import static org.junit.Assert.assertEquals;
 // TODO: fix; see issue 47
 public class GooglePutGetTest extends BaseTestCase {
 
-	private static final Log log = LogFactory.getLog(GooglePutGetTest.class);
+	private static final Logger log = LoggerFactory.getLogger(GooglePutGetTest.class);
     private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
     public GooglePutGetTest() {

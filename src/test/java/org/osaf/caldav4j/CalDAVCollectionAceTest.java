@@ -4,16 +4,13 @@
 package org.osaf.caldav4j;
 
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Ace;
-import org.apache.webdav.lib.Privilege;
-import org.apache.webdav.lib.methods.AclMethod;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -22,8 +19,7 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		super();
 	}
 
-	protected static final Log log = LogFactory
-	.getLog(CalDAVCollectionAceTest.class);
+	protected static final Logger log = LoggerFactory.getLogger(CalDAVCollectionAceTest.class);
 
 
 
@@ -46,8 +42,6 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		super.setUp();
 
 		CaldavFixtureHarness.provisionGoogleEvents(fixture);
-
-		myCache = CaldavFixtureHarness.createSimpleCache();
 
 		//TODO: Not Entirely sure, why uncachedCollection is required
 		uncachedCollection = CaldavFixtureHarness.createCollectionFromFixture(fixture);
@@ -72,14 +66,6 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		for (Header h : headerList) {
 			log.info(h.getName() + ":" + h.getValue());
 		}
-
-		Privilege privilege = Privilege.WRITE;
-
-
-		Ace ace = new Ace("principal");
-		ace.addPrivilege(privilege);
-		AclMethod aclMethod = new AclMethod("path_to_resource");
-		aclMethod.addAce(ace);
 
 		if (uncachedCollection.allows(fixture.getHttpClient(), "MKCOL", headerList)) {
 			log.info("MKCOL exists");

@@ -3,33 +3,13 @@
  */
 package org.osaf.caldav4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.Date;
-import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
-import net.sf.ehcache.CacheManager;
-
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -43,15 +23,21 @@ import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.GenerateQuery;
 import org.osaf.caldav4j.util.ICalendarUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Ignore
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 public class CalDAVCollectionTest extends BaseTestCase {
 	public CalDAVCollectionTest() {
 		super();
 	}
 
-	protected static final Log log = LogFactory
-	.getLog(CalDAVCollectionTest.class);
+	protected static final Logger log = LoggerFactory.getLogger(CalDAVCollectionTest.class);
 
 
 
@@ -134,7 +120,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
 	// get a Calendar by uid, then by summary, then by recurrence-id
 	@Test
-	public void queryCalendar() throws CalDAV4JException {
+	public void queryCalendar() throws CalDAV4JException, IOException {
 		Calendar calendar = null;
 		GenerateQuery gq=new GenerateQuery();
 
@@ -160,7 +146,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	// TODO: this is work in progress; see issue 48
 	@Ignore
 	@Test
-	public void queryPartialCalendar() throws CalDAV4JException {
+	public void queryPartialCalendar() throws CalDAV4JException, IOException {
 		Calendar calendar = null;
 		GenerateQuery gq=new GenerateQuery();
 
@@ -168,8 +154,8 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		calendar = null;
 		gq.setFilter("VEVENT : UID=="+ICS_GOOGLE_DAILY_NY_5PM_UID );
 		gq.setRecurrenceSet("20060101T170000Z","20060103T230000Z", CalendarData.EXPAND);
-
-		List<Calendar>calendars = collection.queryCalendars(fixture.getHttpClient(), gq.generate());		
+		CalendarQuery query = gq.generate();
+		List<Calendar> calendars = collection.queryCalendars(fixture.getHttpClient(), query);
 		assertNotNull(calendars);
 		assertEquals("bad number of responses: ",3,calendars.size());
 		for (Calendar c : calendars) {
@@ -215,7 +201,8 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	@Test
 	public void testGetEventResources() throws Exception {
 		Date beginDate = ICalendarUtils.createDateTime(2006, 0, 1, null, true);
-		Date endDate = ICalendarUtils.createDateTime(2006, 11, 9, null, true);
+		Date endDate = ICalendarUtils.createDateTime(2006, 0, 9, null, true);
+		Thread.sleep(1000);
 		List<Calendar> l = collection.getEventResources(fixture.getHttpClient(),
 				beginDate, endDate);
 
@@ -290,7 +277,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		Calendar calendar = collection.queryCalendar(fixture.getHttpClient(), Component.VEVENT, newUid, null);
 		assertNotNull(calendar);
 
-		log.info("Delete event with uid" + newUid);
+		log.info("Delete event with uid " + newUid);
 		collection.delete(fixture.getHttpClient(), Component.VEVENT, newUid);
 
 		log.info("Check if event is still on server");

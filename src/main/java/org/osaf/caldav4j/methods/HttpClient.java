@@ -15,18 +15,14 @@
  */
 package org.osaf.caldav4j.methods;
 
-import java.io.IOException;
-
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpConnectionManager;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.*;
 import org.osaf.caldav4j.CalDAVConstants;
+
+import java.io.IOException;
 
 /**
  * This class was extended in order to handle tickets. If a ticket is set on a
- * resouce is will be included in the request. The default Action is to put the
+ * resource is will be included in the request. The default Action is to put the
  * ticket in the Request Header.
  * 
  * @author EdBindl

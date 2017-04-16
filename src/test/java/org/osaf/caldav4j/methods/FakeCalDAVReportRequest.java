@@ -15,11 +15,13 @@
  */
 package org.osaf.caldav4j.methods;
 
+import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Fake report request used by tests.
@@ -34,7 +36,7 @@ public class FakeCalDAVReportRequest implements CalDAVReportRequest
 	/**
 	 * {@inheritDoc}
 	 */
-	public Element outputDOM(Document document) throws DOMValidationException
+	public Element toXml(Document document)
 	{
 		return document.createElement("fake-query");
 	}
@@ -42,12 +44,16 @@ public class FakeCalDAVReportRequest implements CalDAVReportRequest
 	/**
 	 * {@inheritDoc}
 	 */
-	public Document createNewDocument(DOMImplementation dom) throws DOMValidationException
+	public Document createNewDocument()
 	{
-		Document document = dom.createDocument(null, null, null);
-		
-		Element documentElement = outputDOM(document);
-		document.appendChild(documentElement);
+		Document document = null;
+		try {
+			document = DomUtil.createDocument();
+			Element documentElement = toXml(document);
+			document.appendChild(documentElement);
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
 		
 		return document;
 	}

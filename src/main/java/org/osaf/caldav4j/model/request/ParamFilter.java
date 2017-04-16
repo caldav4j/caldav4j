@@ -16,16 +16,16 @@
 
 package org.osaf.caldav4j.model.request;
 
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
+import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOMBase;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.xml.OutputsDOM;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
  * <!ELEMENT param-filter (is-defined | text-match) >
@@ -40,40 +40,41 @@ public class ParamFilter extends OutputsDOMBase {
     public static final String ELEMENT_NAME = "param-filter";
     public static final String ELEM_IS_DEFINED = "is-defined";
     public static final String ATTR_NAME = "name";
-    
-    private String caldavNamespaceQualifier = null;
 
     private boolean isDefined = false;
     private TextMatch textMatch = null;
     private String name = null;
+
+    public ParamFilter(){
+
+    }
+
+    public ParamFilter(String name, boolean isDefined, TextMatch textMatch){
+        this.name = name;
+        this.isDefined = isDefined;
+        this.textMatch = textMatch;
+    }
+
     public void setName(String name) {
-		this.name = name;
-	}
+        this.name = name;
+    }
+
     public String getName() {
-		return name;
-	}
-    public ParamFilter(String caldavNamespaceQualifier) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+        return name;
     }
 
     protected String getElementName() {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
-    }
-
-    protected Collection<OutputsDOM> getChildren() {
-        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
+    protected Collection<XmlSerializable> getChildren() {
+        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
         if (isDefined){
-            children.add(new SimpleDOMOutputtingObject(
-                    CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
-                    ELEM_IS_DEFINED));
+            children.add(new PropProperty(ELEM_IS_DEFINED, CalDAVConstants.NAMESPACE_CALDAV));
         } else if (textMatch != null){
             children.add(textMatch);
         }

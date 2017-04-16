@@ -20,10 +20,10 @@ import org.osaf.caldav4j.xml.OutputsDOM;
 
 /**
  * Interface for elements used to query CalDAV servers like CalendarQuery (xml:
- * calender-query) and CalendarMultiget (xml: calendar-multiget)
+ * calender-query) and Calendar Multiget (xml: calendar-multiget)
  * 
  * @author bobbyrullo
  */
-public interface CalDAVReportRequest extends OutputsDOM{
+public interface CalDAVReportRequest extends OutputsDOM {
 
 }

@@ -2,18 +2,17 @@ package org.osaf.caldav4j.functional.support;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-
 import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.CalDAVCollection;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.TestConstants;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CaldavFixtureHarness implements TestConstants {
 
-	protected static final Log log = LogFactory.getLog(CaldavFixtureHarness.class);
+	protected static final Logger log = LoggerFactory.getLogger(CaldavFixtureHarness.class);
 	
 	
 	public static CalDAVCollection createCollectionFromFixture(CalDavFixture fixture) {
@@ -59,10 +58,10 @@ public class CaldavFixtureHarness implements TestConstants {
 		//initialize cache
 		CacheManager cacheManager = CacheManager.create();
 		EhCacheResourceCache myCache = new EhCacheResourceCache();
-		Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, false, false,
-				600, 300, false, 0);
+		Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, null, false,
+				System.getProperty("java.io.tmpdir"), false, 600, 300, false, 0, null);
 		Cache hrefToResourceCache = new Cache(HREF_TO_RESOURCE_CACHE, 1000,
-				false, false, 600, 300, false, 0);
+				null, false, System.getProperty("java.io.tmpdir"), false, 600, 300, false, 0, null);
 		myCache.setHrefToResourceCache(hrefToResourceCache);
 		myCache.setUidToHrefCache(uidToHrefCache);
 		cacheManager.addCache(uidToHrefCache);

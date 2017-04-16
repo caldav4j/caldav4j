@@ -16,17 +16,13 @@
 
 package org.osaf.caldav4j.model.request;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
+
+import java.util.*;
 
 /**
  *  <!ELEMENT comp ((allcomp, (allprop | prop*)) |
@@ -54,41 +50,47 @@ public class Comp extends OutputsDOMBase {
     public static final String ELEM_ALLCOMP = "allcomp";
    
     public static final String ATTR_NAME = "name";
-    
-    private String caldavNamespaceQualifier = null;
 
     private List<Comp> comps = new ArrayList<Comp>();
     private List<CalDAVProp> props = new ArrayList<CalDAVProp>();
     private boolean allComp = false;
     private boolean allProp = false;
     private String name = null;
-    
-    
-    public Comp(String caldavNamespaceQualifier, String name, boolean allComp,
-            boolean allProp, List<Comp> comps, List<CalDAVProp> props) {
-        
+
+    public Comp() {
+
+    }
+
+    public Comp(String name){
+        this(name, false, false);
+    }
+
+    public Comp(String name, boolean allComp,
+                boolean allProp, List<Comp> comps, List<CalDAVProp> props) {
+
         this.name = name;
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
-        
+
         if (allComp){
             this.allComp = true;
-        } else {
+        } else if(comps != null) {
             this.comps.addAll(comps);
         }
-        
+
         if (allProp){
             this.allProp = true;
-        } else {
+        } else if (props != null){
             this.props.addAll(props);
         }
     }
-    
-    public Comp(String caldavNamespaceQualifier) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
+    public Comp(String name, List<Comp> comps, List<CalDAVProp> props){
+        this(name, false, false, comps, props);
     }
-    
-    public Comp() {
-    	this.caldavNamespaceQualifier = CalDAVConstants.NS_QUAL_CALDAV;
+
+    public Comp(String name, boolean allComp, boolean allProp) {
+        this.name = name;
+        this.allComp = allComp;
+        this.allProp = allProp;
     }
 
     public boolean isAllComp() {
@@ -115,6 +117,10 @@ public class Comp extends OutputsDOMBase {
         this.comps = comps;
     }
 
+    public void addComp(Comp comp){ this.comps.add(comp); }
+
+    public void addComp(String name) { this.comps.add(new Comp(name)); }
+
     public String getName() {
         return name;
     }
@@ -123,7 +129,7 @@ public class Comp extends OutputsDOMBase {
         this.name = name;
     }
 
-    public List getProps() {
+    public List<CalDAVProp> getProps() {
         return props;
     }
 
@@ -135,34 +141,24 @@ public class Comp extends OutputsDOMBase {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
-    }
-
-    protected Collection<OutputsDOM> getChildren() {
-        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
+    protected Collection<? extends XmlSerializable> getChildren() {
+        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
         if (allComp){
-            SimpleDOMOutputtingObject allcompElement = new SimpleDOMOutputtingObject(
-                    CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
-                    ELEM_ALLCOMP);
-            children.add(allcompElement);
+            children.add(new PropProperty(ELEM_ALLCOMP, CalDAVConstants.NAMESPACE_CALDAV));
         } else if (comps != null){
             children.addAll(comps);
         }
-        
+
         if (allProp){
-            SimpleDOMOutputtingObject allpropElement = new SimpleDOMOutputtingObject(
-                    CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
-                    ELEM_ALLPROP);
-            children.add(allpropElement);
-            
+            children.add(new PropProperty(ELEM_ALLPROP, CalDAVConstants.NAMESPACE_CALDAV));
         } else if (props != null) {
             children.addAll(props);
         }
+
         return children;
     }
     
@@ -181,11 +177,11 @@ public class Comp extends OutputsDOMBase {
     }
     
     public void addProp(String propName, boolean novalue) {
-        props.add(new CalDAVProp(caldavNamespaceQualifier, propName, novalue));
+        props.add(new CalDAVProp(propName, novalue));
     }
     
     public void addProp(String propName) {
-        props.add(new CalDAVProp(caldavNamespaceQualifier, propName));
+        props.add(new CalDAVProp(propName));
     }
     
     /**

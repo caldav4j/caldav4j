@@ -15,52 +15,43 @@
  */
 package org.osaf.caldav4j.model.request;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
+import org.apache.jackrabbit.webdav.property.DavPropertySet;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.xml.OutputsDOM;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
 
-public class Prop extends OutputsDOMBase{
+import java.util.Collection;
+
+/**
+ * Defines a container DAV:prop Property.
+ *
+ * @param <T>
+ */
+
+public class Prop<T> extends PropProperty<T>{
     public static final String ELEMENT_NAME = "prop";
 
-    private String namespaceQualifier;
-    private List<OutputsDOM> children = null;
-    
-    public Prop(String namespaceQualifier){
-        this.namespaceQualifier = namespaceQualifier;
-    }
-    
-    public Prop(String namespaceQualifier, List<PropProperty> properties){
-        this.namespaceQualifier = namespaceQualifier;
-        children = new ArrayList<OutputsDOM>();
-        this.children.addAll(properties);
-    }
-    
-    protected String getElementName() {
-        return ELEMENT_NAME;
+    public Prop( ){ super(ELEMENT_NAME, CalDAVConstants.NAMESPACE_WEBDAV); }
+
+    public Prop(Collection<XmlSerializable> children){
+        super(ELEMENT_NAME, null, CalDAVConstants.NAMESPACE_WEBDAV, null, children);
     }
 
-    protected String getNamespaceQualifier() {
-        return namespaceQualifier;
+    public Prop(DavPropertyNameSet children){
+        super(ELEMENT_NAME, null, CalDAVConstants.NAMESPACE_WEBDAV, null, children);
     }
 
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_DAV;
+    public Prop(DavPropertySet children){
+        super(ELEMENT_NAME, null, CalDAVConstants.NAMESPACE_WEBDAV, null, children);
     }
 
-    protected Collection<OutputsDOM> getChildren() {
-        return children;
+    public boolean isEmpty(){ return this.isChildrenEmpty(); }
+
+    public void add(XmlSerializable prop){
+        this.addChild(prop);
     }
 
-    protected String getTextContent() {
-        return null;
-    }
-    
-    protected Map<String, String> getAttributes() {
-        return null;
+    public void remove(XmlSerializable prop){
+        this.removeChild(prop);
     }
 }

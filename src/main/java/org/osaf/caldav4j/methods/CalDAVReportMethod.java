@@ -1,153 +1,227 @@
 /*
- * Copyright 2006 Open Source Applications Foundation
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License") +  you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
-
 package org.osaf.caldav4j.methods;
 
-import java.io.IOException;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
-
-import org.apache.commons.httpclient.HttpConnection;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.methods.DepthSupport;
+import net.fortuna.ical4j.model.Calendar;
+import org.apache.commons.httpclient.*;
+import org.apache.jackrabbit.webdav.DavException;
+import org.apache.jackrabbit.webdav.DavMethods;
+import org.apache.jackrabbit.webdav.DavServletResponse;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
+import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
+import org.apache.jackrabbit.webdav.header.DepthHeader;
+import org.apache.jackrabbit.webdav.property.DavProperty;
+import org.apache.jackrabbit.webdav.property.DavPropertyName;
+import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
-import org.osaf.caldav4j.util.UrlUtils;
-import org.osaf.caldav4j.util.XMLUtils;
-import org.w3c.dom.Document;
+import org.osaf.caldav4j.util.CaldavStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
- * This method implements the REPORT method described in 
- *  caldav RFC4791. As it's requestBody is an XML document
- *  it takes as a parameter a class describing the document, then
- *  generates the body before passing it to executeMethod.
- *  
- *  so:
- *  1- set this.reportRequest 
- *  2- the class creates the body from the XML
- * @author robipolli@gmail.com
- *
+ * CalDAV Report Method, which extends DavMethodBase
+ * @author <a href="mailto:ankushmishra9@gmail.com">Ankush Mishra</a>
  */
-public class CalDAVReportMethod extends CalDAVXMLResponseMethodBase implements DepthSupport, CalDAVConstants {
-    private static final Log log = LogFactory
-        .getLog(CalDAVReportMethod.class);
+public class CalDAVReportMethod extends DavMethodBase {
+
+    private static final Logger log = LoggerFactory.getLogger(CalDAVReportMethod.class);
+
+    private boolean isCalendarResponse = false;
+    private boolean isDeep = false;
+    private Calendar calendarResponse = null;
+    private CalDAVReportRequest reportRequest = null;
     private CalendarBuilder calendarBuilder = null;
 
+    public CalDAVReportMethod(String uri){
+        super(uri);
+    }
+
+    public CalDAVReportMethod(String uri, CalDAVReportRequest reportRequest) throws IOException {
+        this(uri, reportRequest, CalDAVConstants.DEPTH_1);
+    }
+
+    public CalDAVReportMethod(String uri, CalDAVReportRequest reportRequest, int depth) throws IOException {
+        super(uri);
+        this.reportRequest = reportRequest;
+        processReportRequest(reportRequest);
+        setDepth(depth);
+    }
+
+    /**
+     * Sets the depth and the request body as the Report specified.
+     * @param reportRequest
+     * @throws IOException
+     */
+    private void processReportRequest(CalDAVReportRequest reportRequest) throws IOException {
+        setRequestBody(reportRequest);
+    }
+
+    public void setReportRequest(CalDAVReportRequest reportRequest) throws IOException {
+        this.reportRequest = reportRequest;
+        processReportRequest(reportRequest);
+    }
+
+    public void setDepth(int depth){
+        isDeep = depth > CalDAVConstants.DEPTH_0;
+
+        setRequestHeader(new DepthHeader(depth));
+    }
+
+    public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
+        this.calendarBuilder = calendarBuilder;
+    }
+
     public CalendarBuilder getCalendarBuilder() {
-		return calendarBuilder;
-	}
-
-	public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
-		this.calendarBuilder = calendarBuilder;
-	}
-
-	/** this is the XML document that will be generated by @link{generateRequestBody()} */
-    private CalDAVReportRequest reportRequest; 
-    
-    private int depth = DEPTH_1;
-    
-    protected CalDAVReportMethod() {
-
-    }
-
-    protected CalDAVReportMethod(String path, CalDAVReportRequest reportRequest) {
-        this.reportRequest = reportRequest;
-        setPath(path);
+        return this.calendarBuilder;
     }
 
     /**
-     * Depth setter.
-     *
-     * @param depth New depth value
+     * @see HttpMethod#getName()
      */
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    /**
-     * Depth getter.
-     *
-     * @return int depth value
-     */
-    public int getDepth() {
-        return depth;
-    }
-    
+    @Override
     public String getName() {
-        return CalDAVConstants.METHOD_REPORT;
+        return DavMethods.METHOD_REPORT;
     }
 
-    public CalDAVReportRequest getReportRequest() {
-        return reportRequest;
-    }
-
-    public void setReportRequest(CalDAVReportRequest reportRequest) {
-        this.reportRequest = reportRequest;
-    }
-    
-    
     /**
-     * Generate additional headers needed by the request.
      *
-     * @param state State token
-     * @param conn The connection being used to make the request.
+     * @param statusCode
+     * @return true if status code is {@link DavServletResponse#SC_OK 200 (OK)}
+     * or {@link DavServletResponse#SC_MULTI_STATUS 207 (Multi Status)}. If the
+     * report request included a depth other than {@link CalDAVConstants#DEPTH_0 0}
+     * a multi status response is required.
      */
-    public void addRequestHeaders(HttpState state, HttpConnection conn)
-    throws IOException, HttpException {
-
-        super.addRequestHeaders(state, conn);
-
-        switch (depth) {
-        case DEPTH_0:
-            super.setRequestHeader("Depth", "0");
-            break;
-        case DEPTH_1:
-            super.setRequestHeader("Depth", "1");
-            break;
-        case DEPTH_INFINITY:
-            super.setRequestHeader("Depth", CalDAVConstants.INFINITY_STRING);
-            break;
+    @Override
+    protected boolean isSuccess(int statusCode) {
+        if (isDeep) {
+            return statusCode == CaldavStatus.SC_MULTI_STATUS;
+        } else {
+            return statusCode == CaldavStatus.SC_OK || statusCode == CaldavStatus.SC_MULTI_STATUS;
         }
+    }
 
-        if (getRequestHeader(HEADER_CONTENT_TYPE) == null) {
-        	addRequestHeader(HEADER_CONTENT_TYPE,CONTENT_TYPE_TEXT_XML);
+    @Override
+    protected void processResponseHeaders(HttpState state, HttpConnection conn) {
+        super.processResponseHeaders(state, conn);
+        Header header = getResponseHeader(CalDAVConstants.HEADER_CONTENT_TYPE);
+
+        //Note: Sometimes this does not happen. To take that into account.
+        if(header != null) {
+            HeaderElement[] elements = header.getElements();
+            for (HeaderElement element : elements) {
+                if (element.getName().equals(CalDAVConstants.CONTENT_TYPE_CALENDAR)) {
+                    isCalendarResponse = true;
+                    log.info("Response Content-Type: text/calendar");
+                } else if (element.getName().equals(CalDAVConstants.CONTENT_TYPE_TEXT_XML)) {
+                    log.info("Response Content-Type: text/xml");
+                } else log.warn("Response Content-Type is not text/xml or text/calendar");
+            }
         }
+    }
+
+    public Calendar getResponseBodyAsCalendar(){
+        return this.calendarResponse;
+    }
+
+    @Override
+    protected void processResponseBody(HttpState httpState, HttpConnection httpConnection) {
+        if (getStatusCode() == CaldavStatus.SC_OK && isCalendarResponse){
+            try {
+                InputStream stream = getResponseBodyAsStream();
+                calendarResponse = calendarBuilder.build(stream);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("Error while parsing Calendar response: " + e);
+            }
+        }
+        else
+            super.processResponseBody(httpState, httpConnection);
     }
 
     /**
-     * Generates a request body from the calendar query.
+     *
+     * @param urlPath Location of the CalendarResource
+     * @param property DavPropertyName of the property whose value is to be returned.
+     * @return DavProperty
+     *
+     *
      */
-    protected String generateRequestBody() {
-        Document doc = null;
+    public DavProperty getDavProperty(String urlPath, DavPropertyName property) {
         try {
-            doc = reportRequest.createNewDocument(XMLUtils
-                    .getDOMImplementation());
-        } catch (DOMValidationException domve) {
-            log.error("Error trying to create DOM from CalDAVReportRequest: ", domve);
-            throw new RuntimeException(domve);
+            MultiStatusResponse[] responses = getResponseBodyAsMultiStatus().getResponses();
+            if(responses != null && succeeded()) {
+                for (MultiStatusResponse r : responses) {
+                    if(r.getHref().equals(urlPath)){
+                        DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
+                        return props.get(property);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Unable to get MultiStatusResponse. Status: " + getStatusCode());
         }
-        return XMLUtils.toPrettyXML(doc);
+
+        log.warn("Can't find object at: " + urlPath);
+        return null;
     }
-    
-    // remove double slashes
-    public void setPath(String path) {
-    	super.setPath(UrlUtils.removeDoubleSlashes(path));
+
+    /**
+     * Returns all the set of properties and their value, for all the hrefs
+     * @param property
+     * @return
+     */
+    public Collection<DavProperty> getDavProperties(DavPropertyName property) {
+        Collection<DavProperty> set = new ArrayList<DavProperty>();
+
+        try {
+            MultiStatusResponse[] responses = getResponseBodyAsMultiStatus().getResponses();
+            if(responses != null && succeeded()) {
+                for (MultiStatusResponse r : responses) {
+                    DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
+                    if(!props.isEmpty()) set.add(props.get(property));
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Unable to get MultiStatusResponse. Status: " + getStatusCode());
+        }
+
+        return set;
+    }
+
+    /**
+     * Returns the MultiStatusResponse to the corresponding uri.
+     * @param uri
+     * @return
+     */
+    public MultiStatusResponse getResponseBodyAsMultiStatusResponse(String uri) throws IOException, DavException {
+        MultiStatusResponse[] responses = getResponseBodyAsMultiStatus().getResponses();
+        for(MultiStatusResponse response: responses)
+            if(response.getHref().equals(uri))
+                return response;
+        log.warn("No Response found for uri: " + uri);
+        return null;
     }
 }

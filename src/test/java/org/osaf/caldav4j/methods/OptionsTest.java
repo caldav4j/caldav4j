@@ -1,8 +1,5 @@
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.junit.Before;
@@ -10,17 +7,22 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 @Ignore // run thru functional OptionITCase
 public class OptionsTest extends BaseTestCase {
 
-	public static final String OUTBOX = "/Outbox";
-	public static final String INBOX = "/Inbox";
+	public static final String OUTBOX = "/Outbox/";
+	public static final String INBOX = "/Inbox/";
     // private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
     @Before
     @Override
     //do not need the initialization in the base class
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+
+    }
 
 	/**
 	   >> Request <<
@@ -45,19 +47,18 @@ public class OptionsTest extends BaseTestCase {
         for (String s : new String[] {INBOX, OUTBOX} ) {
         	
 	
-	        OptionsMethod options = new OptionsMethod();
-	        options.setPath(caldavCredential.home + s);
+	        OptionsMethod options = new OptionsMethod(caldavCredential.home + s);
+
 	        try {
 				http.executeMethod(hostConfig,options);
-				int statusCode = options.getStatusCode();
-				if (statusCode == 200) {
-					log.info(options.getResponseHeader("Allow"));
+				if (options.succeeded()) {
+					log.info(options.getResponseHeader("Allow").toString());
 					for (Header h : options.getResponseHeaders("DAV")) {
 						if (h != null) {
 							 if (h.getValue().contains("calendar-access")) { 
-								 log.info(h);
-							 } else if (h.getValue().contains("calendar-schedule")) {
-								 log.info(h);
+								 log.info(h.toString());
+							 } else if (h.getValue().contains("calendar-schedule") || h.getValue().contains("calendar-auto-schedule")) {
+								 log.info(h.toString());
 							 } else {
 								 assertTrue(false);
 							 }

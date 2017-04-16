@@ -1,23 +1,16 @@
 package org.osaf.caldav4j.methods;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.Enumeration;
-
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.Ace;
-import org.apache.webdav.lib.BaseProperty;
-import org.apache.webdav.lib.Privilege;
-import org.apache.webdav.lib.Property;
-import org.apache.webdav.lib.PropertyName;
-import org.apache.webdav.lib.methods.AclMethod;
-import org.apache.webdav.lib.properties.AclProperty;
-import org.apache.webdav.lib.util.DOMUtils;
+import org.apache.jackrabbit.webdav.DavException;
+import org.apache.jackrabbit.webdav.client.methods.AclMethod;
+import org.apache.jackrabbit.webdav.property.DavPropertyName;
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
+import org.apache.jackrabbit.webdav.security.AclProperty;
+import org.apache.jackrabbit.webdav.security.Principal;
+import org.apache.jackrabbit.webdav.security.Privilege;
+import org.apache.jackrabbit.webdav.xml.DomUtil;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -25,20 +18,29 @@ import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
-import org.osaf.caldav4j.model.request.CalendarDescription;
-import org.osaf.caldav4j.model.request.DisplayName;
-import org.osaf.caldav4j.model.request.PropProperty;
-import org.osaf.caldav4j.model.response.Principal;
-import org.osaf.caldav4j.model.util.PropertyFactory;
-import org.osaf.caldav4j.util.AceUtils;
-import org.osaf.caldav4j.util.XMLUtils;
+import org.osaf.caldav4j.model.request.CalDAVPrivilege;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @Ignore // to be run under functional
 public class PropFindTest extends BaseTestCase {
 
-	private static final Log log = LogFactory.getLog(PropFindTest.class);
+	private static final Logger log = LoggerFactory.getLogger(PropFindTest.class);
 
 	@Before
 	public void setUp() throws Exception {
@@ -51,30 +53,24 @@ public class PropFindTest extends BaseTestCase {
 		fixture.tearDown();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	@Ignore
-	public void testGetAcl() throws CalDAV4JException {
+	public void testGetAcl() throws CalDAV4JException, IOException, TransformerException, ParserConfigurationException {
 		// TODO here we should use fixture.getHttpClient()
+		String path = fixture.getCollectionPath();
 		HttpClient http = fixture.getHttpClient();;
 		HostConfiguration hostConfig = http.getHostConfiguration();
 
-		PropFindMethod propfind = new PropFindMethod();
-		propfind.setPath(caldavCredential.home);
+		DavPropertyNameSet set = new DavPropertyNameSet();
+        set.add(CalDAVConstants.DNAME_ACL);
 
-		PropProperty propFindTag = PropertyFactory.createProperty(PropertyFactory.PROPFIND);
-		PropProperty aclTag = PropertyFactory.createProperty(PropertyFactory.ACL);
-		PropProperty propTag = new PropProperty(CalDAVConstants.NS_DAV,"D","prop");
-		propTag.addChild(aclTag);
-		//		propTag.addChild(new DisplayName());
-		//		propTag.addChild(new CalendarDescription());
-		propFindTag.addChild(propTag);
-		propfind.setPropFindRequest(propFindTag);
-		propfind.setDepth(0);
+        PropFindMethod propfind = new PropFindMethod(path, set, CalDAVConstants.DEPTH_0);
+
+
 		try {
 			http.executeMethod(hostConfig,propfind);
 
-			Enumeration<Property> myEnum = propfind.getResponseProperties(caldavCredential.home);
+			AclProperty aclProperty = propfind.getAcl(path);
 			/*
 			 * response
 			 *   href
@@ -92,122 +88,76 @@ public class PropFindTest extends BaseTestCase {
 			 *            ace
 			 *            ,,,      
 			 */
-			while (myEnum.hasMoreElements()) {
-				AclProperty prop = (AclProperty) myEnum.nextElement();
-				NodeList nl = prop.getElement().getElementsByTagName("ace");
-				log.info(prop.getPropertyAsString());
-				Ace[] aces = (Ace[]) prop.getAces();
-				log.info(aces[0]);
 
-				log.info("There are aces # "+ nl.getLength() );
-				for (int j=0; j<nl.getLength(); j++) {
-					log.info("ace number "+ j);
-					Element o = (Element) nl.item(j);
-					// log.info("O:" +o.getNodeName() + o.getNodeValue() + o.getTextContent());
+				print_Xml(aclProperty);
+				List<AclProperty.Ace> aces =  propfind.getAces(path);
+				print_Xml(aces.get(0));
 
-					NodeList nl1 = o.getElementsByTagName("grant");
-					for ( int l=0; l<nl1.getLength(); l++) {
-						Element o1 = (Element) nl1.item(l);
-						log.info("O:" +o1.getTagName() );
-						if (o1.getNodeValue() == null) {
-							parseNode(o1);
-						}
-					}
-					nl1 = o.getElementsByTagName("principal");
-					for ( int l=0; l<nl1.getLength(); l++) {
-						Element o1 = (Element) nl1.item(l);
-						log.info("O:" +o1.getTagName() );
-						if (o1.getNodeValue() == null) {
-							parseNode(o1);
-						}
-					}
+				log.info("There are aces # "+ aces.size() );
+				for (AclProperty.Ace ace:aces) {
+					print_Xml(ace.getPrincipal());
+                    log.info(ace.isGrant()? "Grant Ace" : ace.isDeny()? "Deny Ace" : "Not Grant or Deny");
 				} // aces
 
-				for (int k=0; k<prop.getAces().length; k++) {
-					Ace ace = null;
-					ace = (Ace) prop.getAces()[k];
-					log.info("ace:" + prop.getElement().getChildNodes());
-					log.info("inherited by: " + ace.getInheritedFrom() + ";" +
-							"principal is: " + ace.getPrincipal() + ";" +
-							"localname (if principal==property) e':" + ace.getProperty().getLocalName()+ ";" );
-					Enumeration<Privilege> privs = ace.enumeratePrivileges();
-					while (privs.hasMoreElements()) {
-						Privilege priv = privs.nextElement();
-						log.info("further elements: " +"ns:" + priv.getNamespace() +":"+ priv.getName() + 
-								"; "+ priv.getParameter());
-					}
-					ace.addPrivilege(new Privilege(CalDAVConstants.NS_DAV,"spada","read"));
-				}
-				log.info(prop);
-			}
-			Ace test = new Ace("<property><owner/></property>");
-			test.addPrivilege(new Privilege(CalDAVConstants.NS_DAV,"grant","read"));
-			log.info(test);
+				for (AclProperty.Ace ace : aces) {
+					log.info("ace:");
+                    print_Xml(ace);
+					log.info("inherited by: " + ace.getInheritedHref() + ";" +
+							"principal is: ");
+                    print_Xml(ace.getPrincipal());
 
-		} catch (HttpException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+                    Privilege[] privs = ace.getPrivileges();
+
+					for(Privilege priv: privs)
+                    log.info("further elements: " +"ns:" + priv.getNamespace().toString() +":"+ priv.getName() +
+								"; ");
+				}
+
+        } catch (Exception e1) {
+			e1.printStackTrace();
 		}
 
-	}
+        Privilege[] privileges = { Privilege.PRIVILEGE_READ };
+        AclProperty.Ace test = AclProperty.createGrantAce(Principal.getPropertyPrincipal(DavPropertyName.create(DavPropertyName.XML_OWNER)),
+                privileges, false, false, null);
+        print_Xml(test);
+    }
 
 	@Test
 	@Ignore
-	public void testGetAcl_1() {
+	public void testGetAcl_1() throws IOException {
+        String path = fixture.getCollectionPath();
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
 
-		PropFindMethod propfind = new PropFindMethod();
-		propfind.setPath(caldavCredential.home);
+		DavPropertyNameSet set = new DavPropertyNameSet();
+		set.add(CalDAVConstants.DNAME_ACL);
+        set.add(CalDAVConstants.DNAME_DISPLAYNAME);
+        set.add(CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
 
-		PropProperty propFindTag = new PropProperty(CalDAVConstants.NS_DAV,"D","propfind");
-		PropProperty aclTag = new PropProperty(CalDAVConstants.NS_DAV,"D","acl");
-		PropProperty propTag = new PropProperty(CalDAVConstants.NS_DAV,"D","prop");
-		propTag.addChild(aclTag);
-		propTag.addChild(new DisplayName());
-		propTag.addChild(new CalendarDescription());
-		propFindTag.addChild(propTag);
-		propfind.setPropFindRequest(propFindTag);
-		propfind.setDepth(0);
+		PropFindMethod propfind = new PropFindMethod(path, set, CalDAVConstants.DEPTH_0);
+
 		try {
 			http.executeMethod(hostConfig,propfind);
-			//Hashtable<String, CalDAVResponse> hashme = propfind.getResponseHashtable();
 
-			Enumeration<Property> myEnum = propfind.getResponseProperties(caldavCredential.home);
-			while (myEnum.hasMoreElements()) {
+			AclProperty responses= propfind.getAcl(path);
+
+
 				log.info("new Property element");
-				BaseProperty e =  (BaseProperty) myEnum.nextElement();
-				log.info(e.getName());
-				AclProperty prop = (AclProperty) e;
-				log.info(prop.getPropertyAsString());
-				Ace[] aces = (Ace[]) prop.getAces();
-				log.info("There are aces # "+ aces.length );
+				List<AclProperty.Ace> aces = propfind.getAces(path);
+				log.info("There are aces # "+ aces.size() );
+                print_ListAce(aces);
 
-				for (int k=0; k<aces.length; k++) {
-					Ace ace = null;
-					ace = (Ace) prop.getAces()[k];
-					printAce(ace);
-				}
-				log.info(prop);
-			}
-			Ace test = new Ace("property");
-			test.setProperty(new PropertyName(CalDAVConstants.NS_DAV, "owner"));
-			test.addPrivilege(new Privilege(CalDAVConstants.NS_DAV,"grant","read"));
-			printAce(test);
+            Privilege[] privileges = { Privilege.PRIVILEGE_READ };
+			AclProperty.Ace test = AclProperty.createGrantAce(Principal.getHrefPrincipal(path),
+                    privileges, false, false, null);
+			print_Xml(test);
 
-
-		} catch (HttpException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-	}
+    }
 
 	/**
 	 * @throws CalDAV4JException 
@@ -215,23 +165,18 @@ public class PropFindTest extends BaseTestCase {
 	// TODO: this test will work only on bedework which has a set of permission set
 	@Ignore
 	@Test
-	public void testNewPropfind() throws CalDAV4JException {
+	public void testNewPropfind() throws CalDAV4JException, IOException, ParserConfigurationException, DavException {
 		log.info("New Propfind");
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
 
-		PropFindMethod propfind = new PropFindMethod();
-		propfind.setPath(fixture.getCollectionPath());
+        DavPropertyNameSet set = new DavPropertyNameSet();
+        set.add(CalDAVConstants.DNAME_ACL);
+        set.add(CalDAVConstants.DNAME_DISPLAYNAME);
+        set.add(CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
 
-		PropProperty propFindTag = new PropProperty(CalDAVConstants.NS_DAV,"D","propfind");
-		PropProperty aclTag = new PropProperty(CalDAVConstants.NS_DAV,"D","acl");
-		PropProperty propTag = new PropProperty(CalDAVConstants.NS_DAV,"D","prop");
-		propTag.addChild(aclTag);
-		propTag.addChild(new DisplayName());
-		propTag.addChild(new CalendarDescription());
-		propFindTag.addChild(propTag);
-		propfind.setPropFindRequest(propFindTag);
-		propfind.setDepth(0);
+        PropFindMethod propfind = new PropFindMethod(fixture.getCollectionPath(), set, CalDAVConstants.DEPTH_0);
+
 		try {
 			http.executeMethod(hostConfig,propfind);
 
@@ -243,42 +188,42 @@ public class PropFindTest extends BaseTestCase {
 			assertEquals(CALENDAR_DESCRIPTION, propfind.getCalendarDescription(fixture.getCollectionPath()));
 
 			// check that ACLs matches
-			org.apache.webdav.lib.Ace[] aces = propfind.getAces(fixture.getCollectionPath());
-			log.info("There are aces # "+ aces.length );
+			List<AclProperty.Ace> aces = propfind.getAces(fixture.getCollectionPath());
+			log.info("There are aces # "+ aces.size());
 
-			for (int k=0; k<aces.length; k++) {
-				Ace ace = aces[k];
-				assertEquals("/user", ace.getInheritedFrom());
-				switch (k) {
-				case 0:
-					Principal pdav = AceUtils.getDavPrincipal(ace);
-					pdav.isOwner();
-					assertEquals("property", ace.getPrincipal());
-					assertEquals("owner", ace.getProperty().getLocalName());
-					Privilege p = (Privilege) aces[k].enumeratePrivileges().nextElement();
-					assertEquals("all", p.getName());
-					break;
-
-				case 1:
-					assertEquals(CalDAVConstants.DAV_PRINCIPAL_AUTHENTICATED, ace.getPrincipal());
-					p = (Privilege) ace.enumeratePrivileges().nextElement();
-					assertTrue( p.getName().contains(CalDAVConstants.CALDAV_PRIVILEGE_READ_FREE_BUSY));
-					break;
-				default:
-					break;
-				}
-				printAce(ace);
+			for (AclProperty.Ace ace: aces) {
+				assertEquals("/user", ace.getInheritedHref());
+//
+//                switch (k) {
+//				case :
+//					Principal pdav = AceUtils.getDavPrincipal(ace);
+//					pdav.isOwner();
+//					assertEquals("property", ace.getPrincipal());
+//					assertEquals("owner", ace.getProperty().getLocalName());
+//					Privilege p = (Privilege) aces[k].enumeratePrivileges().nextElement();
+//					assertEquals("all", p.getName());
+//					break;
+//
+//				case 1:
+//					assertEquals(CalDAVConstants.DAV_PRINCIPAL_AUTHENTICATED, ace.getPrincipal());
+//					p = (Privilege) ace.enumeratePrivileges().nextElement();
+//					assertTrue( p.getName().contains(CalDAVConstants.CALDAV_PRIVILEGE_READ_FREE_BUSY));
+//					break;
+//				default:
+//					break;
+//				}
+				print_Xml(ace);
 			}
 
 		} catch (HttpException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} catch (TransformerException e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
 
 	/**
 	 * 
@@ -286,40 +231,34 @@ public class PropFindTest extends BaseTestCase {
 	 * FIXME This test won't check for the result, just run some ACL methods
 	 */
 	@Test
-	public void testAclMethod() {
+	public void testAclMethod() throws IOException {
 		log.info("New Propfind");
 		HttpClient http = fixture.getHttpClient();
 		HostConfiguration hostConfig = http.getHostConfiguration();
 
-		AclMethod method = new AclMethod(fixture.getCollectionPath());
+        Privilege[] privileges = { CalDAVPrivilege.SCHEDULE_DELIVER, Privilege.PRIVILEGE_READ, Privilege.PRIVILEGE_WRITE};
+        AclProperty.Ace ace = AclProperty.createGrantAce(Principal.getPropertyPrincipal(DavPropertyName.create(DavPropertyName.XML_OWNER)),
+                privileges, false, false, null);
+        AclProperty aclProperty = new AclProperty(new AclProperty.Ace[] { ace });
+		AclMethod method = new AclMethod(fixture.getCollectionPath(), aclProperty);
 
-		Ace ace;
-		ace = AceUtils.createAce(new Principal("owner"));
-		ace.addPrivilege(org.osaf.caldav4j.model.request.Privilege.SCHEDULE_DELIVER);
-		ace.addPrivilege(org.osaf.caldav4j.model.request.Privilege.WRITE);
-		ace.addPrivilege(org.osaf.caldav4j.model.request.Privilege.READ);
-		method.addAce(ace);
+
 
 
 		try {
-			http.executeMethod(hostConfig,method);
+			http.executeMethod(hostConfig, method);
 
 
+            DavPropertyNameSet set = new DavPropertyNameSet();
+            set.add(CalDAVConstants.DNAME_ACL);
+            set.add(CalDAVConstants.DNAME_DISPLAYNAME);
+            set.add(CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
 			// verify output
-			PropFindMethod propfind = new PropFindMethod();
-			propfind.setPath(fixture.getCollectionPath());
-			PropProperty propFindTag = new PropProperty(CalDAVConstants.NS_DAV,"D","propfind");
-			PropProperty aclTag = new PropProperty(CalDAVConstants.NS_DAV,"D","acl");
-			PropProperty propTag = new PropProperty(CalDAVConstants.NS_DAV,"D","prop");
-			propTag.addChild(aclTag);
-			propTag.addChild(new DisplayName());
-			propTag.addChild(new CalendarDescription());
-			propFindTag.addChild(propTag);
-			propfind.setPropFindRequest(propFindTag);
-			propfind.setDepth(0);
+			PropFindMethod propfind = new PropFindMethod(fixture.getCollectionPath(), set, CalDAVConstants.DEPTH_0);
 			http.executeMethod(hostConfig,propfind);
 
-			log.info("post setacl returns: "+ propfind.getResponseBodyAsString());
+			log.info("post setacl returns: ");
+            print_Xml(propfind.getResponseBodyAsMultiStatus());
 			// TODO check returned ACIS
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -330,34 +269,27 @@ public class PropFindTest extends BaseTestCase {
 	//
 	// private methods
 	//
-	@SuppressWarnings("unchecked")
-	private void printAce(Ace ace) {
-		PropProperty principal =	new PropProperty(CalDAVConstants.NS_DAV, CalDAVConstants.NS_QUAL_DAV, "property");
-		principal.addChild(new PropProperty(ace.getProperty().getNamespaceURI(), CalDAVConstants.NS_QUAL_DAV, ace.getProperty().getLocalName()));
-		String stringFormattedAci = String.format("ACE:" + 
-				" principal: %s ", "property".equals(ace.getPrincipal()) ? XMLUtils.prettyPrint(principal)  : ace.getPrincipal() +
-						" ereditata da: " + ace.getInheritedFrom() + ";" );
-		log.debug( stringFormattedAci );
-		Enumeration<Privilege> privs = ace.enumeratePrivileges();
-		log.debug("privileges are" );
-		while (privs.hasMoreElements()) {
-			Privilege priv = privs.nextElement();						
-			log.debug(String.format("<privilege><%s %s/></privilege>",  priv.getNamespace(), priv.getName() ));
-		}
+    private void print_ListAce(List<org.apache.jackrabbit.webdav.security.AclProperty.Ace> aces) throws ParserConfigurationException, TransformerException {
+        for(org.apache.jackrabbit.webdav.security.AclProperty.Ace ace : aces){
+            print_Xml(ace);
+        }
+    }
 
-	}
-	private void parseNode(Element e) {
-		try {
-			log.info("node is:" + e.getClass().getName());			
-			NodeList nl = e.getChildNodes();
-			for (int i=0; i< nl.getLength(); i++) {
-				Element el =  DOMUtils.getFirstElement(nl.item(i) , "DAV:", "privilege");
-				log.info("child is:" + el.getClass().getName());
-				//	log.info("parseNode:" + el.getNodeName() + el.getNodeType() + el.getNodeValue()+el.getTextContent());
-			}
-		} catch (Exception ex) {
-			log.warn("Error while parsing node: "+ e);
-			log.warn("Error while parsing node: "+ ex);
-		}
-	}
+    private void print_Xml(XmlSerializable ace) throws TransformerException, ParserConfigurationException {
+        Document document = DomUtil.createDocument();
+        ElementoString(ace.toXml(document));
+    }
+
+    private String ElementoString(Element node) throws TransformerException {
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+        StreamResult result = new StreamResult(new StringWriter());
+        DOMSource source = new DOMSource(node);
+        transformer.transform(source, result);
+
+        String xmlString = result.getWriter().toString();
+        log.info(xmlString);
+        return xmlString;
+    }
 }

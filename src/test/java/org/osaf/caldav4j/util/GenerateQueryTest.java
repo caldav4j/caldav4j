@@ -5,17 +5,9 @@
  *    it's the expected result 
  */
 package org.osaf.caldav4j.util;
-import static org.junit.Assert.assertTrue;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.DateTime;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,15 +16,19 @@ import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.methods.PutGetTest;
-import org.osaf.caldav4j.model.request.CalendarData;
-import org.osaf.caldav4j.model.request.CalendarQuery;
-import org.osaf.caldav4j.model.request.Comp;
-import org.osaf.caldav4j.model.request.ParamFilter;
-import org.osaf.caldav4j.model.request.TextMatch;
+import org.osaf.caldav4j.model.request.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
+
 public class GenerateQueryTest extends BaseTestCase {
-    private static final Log log = LogFactory.getLog(PutGetTest.class);
+    private static final Logger log = LoggerFactory.getLogger(PutGetTest.class);
  
     @Before
     @Override
@@ -45,10 +41,9 @@ public class GenerateQueryTest extends BaseTestCase {
     private String printQuery(CalendarQuery query) {			
         try {
     		query.validate();
-        	Document doc = query.createNewDocument(XMLUtils
-                    .getDOMImplementation());
+        	Document doc = query.createNewDocument();
 			return XMLUtils.toPrettyXML(doc);
-        	
+
         } catch (DOMValidationException domve) {
             log.error("Error trying to create DOM from CalDAVReportRequest: ", domve);
             throw new RuntimeException(domve);
@@ -107,10 +102,10 @@ public class GenerateQueryTest extends BaseTestCase {
 			
 			// modify to conform RFC example 7.8.1. 
 			//    Example: Partial Retrieval of Events by Time Range
-			Comp compVtimezone = new Comp("C");
+			Comp compVtimezone = new Comp();
 			compVtimezone.setName(Component.VTIMEZONE);
 			query.getCalendarDataProp().getComp().getComps().add(compVtimezone);
-			log.info("no calendar-data:\n" + printQuery(query));
+			log.info("calendar-data with VTIMEZONE:\n" + printQuery(query));
 			
 			// now remove calendar data
 			gq.setNoCalendarData(true);			
@@ -118,7 +113,7 @@ public class GenerateQueryTest extends BaseTestCase {
 			
 			// and limit recurrence set
 			gq.setNoCalendarData(false);			
-			gq.setRecurrenceSet("20060101T170000Z","20060105T240000Z", CalendarData.EXPAND);
+			gq.setRecurrenceSet("20060101T170000Z","20060105T235900Z", CalendarData.EXPAND);
 			// gq.setRecurrenceSet("20060104T000000Z","20060105T000000Z");
 			log.info("limit-recurrence-set:\n" + printQuery(gq.generate()));
 		} catch (CalDAV4JException e) {
@@ -133,7 +128,7 @@ public void testDateTime() throws ParseException {
 	String dates[] = new String[] {  "20060101T170000Z","20060105T230000Z" };
 	
 	for (String d : dates) {
-		log.info(new DateTime(d));
+		log.info((new DateTime(d)).toString());
 	}
 }
     // Creating Calendar-Query like the RFC's one
@@ -269,9 +264,9 @@ public void testDateTime() throws ParseException {
 			 * compose 
 			 * <param-filter name="PARTSTAT"><text-match>NEEDS-ACTION</text-match></param-filter>
 			 */
-			ParamFilter paramSentBy = new ParamFilter(CalDAVConstants.NS_QUAL_CALDAV);
+			ParamFilter paramSentBy = new ParamFilter();
 			paramSentBy.setName("PARTSTAT");
-			paramSentBy.setTextMatch(new TextMatch(CalDAVConstants.NS_QUAL_CALDAV,null,null,null, "NEEDS-ACTION"));
+			paramSentBy.setTextMatch(new TextMatch(null,null,null, "NEEDS-ACTION"));
 
 			// append into ATTENDEE prop-filter
 			query.getCompFilter().getCompFilters().get(0)

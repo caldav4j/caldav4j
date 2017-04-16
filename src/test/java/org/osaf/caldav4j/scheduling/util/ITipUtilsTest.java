@@ -1,29 +1,29 @@
 package org.osaf.caldav4j.scheduling.util;
-import static org.junit.Assert.assertTrue;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Method;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.util.ICalendarUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static org.junit.Assert.assertTrue;
 
 // test resource missing and all test methods are currently ignored
 @Ignore
 public class ITipUtilsTest extends BaseTestCase {
 
-	private static final Log log = LogFactory.getLog(ITipUtilsTest.class);
+	private static final Logger log = LoggerFactory.getLogger(ITipUtilsTest.class);
 
 	// load a sample meeting request
 	Calendar inviteComplexWithTimezone = this

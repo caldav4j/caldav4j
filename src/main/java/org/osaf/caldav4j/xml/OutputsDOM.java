@@ -15,16 +15,13 @@
  */
 package org.osaf.caldav4j.xml;
 
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-public interface OutputsDOM {
+public interface OutputsDOM extends XmlSerializable {
 
-    public Element outputDOM(Document document) throws DOMValidationException;
+    public Document createNewDocument() throws DOMValidationException;
 
-    public Document createNewDocument(DOMImplementation dom) throws DOMValidationException;
-    
     public void validate() throws DOMValidationException;
 }

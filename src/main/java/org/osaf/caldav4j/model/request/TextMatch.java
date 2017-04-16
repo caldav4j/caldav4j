@@ -16,14 +16,15 @@
 
 package org.osaf.caldav4j.model.request;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *  <!ELEMENT text-match #PCDATA>
@@ -49,18 +50,15 @@ public class TextMatch extends OutputsDOMBase {
     public static final String ATTR_VALUE_COLLATION_OCT = "i;octet";
     
     private String collation = null;
-    
-    private String caldavNamespaceQualifier = null;
+
     private String textToMatch = null;
     private Boolean caseless = null;
     private Boolean negateCondition = null;
 
-    
-    public TextMatch(String caldavNamespaceQualifier, 
-    		Boolean caseless, Boolean negateCondition, 
+    public TextMatch(Boolean caseless, Boolean negateCondition,
     		String collation,
             String textToMatch) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
         this.caseless = caseless;
         this.negateCondition = negateCondition;
         this.textToMatch = textToMatch;
@@ -69,6 +67,8 @@ public class TextMatch extends OutputsDOMBase {
         // RFC states default collation is i;ascii-casemap
         if (collation == null) {        	
             this.collation = ATTR_VALUE_COLLATION_ASCII;        	
+        } else {
+            this.collation = collation;
         }
 
     }
@@ -78,12 +78,8 @@ public class TextMatch extends OutputsDOMBase {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
-    }
-
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
     protected Collection<OutputsDOM> getChildren() {
@@ -99,11 +95,11 @@ public class TextMatch extends OutputsDOMBase {
         m = new HashMap<String, String>();
 
         if (caseless != null) {
-            m.put(ATTR_CASELESS, caseless.booleanValue() ? ATTR_VALUE_YES
+            m.put(ATTR_CASELESS, caseless ? ATTR_VALUE_YES
                     : ATTR_VALUE_NO);
         }
         if ((negateCondition != null) &&  negateCondition ) {
-            m.put(ATTR_NEGATE_CONDITION, negateCondition.booleanValue() ? ATTR_VALUE_YES
+            m.put(ATTR_NEGATE_CONDITION, negateCondition ? ATTR_VALUE_YES
                     : ATTR_VALUE_NO);
         }
         

@@ -15,16 +15,16 @@
  */
 package org.osaf.caldav4j.support;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnection;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpState;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketImplFactory;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConnection;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpState;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Provides support for testing with HttpClient.
@@ -85,8 +85,10 @@ public final class HttpClientTestUtils
 		{
 			int actualStatus = httpClient.executeMethod(method);
 			assertEquals("Response status", expectedStatus, actualStatus);
-			
-			return methodCallback.getResponse(method);
+			if(methodCallback != null)
+				return methodCallback.getResponse(method);
+			else
+                return null;
 		}
 		finally
 		{

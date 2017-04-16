@@ -16,19 +16,14 @@
 
 package org.osaf.caldav4j.model.request;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.fortuna.ical4j.model.Date;
-
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.xml.OutputsDOM;
 import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
+
+import java.util.*;
 
 /**
  *   <!ELEMENT comp-filter (is-defined | time-range)?
@@ -44,17 +39,20 @@ public class CompFilter extends OutputsDOMBase {
     public static final String ELEMENT_NAME = "comp-filter";
     public static final String ELEM_IS_DEFINED = "is-defined";
     public static final String ATTR_NAME = "name";
-    
-    private String caldavNamespaceQualifier = null;
 
     private boolean isDefined = false;
     private TimeRange timeRange = null;
     private List<CompFilter> compFilters = new ArrayList<CompFilter>();
     private List<PropFilter> propFilters = new ArrayList<PropFilter>();
     private String name = null;
-    
-    public CompFilter(String caldavNamespaceQualifier) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
+
+    public CompFilter(String name){
+        this.name = name;
+    }
+
+    public CompFilter(){
+
     }
     
     /**
@@ -70,18 +68,23 @@ public class CompFilter extends OutputsDOMBase {
     public CompFilter(String caldavNamespaceQualifier, String name,
             boolean isDefined, Date start, Date end, List<CompFilter> compFilters,
             List<PropFilter> propFilters) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+            this(name, isDefined, start, end, compFilters, propFilters);
+    }
+
+    public CompFilter(String name,
+                      boolean isDefined, Date start, Date end, List<CompFilter> compFilters,
+                      List<PropFilter> propFilters) {
         this.isDefined = isDefined;
         this.name = name;
-        
+
         if (start != null || end != null) { // XXX test the || instead of && (open interval)
-            this.timeRange = new TimeRange(caldavNamespaceQualifier, start, end);
+            this.timeRange = new TimeRange(start, end);
         }
-        
+
         if (propFilters != null){
             this.propFilters.addAll(propFilters);
         }
-        
+
         if (compFilters != null) {
             this.compFilters.addAll(compFilters);
         }
@@ -91,21 +94,15 @@ public class CompFilter extends OutputsDOMBase {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
-    }
-
-    protected Collection<OutputsDOM> getChildren() {
-        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
+    protected Collection<XmlSerializable> getChildren() {
+        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
         
         if (isDefined){
-            children.add(new SimpleDOMOutputtingObject(
-                    CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
-                    ELEM_IS_DEFINED));
+            children.add(new PropProperty(ELEM_IS_DEFINED, CalDAVConstants.NAMESPACE_CALDAV));
         } else if (timeRange != null){
             children.add(timeRange);
         }

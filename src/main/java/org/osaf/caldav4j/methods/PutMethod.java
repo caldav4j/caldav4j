@@ -16,6 +16,23 @@
 
 package org.osaf.caldav4j.methods;
 
+import net.fortuna.ical4j.data.CalendarOutputter;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VTimeZone;
+import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Version;
+import org.apache.commons.httpclient.HttpConnection;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.util.UrlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -24,26 +41,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.fortuna.ical4j.data.CalendarOutputter;
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.property.CalScale;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
-
-import org.apache.commons.httpclient.HttpConnection;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.util.UrlUtils;
-
 public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
-    private static final Log log = LogFactory.getLog(PutMethod.class);
+    private static final Logger log = LoggerFactory.getLogger(PutMethod.class);
    
     private Calendar calendar = null; 
     private String procID = CalDAVConstants.PROC_ID_DEFAULT;
@@ -232,7 +231,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
                 }
                 value = buf.toString();
             }
-            addRequestHeader(name, value);
+            setRequestHeader(name, value);
         }
 
         super.addRequestHeaders(state, conn);

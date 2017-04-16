@@ -16,17 +16,16 @@
 
 package org.osaf.caldav4j.model.request;
 
+import net.fortuna.ical4j.model.Date;
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
+import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.exceptions.DOMValidationException;
+import org.osaf.caldav4j.xml.OutputsDOMBase;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-
-import net.fortuna.ical4j.model.Date;
-
-import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.xml.OutputsDOM;
-import org.osaf.caldav4j.xml.OutputsDOMBase;
-import org.osaf.caldav4j.xml.SimpleDOMOutputtingObject;
 
 /**
  *  <!ELEMENT calendar-data ((comp?, (expand-recurrence-set |
@@ -67,26 +66,24 @@ public class CalendarData extends OutputsDOMBase {
     public static final String ATTR_START = "start";
     public static final String ATTR_END = "end";
     
-    public static final Integer EXPAND = new Integer(0);
-    public static final Integer LIMIT = new Integer(1);
-    
-    private String caldavNamespaceQualifier = null;
+    public static final Integer EXPAND = 0;
+    public static final Integer LIMIT = 1;
+
     private Date recurrenceSetStart = null;
     private Date recurrenceSetEnd   = null;
     private Integer expandOrLimitRecurrenceSet;
     private Comp comp = null;
     
-    public CalendarData(String caldavNamespaceQualifier,
-            Integer expandOrLimitRecurrenceSet, Date recurrenceSetStart,
+    public CalendarData(Integer expandOrLimitRecurrenceSet, Date recurrenceSetStart,
             Date recurrenceSetEnd, Comp comp) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
         this.expandOrLimitRecurrenceSet = expandOrLimitRecurrenceSet;
         this.recurrenceSetStart = recurrenceSetStart;
         this.recurrenceSetEnd = recurrenceSetEnd;
+        this.comp = comp;
     }
-    
-    public CalendarData(String caldavNamespaceQualifier) {
-        this.caldavNamespaceQualifier = caldavNamespaceQualifier;
+
+    public CalendarData() {
     }
 
     public Comp getComp() {
@@ -125,16 +122,12 @@ public class CalendarData extends OutputsDOMBase {
         return ELEMENT_NAME;
     }
 
-    protected String getNamespaceQualifier() {
-        return caldavNamespaceQualifier;
+    protected Namespace getNamespace() {
+        return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
-    protected String getNamespaceURI() {
-        return CalDAVConstants.NS_CALDAV;
-    }
-
-    protected Collection<OutputsDOM> getChildren() {
-        ArrayList<OutputsDOM> children = new ArrayList<OutputsDOM>();
+    protected Collection<? extends XmlSerializable> getChildren() {
+        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
         if (comp != null) {
             children.add(comp);
         }
@@ -142,13 +135,9 @@ public class CalendarData extends OutputsDOMBase {
         if (expandOrLimitRecurrenceSet != null) {
             String elemName = EXPAND.equals(expandOrLimitRecurrenceSet) ? ELEM_EXPAND_RECURRENCE_SET
                     : ELEM_LIMIT_RECURRENCE_SET;
-            SimpleDOMOutputtingObject expandOrLimitElement = new SimpleDOMOutputtingObject(
-                    CalDAVConstants.NS_CALDAV, caldavNamespaceQualifier,
-                    elemName);
-            expandOrLimitElement.addAttribute(ATTR_START, recurrenceSetStart
-                    .toString());
-            expandOrLimitElement.addAttribute(ATTR_END, recurrenceSetEnd
-                    .toString());
+            PropProperty expandOrLimitElement = new PropProperty(elemName, CalDAVConstants.NAMESPACE_CALDAV);
+            expandOrLimitElement.addAttribute(ATTR_START, recurrenceSetStart.toString());
+            expandOrLimitElement.addAttribute(ATTR_END, recurrenceSetEnd.toString());
             children.add(expandOrLimitElement);
         }
         return children;

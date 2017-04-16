@@ -44,11 +44,23 @@ You can test your caldav server replacing the `caldav4jUri` with your one.
 mvn package -Dcaldav4jUri='https//user:password@hostname.fqdn.com/base/user/collections/'
 ```
 
+A docker image of a caldav server ~900MB is distributed via docker hub:
+
+```
+docker run -d -p 8080:8080 ioggstream/bedework
+mvn clean package -Dcaldav4jUri='http//vbede:bedework@localhost:8080/ucaldav/user/vbede/'
+```
+
 # Status
 
 CalDAV4j 0.7 is the current (tagged) release.
 
-In 0.8.x (trunk) we're working on
+In 0.9.x (jcr-dev) we're working on:
+
+  * major cleanup, deprecated methods removal
+  * based on jackrabbit 
+
+In 0.8.x (master) we're working on
 
   * fine-grained ACL support 15%
   * small refinement to simplify code

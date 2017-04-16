@@ -20,13 +20,11 @@ import org.junit.Test;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.osaf.caldav4j.util.XMLUtils;
 import org.osaf.caldav4j.xml.OutputsDOM;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
-import static org.osaf.caldav4j.CalDAVConstants.NS_QUAL_CALDAV;
 
 /**
  * Tests {@code FreeBusyQuery}.
@@ -44,7 +42,7 @@ public class FreeBusyQueryTest
 	{
 		FreeBusyQuery query = createFreeBusyQuery("20000101T000000Z", "20000201T000000Z");
 
-		String expected = "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
+		String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
 			+ "<C:free-busy-query xmlns:C=\"urn:ietf:params:xml:ns:caldav\">"
 				+ "<C:time-range end=\"20000201T000000Z\" start=\"20000101T000000Z\"/>"
 			+ "</C:free-busy-query>";
@@ -64,7 +62,7 @@ public class FreeBusyQueryTest
 	public void validateWithInvalidTimeRange() throws DOMValidationException
 	{
 		FreeBusyQuery query = createFreeBusyQuery();
-		query.setTimeRange(new TimeRange(NS_QUAL_CALDAV, null, null));
+		query.setTimeRange(new TimeRange(null, null));
 		
 		query.validate();
 	}
@@ -80,14 +78,14 @@ public class FreeBusyQueryTest
 	
 	private static FreeBusyQuery createFreeBusyQuery()
 	{
-		return new FreeBusyQuery(NS_QUAL_CALDAV);
+		return new FreeBusyQuery();
 	}
 	
 	private static FreeBusyQuery createFreeBusyQuery(String timeRangeStart, String timeRangeEnd) throws ParseException
 	{
 		FreeBusyQuery query = createFreeBusyQuery();
 		
-		TimeRange timeRange = new TimeRange(NS_QUAL_CALDAV, new DateTime(timeRangeStart), new DateTime(timeRangeEnd));
+		TimeRange timeRange = new TimeRange(new DateTime(timeRangeStart), new DateTime(timeRangeEnd));
 		query.setTimeRange(timeRange);
 		
 		return query;
@@ -95,8 +93,7 @@ public class FreeBusyQueryTest
 	
 	private static void assertCreateNewDocument(String expected, OutputsDOM output) throws DOMValidationException
 	{
-		DOMImplementation domImplementation = XMLUtils.getDOMImplementation();
-		Document document = output.createNewDocument(domImplementation);
+		Document document = output.createNewDocument();
 		
 		String actual = XMLUtils.toXML(document);
 		

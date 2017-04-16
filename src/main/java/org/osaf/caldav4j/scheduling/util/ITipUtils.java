@@ -6,11 +6,6 @@
 package org.osaf.caldav4j.scheduling.util;
 
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.util.TimeZone;
-
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
@@ -20,13 +15,17 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Method;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.TimeZone;
 
 public class ITipUtils {
-	private static final Log log = LogFactory.getLog(ITipUtils.class);    
+	private static final Logger log = LoggerFactory.getLogger(ITipUtils.class);
 	private static java.util.TimeZone J_TZ_GMT = TimeZone.getTimeZone("GMT");
 
 	

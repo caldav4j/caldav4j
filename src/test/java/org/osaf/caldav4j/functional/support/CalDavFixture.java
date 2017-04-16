@@ -15,7 +15,26 @@
  */
 package org.osaf.caldav4j.functional.support;
 
-import static org.osaf.caldav4j.support.HttpMethodCallbacks.nullCallback;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.VEvent;
+import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
+import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.TestConstants;
+import org.osaf.caldav4j.credential.CaldavCredential;
+import org.osaf.caldav4j.dialect.CalDavDialect;
+import org.osaf.caldav4j.methods.*;
+import org.osaf.caldav4j.support.HttpClientTestUtils;
+import org.osaf.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
+import org.osaf.caldav4j.util.CaldavStatus;
+import org.osaf.caldav4j.util.UrlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,31 +42,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.component.VEvent;
-
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.webdav.lib.methods.MkcolMethod;
-import org.osaf.caldav4j.BaseTestCase;
-import org.osaf.caldav4j.TestConstants;
-import org.osaf.caldav4j.credential.CaldavCredential;
-import org.osaf.caldav4j.dialect.CalDavDialect;
-import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
-import org.osaf.caldav4j.methods.DeleteMethod;
-import org.osaf.caldav4j.methods.HttpClient;
-import org.osaf.caldav4j.methods.MkCalendarMethod;
-import org.osaf.caldav4j.methods.PutMethod;
-import org.osaf.caldav4j.support.HttpClientTestUtils;
-import org.osaf.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
-import org.osaf.caldav4j.util.CaldavStatus;
-import org.osaf.caldav4j.util.UrlUtils;
+import static org.osaf.caldav4j.support.HttpMethodCallbacks.nullCallback;
 
 /**
  * Provides fixture support for CalDAV functional tests.
@@ -58,7 +53,7 @@ import org.osaf.caldav4j.util.UrlUtils;
 public class CalDavFixture
 {
 	// fields -----------------------------------------------------------------
-    protected static final Log log = LogFactory.getLog(CalDavFixture.class);
+    protected static final Logger log = LoggerFactory.getLogger(CalDavFixture.class);
 	
 	private HttpClient httpClient;
 	
@@ -120,14 +115,14 @@ public class CalDavFixture
 			return;
 		}
 		*/
-		MkCalendarMethod method = methodFactory.createMkCalendarMethod();
-		method.setPath(relativePath);
+		MkCalendarMethod method = methodFactory.createMkCalendarMethod(relativePath);
+		//method.setPath(relativePath);
 
 		executeMethod(HttpStatus.SC_CREATED, method, true);
 	}
 	public void makeCollection(String relativePath) throws IOException
 	{
-		MkcolMethod method = new MkcolMethod(UrlUtils.removeDoubleSlashes(relativePath));
+		MkColMethod method = new MkColMethod(UrlUtils.removeDoubleSlashes(relativePath));
 
 		executeMethod(HttpStatus.SC_CREATED, method, true);
 	}
@@ -142,15 +137,15 @@ public class CalDavFixture
 	
 	public void delete(String relativePath) throws IOException
 	{
-		DeleteMethod method = new DeleteMethod();
-		method.setPath(relativePath);
+		DeleteMethod method = new DeleteMethod(relativePath);
+		//method.setPath(relativePath);
 
 		executeMethod(HttpStatus.SC_NO_CONTENT, method, false);
 	}
 	public void delete(String path, boolean isAbsolutePath) throws IOException
 	{
-		DeleteMethod method = new DeleteMethod();
-		method.setPath(path);
+		DeleteMethod method = new DeleteMethod(path);
+		//method.setPath(path);
 
 		executeMethod(HttpStatus.SC_NO_CONTENT, method, false, nullCallback(), isAbsolutePath);
 	}
@@ -223,8 +218,8 @@ public class CalDavFixture
 	}
 
 	protected void mkcalendar(String path){
-	    MkCalendarMethod mk = new MkCalendarMethod();
-	    mk.setPath(path);
+	    MkCalendarMethod mk = new MkCalendarMethod(path);
+	    //mk.setPath(path);
 	    mk.addDescription(TestConstants.CALENDAR_DESCRIPTION, "en");
 	    try {
 	    	executeMethod(HttpStatus.SC_CREATED,  mk, true);
@@ -234,7 +229,7 @@ public class CalDavFixture
 	}
 
 	protected void mkcol(String path) {
-		MkcolMethod mk = new MkcolMethod(path);
+		MkColMethod mk = new MkColMethod(path);
 	    try {
 	    	executeMethod(HttpStatus.SC_CREATED,  mk, true);
 	    } catch (Exception e){

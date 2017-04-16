@@ -16,8 +16,8 @@
 
 package org.osaf.caldav4j;
 
-import org.apache.webdav.lib.util.QName;
-import org.osaf.caldav4j.model.request.PropProperty;
+import org.apache.jackrabbit.webdav.property.DavPropertyName;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 
 public interface CalDAVConstants {
     
@@ -35,7 +35,7 @@ public interface CalDAVConstants {
     public static final String NS_QUAL_DAV = "D";
     public static final String NS_QUAL_CALDAV = "C";
     public static final String NS_XYTHOS = "http://www.xythos.com/namespaces/StorageServer";
-    public static final String NS_QUAL_TICKET = "ticket";
+    public static final String NS_QUAL_TICKET = "T";//"ticket";
 
 
     public static final String PROC_ID_DEFAULT =  "-//OSAF//NONSGML CalDAV4j Client//EN";
@@ -89,18 +89,34 @@ public interface CalDAVConstants {
     public static final Integer INFINITY = -1;
     public static final String  INFINITY_STRING = "infinity";
     
-    public static final String TIMEOUT_UNITS_SECONDS = "Second-";
+    public static final String TIMEOUT_UNITS_SECONDS = "Seconds-";
 
     public static final String URL_APPENDER = "?ticket=";
 
-    // request property
-	public static final PropProperty PROP_GETETAG = new PropProperty(NS_DAV,NS_QUAL_DAV, ELEM_GETETAG);
-	public static final PropProperty PROP_ALLPROP = new PropProperty(NS_DAV,NS_QUAL_DAV, ELEM_ALLPROP);
 
-	// response tag
-    public static final QName QNAME_GETETAG = new QName(NS_DAV, ELEM_GETETAG);
-	public static final QName QNAME_DISPLAYNAME = new QName(NS_DAV, DAV_DISPLAYNAME);
-	public static final QName QNAME_CALENDAR_DESCRIPTION = new QName(NS_CALDAV,CALDAV_CALENDAR_DESCRIPTION);
-	public static final QName QNAME_ACL = new QName(NS_DAV, "acl");
-	
+    //Jackrabbit Namespaces
+    public static final Namespace NAMESPACE_CALDAV = Namespace.getNamespace(NS_QUAL_CALDAV, NS_CALDAV);
+    public static final Namespace NAMESPACE_WEBDAV = Namespace.getNamespace(NS_QUAL_DAV, NS_DAV);
+    public static final Namespace NAMESPACE_XYTHOS = Namespace.getNamespace(NS_QUAL_TICKET, NS_XYTHOS);
+
+
+    //Jackrabbit Constants
+    public static final int DEPTH_INFINITY = Integer.MAX_VALUE;
+    public static final int DEPTH_0 = 0;
+    public static final int DEPTH_1 = 1;
+
+    //DavPropertyNames
+    public static final DavPropertyName DNAME_CALENDAR_DESCRIPTION = DavPropertyName.create(CALDAV_CALENDAR_DESCRIPTION, NAMESPACE_CALDAV);
+    public static final DavPropertyName DNAME_CALENDAR_DATA = DavPropertyName.create(CALDAV_CALENDAR_DATA, NAMESPACE_CALDAV);
+    public static final DavPropertyName DNAME_ACL = DavPropertyName.create(CalDAVConstants.DAV_ACL, NAMESPACE_WEBDAV);
+    public static final DavPropertyName DNAME_GETETAG = DavPropertyName.create(ELEM_GETETAG, NAMESPACE_WEBDAV);
+    public static final DavPropertyName DNAME_ALLPROP = DavPropertyName.create(ELEM_ALLPROP, NAMESPACE_WEBDAV);
+    public static final DavPropertyName DNAME_DISPLAYNAME = DavPropertyName.create(DAV_DISPLAYNAME, NAMESPACE_CALDAV);
+    public static final DavPropertyName DNAME_TICKETDISCOVERY = DavPropertyName.create(CalDAVConstants.ELEM_TICKETDISCOVERY, NAMESPACE_XYTHOS);
+    public static final DavPropertyName DNAME_TICKETINFO = DavPropertyName.create(CalDAVConstants.ELEM_TICKETINFO, NAMESPACE_XYTHOS);
+    //-------------------------------------------------< PropFind Constants >---
+    public static final int PROPFIND_BY_PROPERTY = 0;
+    public static final int PROPFIND_ALL_PROP = 1;
+    public static final int PROPFIND_PROPERTY_NAMES = 2;
+    public static final int PROPFIND_ALL_PROP_INCLUDE = 3; // RFC 4918, Section 9.1
 }
