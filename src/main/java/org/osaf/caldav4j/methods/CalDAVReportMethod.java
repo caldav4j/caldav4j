@@ -135,9 +135,7 @@ public class CalDAVReportMethod extends DavMethodBase {
                 if (element.getName().equals(CalDAVConstants.CONTENT_TYPE_CALENDAR)) {
                     isCalendarResponse = true;
                     log.info("Response Content-Type: text/calendar");
-                } else if (element.getName().equals(CalDAVConstants.CONTENT_TYPE_TEXT_XML)) {
-                    log.info("Response Content-Type: text/xml");
-                } else log.warn("Response Content-Type is not text/xml or text/calendar");
+                }
             }
         }
     }

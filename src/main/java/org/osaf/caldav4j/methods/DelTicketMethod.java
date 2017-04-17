@@ -30,7 +30,7 @@ import java.io.IOException;
  * Method that will delete a ticket by id. Need to specify a path and ticket id
  * 
  * @author EdBindl
- * 
+ * @deprecated
  */
 public class DelTicketMethod extends DavMethodBase {
 
