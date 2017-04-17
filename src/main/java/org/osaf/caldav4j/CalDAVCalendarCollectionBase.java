@@ -63,7 +63,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 
 	/**
 	 * set base path, appending trailing "/" and  removing unneeded "/"
-	 * @param path
+	 * @param path the base path
 	 */
 	public void setCalendarCollectionRoot(String path) {
 	    this.calendarCollectionRoot = UrlUtils.removeDoubleSlashes(path.concat("/"));
@@ -90,7 +90,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	/**
 	 * Returns the path relative to the calendars path given an href
 	 * 
-	 * @param href
+	 * @param href the absolute path of the calendar
 	 * @return
 	 */
 	protected String getRelativePath(String href){
@@ -101,8 +101,8 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	/**
 	 * Create a PUT method setting If-None-Match: *
 	 * this tag causes PUT fails if a given event exist  
-	 * @param resourceName
-	 * @param calendar
+	 * @param resourceName the resource name (eg. mycal.ics)
+	 * @param calendar the calendar content
 	 * @return a PutMethod for creating events
 	 */
 	 PutMethod createPutMethodForNewResource(String resourceName,
@@ -118,7 +118,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 
 	 /**
 	  * TODO check hostConfiguration.getUri()
-	  * @param path
+	  * @param path the local path for the calendar
 	  * @return the URI of the path resource
 	  * 
 	  * XXX maybe it will be faster to write down the whole url including port...
@@ -180,7 +180,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 
 	/**
 	 * get OPTIONS for calendarCollectionRoot
-	 * @param httpClient
+	 * @param httpClient the http client
 	 * @return
 	 * @throws CalDAV4JException
 	 */
@@ -218,7 +218,7 @@ public abstract class CalDAVCalendarCollectionBase implements CalDAVConstants {
 	 * check whether server Allows the given action
 	 * XXX we should implement it as allowed props should be an attribute of this class,
 	 *  set each time the base-path is changed
-	 * @param action
+	 * @param action the action to probe
 	 * @return
 	 * @throws CalDAV4JException
 	 */
