@@ -63,7 +63,6 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         cacheManager.shutdown();
     }
     
-    
     public Cache getHrefToResourceCache() {
         return hrefToResourceCache;
     }
@@ -88,7 +87,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
             throw new org.osaf.caldav4j.exceptions.CacheException("Problem with the uidToHrefCache",ce);
         }
         
-        return e == null ? null : (String) e.getValue();
+        return e == null ? null : (String) e.getObjectValue();
         
     }
 
@@ -105,7 +104,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
                     "Problem with the hrefToResourceCache", ce);
         }
 
-        return e == null ? null : (CalDAVResource) e.getValue();
+        return e == null ? null : (CalDAVResource) e.getObjectValue();
     }
 
     /**

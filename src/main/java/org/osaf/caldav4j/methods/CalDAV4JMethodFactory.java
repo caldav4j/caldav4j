@@ -21,6 +21,7 @@ import net.fortuna.ical4j.data.CalendarOutputter;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
+import org.osaf.caldav4j.model.request.MkCalendar;
 import org.osaf.caldav4j.model.request.TicketRequest;
 
 import java.io.IOException;
@@ -59,8 +60,19 @@ public class CalDAV4JMethodFactory {
         return postMethod;
     }
     
-    public MkCalendarMethod createMkCalendarMethod(String uri){
+    public MkCalendarMethod createMkCalendarMethod(String uri) {
         MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri);
+        return mkCalendarMethod;
+    }
+
+    public MkCalendarMethod createMkCalendarMethod(String uri, String DisplayName, String Description,
+                                                   String DescriptionLanguage) throws IOException {
+        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri, DisplayName, Description, DescriptionLanguage);
+        return mkCalendarMethod;
+    }
+
+    public MkCalendarMethod createMkCalendarMethod(String uri, MkCalendar mkCalendar) throws IOException {
+        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri, mkCalendar);
         return mkCalendarMethod;
     }
     
@@ -79,12 +91,14 @@ public class CalDAV4JMethodFactory {
         return propFindMethod;
     }
 
-    public PropFindMethod createPropFindMethod(String uri, DavPropertyNameSet propertyNames, int depth) throws IOException {
+    public PropFindMethod createPropFindMethod(String uri, DavPropertyNameSet propertyNames, int depth)
+            throws IOException {
         PropFindMethod propFindMethod = new PropFindMethod(uri, propertyNames, depth);
         return propFindMethod;
     }
 
-    public PropFindMethod createPropFindMethod(String uri, int propfindtype, DavPropertyNameSet propertyNames, int depth) throws IOException {
+    public PropFindMethod createPropFindMethod(String uri, int propfindtype, DavPropertyNameSet propertyNames,
+                                               int depth) throws IOException {
         PropFindMethod propFindMethod = new PropFindMethod(uri, propfindtype, propertyNames, depth);
         return propFindMethod;
     }

@@ -17,22 +17,20 @@
 package org.osaf.caldav4j.methods;
 
 import org.apache.commons.httpclient.HttpConnection;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
 import org.apache.jackrabbit.webdav.xml.DomUtil;
-import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.model.request.*;
+import org.osaf.caldav4j.model.request.CalendarDescription;
+import org.osaf.caldav4j.model.request.DisplayName;
+import org.osaf.caldav4j.model.request.MkCalendar;
+import org.osaf.caldav4j.model.request.Prop;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
-import org.osaf.caldav4j.util.XMLUtils;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MkCalendarMethod extends DavMethodBase {
     
@@ -45,45 +43,53 @@ public class MkCalendarMethod extends DavMethodBase {
     /**
      * Map of the properties to set.
      */
-    protected List<PropProperty> propertiesToSet = new ArrayList<PropProperty>();
 
+	protected MkCalendar mkCalendar = null;
     // --------------------------------------------------------- Public Methods
 
-    public MkCalendarMethod(String uri) {
-		// Add Headers Content-Type: text/xml
-    	super(UrlUtils.removeDoubleSlashes(uri));
+    public MkCalendarMethod(String uri, String DisplayName, String description, String DescriptionLang)
+            throws IOException {
+        super(UrlUtils.removeDoubleSlashes(uri));
+        Prop p = new Prop();
+        if(DisplayName != null)
+            p.add(new DisplayName(DisplayName));
 
+        if(description != null)
+            p.add(new CalendarDescription(description, DescriptionLang));
+        mkCalendar = new MkCalendar(p);
+        processRequest();
 	}
 
-    public void addRequestHeaders(HttpState state, HttpConnection conn)
-            throws IOException, HttpException
+	public MkCalendarMethod(String uri, String DisplayName, String description) throws IOException {
+        this(uri, DisplayName, description, null);
+    }
+
+    public MkCalendarMethod(String uri) {
+        super(uri);
+    }
+
+    public MkCalendarMethod(String uri, MkCalendar m) throws IOException {
+        super(UrlUtils.removeDoubleSlashes(uri));
+        if(m != null)
+            this.mkCalendar = m;
+        processRequest();
+    }
+
+	private void processRequest() throws IOException {
+
+        try {
+            Document d = DomUtil.createDocument();
+            d.appendChild(mkCalendar.toXml(d));
+            setRequestBody(d);
+        } catch (ParserConfigurationException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    public void addRequestHeaders(HttpState state, HttpConnection conn) throws IOException
     {
-        //first add headers generate RequestEntity or
-        //addContentLengthRequestHeader() will mess up things > result "400 Bad Request"
-        //can not override generateRequestBody(), because called to often
-
         addRequestHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_TEXT_XML);
-        //setRequestEntity(new ByteArrayRequestEntity(generateRequestBody()));
         super.addRequestHeaders(state, conn);
-    }
-
-    public void addDisplayName(String s) {
-    	propertiesToSet.add(new DisplayName(s));
-    }
-    public void addDescription(String description, String lang) {
-    	propertiesToSet.add(new CalendarDescription(description, lang));
-    }
-    public void addDescription(String description) {
-    	propertiesToSet.add(new CalendarDescription(description));
-    }
-    /**
-     * 
-     */
-    public void addPropertyToSet(String name, Namespace namespace,
-            String value) {
-        checkNotUsed();
-        PropProperty propertyToSet = new PropProperty<String>(name, value, namespace);
-        propertiesToSet.add(propertyToSet);
     }
 
     // remove double slashes
@@ -95,27 +101,6 @@ public class MkCalendarMethod extends DavMethodBase {
 
     public String getName() {
         return CalDAVConstants.METHOD_MKCALENDAR;
-    }
-    
-    /**
-     *
-     */
-    protected byte[] generateRequestBody() {
-        if (propertiesToSet.size() == 0 ){
-            return null;
-        }
-        
-        Prop prop = new Prop(propertiesToSet);
-        MkCalendar mkCalendar = new MkCalendar(prop);
-        Document d = null;
-        try {
-            d = DomUtil.createDocument();
-            d.appendChild(mkCalendar.toXml(d));
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-
-        return XMLUtils.toPrettyXML(d).getBytes();
     }
 
     @Override
