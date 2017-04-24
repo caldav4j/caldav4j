@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * CalDAV Report Method, which extends DavMethodBase
+ * CalDAV Report Method, which extends DavMethodBase. Implements Section 7 of RFC4791
  * @author <a href="mailto:ankushmishra9@gmail.com">Ankush Mishra</a>
  */
 public class CalDAVReportMethod extends DavMethodBase {
@@ -55,14 +55,31 @@ public class CalDAVReportMethod extends DavMethodBase {
     private CalDAVReportRequest reportRequest = null;
     private CalendarBuilder calendarBuilder = null;
 
-    public CalDAVReportMethod(String uri){
+    /**
+     * Default Constructor.
+     * @param uri URI to the calendar resource.
+     */
+    public CalDAVReportMethod(String uri) {
         super(uri);
     }
 
+    /**
+     * Depth is set to 1, by default.
+     * @param uri URI to the calendar resource.
+     * @param reportRequest Report for the Request to handle.
+     * @throws IOException
+     */
     public CalDAVReportMethod(String uri, CalDAVReportRequest reportRequest) throws IOException {
         this(uri, reportRequest, CalDAVConstants.DEPTH_1);
     }
 
+    /**
+     *
+     * @param uri URI to the calendar resource.
+     * @param reportRequest Report for the Request to handle.
+     * @param depth Depth of the Report Request
+     * @throws IOException
+     */
     public CalDAVReportMethod(String uri, CalDAVReportRequest reportRequest, int depth) throws IOException {
         super(uri);
         this.reportRequest = reportRequest;
@@ -72,28 +89,45 @@ public class CalDAVReportMethod extends DavMethodBase {
 
     /**
      * Sets the depth and the request body as the Report specified.
-     * @param reportRequest
+     * @param reportRequest Report for Request body
      * @throws IOException
      */
     private void processReportRequest(CalDAVReportRequest reportRequest) throws IOException {
         setRequestBody(reportRequest);
     }
 
+    /**
+     * Set the current request as the Report specified.
+     * @param reportRequest Report to set.
+     * @throws IOException
+     */
     public void setReportRequest(CalDAVReportRequest reportRequest) throws IOException {
         this.reportRequest = reportRequest;
         processReportRequest(reportRequest);
     }
 
+    /**
+     * Change the depth of the Request.
+     * @param depth
+     */
     public void setDepth(int depth){
         isDeep = depth > CalDAVConstants.DEPTH_0;
 
         setRequestHeader(new DepthHeader(depth));
     }
 
+    /**
+     * Set the Calendar Builder used to create the calendar.
+     * @param calendarBuilder
+     */
     public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
         this.calendarBuilder = calendarBuilder;
     }
 
+    /**
+     * Retrieve the current Calendar Builder.
+     * @return
+     */
     public CalendarBuilder getCalendarBuilder() {
         return this.calendarBuilder;
     }
@@ -123,6 +157,11 @@ public class CalDAVReportMethod extends DavMethodBase {
         }
     }
 
+    /**
+     * Overriding to check if the Response contains Calendar or not.
+     * @param state
+     * @param conn
+     */
     @Override
     protected void processResponseHeaders(HttpState state, HttpConnection conn) {
         super.processResponseHeaders(state, conn);
@@ -140,10 +179,20 @@ public class CalDAVReportMethod extends DavMethodBase {
         }
     }
 
+    /**
+     * @return If the Response was a calendar, then we return the {@link Calendar} instance,
+     * else null is returned.
+     */
     public Calendar getResponseBodyAsCalendar(){
         return this.calendarResponse;
     }
 
+    /**
+     * Overridden to build the Calendar from the stream provided.
+     * If the calendarBuilder was not specified, then this will not work correctly.
+     * @param httpState
+     * @param httpConnection
+     */
     @Override
     protected void processResponseBody(HttpState httpState, HttpConnection httpConnection) {
         if (getStatusCode() == CaldavStatus.SC_OK && isCalendarResponse){
@@ -160,7 +209,7 @@ public class CalDAVReportMethod extends DavMethodBase {
     }
 
     /**
-     *
+     * Return the Property associated with a path.
      * @param urlPath Location of the CalendarResource
      * @param property DavPropertyName of the property whose value is to be returned.
      * @return DavProperty
@@ -188,8 +237,8 @@ public class CalDAVReportMethod extends DavMethodBase {
 
     /**
      * Returns all the set of properties and their value, for all the hrefs
-     * @param property
-     * @return
+     * @param property Property Name to return.
+     * @return Collection of Properties.
      */
     public Collection<DavProperty> getDavProperties(DavPropertyName property) {
         Collection<DavProperty> set = new ArrayList<DavProperty>();
@@ -211,7 +260,7 @@ public class CalDAVReportMethod extends DavMethodBase {
 
     /**
      * Returns the MultiStatusResponse to the corresponding uri.
-     * @param uri
+     * @param uri URI to the calendar resource.
      * @return
      */
     public MultiStatusResponse getResponseBodyAsMultiStatusResponse(String uri) throws IOException, DavException {

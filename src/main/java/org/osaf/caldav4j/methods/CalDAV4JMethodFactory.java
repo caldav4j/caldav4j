@@ -26,123 +26,226 @@ import org.osaf.caldav4j.model.request.TicketRequest;
 
 import java.io.IOException;
 
+/**
+ * Method factory for creating instances of CalDAV related Methods.
+ * This automatically handles, any basic configuration required.
+ */
 public class CalDAV4JMethodFactory {
 
-    protected String prodID = CalDAVConstants.PROC_ID_DEFAULT;
-    private boolean validatingOutputter = false;
-    
-    private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
-    private CalendarOutputter calendarOutputter = null;
-    
-    public CalDAV4JMethodFactory(){
-        
-    }
-    
-    public String getProdID() {
-        return prodID;
-    }
+	protected String prodID = CalDAVConstants.PROC_ID_DEFAULT;
+	private boolean validatingOutputter = false;
 
-    public void setProdID(String prodID) {
-        this.prodID = prodID;
-    }
+	private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
+	private CalendarOutputter calendarOutputter = null;
 
-    public PutMethod createPutMethod(){
-        PutMethod putMethod = new PutMethod();
-        putMethod.setProcID(prodID);
-        putMethod.setCalendarOutputter(getCalendarOutputterInstance());
-        return putMethod;
-    }
-    
-    public PostMethod createPostMethod(){
-        PostMethod postMethod = new PostMethod();
-        postMethod.setProcID(prodID);
-        postMethod.setCalendarOutputter(getCalendarOutputterInstance());
-        return postMethod;
-    }
-    
-    public MkCalendarMethod createMkCalendarMethod(String uri) {
-        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri);
-        return mkCalendarMethod;
-    }
+	/**
+	 * Empty Constructor
+	 */
+	public CalDAV4JMethodFactory(){
 
-    public MkCalendarMethod createMkCalendarMethod(String uri, String DisplayName, String Description,
-                                                   String DescriptionLanguage) throws IOException {
-        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri, DisplayName, Description, DescriptionLanguage);
-        return mkCalendarMethod;
-    }
+	}
 
-    public MkCalendarMethod createMkCalendarMethod(String uri, MkCalendar mkCalendar) throws IOException {
-        MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri, mkCalendar);
-        return mkCalendarMethod;
-    }
-    
-    public MkTicketMethod createMkTicketMethod(String uri, TicketRequest tr){
-        MkTicketMethod mkTicketMethod = new MkTicketMethod(uri, tr);
-        return mkTicketMethod;
-    }
-    
-    public DelTicketMethod createDelTicketMethod(String uri, String tr){
-        DelTicketMethod delTicketMethod = new DelTicketMethod(uri, tr);
-        return delTicketMethod;
-    }
-    
-    public PropFindMethod createPropFindMethod(String uri) throws IOException {
-        PropFindMethod propFindMethod = new PropFindMethod(uri);
-        return propFindMethod;
-    }
+	/**
+	 * Returns the value of the current PRODID, which will be used during ICAL Generation.
+	 */
+	public String getProdID() {
+		return prodID;
+	}
 
-    public PropFindMethod createPropFindMethod(String uri, DavPropertyNameSet propertyNames, int depth)
-            throws IOException {
-        PropFindMethod propFindMethod = new PropFindMethod(uri, propertyNames, depth);
-        return propFindMethod;
-    }
+	/**
+	 * Sets the PRODID value to the one specified.
+	 * @param prodID new value of PRODID
+	 */
+	public void setProdID(String prodID) {
+		this.prodID = prodID;
+	}
 
-    public PropFindMethod createPropFindMethod(String uri, int propfindtype, DavPropertyNameSet propertyNames,
-                                               int depth) throws IOException {
-        PropFindMethod propFindMethod = new PropFindMethod(uri, propfindtype, propertyNames, depth);
-        return propFindMethod;
-    }
-    
-    public GetMethod createGetMethod(){
-        GetMethod getMethod = new GetMethod();
-        getMethod.setCalendarBuilder(getCalendarBuilderInstance());
-        return getMethod;
-    }
+	/**
+	 * Creates a {@link PutMethod} instance.
+	 * @return the instance
+	 */
+	public PutMethod createPutMethod(){
+		PutMethod putMethod = new PutMethod();
+		putMethod.setProcID(prodID);
+		putMethod.setCalendarOutputter(getCalendarOutputterInstance());
+		return putMethod;
+	}
 
-    public CalDAVReportMethod createCalDAVReportMethod(String uri) {
-        CalDAVReportMethod reportMethod = new CalDAVReportMethod(uri);
-        reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
-        return reportMethod;
-    }
+	/**
+	 * Creates a {@link PostMethod} instance.
+	 * @return the instance
+	 */
+	public PostMethod createPostMethod(){
+		PostMethod postMethod = new PostMethod();
+		postMethod.setProcID(prodID);
+		postMethod.setCalendarOutputter(getCalendarOutputterInstance());
+		return postMethod;
+	}
 
-    public CalDAVReportMethod createCalDAVReportMethod(String uri, CalDAVReportRequest request) throws IOException {
-        CalDAVReportMethod reportMethod = new CalDAVReportMethod(uri, request);
-        reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
-        return reportMethod;
-    }
-    
-    public boolean isCalendarValidatingOutputter() {
-        return validatingOutputter;
-    }
+	/**
+	 * Creates a {@link MkCalendarMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @return the instance
+	 */
+	public MkCalendarMethod createMkCalendarMethod(String uri) {
+		MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri);
+		return mkCalendarMethod;
+	}
 
-    public void setCalendarValidatingOutputter(boolean validatingOutputter) {
-        this.validatingOutputter = validatingOutputter;
-    }
-    
-    
-    protected synchronized CalendarOutputter getCalendarOutputterInstance(){
-        if (calendarOutputter == null){
-            calendarOutputter = new CalendarOutputter(validatingOutputter);
-        }
-        return calendarOutputter;
-    }
-    
-    private CalendarBuilder getCalendarBuilderInstance(){
-        CalendarBuilder builder = calendarBuilderThreadLocal.get();
-        if (builder == null){
-            builder = new CalendarBuilder();
-            calendarBuilderThreadLocal.set(builder);
-        }
-        return builder;
-    }
+	/**
+	 * Creates a {@link MkCalendarMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @param DisplayName Display Name of Calendar
+	 * @param Description Description of Calendar.
+	 * @param DescriptionLanguage Language of the Description. Optional.
+	 * @return the instance
+	 */
+	public MkCalendarMethod createMkCalendarMethod(String uri, String DisplayName, String Description,
+												   String DescriptionLanguage) throws IOException {
+		MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri, DisplayName, Description, DescriptionLanguage);
+		return mkCalendarMethod;
+	}
+
+	/**
+	 * Creates a {@link MkCalendarMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @param mkCalendar {@link MkCalendar} instance which
+	 * contains all the details for creating a calendar.
+	 * @return the instance
+	 */
+	public MkCalendarMethod createMkCalendarMethod(String uri, MkCalendar mkCalendar) throws IOException {
+		MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri, mkCalendar);
+		return mkCalendarMethod;
+	}
+
+	/**
+	 * Creates a {@link MkTicketMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param tr {@link TicketRequest} instance regarding the request.
+	 * @return the instance
+	 */
+	public MkTicketMethod createMkTicketMethod(String uri, TicketRequest tr){
+		MkTicketMethod mkTicketMethod = new MkTicketMethod(uri, tr);
+		return mkTicketMethod;
+	}
+
+	/**
+	 * Creates a {@link DelTicketMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param ticket ID of the Ticket to be Deleted.
+	 * @return the instance
+	 */
+	public DelTicketMethod createDelTicketMethod(String uri, String ticket){
+		DelTicketMethod delTicketMethod = new DelTicketMethod(uri, ticket);
+		return delTicketMethod;
+	}
+
+	/**
+	 * Creates a {@link PropFindMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @return the instance
+	 */
+	public PropFindMethod createPropFindMethod(String uri) throws IOException {
+		PropFindMethod propFindMethod = new PropFindMethod(uri);
+		return propFindMethod;
+	}
+
+	/**
+	 * Creates a {@link PropFindMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param propertyNames Properties to make the Propfind request for.
+	 * @param depth Depth of the Request
+	 * @return the instance
+	 */
+	public PropFindMethod createPropFindMethod(String uri, DavPropertyNameSet propertyNames, int depth)
+			throws IOException {
+		PropFindMethod propFindMethod = new PropFindMethod(uri, propertyNames, depth);
+		return propFindMethod;
+	}
+
+	/**
+	 * Creates a {@link PropFindMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param propfindtype Type of Propfind Call.
+	 * @param propertyNames Properties to make the Propfind request for.
+	 * @param depth Depth of the Request
+	 * @return the instance
+	 */
+	public PropFindMethod createPropFindMethod(String uri, int propfindtype, DavPropertyNameSet propertyNames,
+											   int depth) throws IOException {
+		PropFindMethod propFindMethod = new PropFindMethod(uri, propfindtype, propertyNames, depth);
+		return propFindMethod;
+	}
+
+	/**
+	 * Creates a {@link GetMethod} instance.
+	 * @return the instance
+	 */
+	public GetMethod createGetMethod(){
+		GetMethod getMethod = new GetMethod();
+		getMethod.setCalendarBuilder(getCalendarBuilderInstance());
+		return getMethod;
+	}
+
+	/**
+	 * Creates a {@link CalDAVReportMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @return the instance
+	 */
+	public CalDAVReportMethod createCalDAVReportMethod(String uri) {
+		CalDAVReportMethod reportMethod = new CalDAVReportMethod(uri);
+		reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
+		return reportMethod;
+	}
+
+	/**
+	 * Creates a {@link CalDAVReportMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param request The Report to make a request for.
+	 * @return the instance
+	 */
+	public CalDAVReportMethod createCalDAVReportMethod(String uri, CalDAVReportRequest request) throws IOException {
+		CalDAVReportMethod reportMethod = new CalDAVReportMethod(uri, request);
+		reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
+		return reportMethod;
+	}
+
+	/**
+	 * @return True or False based on the Calendar Validating Outputter setting.
+	 */
+	public boolean isCalendarValidatingOutputter() {
+		return validatingOutputter;
+	}
+
+	/**
+	 * Set whether the CalendarBuilder is Validating or not.
+	 * @param validatingOutputter Value to set.
+	 */
+	public void setCalendarValidatingOutputter(boolean validatingOutputter) {
+		this.validatingOutputter = validatingOutputter;
+	}
+
+	/**
+	 * Return the CalendarOuputter instance.
+	 * @return CalendarOutputter
+	 */
+	protected synchronized CalendarOutputter getCalendarOutputterInstance(){
+		if (calendarOutputter == null){
+			calendarOutputter = new CalendarOutputter(validatingOutputter);
+		}
+		return calendarOutputter;
+	}
+
+	/**
+	 * Return the CalendarBuilder instance.
+	 * @return CalendarBuilder
+	 */
+	private CalendarBuilder getCalendarBuilderInstance(){
+		CalendarBuilder builder = calendarBuilderThreadLocal.get();
+		if (builder == null){
+			builder = new CalendarBuilder();
+			calendarBuilderThreadLocal.set(builder);
+		}
+		return builder;
+	}
 }

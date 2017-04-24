@@ -25,6 +25,7 @@ import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
@@ -66,7 +67,10 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
     public PutMethod (){
         super();
     }
-    
+
+    /**
+     * @see HttpMethodBase#getName()
+     */
     public String getName() {
         return CalDAVConstants.METHOD_PUT;
     }
@@ -81,7 +85,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
     }
 
     public void setEtags(Set<String> etags) {
-        this.etags = etags;
+        this.etags.addAll(etags);
     }
     
     /**
@@ -211,6 +215,7 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
 			throw new RuntimeException("Problem generating calendar. ", e);
 		}
     }
+
     protected void addRequestHeaders(HttpState state, HttpConnection conn)
     throws IOException, HttpException {
         if (ifMatch || ifNoneMatch){
@@ -237,7 +242,9 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
         super.addRequestHeaders(state, conn);
     }
 
-    // remove double slashes
+    /**
+     * @see org.apache.commons.httpclient.HttpMethodBase#setPath(String)
+     */
     public void setPath(String path) {
     	super.setPath(UrlUtils.removeDoubleSlashes(path));
     }

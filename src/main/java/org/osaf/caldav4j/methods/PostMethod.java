@@ -23,9 +23,7 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
-import org.apache.commons.httpclient.HttpConnection;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.osaf.caldav4j.CalDAVConstants;
@@ -55,7 +53,10 @@ public class PostMethod extends org.apache.commons.httpclient.methods.PostMethod
     public PostMethod (){
         super();
     }
-    
+
+    /**
+     * @see HttpMethod#getName()
+     */
     public String getName() {
         return CalDAVConstants.METHOD_POST;
     }
@@ -213,7 +214,9 @@ public class PostMethod extends org.apache.commons.httpclient.methods.PostMethod
         super.addRequestHeaders(state, conn);
     }
 
-    // remove double slashes
+    /**
+     * @see org.apache.commons.httpclient.HttpMethodBase#setPath(String)
+     */
     public void setPath(String path) {
     	super.setPath(UrlUtils.removeDoubleSlashes(path));
     }

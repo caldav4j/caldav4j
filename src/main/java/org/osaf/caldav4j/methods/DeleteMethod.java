@@ -27,8 +27,10 @@ public class DeleteMethod extends org.apache.jackrabbit.webdav.client.methods.De
         setETag(etag);
     }
 
-    // remove double slashes
-    public void setPath(String path) {
+	/**
+	 * @see org.apache.commons.httpclient.HttpMethodBase#setPath(String)
+	 */
+	public void setPath(String path) {
     	super.setPath(UrlUtils.removeDoubleSlashes(path));
     }
 

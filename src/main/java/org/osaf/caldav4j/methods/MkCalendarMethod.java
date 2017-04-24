@@ -17,6 +17,7 @@
 package org.osaf.caldav4j.methods;
 
 import org.apache.commons.httpclient.HttpConnection;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.jackrabbit.webdav.client.methods.DavMethodBase;
 import org.apache.jackrabbit.webdav.xml.DomUtil;
@@ -40,9 +41,6 @@ public class MkCalendarMethod extends DavMethodBase {
 	 */
 	
 	protected String CALENDAR_DESCRIPTION = "calendar-description";
-    /**
-     * Map of the properties to set.
-     */
 
 	protected MkCalendar mkCalendar = null;
     // --------------------------------------------------------- Public Methods
@@ -92,13 +90,18 @@ public class MkCalendarMethod extends DavMethodBase {
         super.addRequestHeaders(state, conn);
     }
 
-    // remove double slashes
+    /**
+     * @see org.apache.commons.httpclient.HttpMethodBase#setPath(String)
+     */
 	public void setPath(String path) {
     	super.setPath(UrlUtils.removeDoubleSlashes(path));
     }
-    
+
     // --------------------------------------------------- WebdavMethod Methods
 
+    /**
+     * @see HttpMethod#getName()
+     */
     public String getName() {
         return CalDAVConstants.METHOD_MKCALENDAR;
     }

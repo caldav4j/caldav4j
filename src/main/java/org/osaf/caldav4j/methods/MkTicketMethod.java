@@ -71,6 +71,9 @@ public class MkTicketMethod extends DavMethodBase {
         setPath(path);
     }
 
+    /**
+     * @see org.apache.commons.httpclient.HttpMethodBase#setPath(String)
+     */
     public void setPath(String path){
         super.setPath(UrlUtils.removeDoubleSlashes(path));
     }

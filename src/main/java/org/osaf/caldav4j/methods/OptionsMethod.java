@@ -10,8 +10,10 @@ public class OptionsMethod extends org.apache.jackrabbit.webdav.client.methods.O
     public OptionsMethod(String uri) {
     	super(UrlUtils.removeDoubleSlashes(uri));
     }
-    
-    // remove double slashes
+
+	/**
+	 * @see org.apache.commons.httpclient.HttpMethodBase#setPath(String)
+	 */
     public void setPath(String path) {
     	super.setPath(UrlUtils.removeDoubleSlashes(path));
     }
