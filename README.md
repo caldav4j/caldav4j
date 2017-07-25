@@ -1,4 +1,4 @@
-#CalDAV4j Overview
+# CalDAV4j Overview
 
 CalDAV4j is a java library implementing the CalDAV protocol. 
 
