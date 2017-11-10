@@ -22,7 +22,7 @@
  <name>CalDav4j</name>
   <groupId>com.github.caldav4j</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>0.8-SNAPSHOT</version>
+  <version>0.8.1</version>
   <packaging>jar</packaging>
   <dependencies>
       <dependency>
