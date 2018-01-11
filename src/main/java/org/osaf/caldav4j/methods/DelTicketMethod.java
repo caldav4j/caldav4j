@@ -27,7 +27,7 @@ import java.io.IOException;
  * Method that will delete a ticket by id. Need to specify a path and ticket id
  * 
  * @author EdBindl
- * @deprecated
+ * @deprecated All Ticket related classes are now deprecated. Since, 0.9
  */
 public class DelTicketMethod extends DavMethodBase {
 

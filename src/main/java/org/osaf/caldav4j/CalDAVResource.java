@@ -21,47 +21,58 @@ import org.osaf.caldav4j.model.response.CalendarDataProperty;
 
 import java.io.Serializable;
 
+/**
+ * A serializable class representing the Calendar along with the associated metadata. Used for
+ * storing into the cache.
+ */
 public class CalDAVResource implements Serializable{
 	private static final long serialVersionUID = -2607152240683030192L;
 	private ResourceMetadata resourceMetadata = null;
-    private Calendar calendar = null;
-    
-//    public CalDAVResource(CalDAVResponse response) throws CalDAV4JException{
-//        this.calendar = response.getCalendar();
-//        this.resourceMetadata = new ResourceMetadata();
-//        this.resourceMetadata.setETag(response.getETag());
-//        this.resourceMetadata.setHref(response.getHref());
-//    }
+	private Calendar calendar = null;
 
-    public CalDAVResource(MultiStatusResponse response) {
-        this.calendar = CalendarDataProperty.getCalendarfromResponse(response);
-        this.resourceMetadata = new ResourceMetadata();
-        this.resourceMetadata.setETag(CalendarDataProperty.getEtagfromResponse(response));
-        this.resourceMetadata.setHref(response.getHref());
+	/**
+	 * Construct a Resource based on the Reponse.
+	 *
+	 * @param response
+	 */
+	public CalDAVResource(MultiStatusResponse response) {
+		this.calendar = CalendarDataProperty.getCalendarfromResponse(response);
+		this.resourceMetadata = new ResourceMetadata();
+		this.resourceMetadata.setETag(CalendarDataProperty.getEtagfromResponse(response));
+		this.resourceMetadata.setHref(response.getHref());
 
-    }
-    
-    public CalDAVResource(Calendar calendar, String etag, String href){
-        this.calendar = calendar;
-        ResourceMetadata rm = new ResourceMetadata();
-        rm.setETag(etag);
-        rm.setHref(href);
-        this.resourceMetadata = rm;
-    }
+	}
 
-    public CalDAVResource(){
-        resourceMetadata = new ResourceMetadata();
-    }
-    
-    public void setCalendar(Calendar calendar){
-        this.calendar = calendar;
-    }
-    
-    public Calendar getCalendar() {
-        return calendar;
-    }
+	/**
+	 * Construct Resource based on the parameters.
+	 * @param calendar Calendar
+	 * @param etag ETag of the Calendar Resource
+	 * @param href Href of the Calendar Resource
+	 */
+	public CalDAVResource(Calendar calendar, String etag, String href){
+		this.calendar = calendar;
+		ResourceMetadata rm = new ResourceMetadata();
+		rm.setETag(etag);
+		rm.setHref(href);
+		this.resourceMetadata = rm;
+	}
 
-    public ResourceMetadata getResourceMetadata() {
-        return resourceMetadata;
-    }
+	/**
+	 * Default constructor
+	 */
+	public CalDAVResource(){
+		resourceMetadata = new ResourceMetadata();
+	}
+
+	public void setCalendar(Calendar calendar){
+		this.calendar = calendar;
+	}
+
+	public Calendar getCalendar() {
+		return calendar;
+	}
+
+	public ResourceMetadata getResourceMetadata() {
+		return resourceMetadata;
+	}
 }

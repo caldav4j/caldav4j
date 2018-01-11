@@ -26,10 +26,16 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
 import java.util.*;
 
 /**
- *   <!ELEMENT comp-filter (is-defined | time-range)?
+ * Specifies search criteria on calendar components. The CALDAV:comp-filter XML element
+ * specifies a query targeted at the calendar object or event. The scope of this element
+ * is the calendar object when used as  a child of the {@link CalendarQuery} or
+ * {@link CalendarMultiget} XML element. The scope of the element is the enclosing calendar
+ * component when used as a child of another CALDAV:comp-filter XML element.
+ *
+ * <!ELEMENT comp-filter (is-defined | time-range)?
  *                        comp-filter* prop-filter*>
- *                        
- *   <!ATTLIST comp-filter name CDATA #REQUIRED> 
+ *
+ * <!ATTLIST comp-filter name CDATA #REQUIRED>
  *  
  * @author bobbyrullo
  * 
@@ -46,8 +52,10 @@ public class CompFilter extends OutputsDOMBase {
     private List<PropFilter> propFilters = new ArrayList<PropFilter>();
     private String name = null;
 
-
-    public CompFilter(String name){
+	/**
+	 * @param name a calendar object or calendar component type (e.g., VEVENT)
+	 */
+	public CompFilter(String name){
         this.name = name;
     }
 
@@ -57,13 +65,6 @@ public class CompFilter extends OutputsDOMBase {
     
     /**
      * Create a CompFilter
-     * @param caldavNamespaceQualifier
-     * @param name
-     * @param isDefined
-     * @param start
-     * @param end
-     * @param compFilters
-     * @param propFilters
      */
     public CompFilter(String caldavNamespaceQualifier, String name,
             boolean isDefined, Date start, Date end, List<CompFilter> compFilters,
@@ -71,10 +72,18 @@ public class CompFilter extends OutputsDOMBase {
             this(name, isDefined, start, end, compFilters, propFilters);
     }
 
-    public CompFilter(String name,
-                      boolean isDefined, Date start, Date end, List<CompFilter> compFilters,
-                      List<PropFilter> propFilters) {
-        this.isDefined = isDefined;
+	/**
+	 * @param name        a calendar object or calendar component type (e.g., VEVENT)
+	 * @param isDefined   if true, the calendar object or calendar component type specified by
+	 *                    the "name" attribute does not exist in the current scope
+	 * @param start       Start of the time range of the recurrence
+	 * @param end         end of the time range of recurrence
+	 * @param compFilters Comp Filters nested under this filter
+	 * @param propFilters Prop filters under this filter.
+	 */
+	public CompFilter(String name, boolean isDefined, Date start, Date end,
+	                  List<CompFilter> compFilters, List<PropFilter> propFilters) {
+		this.isDefined = isDefined;
         this.name = name;
 
         if (start != null || end != null) { // XXX test the || instead of && (open interval)

@@ -28,6 +28,9 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
+ * The CALDAV:calendar-data XML element specifies a media type supported
+ * by the CalDAV server for calendar object resources.
+ *
  *  <!ELEMENT calendar-data ((comp?, (expand-recurrence-set |
  *                                    limit-recurrence-set)?) |
  *                            #PCDATA)?>
@@ -55,8 +58,9 @@ import java.util.Map;
  *                  (comp*, (allprop | prop*)))>
  *
  * <!ATTLIST comp name CDATA #REQUIRED>
+ *
  * @author bobbyrullo
- * 
+ * @see <a href=http://tools.ietf.org/html/rfc4791#section-9.6>RFC 4791 Section 9.6</a>
  */
 public class CalendarData extends OutputsDOMBase {
     
@@ -73,8 +77,16 @@ public class CalendarData extends OutputsDOMBase {
     private Date recurrenceSetEnd   = null;
     private Integer expandOrLimitRecurrenceSet;
     private Comp comp = null;
-    
-    public CalendarData(Integer expandOrLimitRecurrenceSet, Date recurrenceSetStart,
+
+	/**
+	 * @param expandOrLimitRecurrenceSet Used to specify if Expand or Limit Recurrence Set
+	 *                                   is to be used. Can take values either
+	 *                                   {@link CalendarData#EXPAND} or {@link CalendarData#LIMIT}
+	 * @param recurrenceSetStart         Start date of Recurrence
+	 * @param recurrenceSetEnd           End date of Recurrence
+	 * @param comp                       Defines which component types to return.
+	 */
+	public CalendarData(Integer expandOrLimitRecurrenceSet, Date recurrenceSetStart,
             Date recurrenceSetEnd, Comp comp) {
 
         this.expandOrLimitRecurrenceSet = expandOrLimitRecurrenceSet;

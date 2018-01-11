@@ -25,10 +25,12 @@ import java.util.Map;
 
 
 /**
- *  http://tools.ietf.org/html/rfc2518#section-12.3     
- *      <!ELEMENT href (#PCDATA)>
+ * Identifies the content of the element as a URI.
+ *
+ * <!ELEMENT href (#PCDATA)>
  * 
  *  ex. <D:HREF>
+ *  @see <a href=http://tools.ietf.org/html/rfc2518#section-12.3></a>
  * @author rpolli@babel.it
  * 
  */
@@ -38,8 +40,11 @@ public class DavHref extends OutputsDOMBase {
 
     private String uri = null;
 
-    public DavHref(String uri) {
-        this.uri = uri;
+	/**
+	 * @param uri URI to the component
+	 */
+	public DavHref(String uri) {
+		this.uri = uri;
     }
 
     protected String getElementName() {
@@ -61,23 +66,27 @@ public class DavHref extends OutputsDOMBase {
 	protected String getTextContent() {
 		return uri;
 	}
-    
-   
-    /**
-     *   <!ELEMENT comp-filter (is-defined | time-range)?
-     *                        comp-filter* prop-filter*>
-     *                        
-     *   <!ATTLIST comp-filter name CDATA #REQUIRED> 
-     */
+
+
+	/**
+	 * Nothing to validate, except for containing uri.
+	 */
     public void validate() throws DOMValidationException{
     	return;
     }
 
+	/**
+	 * No other attributes
+	 * @return
+	 */
 	@Override
 	protected Map<String, String> getAttributes() {
 		return null;
 	}
 
+	/**
+	 * No children
+	 */
 	@Override // it has no children
 	protected Collection<XmlSerializable> getChildren() {
 		return null;

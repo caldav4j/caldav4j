@@ -31,9 +31,11 @@ import java.util.Map;
  * 
  * <!ATTLIST prop name CDATA #REQUIRED
  *                novalue (yes|no) "no">
- *  ex. <C:PROP name="DESCRIPTION" />               
+ *  ex. <C:PROP name="DESCRIPTION" />
+ *
+ *  Based on RFC 4791, Defines which properties to return in the response.
  * @author bobbyrullo
- * 
+ * @see <a href=http://tools.ietf.org/html/rfc4791#section-9.6.4>RFC 4791 Section 9.6.4</a>
  */
 public class CalDAVProp extends OutputsDOMBase {
 
@@ -49,39 +51,61 @@ public class CalDAVProp extends OutputsDOMBase {
     private boolean novalue = false;
 
 
+	/**
+	 * @param name               specifies the name of the calendar property to return
+	 * @param novalue            can be used to request that the actual value of the
+	 *                           property not be returned
+	 * @param attrNoValueEnabled specifies if value of novalue to be used
+	 */
+	public CalDAVProp(String name, boolean novalue, boolean attrNoValueEnabled) {
+		this.name = name;
+		this.novalue = novalue;
+		this.attrNoValueEnabled = attrNoValueEnabled;
+	}
 
-    public CalDAVProp(String name, boolean novalue, boolean attrNoValueEnabled) {
-        this.name = name;
-        this.novalue = novalue;
-        this.attrNoValueEnabled = attrNoValueEnabled;
-    }
+	/**
+	 * @param name specifies the name of the calendar property to return
+	 * @param novalue can be used to request that the actual value of the
+	 *                 property not be returned
+	 */
+	public CalDAVProp(String name, boolean novalue) {
+		this(name, novalue, true);
+	}
 
-    public CalDAVProp(String name, boolean novalue) {
-        this(name, novalue, true);
-    }
+	/**
+	 * @param name specifies the name of the calendar property to return
+	 */
+	public CalDAVProp(String name) {
+		this(name, false, false);
+	}
 
-    public CalDAVProp(String name) {
-        this(name, false, false);
-    }
+	/**
+	 * @see OutputsDOMBase#getElementName()
+	 */
+	protected String getElementName() {
+		return ELEMENT_NAME;
+	}
 
-    protected String getElementName() {
-        return ELEMENT_NAME;
-    }
+	/**
+	 * @see OutputsDOMBase#getNamespace()
+	 */
+	protected Namespace getNamespace() {
+		return CalDAVConstants.NAMESPACE_CALDAV;
+	}
 
-    protected Namespace getNamespace() {
-        return CalDAVConstants.NAMESPACE_CALDAV;
-    }
+	/**
+	 * @see OutputsDOMBase#getAttributes()
+	 */
+	protected Map<String, String> getAttributes() {
+		Map<String, String> m =  new HashMap<String, String>();
+		m.put(ATTR_NAME, name);
 
-    protected Map<String, String> getAttributes() {
-        Map<String, String> m =  new HashMap<String, String>();
-        m.put(ATTR_NAME, name);
+		if (attrNoValueEnabled) {
+			m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
+		}
 
-        if (attrNoValueEnabled) {
-            m.put(ATTR_NOVALUE, novalue ? ATTR_VAL_YES : ATTR_VAL_NO);
-        }
-
-        return m;
-    }
+		return m;
+	}
 
 
     protected String getTextContent() {

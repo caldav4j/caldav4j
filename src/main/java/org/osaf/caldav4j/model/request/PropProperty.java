@@ -29,10 +29,13 @@ import org.w3c.dom.Node;
 import java.util.*;
 
 /**
- * a simple, customizable DAV property with children
+ * A simple, customizable DAV property with children. This can be used with practically any node,
+ * this has been extended from {@link DefaultDavProperty} to include the ability to add Attributes
+ * and Children.
+ *
  * ex. <D:ACL></D:ACL>
- * @author theantimist
- * 
+ * @author Ankush Mishra
+ * @see DefaultDavProperty
  */
 public class PropProperty<T> extends DefaultDavProperty<T>{
 

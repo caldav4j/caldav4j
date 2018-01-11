@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * that information.
  * 
  * @author EdBindl
- * 
+ * @deprecated All Ticket related classes are now deprecated. Since, 0.9
  */
 
 public class TicketResponse {

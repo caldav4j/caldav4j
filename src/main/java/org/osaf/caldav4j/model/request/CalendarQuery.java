@@ -28,170 +28,172 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 
- * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)?
- *                            filter> 
+ * Defines a report for querying calendar object resources.
  *
+ * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)?
+ *                            filter>
  * <!ELEMENT filter comp-filter>
  * 
  * <!ELEMENT comp-filter (is-defined | time-range)?
  *                         comp-filter* prop-filter*>
  *
- *  <!ATTLIST comp-filter name CDATA #REQUIRED>
- *  @author bobbyrullo
- * 
+ * <!ATTLIST comp-filter name CDATA #REQUIRED>
+ *
+ * @author bobbyrullo
+ * @see <a href=http://tools.ietf.org/html/rfc4791#section-9.5>RFC 4791 Section 9.5</a>
  */
 public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest{
 
-    public static final String ELEMENT_NAME = "calendar-query";
-    public static final String ELEM_ALLPROP = "allprop";
-    public static final String ELEM_PROPNAME = "propname";
-    public static final String ELEM_FILTER = "filter";
+	public static final String ELEMENT_NAME = "calendar-query";
+	public static final String ELEM_ALLPROP = "allprop";
+	public static final String ELEM_PROPNAME = "propname";
+	public static final String ELEM_FILTER = "filter";
 
-    private boolean allProp = false;
-    private boolean propName = false;
-    private Prop properties = new Prop();
-    private CompFilter compFilter = null;
-    private CalendarData calendarDataProp = null;
+	private boolean allProp = false;
+	private boolean propName = false;
+	private Prop properties = new Prop();
+	private CompFilter compFilter = null;
+	private CalendarData calendarDataProp = null;
 
-    public CalendarQuery() {
+	public CalendarQuery() {
 
-    }
+	}
 
-    public CalendarQuery(Prop properties, CompFilter compFilter, CalendarData calendarData,
-                         boolean allProp, boolean propName) {
-        this(compFilter, calendarData, allProp, propName);
-        if(properties != null)
-            this.properties.addChildren(properties);
-    }
+	public CalendarQuery(Prop properties, CompFilter compFilter, CalendarData calendarData,
+	                     boolean allProp, boolean propName) {
+		this(compFilter, calendarData, allProp, propName);
+		if (properties != null)
+			this.properties.addChildren(properties);
+	}
 
-    public CalendarQuery(DavPropertyNameSet properties, CompFilter compFilter, CalendarData calendarData,
-                         boolean allProp, boolean propName) {
-        this(compFilter, calendarData, allProp, propName);
-        if(properties != null)
-            this.properties.addChildren(properties);
-    }
+	public CalendarQuery(DavPropertyNameSet properties, CompFilter compFilter, CalendarData calendarData,
+	                     boolean allProp, boolean propName) {
+		this(compFilter, calendarData, allProp, propName);
+		if (properties != null)
+			this.properties.addChildren(properties);
+	}
 
-    public CalendarQuery(Collection<? extends XmlSerializable> properties, CompFilter compFilter, CalendarData calendarData,
-                         boolean allProp, boolean propName) {
-        this(compFilter, calendarData, allProp, propName);
-        if(properties != null)
-            this.properties.addChildren(properties);
-    }
+	public CalendarQuery(Collection<? extends XmlSerializable> properties, CompFilter compFilter, CalendarData calendarData,
+	                     boolean allProp, boolean propName) {
+		this(compFilter, calendarData, allProp, propName);
+		if (properties != null)
+			this.properties.addChildren(properties);
+	}
 
-    public CalendarQuery(CompFilter compFilter, CalendarData calendarData, boolean allProp, boolean propName){
-        this.compFilter = compFilter;
-        this.calendarDataProp = calendarData;
-        this.allProp = allProp;
-        this.propName = propName;
-    }
+	public CalendarQuery(CompFilter compFilter, CalendarData calendarData, boolean allProp, boolean propName) {
+		this.compFilter = compFilter;
+		this.calendarDataProp = calendarData;
+		this.allProp = allProp;
+		this.propName = propName;
+	}
 
 
-    protected String getElementName() {
-        return ELEMENT_NAME;
-    }
+	protected String getElementName() {
+		return ELEMENT_NAME;
+	}
 
-    protected Namespace getNamespace() {
-        return CalDAVConstants.NAMESPACE_CALDAV;
-    }
+	protected Namespace getNamespace() {
+		return CalDAVConstants.NAMESPACE_CALDAV;
+	}
 
-    protected Collection<XmlSerializable> getChildren() {
-        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
+	protected Collection<XmlSerializable> getChildren() {
+		ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
 
-        if (allProp) {
-            children.add(new PropProperty(ELEM_ALLPROP, CalDAVConstants.NAMESPACE_WEBDAV));
-        } else if (propName) {
-            children.add(new PropProperty(ELEM_PROPNAME, CalDAVConstants.NAMESPACE_WEBDAV));
-        } else if ((properties != null && !properties.isEmpty())
-                || calendarDataProp != null) {
-            if (calendarDataProp != null) {
-                properties.add(calendarDataProp);
-            }
-            children.add(properties);
-        }
+		if (allProp) {
+			children.add(new PropProperty(ELEM_ALLPROP, CalDAVConstants.NAMESPACE_WEBDAV));
+		} else if (propName) {
+			children.add(new PropProperty(ELEM_PROPNAME, CalDAVConstants.NAMESPACE_WEBDAV));
+		} else if ((properties != null && !properties.isEmpty())
+				|| calendarDataProp != null) {
+			if (calendarDataProp != null) {
+				properties.add(calendarDataProp);
+			}
+			children.add(properties);
+		}
 
-        if (compFilter != null) {
-            PropProperty filter = new PropProperty(ELEM_FILTER, CalDAVConstants.NAMESPACE_CALDAV);
-            filter.addChild(compFilter);
-            children.add(filter);
-        }
-        return children;
-    }
+		if (compFilter != null) {
+			PropProperty filter = new PropProperty(ELEM_FILTER, CalDAVConstants.NAMESPACE_CALDAV);
+			filter.addChild(compFilter);
+			children.add(filter);
+		}
+		return children;
+	}
 
-    protected String getTextContent() {
-        return null;
-    }
+	protected String getTextContent() {
+		return null;
+	}
 
-    public boolean isAllProp() {
-        return allProp;
-    }
+	public boolean isAllProp() {
+		return allProp;
+	}
 
-    public void setAllProp(boolean allProp) {
-        this.allProp = allProp;
-    }
+	public void setAllProp(boolean allProp) {
+		this.allProp = allProp;
+	}
 
-    public boolean isPropName() {
-        return propName;
-    }
+	public boolean isPropName() {
+		return propName;
+	}
 
-    public void setPropName(boolean propName) {
-        this.propName = propName;
-    }
+	public void setPropName(boolean propName) {
+		this.propName = propName;
+	}
 
-    public Prop getProperties() {
-        return properties;
-    }
+	public Prop getProperties() {
+		return properties;
+	}
 
-    public void setProperties(Collection<PropProperty> properties) {
-        this.properties.addChildren(properties);
-    }
+	public void setProperties(Collection<PropProperty> properties) {
+		this.properties.addChildren(properties);
+	}
 
-    public void setProperties(DavPropertyNameSet properties) {
-        this.properties.addChildren(properties);
-    }
+	public void setProperties(DavPropertyNameSet properties) {
+		this.properties.addChildren(properties);
+	}
 
-    public void addProperty(XmlSerializable propProperty){
-        properties.add(propProperty);
-    }
+	public void addProperty(XmlSerializable propProperty) {
+		properties.add(propProperty);
+	}
 
-    public void addProperty(String propertyName, Namespace namespace) {
-        PropProperty propProperty = new PropProperty(propertyName, namespace);
-        properties.add(propProperty);
-    }
-    protected Map<String, String> getAttributes() {
-        return null;
-    }
+	public void addProperty(String propertyName, Namespace namespace) {
+		PropProperty propProperty = new PropProperty(propertyName, namespace);
+		properties.add(propProperty);
+	}
 
-    public CompFilter getCompFilter() {
-        return compFilter;
-    }
+	protected Map<String, String> getAttributes() {
+		return null;
+	}
 
-    public void setCompFilter(CompFilter compFilter) {
-        this.compFilter = compFilter;
-    }
+	public CompFilter getCompFilter() {
+		return compFilter;
+	}
 
-    public CalendarData getCalendarDataProp() {
-        return calendarDataProp;
-    }
+	public void setCompFilter(CompFilter compFilter) {
+		this.compFilter = compFilter;
+	}
 
-    public void setCalendarDataProp(CalendarData calendarDataProp) {
-        this.calendarDataProp = calendarDataProp;
-    }
+	public CalendarData getCalendarDataProp() {
+		return calendarDataProp;
+	}
 
-    /**
-     * Validates that the object validates against the following dtd:
-     *
-     * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)? filter>
-     */
-    public void validate() throws DOMValidationException{
-        if (calendarDataProp != null){
-            calendarDataProp.validate();
-        }
-        if (compFilter == null){
-            throwValidationException("CompFilter cannot be null.");
-        }
+	public void setCalendarDataProp(CalendarData calendarDataProp) {
+		this.calendarDataProp = calendarDataProp;
+	}
 
-        compFilter.validate();
-    }
+	/**
+	 * Validates that the object validates against the following dtd:
+	 * <p>
+	 * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)? filter>
+	 */
+	public void validate() throws DOMValidationException {
+		if (calendarDataProp != null) {
+			calendarDataProp.validate();
+		}
+		if (compFilter == null) {
+			throwValidationException("CompFilter cannot be null.");
+		}
+
+		compFilter.validate();
+	}
 
 }

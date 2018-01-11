@@ -10,8 +10,8 @@ public class CaldavCredential {
 
 	// sample class for storing credentials 
     //public static final String CALDAV_SERVER_HOST = "10.0.8.205";
-    public  String host = "hub.chandlerproject.org";
-    public  int port = 443;
+	public String host = "";
+	public  int port = 443;
     public  String protocol = "https";
     public  String user = "caldav4j";
     public  String home = "/dav/"+user+"/";

@@ -35,19 +35,42 @@ import java.util.List;
 
 
 /**
- *
+ * Implements the PROPFIND method as specified in the RFC 4918, Section 9.1
+ * <p>
+ * Supported types:
+ * <ul>
+ *   <li>{@link CalDAVConstants#PROPFIND_ALL_PROP}: all custom properties,
+ *   plus the live properties defined in RFC2518/RFC4918
+ *   <li>{@link CalDAVConstants#PROPFIND_ALL_PROP_INCLUDE}: same as
+ *   {@link CalDAVConstants#PROPFIND_ALL_PROP} plus the properties specified
+ *   in <code>propNameSet</code>
+ *   <li>{@link CalDAVConstants#PROPFIND_BY_PROPERTY}: just the properties
+ *   specified in <code>propNameSet</code>
+ *   <li>{@link CalDAVConstants#PROPFIND_PROPERTY_NAMES}: just the property names
+ * </ul>
+ * </p>
+ * This is based on the Jackrabbit's WebDAV implementation of PROPFIND, which has
+ * been extended for use with Calendar specific methods.
+ * @see org.apache.jackrabbit.webdav.client.methods.PropFindMethod
+ * @author Ankush Mishra
  */
 public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.PropFindMethod {
     private static final Logger log = LoggerFactory.getLogger(PropFindMethod.class);
 
 
-    public PropFindMethod(String uri) throws IOException {
-        super(uri);
-    }
+	/**
+	 * Default Constuctor
+	 *
+	 * @param uri URI to the calendar resource
+	 * @throws IOException
+	 */
+	public PropFindMethod(String uri) throws IOException {
+		super(uri);
+	}
 
-    /**
-     * Constructor, which takes in the Properties
-     *
+	/**
+	 * Constructor, which takes in the Properties Set, and the depth.
+	 *
      * @param path Path of the principal
      * @param propNameSet Properties to make the Propfind, call for.
      * @param depth Depth of the Propfind Method.
@@ -57,68 +80,86 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
         super(path, propNameSet, depth);
     }
 
-    /**
-     * @param uri Path of the principal
-     * @param propfindType Type of Propfind Call. Specified, in DavConstants or CalDavConstants
-     * @param propNameSet Properties to make the Propfind, call for.
-     * @param depth Depth of the Propfind Method.
-     * @throws IOException
+	/**
+	 * Constructor which takes in the properties with the type of propfind.
+	 * @param uri Path of the principal
+	 * @param propfindType Type of Propfind Call. Specified, in DavConstants or CalDavConstants
+	 * @param propNameSet Properties to make the Propfind, call for.
+	 * @param depth Depth of the Propfind Method.
+	 * @throws IOException
+	 */
+	public PropFindMethod(String uri, int propfindType, DavPropertyNameSet propNameSet,
+	                      int depth) throws IOException {
+		super(uri, propfindType, propNameSet, depth);
+	}
+
+	/**
+	 * Return the AclProperty relative to a given url
+	 * @author rpolli, Ankush Mishra
+	 * @param urlPath Location of the CalendarResource
+	 * @return AclProperty xml response or null if missing
      */
-    public PropFindMethod(String uri, int propfindType, DavPropertyNameSet propNameSet,
-                          int depth) throws IOException {
-        super(uri, propfindType, propNameSet, depth);
-    }
+	public AclProperty getAcl(String urlPath) {
+		DavProperty p = getDavProperty(urlPath, CalDAVConstants.DNAME_ACL);
+		if(p != null) {
+			try {
+				return AclProperty.createFromXml(p.toXml(DomUtil.createDocument()));
+			} catch (DavException e) {
+				log.warn("Unable to create AclProperty");
+			} catch (ParserConfigurationException e) {
+				log.warn("Unable to create AclProperty");
+			}
+		}
 
-    /**
-     * return the AclProperty relative to a given url
-     * @author rpolli
-     * @param urlPath
-     * @return AclProperty xml response or null if missing
-     */
-    public AclProperty getAcl(String urlPath) {
-        DavProperty p = getDavProperty(urlPath, CalDAVConstants.DNAME_ACL);
-        if(p != null) {
-            try {
-                return AclProperty.createFromXml(p.toXml(DomUtil.createDocument()));
-            } catch (DavException e) {
-                log.warn("Unable to create AclProperty");
-            } catch (ParserConfigurationException e) {
-                log.warn("Unable to create AclProperty");
-            }
-        }
+		return null;
+	}
 
-        return null;
-    }
+	/**
+	 * Return the ACL Ace returned from the PROPFIND call.
+	 * @param urlPath URL of the ACL
+	 * @return List of {@link AclProperty.Ace}
+	 * @throws CalDAV4JException
+	 */
+	public List<AclProperty.Ace> getAces(String urlPath) throws CalDAV4JException {
+		if(succeeded()) {
+			AclProperty acls = getAcl(urlPath);
+			return acls.getValue();
+		}
+		throw new CalDAV4JException("Error getting ACLs. PROPFIND status is: " + getStatusCode());
+	}
 
-    public List<AclProperty.Ace> getAces(String urlPath) throws CalDAV4JException {
-        if(succeeded()) {
-            AclProperty acls = getAcl(urlPath);
-            return acls.getValue();
-        }
-        throw new CalDAV4JException("Error getting ACLs. PROPFIND status is: " + getStatusCode());
-    }
+	/**
+	 * Convenience method to return the Calendar Description from the
+	 * @param urlPath Location of the CalendarResource
+	 * @return Calendar Description as String
+	 */
+	public String getCalendarDescription(String urlPath) {
+		DavProperty p =  getDavProperty(urlPath, CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
+		if (p!= null && p.getValue() != null) {
+			return p.getValue().toString();
+		} else {
+			return "";
+		}
+	}
 
-    public String getCalendarDescription(String urlPath) {
-        DavProperty p =  getDavProperty(urlPath, CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
-        if (p!= null && p.getValue() != null) {
-            return p.getValue().toString();
-        } else {
-            return "";
-        }
-    }
-    public String getDisplayName(String urlPath) {
-        DavProperty p= getDavProperty(urlPath, DavPropertyName.DISPLAYNAME);
-        if (p != null && p.getValue() != null) {
-            return p.getValue().toString();
-        } else {
-            return "";
-        }
-    }
+	/**
+	 * Convenience method to return the Calendar Display Name.
+	 * @param urlPath Location of the CalendarResource
+	 * @return Display Name as string
+	 */
+	public String getDisplayName(String urlPath) {
+		DavProperty p= getDavProperty(urlPath, DavPropertyName.DISPLAYNAME);
+		if (p != null && p.getValue() != null) {
+			return p.getValue().toString();
+		} else {
+			return "";
+		}
+	}
 
 
-    /**
-     *
-     * @param urlPath Location of the CalendarResource
+	/**
+	 * Returns the DavProperty associated with Property Name.
+	 * @param urlPath Location of the CalendarResource
      * @param property DavPropertyName of the property whose value is to be returned.
      * @return DavProperty
      *
@@ -145,8 +186,8 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
 
     /**
      * Returns all the set of properties and their value, for all the hrefs
-     * @param property
-     * @return
+     * @param property DavPropertyName of the property whose value is to be returned.
+     * @return Collection of DavProperties associated with PropertyName.
      */
     public Collection<DavProperty> getDavProperties(DavPropertyName property) {
         Collection<DavProperty> set = new ArrayList<DavProperty>();
@@ -168,8 +209,8 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
 
     /**
      * Returns the MultiStatusResponse to the corresponding uri.
-     * @param uri
-     * @return
+     * @param uri Location of the CalendarResource
+     * @return MultiStatus Response retrieved from the HTTP Response.
      */
     public MultiStatusResponse getResponseBodyAsMultiStatusResponse(String uri) throws IOException, DavException {
         MultiStatusResponse[] responses = getResponseBodyAsMultiStatus().getResponses();

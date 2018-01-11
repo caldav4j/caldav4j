@@ -39,10 +39,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
 	protected static final Logger log = LoggerFactory.getLogger(CalDAVCollectionTest.class);
 
-
-
-
-
 	// cache should be visible to be used in assertions
 	private EhCacheResourceCache myCache = null;
 

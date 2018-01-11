@@ -1,4 +1,4 @@
-#CalDAV4j Overview
+# CalDAV4j Overview
 
 CalDAV4j is a java library implementing the CalDAV protocol. 
 
@@ -11,7 +11,6 @@ While we're moving to jackrabbit, CalDAV4j is still based on Slide project's Web
 
  * Par-Tec
  * OSAFoundation
- 
 
 # CalDAV4j
 
@@ -29,7 +28,7 @@ Compliance: We aim to be implement the following specs
 
   * CalDAV spec and updates
   * WebDAV tickets spec
-  * Caldav Scheduling specs
+  * CalDAV Scheduling specs
   * Reliability: a lot of functional tests and the "rails" for checking your caldav implementation support.
 
 # Join us
@@ -78,7 +77,8 @@ The 0.7 release includes:
   * massive refactoring to simplify code
   * separate exceptions in a given package
   * source jars and javadocs in maven repository
-  * The 0.6 release includes:
+
+The 0.6 release includes:
   
   * basic ACL support (get/set)
   * basic scheduling support
@@ -86,37 +86,28 @@ The 0.7 release includes:
 
  The 0.5 release includes:
  
-basic google calendar support
-a method for easy caldav query creation
-example classes for connecting to bedework and google calendar
-better junit testing
+  * basic google calendar support
+  * a method for easy caldav query creation
+  * example classes for connecting to bedework and google calendar
+  * better junit testing
+
 The 0.4 release includes:
 
-Support for
-<calendar-multiget>
+  * Support for <calendar-multiget> reports
+  * More and more ready-to-use <calendar-query> methods to search events
+  * Code refactoring
+  * HttpClient v3.0 support (download Slide for HttpClient v3 here!)
+  * More Slide isolation (for a future JackRabbit switch)
+  * Better Bedework support
 
-reports
-
-More and more ready-to-use
-<calendar-query>
-
-methods to search events
-
-Code refactoring
-HttpClient v3.0 support (download Slide for HttpClient v3 here!)
-More Slide isolation (for a future JackRabbit switch)
-Better Bedework support
 The 0.3 release features include:
 
-Support for
-<calendar-query>
+  * Support for <calendar-query> reports
+  * Protocol level support for MKCALENDAR, GET, REPORT, PUT
+  * High level API for accessing events within a calendar collection
+  * Caching of CalDAV resources
+  * Ticket Support
 
-reports
-
-Protocol level support for MKCALENDAR, GET, REPORT, PUT
-High level API for accessing events within a calendar collection
-Caching of CalDAV resources
-Ticket Support
 Among the things not supported yet are:
 
 Free Busy reports
@@ -129,7 +120,6 @@ More information here.
 
 CalDAV4j uses Maven as its build system. Here is some more information on building CalDAV4j
  
-
 # Using
 
 Download the latest JAR file and make sure it's in your classpath. The unit tests are the best place right now to see how to use CalDAV4j. Tutorials and more documentation are forthcoming.

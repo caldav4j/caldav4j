@@ -38,7 +38,8 @@ import java.io.InputStream;
 public abstract class BaseTestCase   implements TestConstants {
 	protected static final Logger log = LoggerFactory.getLogger(BaseTestCase.class);
 
-    protected CaldavCredential caldavCredential = new CaldavCredential(System.getProperty("caldav4jUri", null));
+	protected CaldavCredential caldavCredential = new CaldavCredential("http://testuser:testuser@localhost/cal.php/calendars/testuser/");
+	//System.getProperty("caldav4jUri", null));
 
 	protected CalDavDialect caldavDialect = new ChandlerCalDavDialect();
 

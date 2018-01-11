@@ -26,8 +26,10 @@ import java.io.IOException;
  * ticket in the Request Header.
  * 
  * @author EdBindl
- * 
+ *
  */
+// Soon to be deprecated, I'll add the deprecated tag later, due to outstanding issue
+// in CalDAVCollection
 public class HttpClient extends org.apache.commons.httpclient.HttpClient {
 
     private String ticket = null;

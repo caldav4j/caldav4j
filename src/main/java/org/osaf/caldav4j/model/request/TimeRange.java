@@ -26,17 +26,20 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
 
 import java.text.ParseException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ *  Specifies a time range to limit the set of calendar components returned by the server.
+ *  This is used along with Reports implementing the {@link CalDAVReportRequest}
+ *
  *  <!ELEMENT time-range EMPTY>
  *
  *  <!ATTLIST time-range start CDATA
  *                       end CDATA>
+ *
  * @author bobbyrullo
- * 
+ * @see <a href=http://tools.ietf.org/html/rfc4791#section-9.9>RFC 4791 Section 9.9</a>
  */
 public class TimeRange extends OutputsDOMBase {
     
@@ -46,8 +49,12 @@ public class TimeRange extends OutputsDOMBase {
 
     private Date start = null;
     private Date end = null;
-    
-    public TimeRange(Date start, Date end) {
+
+	/**
+	 * @param start Start Date
+	 * @param end   End Date
+	 */
+	public TimeRange(Date start, Date end) {
         this.start = start;
         this.end = end;
     }
@@ -106,7 +113,6 @@ public class TimeRange extends OutputsDOMBase {
      * <!ELEMENT time-range EMPTY>
      * 
      * <!ATTLIST time-range start CDATA end CDATA>
-     * @see http://tools.ietf.org/html/rfc4791#section-9.9
      * Time ranges open at one end can be specified by
       including only one attribute; however, at least one attribute MUST
       always be present in the CALDAV:time-range element. 

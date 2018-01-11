@@ -25,202 +25,204 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
 import java.util.*;
 
 /**
+ *  Defines which component types to return. The name value is a calendar
+ *  component name (e.g., VEVENT).
+ *
  *  <!ELEMENT comp ((allcomp, (allprop | prop*)) |
  *                  (comp*, (allprop | prop*)))>
- *
  * <!ATTLIST comp name CDATA #REQUIRED>
- * 
- * <!ELEMENT allcomp EMPTY> 
- * 
+ * <!ELEMENT allcomp EMPTY>
  * <!ELEMENT allprop EMPTY>
- * 
  * <!ELEMENT prop EMPTY>
- * 
  * <!ATTLIST prop name CDATA #REQUIRED
  *                novalue (yes|no) "no">
- *                
+ *
+ * @see <a href=http://tools.ietf.org/html/rfc4791#section-9.6.1>RFC 4791 Section 9.6.1</a>
  * @author bobbyrullo
  * 
  */
 public class Comp extends OutputsDOMBase {
-    
-    public static final String ELEMENT_NAME = "comp";
-    public static final String ELEM_ALLPROP = "allprop";
-    public static final String ELEM_PROP = "prop";
-    public static final String ELEM_ALLCOMP = "allcomp";
-   
-    public static final String ATTR_NAME = "name";
 
-    private List<Comp> comps = new ArrayList<Comp>();
-    private List<CalDAVProp> props = new ArrayList<CalDAVProp>();
-    private boolean allComp = false;
-    private boolean allProp = false;
-    private String name = null;
+	public static final String ELEMENT_NAME = "comp";
+	public static final String ELEM_ALLPROP = "allprop";
+	public static final String ELEM_PROP = "prop";
+	public static final String ELEM_ALLCOMP = "allcomp";
 
-    public Comp() {
+	public static final String ATTR_NAME = "name";
 
-    }
+	private List<Comp> comps = new ArrayList<Comp>();
+	private List<CalDAVProp> props = new ArrayList<CalDAVProp>();
+	private boolean allComp = false;
+	private boolean allProp = false;
+	private String name = null;
 
-    public Comp(String name){
-        this(name, false, false);
-    }
+	public Comp() {
 
-    public Comp(String name, boolean allComp,
-                boolean allProp, List<Comp> comps, List<CalDAVProp> props) {
+	}
 
-        this.name = name;
+	public Comp(String name) {
+		this(name, false, false);
+	}
 
-        if (allComp){
-            this.allComp = true;
-        } else if(comps != null) {
-            this.comps.addAll(comps);
-        }
+	public Comp(String name, boolean allComp,
+	            boolean allProp, List<Comp> comps, List<CalDAVProp> props) {
 
-        if (allProp){
-            this.allProp = true;
-        } else if (props != null){
-            this.props.addAll(props);
-        }
-    }
+		this.name = name;
 
-    public Comp(String name, List<Comp> comps, List<CalDAVProp> props){
-        this(name, false, false, comps, props);
-    }
+		if (allComp) {
+			this.allComp = true;
+		} else if (comps != null) {
+			this.comps.addAll(comps);
+		}
 
-    public Comp(String name, boolean allComp, boolean allProp) {
-        this.name = name;
-        this.allComp = allComp;
-        this.allProp = allProp;
-    }
+		if (allProp) {
+			this.allProp = true;
+		} else if (props != null) {
+			this.props.addAll(props);
+		}
+	}
 
-    public boolean isAllComp() {
-        return allComp;
-    }
+	public Comp(String name, List<Comp> comps, List<CalDAVProp> props) {
+		this(name, false, false, comps, props);
+	}
 
-    public void setAllComp(boolean allComp) {
-        this.allComp = allComp;
-    }
+	public Comp(String name, boolean allComp, boolean allProp) {
+		this.name = name;
+		this.allComp = allComp;
+		this.allProp = allProp;
+	}
 
-    public boolean isAllProp() {
-        return allProp;
-    }
+	public boolean isAllComp() {
+		return allComp;
+	}
 
-    public void setAllProp(boolean allProp) {
-        this.allProp = allProp;
-    }
+	public void setAllComp(boolean allComp) {
+		this.allComp = allComp;
+	}
 
-    public List<Comp> getComps() {
-        return comps;
-    }
+	public boolean isAllProp() {
+		return allProp;
+	}
 
-    public void setComps(List<Comp> comps) {
-        this.comps = comps;
-    }
+	public void setAllProp(boolean allProp) {
+		this.allProp = allProp;
+	}
 
-    public void addComp(Comp comp){ this.comps.add(comp); }
+	public List<Comp> getComps() {
+		return comps;
+	}
 
-    public void addComp(String name) { this.comps.add(new Comp(name)); }
+	public void setComps(List<Comp> comps) {
+		this.comps = comps;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void addComp(Comp comp) {
+		this.comps.add(comp);
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void addComp(String name) {
+		this.comps.add(new Comp(name));
+	}
 
-    public List<CalDAVProp> getProps() {
-        return props;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setProps(List<CalDAVProp> props) {
-        this.props = props;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    protected String getElementName() {
-        return ELEMENT_NAME;
-    }
+	public List<CalDAVProp> getProps() {
+		return props;
+	}
 
-    protected Namespace getNamespace() {
-        return CalDAVConstants.NAMESPACE_CALDAV;
-    }
+	public void setProps(List<CalDAVProp> props) {
+		this.props = props;
+	}
 
-    protected Collection<? extends XmlSerializable> getChildren() {
-        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
-        if (allComp){
-            children.add(new PropProperty(ELEM_ALLCOMP, CalDAVConstants.NAMESPACE_CALDAV));
-        } else if (comps != null){
-            children.addAll(comps);
-        }
+	protected String getElementName() {
+		return ELEMENT_NAME;
+	}
 
-        if (allProp){
-            children.add(new PropProperty(ELEM_ALLPROP, CalDAVConstants.NAMESPACE_CALDAV));
-        } else if (props != null) {
-            children.addAll(props);
-        }
+	protected Namespace getNamespace() {
+		return CalDAVConstants.NAMESPACE_CALDAV;
+	}
 
-        return children;
-    }
-    
-    protected String getTextContent() {
-        return null;
-    }
-    
-    protected Map<String, String> getAttributes() {
-        Map<String, String> m = new HashMap<String, String>();
-        m.put(ATTR_NAME, name);
-        return m;
-    }
-    
-    public void addProp(CalDAVProp prop){
-        props.add(prop);
-    }
-    
-    public void addProp(String propName, boolean novalue) {
-        props.add(new CalDAVProp(propName, novalue));
-    }
-    
-    public void addProp(String propName) {
-        props.add(new CalDAVProp(propName));
-    }
-    
-    /**
-     *  <!ELEMENT comp ((allcomp, (allprop | prop*)) |
-     *                  (comp*, (allprop | prop*)))>
-     *
-     * <!ATTLIST comp name CDATA #REQUIRED>
-     * 
-     * <!ELEMENT allcomp EMPTY> 
-     * 
-     * <!ELEMENT allprop EMPTY>
-     * 
-     * <!ELEMENT prop EMPTY>
-     * 
-     * <!ATTLIST prop name CDATA #REQUIRED
-     *                novalue (yes|no) "no">
-     * 
-     */
-    public void validate() throws DOMValidationException{
-        if (name == null){
-            throwValidationException("Name is a required property");
-        }
-        
-        if (allComp && comps != null && comps.size() > 0 ){
-            throwValidationException("allComp and comp* are mutually exclusive");
-        }
-        
-        if (comps != null){
-            validate(comps);
-        }
-        
-        if (allProp && props != null && props.size() > 0){
-            throwValidationException("allProp and prop* are mutually exclusive");
-        }
-        
-        if (props != null){
-            validate(props);
-        }
-        
-        
-    }
+	protected Collection<? extends XmlSerializable> getChildren() {
+		ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
+		if (allComp) {
+			children.add(new PropProperty(ELEM_ALLCOMP, CalDAVConstants.NAMESPACE_CALDAV));
+		} else if (comps != null) {
+			children.addAll(comps);
+		}
+
+		if (allProp) {
+			children.add(new PropProperty(ELEM_ALLPROP, CalDAVConstants.NAMESPACE_CALDAV));
+		} else if (props != null) {
+			children.addAll(props);
+		}
+
+		return children;
+	}
+
+	protected String getTextContent() {
+		return null;
+	}
+
+	protected Map<String, String> getAttributes() {
+		Map<String, String> m = new HashMap<String, String>();
+		m.put(ATTR_NAME, name);
+		return m;
+	}
+
+	public void addProp(CalDAVProp prop) {
+		props.add(prop);
+	}
+
+	public void addProp(String propName, boolean novalue) {
+		props.add(new CalDAVProp(propName, novalue));
+	}
+
+	public void addProp(String propName) {
+		props.add(new CalDAVProp(propName));
+	}
+
+	/**
+	 * <!ELEMENT comp ((allcomp, (allprop | prop*)) |
+	 * (comp*, (allprop | prop*)))>
+	 * <p>
+	 * <!ATTLIST comp name CDATA #REQUIRED>
+	 * <p>
+	 * <!ELEMENT allcomp EMPTY>
+	 * <p>
+	 * <!ELEMENT allprop EMPTY>
+	 * <p>
+	 * <!ELEMENT prop EMPTY>
+	 * <p>
+	 * <!ATTLIST prop name CDATA #REQUIRED
+	 * novalue (yes|no) "no">
+	 */
+	public void validate() throws DOMValidationException {
+		if (name == null) {
+			throwValidationException("Name is a required property");
+		}
+
+		if (allComp && comps != null && comps.size() > 0) {
+			throwValidationException("allComp and comp* are mutually exclusive");
+		}
+
+		if (comps != null) {
+			validate(comps);
+		}
+
+		if (allProp && props != null && props.size() > 0) {
+			throwValidationException("allProp and prop* are mutually exclusive");
+		}
+
+		if (props != null) {
+			validate(props);
+		}
+
+
+	}
 }

@@ -1,12 +1,14 @@
 package org.osaf.caldav4j.util;
 
-import java.util.Comparator;
-
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
 
-/* this class compares two calendar by the first event date. maybe the better place for this class is the package net.fortuna.ical4j.model.Calendar; */
+import java.util.Comparator;
 
+/**
+ * This class provides the ability to compares two calendar by the first event date.
+ */
+//maybe the better place for this class is the package net.fortuna.ical4j.model.Calendar;
 public class CalendarComparator implements Comparator<Calendar> {
 
 	public int compare(Calendar o1, Calendar  o2) {

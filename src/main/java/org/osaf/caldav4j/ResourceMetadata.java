@@ -15,33 +15,35 @@
  */
 package org.osaf.caldav4j;
 
-import java.io.Serializable;
-
 import org.osaf.caldav4j.util.UrlUtils;
 
+import java.io.Serializable;
+
+/**
+ * Serializable Metadata for each {@link CalDAVResource} containing currently
+ * the ETag, and Href of the Resource.
+ */
 public class ResourceMetadata implements Serializable {
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -3385356629201926900L;
 	private String eTag = null;
-    private String href = null;
-    
-    
-    public String getETag() {
-        return eTag;
-    }
-    
-    public void setETag(String tag) {
-        eTag = tag;
-    }
-    
-    public String getHref() {
-        return href;
-    }
-    
-    public void setHref(String href) {
-        this.href = UrlUtils.removeDoubleSlashes(href);
-    }
-    
+	private String href = null;
+
+
+	public String getETag() {
+		return eTag;
+	}
+
+	public void setETag(String tag) {
+		eTag = tag;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = UrlUtils.removeDoubleSlashes(href);
+	}
+
 }

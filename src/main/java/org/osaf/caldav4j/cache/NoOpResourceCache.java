@@ -3,33 +3,45 @@ package org.osaf.caldav4j.cache;
 import org.osaf.caldav4j.CalDAVResource;
 
 /**
- * Does nothing, but is very fast.
+ * Cache which does nothing. But is very fast.
  * 
  * @author bobbyrullo
  */
 public class NoOpResourceCache implements CalDAVResourceCache {
 
-    /**
-     * The only one you'll ever need! 
-     */
-    public static final NoOpResourceCache SINGLETON = new NoOpResourceCache();
-    
-    private NoOpResourceCache(){
-        
-    }
-    
-    public String getHrefForEventUID(String uid) {
-        return null;
-    }
+	/**
+	 * Singleton class.
+	 */
+	public static final NoOpResourceCache SINGLETON = new NoOpResourceCache();
 
-    public CalDAVResource getResource(String href) {
-        return null;
-    }
+	private NoOpResourceCache() {
 
-    public void putResource(CalDAVResource calDAVResource) {
-    }
+	}
 
-    public void removeResource(String href) {
-    }
+	/**
+	 * @see CalDAVResourceCache#getHrefForEventUID(String)
+	 */
+	public String getHrefForEventUID(String uid) {
+		return null;
+	}
+
+	/**
+	 * @see CalDAVResourceCache#getResource(String)
+	 */
+	public CalDAVResource getResource(String href) {
+		return null;
+	}
+
+	/**
+	 * @see CalDAVResourceCache#putResource(CalDAVResource)
+	 */
+	public void putResource(CalDAVResource calDAVResource) {
+	}
+
+	/**
+	 * @see CalDAVResourceCache#removeResource(String)
+	 */
+	public void removeResource(String href) {
+	}
 
 }

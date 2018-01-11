@@ -22,9 +22,6 @@ package org.osaf.caldav4j.exceptions;
  */
 public class CalDAV4JProtocolException extends CalDAV4JException{
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 8830949627634284982L;
 
 	public CalDAV4JProtocolException(String message) {
