@@ -26,6 +26,8 @@ import java.util.Map;
 
 
 /**
+ * Used to represent an element for the XML representation.
+ *
  * @deprecated Use PropProperty instead.
  */
 public class SimpleDOMOutputtingObject extends OutputsDOMBase{

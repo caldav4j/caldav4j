@@ -19,7 +19,7 @@ import org.apache.commons.httpclient.HttpMethod;
 
 
 /**
- * This is the root class for all CalDAV4J specific exceptions.
+ * Issues with Status Code invoke this exception.
  * 
  * @author bobbyrullo
  * 

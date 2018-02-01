@@ -34,7 +34,7 @@ import java.util.Map;
  * converted to DOM.
  * 
  * @author EdBindl
- * 
+ * @deprecated All Ticket related classes are now deprecated. Since, 0.9
  */
 public class TicketRequest extends OutputsDOMBase {
 
@@ -52,8 +52,17 @@ public class TicketRequest extends OutputsDOMBase {
 
 	}
 
+	/**
+	 * The value for infinity is stored in
+	 * org.osaf.caldav4j.CalDAVConstants.INFINITY
+	 *
+	 * @param timeout Timeout in seconds for the ticket
+	 * @param visits  Max visits
+	 * @param read    Permission for Read
+	 * @param write   Permission for Write
+	 */
 	public TicketRequest(Integer timeout, Integer visits, boolean read,
-			boolean write) {
+	                     boolean write) {
 		this.timeout = timeout;
 		this.visits = visits;
 		this.read = read;
@@ -63,7 +72,7 @@ public class TicketRequest extends OutputsDOMBase {
 	/**
 	 * The assumed unit for timeout is seconds.
 	 * 
-	 * @return
+	 * @return Timeout
 	 */
 	public Integer getTimeout() {
 		return this.timeout;

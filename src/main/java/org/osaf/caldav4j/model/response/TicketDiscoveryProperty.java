@@ -31,7 +31,9 @@ import java.util.List;
 
 /**
  * Parses a MultiStatus or MultiStatus Response into TicketResponses.
+ *
  * @author EdBindl
+ * @deprecated All Ticket related classes are now deprecated. Since, 0.9
  */
 public class TicketDiscoveryProperty {
 
@@ -41,23 +43,32 @@ public class TicketDiscoveryProperty {
 
 	public static final String ELEMENT_CALENDAR_DATA = "ticketdiscovery";
 
+	/**
+	 * Create a Property from the responses
+	 *
+	 * @param responses Responses to build from.
+	 */
 	public TicketDiscoveryProperty(MultiStatus responses) {
-        if(responses != null)
-            try {
-                parseTickets(responses.toXml(DomUtil.createDocument()));
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            }
-    }
+		if(responses != null)
+			try {
+				parseTickets(responses.toXml(DomUtil.createDocument()));
+			} catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			}
+	}
 
-    public TicketDiscoveryProperty(MultiStatusResponse response) {
-        if(response != null)
-            try {
-                parseTickets(response.toXml(DomUtil.createDocument()));
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            }
-    }
+	/**
+	 * Create a Property from the responses
+	 * @param response Responses to build from.
+	 */
+	public TicketDiscoveryProperty(MultiStatusResponse response) {
+		if(response != null)
+			try {
+				parseTickets(response.toXml(DomUtil.createDocument()));
+			} catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			}
+	}
 
 	public List<TicketResponse> getTickets() {
 		if (tickets == null) {

@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Writes a CALDAV:free-busy-query REPORT. 
+ * Writes a CALDAV:free-busy-query REPORT.
  * 
  * <!ELEMENT free-busy-query (time-range)>
  * 

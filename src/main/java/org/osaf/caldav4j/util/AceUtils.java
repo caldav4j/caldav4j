@@ -6,7 +6,7 @@ import org.apache.jackrabbit.webdav.security.Principal;
 
 /**
  * Ace methods for easy Principal settings
- * @author rpolli
+ * @author rpolli, Ankush Mishra
  *
  */
 public class AceUtils {

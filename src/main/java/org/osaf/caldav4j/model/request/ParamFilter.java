@@ -28,7 +28,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <!ELEMENT param-filter (is-defined | text-match) >
+ * Limits the search to specific parameter values. It specifies a query targeted
+ * at a specific calendar property parameter (e.g., PARTSTAT) in
+ * the scope of the calendar property on which it is defined.
+ *
+ * <!ELEMENT param-filter (is-not-defined | text-match?) >
  *
  * <!ATTLIST param-filter name CDATA #REQUIRED>
  *  

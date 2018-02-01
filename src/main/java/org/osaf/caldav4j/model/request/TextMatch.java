@@ -27,14 +27,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *  <!ELEMENT text-match #PCDATA>
+ * Specifies a substring match on a property or parameter value.
  *
- *  <!ATTLIST text-match caseless (yes|no)>
- *  <!ATTLIST text-match negate-conditon (yes|no)>
- *  <!ATTLIST text-match collation (i;octet|i;ascii-casemap)>
+ * <!ELEMENT text-match #PCDATA>
+ * <!ATTLIST text-match caseless (yes|no)>
+ * <!ATTLIST text-match negate-conditon (yes|no)>
+ * <!ATTLIST text-match collation (i;octet|i;ascii-casemap)>
+ *
+ *  Note: The caseless attribute is mostly ignored by servers.
  *  
  * @author bobbyrullo
- * 
+ * @see <a href=http://tools.ietf.org/html/rfc4791#section-9.7.5>RFC 4791 Section 9.7.5</a>
  */
 public class TextMatch extends OutputsDOMBase {
     

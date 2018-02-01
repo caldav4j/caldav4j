@@ -32,7 +32,8 @@ import java.io.IOException;
 
 
 /**
- * Extends the {@link GetMethod} to provide functionality to read into calendars.
+ * Extends the {@link org.apache.commons.httpclient.methods.GetMethod} to provide functionality
+ * to read into calendars.
  * @see org.apache.commons.httpclient.methods.GetMethod
  */
 public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
@@ -52,16 +53,31 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
 
     }
 
-    public CalendarBuilder getCalendarBuilder() {
-        return calendarBuilder;
-    }
+	/**
+	 * @return Return the CalendarBuilder instance.
+	 */
+	public CalendarBuilder getCalendarBuilder() {
+		return calendarBuilder;
+	}
 
-    public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
-        this.calendarBuilder = calendarBuilder;
-    }
+	/**
+	 * Set the CalendarBuilder instance to use.
+	 *
+	 * @param calendarBuilder
+	 */
+	public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
+		this.calendarBuilder = calendarBuilder;
+	}
 
-    public Calendar getResponseBodyAsCalendar()  throws
-            ParserException, CalDAV4JException {
+	/**
+	 * Return the reponse as a calendar object.
+	 *
+	 * @return Calendar Object
+	 * @throws ParserException
+	 * @throws CalDAV4JException
+	 */
+	public Calendar getResponseBodyAsCalendar()  throws
+			ParserException, CalDAV4JException {
     	Calendar ret = null;
     	BufferedInputStream stream = null;
         try {

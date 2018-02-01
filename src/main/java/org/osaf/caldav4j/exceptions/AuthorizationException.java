@@ -16,7 +16,7 @@
 package org.osaf.caldav4j.exceptions;
 
 /**
- * This is the root class for all CalDAV4J specific exceptions.
+ * Issues with Authorization to the server invoke this.
  * 
  * @author bobbyrullo
  * 

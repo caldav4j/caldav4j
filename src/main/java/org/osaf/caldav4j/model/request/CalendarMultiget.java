@@ -30,16 +30,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *  @see http://tools.ietf.org/html/rfc4791#section-9.5
- *          <!ELEMENT calendar-multiget ((DAV:allprop |
-                                         DAV:propname |
-                                         DAV:prop)?, DAV:href+)>
- * [differently from calendar-query...] it takes a list of DAV:href elements,
- * instead of a CALDAV:filter element, to determine which calendar
- * object resources to return.
-
- *  @author rpolli
- * 
+ * CalDAV report used to retrieve specific calendar object resources.
+ * It takes a list of DAV:href elements, instead of a CALDAV:filter element, to determine
+ * which calendar object resources to return.
+ *
+ * <!ELEMENT calendar-multiget ((DAV:allprop |
+ *                               DAV:propname |
+ *                               DAV:prop)?, DAV:href+)>
+ *
+ * @author rpolli
+ * @see <a href=http://tools.ietf.org/html/rfc4791#section-7.9>RFC 4791 Section 7.9</a>
  */
 public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequest{
     
@@ -59,29 +59,54 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
 
     }
 
-    public CalendarMultiget(DavPropertyNameSet properties,
-                            CalendarData calendarData, boolean allProp, boolean propName){
-        this(calendarData, allProp, propName);
-        this.properties.addChildren(properties);
-    }
+	/**
+	 * @param properties   Calendar Properties to Fetch from the calendars.
+	 * @param calendarData Associated Calendar Data
+	 * @param allProp      To enable retrieval of all properties
+	 * @param propName     Enable PropName
+	 */
+	public CalendarMultiget(DavPropertyNameSet properties,
+	                        CalendarData calendarData, boolean allProp, boolean propName){
+		this(calendarData, allProp, propName);
+		this.properties.addChildren(properties);
+	}
 
-    public CalendarMultiget(Prop properties,
-                            CalendarData calendarData, boolean allProp, boolean propName){
-        this(calendarData, allProp, propName);
-        this.properties.addChildren(properties);
-    }
+	/**
+	 * Overloaded contructor for Prop instead of DavPropertyNameSet
+	 * @param properties Calendar Properties to Fetch from the calendars.
+	 * @param calendarData Associated Calendar Data
+	 * @param allProp To enable retrieval of all properties
+	 * @param propName Enable PropName
+	 */
+	public CalendarMultiget(Prop properties,
+	                        CalendarData calendarData, boolean allProp, boolean propName){
+		this(calendarData, allProp, propName);
+		this.properties.addChildren(properties);
+	}
 
-    public CalendarMultiget(CalendarData calendarData, boolean allProp, boolean propName){
-        this.calendarDataProp = calendarData;
-        this.allProp = allProp;
-        this.propName = propName;
-    }
+	/**
+	 * @param calendarData Associated Calendar Data
+	 * @param allProp To enable retrieval of all properties
+	 * @param propName Enable PropName
+	 */
+	public CalendarMultiget(CalendarData calendarData, boolean allProp, boolean propName){
+		this.calendarDataProp = calendarData;
+		this.allProp = allProp;
+		this.propName = propName;
+	}
 
-    public CalendarMultiget(Collection<? extends XmlSerializable> properties, CalendarData calendarData,
-                            boolean allProp, boolean propName) {
-        this(calendarData, allProp, propName);
-        this.properties.addChildren(properties);
-    }
+	/**
+	 * Overloaded contructor for Collection of XmlSerializable objects instead of DavPropertyNameSet
+	 * @param properties Calendar Properties to Fetch from the calendars.
+	 * @param calendarData Associated Calendar Data
+	 * @param allProp To enable retrieval of all properties
+	 * @param propName Enable PropName
+	 */
+	public CalendarMultiget(Collection<? extends XmlSerializable> properties, CalendarData calendarData,
+	                        boolean allProp, boolean propName) {
+		this(calendarData, allProp, propName);
+		this.properties.addChildren(properties);
+	}
 
     protected String getElementName() {
         return ELEMENT_NAME;

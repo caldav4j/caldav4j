@@ -24,8 +24,8 @@ import java.util.regex.Pattern;
 /** 
  * 
  * Copyright 2008 Roberto Polli
- * this class is an helper for creating Calendar-Query REPORTs
- * 
+ * <p>
+ * This class is a helper class for creating Calendar-Query REPORTs
  * because of the complexity of iCalendar object and relative queries,
  * this class is intended to help the creation of basic queries like
  * get all VEVENT with THOSE attributes in THIS time-range
@@ -33,23 +33,20 @@ import java.util.regex.Pattern;
  * main schema is a strongly typed class, 
  *  with helpers/parsers that will create 
  *  the caldav query 
- * 
+ * <p>
  * usage:
- * 
+ * <pre>
  * QueryGenerator qg = new QueryGenerator();
  * qg.setComponent("VEVENT"); // retrieve the whole VEVENT
  * qg.setComponent("VEVENT : UID, ATTENDEE, DTSTART, DTEND"); // retrieve the given properties
- * 
+ *
  * qg.setFilter("VEVENT"); //request on VEVENT
  * qg.setFilter("VEVENT [start;end] : UID==value1 , DTSTART==[start;end], DESCRIPTION==UNDEF, SUMMARY!=not my summary,")
- * 
+ * </pre>
  * start and end values can be empty strings "" or RFC2445-UTC timestamp
- */
-
-/**
- * This Class is an helper for creating CalDAV queries.
+ *
  * @since 0.5
- * @experimental this class is experimental
+ * @experimental this class is still experimental
  */
 public class GenerateQuery  {
 	
@@ -78,12 +75,13 @@ public class GenerateQuery  {
 	private Date recurrenceSetStart;
 
 	private Integer expandOrLimit;
+
 	/**
 	 * Create a GenerateQuery object with the given parameters
 	 * NB: DON'T use spaces in comp and filter unless you REALLY need spaces
      * @param component COMPONENT : PROP1,PROP2,..,PROPn
 	 * @param filterComponent COMPONENT : PROP1==VALUE1,PROP2!=VALUE2
-	 * @throws CalDAV4JException 
+	 * @throws CalDAV4JException on error parsing
 	 */
 	public GenerateQuery(String component, String filterComponent) 
 	  throws CalDAV4JException {
@@ -92,25 +90,34 @@ public class GenerateQuery  {
 	}
 	
 	/**
-	 * 
+	 * Default Constructor
 	 */	
 	public GenerateQuery() {
 
 	}
-	
-	/**  
-	 * constructor with Comp & CompFilter 
-	 * 
-	 *  XXX too low-level 
-	 *  
+
+	/**
+	 * Constructor with Comp & CompFilter
+	 * <p>
+	 * Note: This is too low level.
+	 *
+	 * @param c COMPONENT, such as VEVENT, VCALENDAR ...
+	 * @param cProp PROP1,PROP2,..,PROPn for the Component
+	 * @param cFilter COMP-FILTER, to be used
+	 * @param pFilter Properties of the COMP-FILTER
 	 */
 	protected GenerateQuery(String c, List<String> cProp, 
 			String cFilter, List<String> pFilter) {
 		this(c, cProp, cFilter, pFilter, null);		
 	}
 	
-	/**  
-	 * constructor with Comp & CompFilter & collation  
+	/**
+	 * Constructor with Comp & CompFilter & collation
+	 * @param c COMPONENT, such as VEVENT, VCALENDAR ...
+	 * @param cProp PROP1,PROP2,..,PROPn for the Component
+	 * @param cFilter COMP-FILTER, to be used
+	 * @param pFilter Properties of the COMP-FILTER
+	 * @param collation Collation to be set, for example: "i;octet" or "i;ascii-casemap"
 	 */
 	protected GenerateQuery(String c, List<String> cProp, 
 			String cFilter, List<String> pFilter, String collation) {
@@ -120,9 +127,9 @@ public class GenerateQuery  {
 		this.collation = collation;
 	}
 	
-	/**  
-	 * constructor with Comp & CompFilter as arrays 
-	 * @deprecated 
+	/**
+	 * Constructor with Comp & CompFilter as arrays
+	 * @deprecated Use the other constructors
 	 */
 	private GenerateQuery(String c, String cProp[], 
 			String cFilter, String pFilter[]) {
@@ -133,7 +140,7 @@ public class GenerateQuery  {
 	}
 
 	/**
-	 * validator
+	 * Validator
 	 * TODO this method should provide at least a basic validation of the calendar-query
 	 * @deprecated This method does nothing but returning true!!!
 	 */
@@ -142,9 +149,9 @@ public class GenerateQuery  {
 	}
 	
 	/**
-	 * set the component to retrieve: VEVENT, VTODO
+	 * Set the component to retrieve: VEVENT, VTODO
 	 * VEVENT : UID, DTSTART, DTEND,
-	 * 
+	 * @param component Component to retrieve
 	 */
 	public void setComponent(String component) {
 		if (component != null) {
@@ -163,7 +170,9 @@ public class GenerateQuery  {
 	}
 	
 	/**
-	 * set the component and properties to retrieve: VEVENT, VTODO
+	 * Set the component and properties to retrieve: VEVENT, VTODO
+	 * @param component Component
+	 * @param props Related Properties
 	 */
 	public void setComponent(String component, List<String> props) {
 		if (component != null) {
@@ -173,7 +182,7 @@ public class GenerateQuery  {
 	}
 	
 	/**
-	 * transform the requestedComponentProperties fields in a PropComp value 
+	 * Transform the requested component properties fields in a PropComp value
 	 */
 	private Comp getComp() {
 		Comp vCalendarComp = new Comp();
@@ -205,10 +214,12 @@ public class GenerateQuery  {
 	
 	
 	/**
-	 * set the component to filter: VEVENT, VTODO
+	 * Set the component to filter: VEVENT, VTODO
 	 * syntax:
+	 * <pre>
 	 * VTODO [;] : UID==1231423423145231 , DTSTART=[1214313254324;$3214234231] , SUMMARY!=Caldav4j
-	 * @throws ParseException 
+	 * </pre>
+	 * @throws ParseException on parsing errors
 	 */
 	public void setFilter(String filterComponent) 
 	  throws CalDAV4JException  {		
@@ -237,7 +248,9 @@ public class GenerateQuery  {
 	
 	
 	/**
-	 * set the component and properties to filter: VEVENT, VTODO
+	 * Set the component and properties to filter: VEVENT, VTODO
+	 * @param filterComponent Filter Component
+	 * @param props Properties of the Filter
 	 */
 	public void setFilter(String filterComponent, List<String> props) {
 		if (filterComponent != null) {
@@ -246,18 +259,16 @@ public class GenerateQuery  {
 		}
 	}	
 	
-	/** 
-	 * transform filterComponentProperties in a List of PropFilter
+	/**
+	 * Transform filter component properties into a List of PropFilter
 	 * this method parses 
-	 * @throws ParseException 
+	 * @throws CalDAV4JException on parsing error
 	 */ 
 	private List<PropFilter> getPropFilters() 
 	throws CalDAV4JException {
 		List<PropFilter> pf = new ArrayList<PropFilter>();
 		Pattern filter = Pattern.compile("(.+?)([!=]=)(\\[(.*?);(.*?)\\]|([^\\]].+))");
 
-
-		
 		for (String p : this.filterComponentProperties) {
 			String name = null;
 			Boolean isDefined = null;
@@ -287,9 +298,9 @@ public class GenerateQuery  {
 					timeRangeStart = parseTime(str.group(4));
 					timeRangeEnd = parseTime(str.group(5));						
 				}
-				
-				List<String> componentList = Arrays.asList(new String[] {
-						Component.VALARM, Component.VEVENT, Component.VFREEBUSY, Component.VJOURNAL, Component.VTIMEZONE, Component.VTODO, Component.VVENUE }); 
+
+				List<String> componentList = Arrays.asList(Component.VALARM, Component.VEVENT,
+						Component.VFREEBUSY, Component.VJOURNAL, Component.VTIMEZONE, Component.VTODO, Component.VVENUE);
 				
 				if (! componentList.contains(name)) {
 					pf.add(new PropFilter(name, isDefined,
@@ -307,9 +318,9 @@ public class GenerateQuery  {
 		return pf;
 	}
 	
-	/** 
-	 * transform filters in a CompFilter
-	 * @throws ParseException 
+	/**
+	 * Transform filters in a CompFilter
+	 * @throws ParseException on error parsing
 	 */ 
 	private CompFilter getFilter() 
 			throws CalDAV4JException {
@@ -343,10 +354,10 @@ public class GenerateQuery  {
 		return generate();
 	}
 	/**
-	 * this should parse QueryGenerator attributes
+	 * This should parse QueryGenerator attributes
 	 * and create the CalendarQuery
-	 * @throws CalDAV4JException
-	 * @throws ParseException 
+	 * @throws CalDAV4JException on parsing errors
+	 * @throws ParseException on parsing errors
 	 */
 	public CalendarQuery generate() 
 		throws  CalDAV4JException {
@@ -378,43 +389,62 @@ public class GenerateQuery  {
 		return query;
 	}
 
-    public String prettyPrint() {
+	/**
+	 * Pretty Print the XML document.
+	 *
+	 * @return String containing the XML
+	 */
+	public String prettyPrint() {
 		//query.validate();
-	    try {
-	    	Document doc = generate().createNewDocument();
+		try {
+			Document doc = generate().createNewDocument();
 			return XMLUtils.toPrettyXML(doc);
-	    	
-	    } catch (DOMValidationException domve) {
-	        throw new RuntimeException(domve);
-	    } catch (Exception e) {
+
+		} catch (DOMValidationException domve) {
+			throw new RuntimeException(domve);
+		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return null;
-		
+
 	}
 
     // getters+setters:
-    //  remove trailing spaces from queries and get better input
-    public void setRequestedComponent(String c) {
-    	if (c != null) {
-    		this.requestedComponent = c.trim();
-    	}
-    }
-    
-    public void setFilterComponent(String c) {
-    	if (c != null) {
-    		this.filterComponent = c.trim();
-    	}
-    }
-    
-    // if passed variable is null, a new ArrayList<String> remains
-    public void setFilterComponentProperties(List<String> a) {
-    	if (a != null) {
-    		this.filterComponentProperties = a;
-    	}
-    }
 
+    //  remove trailing spaces from queries and get better input
+
+	/**
+	 * @param c Set the component, also this removes the trailing spaces
+	 */
+	public void setRequestedComponent(String c) {
+		if (c != null) {
+			this.requestedComponent = c.trim();
+		}
+	}
+
+	/**
+	 * @param c Set the Filter Component, after removing trailing spaces.
+	 */
+	public void setFilterComponent(String c) {
+		if (c != null) {
+    		this.filterComponent = c.trim();
+	    }
+	}
+
+	/**
+	 * @param a Set Filter Properties
+	 */
+	public void setFilterComponentProperties(List<String> a) {
+		// if passed variable is null, a new ArrayList<String> remains
+		if (a != null) {
+			this.filterComponentProperties = a;
+		}
+	}
+
+	/**
+	 * @param requestedComponentProperties Set Component Properties
+	 */
 	public void setRequestedComponentProperties(
 			List<String> requestedComponentProperties) {
 		if(requestedComponentProperties != null) {
@@ -422,13 +452,23 @@ public class GenerateQuery  {
 		}
 	}
 
-	
+	/**
+	 * @param start Start of Range
+	 * @param end End of Range
+	 */
 	public void setTimeRange(Date start, Date end) {
 		this.timeRangeStart = start;
 		this.timeRangeEnd = end;
 	}
-	
+
 	// TODO testme
+
+	/**
+	 * @param start Start of Range
+	 * @param end End of Range
+	 * @param expandOrLimit Set mode to EXPAND or LIMIT, values can be {@link CalendarData#EXPAND}
+	 *                      or {@link CalendarData#LIMIT}
+	 */
 	public void setRecurrenceSet(String start, String end, Integer expandOrLimit) {
 		if (UrlUtils.isNotBlank(start)) {
 			try {
@@ -446,22 +486,22 @@ public class GenerateQuery  {
 				e.printStackTrace();
 			}
 		}
-		
+
 		switch (expandOrLimit) {
 			case 1:
 			case 0:
-				this.expandOrLimit = expandOrLimit;			
+				this.expandOrLimit = expandOrLimit;
 				break;
 			default:
 				//TODO error validating
 				break;
 		}
 	}
+
 	/**
-	 * return the xml query
-	 * @param query
-	 * @return
-	 * @throws DOMValidationException
+	 * @param query Query to be parsed
+	 * @return Return the xml query as string
+	 * @throws DOMValidationException on exception
 	 */
 	public static String printQuery(CalendarQuery query)
 		throws DOMValidationException
@@ -475,15 +515,17 @@ public class GenerateQuery  {
 					throw new DOMValidationException(e.getMessage(), e);
 				}
 	}
-	
+
 	/**
-	 * parses a string to a Date using the following syntax:
-	 *  - null or "" 	to 	null
-	 *  - parsable		to Date(parsable)
-	 *  - NOW			to Date(true) UTC
-	 * @param time
+	 * Parses a string to a Date using the following syntax:
+	 * <ul>
+	 *  <li>null or "" 	to 	null
+	 *  <li>parsable to Date(parsable)
+	 *  <li>NOW	to Date(true) UTC
+	 *  </ul>
+	 * @param time Time String as specified above
 	 * @return Date(time)
-	 * @throws ParseException 
+	 * @throws CalDAV4JException on parse errors
 	 */
 	private Date parseTime(String time) throws CalDAV4JException {
 		if (time != null && !"".equals(time)) {

@@ -19,9 +19,22 @@ import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.osaf.caldav4j.exceptions.DOMValidationException;
 import org.w3c.dom.Document;
 
+/**
+ * Class for easy implementation and extension of XML properties.
+ */
 public interface OutputsDOM extends XmlSerializable {
 
-    public Document createNewDocument() throws DOMValidationException;
+	/**
+	 * Interface for creating new documents in XML
+	 *
+	 * @return Resultant XML Dom document
+	 * @throws DOMValidationException on error
+	 */
+	public Document createNewDocument() throws DOMValidationException;
 
-    public void validate() throws DOMValidationException;
+	/**
+	 * For the validation of the current representation.
+	 * @throws DOMValidationException on error
+	 */
+	public void validate() throws DOMValidationException;
 }

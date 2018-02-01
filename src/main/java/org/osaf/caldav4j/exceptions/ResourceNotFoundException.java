@@ -16,30 +16,30 @@
 
 package org.osaf.caldav4j.exceptions;
 
+/**
+ * Thrown when resource specified is not found on the server.
+ */
 public class ResourceNotFoundException extends CalDAV4JException {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -2715709811374171807L;
 
 	public enum IdentifierType{
-        UID,
-        PATH;
-    }
-    
-    public ResourceNotFoundException(IdentifierType identifierType, String identifier) {
-        super(createMessage(identifierType, identifier));
-    }
-    
-    public ResourceNotFoundException(IdentifierType identifierType,
-            String identifier, Throwable cause) {
-        super(createMessage(identifierType, identifier), cause);
-    }
-    
-    private static String createMessage(IdentifierType identifierType,
-            String identifier) {
-        return "Could not find resource for the " + identifierType + " '"
-                + identifier + "'";
-    }
+		UID,
+		PATH;
+	}
+
+	public ResourceNotFoundException(IdentifierType identifierType, String identifier) {
+		super(createMessage(identifierType, identifier));
+	}
+
+	public ResourceNotFoundException(IdentifierType identifierType,
+	                                 String identifier, Throwable cause) {
+		super(createMessage(identifierType, identifier), cause);
+	}
+
+	private static String createMessage(IdentifierType identifierType,
+	                                    String identifier) {
+		return "Could not find resource for the " + identifierType + " '"
+				+ identifier + "'";
+	}
 }

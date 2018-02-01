@@ -30,14 +30,20 @@ import org.osaf.caldav4j.util.CaldavStatus;
 import java.io.StringReader;
 
 /**
- * 
- * @author pventura_at_babel.it changed getCalendar
+ * Contains various static methods to process Calendar Data from the responses.
  *
+ * @author pventura_at_babel.it changed getCalendar
  */
 public class CalendarDataProperty {
 
 	public static final String ELEMENT_CALENDAR_DATA = "calendar-data";
 
+    /**
+     * Private ThreadLocal object for the {@link CalendarBuilder}, due to
+     * not being thread safe.
+     *
+     * @see CalendarBuilder for further information about it.
+     */
     private static ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>(){
         @Override
         protected CalendarBuilder initialValue(){
@@ -45,6 +51,9 @@ public class CalendarDataProperty {
         }
     };
 
+    /**
+     * @return Returns the Calendar in the Property specified.
+     */
     public static Calendar getCalendarfromProperty(DavProperty property) {
         if (property == null) return null;
 
@@ -62,15 +71,15 @@ public class CalendarDataProperty {
         try {
             calendar = calendarBuilder.build(stringReader);
         } catch (ParserException e) {
-          try {
-              CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-              CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
-              CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
+            try {
+                CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
+                CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
+                CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
 
-              calendar = calendarBuilder.build(stringReader);
-          } catch (Exception e2){
-              e2.printStackTrace();
-          }
+                calendar = calendarBuilder.build(stringReader);
+            } catch (Exception e2){
+                e2.printStackTrace();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,15 +88,23 @@ public class CalendarDataProperty {
         return calendar;
     }
 
+    /**
+     * Convenience method to return the Calendar from the Response object.
+     */
     public static Calendar getCalendarfromResponse(MultiStatusResponse response){
         return getCalendarfromProperty(response.getProperties(CaldavStatus.SC_OK).get(CalDAVConstants.DNAME_CALENDAR_DATA));
     }
 
-
+    /**
+     * Convenience method to return the ETag from the Response object.
+     */
     public static String getEtagfromResponse(MultiStatusResponse response){
         return getEtagfromProperty(response.getProperties(CaldavStatus.SC_OK).get(DavPropertyName.GETETAG));
     }
 
+    /**
+     * @return Returns the ETag from the specified Property, null otherwise.
+     */
     public static String getEtagfromProperty(DavProperty property){
         if(property == null || !property.getName().equals(DavPropertyName.GETETAG)) return null;
         return property.getValue().toString();

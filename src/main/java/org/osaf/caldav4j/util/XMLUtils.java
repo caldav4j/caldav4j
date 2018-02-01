@@ -34,6 +34,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 
+/**
+ * Class containing utility functions for XML related work.
+ */
 public class XMLUtils {
 	private static final Logger log = LoggerFactory.getLogger(XMLUtils.class);
 
@@ -48,9 +51,8 @@ public class XMLUtils {
 
 	/**
 	 * Serializes a DOM Document to XML
-	 * 
-	 * @param document
-	 *            a DOM document
+	 *
+	 * @param document a DOM document
 	 * @return the Document serialized to XML
 	 */
 	public static String toXML(Document document) {
@@ -63,30 +65,35 @@ public class XMLUtils {
 		return writer.toString();
 	}
 
-    /**
-     * Updated to use Transformer, instead of XmlSerializer because it is deprecated
-     * @param doc
-     * @return
-     */
+	/**
+	 * Print the Document provided as "pretty" XML. This has been updated to use
+	 * Transformer for it's task
+	 *
+	 * @param doc Document to transform
+	 * @return
+	 */
 	public static String toPrettyXML(Document doc) {
-        DOMSource domSource = new DOMSource(doc);
-        StringWriter writer = new StringWriter();
-        StreamResult result = new StreamResult(writer);
-        try {
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer transformer = tf.newTransformer();
-            transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            transformer.transform(domSource, result);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return writer.toString();
+		DOMSource domSource = new DOMSource(doc);
+		StringWriter writer = new StringWriter();
+		StreamResult result = new StreamResult(writer);
+		try {
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer transformer = tf.newTransformer();
+			transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			transformer.transform(domSource, result);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return writer.toString();
 	}
 
 	/**
 	 * Create a string representation of an DOM document
+	 *
+	 * @param xml XmlSerializable object
+	 * @return Return the String representation.
 	 */
 	public static String prettyPrint(XmlSerializable xml) {
 		try {
@@ -95,18 +102,17 @@ public class XMLUtils {
 			return XMLUtils.toPrettyXML(doc);
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
-		return null;		
+		return null;
 	}
 
 	/**
 	 * Takes a ticketinfo element and creates/returns it as a TicketResponse
 	 * Object
-	 * 
-	 * @param element
-	 * @return
+	 *
+	 * @param element Element to parse
+	 * @return Generated TicketResponse object
 	 */
 	public static TicketResponse createTicketResponseFromDOM(Element element) {
 		TicketResponse tr = new TicketResponse();
@@ -128,8 +134,7 @@ public class XMLUtils {
 
 		// Parses the timeout element's value into units and value in form Second-99999, otherwise no timeout (Infinite)
 		int idx=tempTO.indexOf('-');
-		if (idx!=-1)
-		{
+		if (idx!=-1) {
 			// Store the Parsed Values
 			//  default timeout is Integer("")
 			tr.setUnits(tempTO.substring(0,idx));

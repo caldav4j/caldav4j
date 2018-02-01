@@ -26,6 +26,9 @@ import org.osaf.caldav4j.xml.OutputsDOMBase;
 import java.util.*;
 
 /**
+ * The CALDAV:prop-filter XML element specifies a query targeted at a specific calendar
+ * property (e.g., CATEGORIES) scope of the enclosing calendar component.
+ *
  *  <!ELEMENT prop-filter (is-defined | time-range | text-match)?
  *                          param-filter*>
  *
@@ -51,8 +54,19 @@ public class PropFilter extends OutputsDOMBase {
     public PropFilter() {
 
     }
-    
-    public PropFilter(String name,
+
+	/**
+	 * @param name               a calendar property name (e.g., ATTENDEE)
+	 * @param isDefined          if true check for existence of property
+	 * @param timeRangeStart     Start date of time range
+	 * @param timeRangeEnd       End date of time range.
+	 * @param textmatchCaseless  Caseless matching of properties
+	 * @param negateCondition    Negate
+	 * @param textMatchCollation Collation, could be "i;ascii-casemap" or "i;octet"
+	 * @param textMatchString    String to match
+	 * @param paramFilters       Param Filters if any.
+	 */
+	public PropFilter(String name,
             Boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
             Boolean textmatchCaseless, boolean negateCondition,
             String textMatchCollation, String textMatchString, List<ParamFilter> paramFilters){
@@ -75,13 +89,13 @@ public class PropFilter extends OutputsDOMBase {
     
     /**
      * @deprecated The Full constructor should be used
-     * @param name
-     * @param isDefined
-     * @param timeRangeStart
-     * @param timeRangeEnd
-     * @param textmatchCaseless
-     * @param textMatchString
-     * @param paramFilters
+     * @param name a calendar property name (e.g., ATTENDEE)
+     * @param isDefined if true check for existence of property
+     * @param timeRangeStart Start date of time range
+     * @param timeRangeEnd End date of time range.
+     * @param textmatchCaseless Caseless matching of properties
+     * @param textMatchString String to match
+     * @param paramFilters Param Filters if any.
      */
     public PropFilter(String name,
             boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 

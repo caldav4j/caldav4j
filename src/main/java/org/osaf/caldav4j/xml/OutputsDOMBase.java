@@ -28,100 +28,169 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Abstract class for representing objects as Xml
+ */
 public abstract class OutputsDOMBase implements OutputsDOM{
 
-    private static final Logger log = LoggerFactory.getLogger(OutputsDOMBase.class);
-    
-    protected abstract String getElementName();
+	private static final Logger log = LoggerFactory.getLogger(OutputsDOMBase.class);
 
-    protected abstract Namespace getNamespace();
+	/**
+	 * @return Element Name of representative class
+	 */
+	protected abstract String getElementName();
 
-    protected String getNamespaceURI() { return getNamespace().getURI(); }
+	/**
+	 * @return Namespace of the current Element
+	 */
+	protected abstract Namespace getNamespace();
 
-    protected String getNamespaceQualifier() { return getNamespace().getPrefix(); }
+	/**
+	 * @return Return the associated Namespace URI
+	 */
+	protected String getNamespaceURI() {
+		return getNamespace().getURI();
+	}
 
-    protected abstract Collection<? extends XmlSerializable> getChildren();
-    
-    protected abstract Map<String, String> getAttributes();
+	/**
+	 * @return Returns the Namespace Qualifier
+	 */
+	protected String getNamespaceQualifier() {
+		return getNamespace().getPrefix();
+	}
 
-    protected abstract String getTextContent();
-    
-    public void validate() throws DOMValidationException{
-        return;
-    }
+	/**
+	 * Returns all the associated Children of the Element.
+	 *
+	 * @return Collection of Children
+	 */
+	protected abstract Collection<? extends XmlSerializable> getChildren();
 
-    public String getQualifiedName(){
-        return getNamespaceQualifier() + ":" + getElementName();
-    }
+	/**
+	 * Returns the associated name-value attributes with the current element.
+	 *
+	 * @return Map of Attributes
+	 */
+	protected abstract Map<String, String> getAttributes();
 
-    public Document createNewDocument() throws DOMValidationException {
-        try {
-            validate();
-            Document d = DomUtil.createDocument();
-            Element root = toXml(d);
-            d.appendChild(root);
-            return d;
-        } catch (Exception e) {
-            log.error("Error creating Document.");
-            throw new DOMValidationException("Error creating Document.");
-        }
-    }
+	/**
+	 * @return Returns the Text Content of the Element
+	 */
+	protected abstract String getTextContent();
 
-    public Element toXml(Document document) {
-        Element root = null;
-        try {
-            validate();
-            root = DomUtil.createElement(document, getElementName(), getNamespace());
-            fillElement(root, document);
-        } catch (DOMValidationException e) {
-            log.error("Error creating element. Validation failed.");
-            e.printStackTrace();
-        }
+	/**
+	 * Method for validation of Element. Derived classes should override this to work appropriately.
+	 *
+	 * @throws DOMValidationException on validation error
+	 */
+	public void validate() throws DOMValidationException {
+		return;
+	}
 
-        return root;
-    }
+	/**
+	 * @return Return Qualified name
+	 */
+	public String getQualifiedName() {
+		return getNamespaceQualifier() + ":" + getElementName();
+	}
 
-    protected void fillElement(Element e, Document document) throws DOMValidationException{
-        /*
-         * Add children elements
-         */
-        Collection<? extends XmlSerializable> children = getChildren();
-        if (children != null && !children.isEmpty()) {
-            for(XmlSerializable child : children) {
-                Element childNode = child.toXml(document);
-                e.appendChild(childNode);
-            }
-        }
+	/**
+	 * Implementing the {@link OutputsDOM} interface, to create a new document based on the
+	 * children and corresponding attributes
+	 *
+	 * @return {@link Document} object representing the class.
+	 * @throws DOMValidationException on validation error
+	 * @see OutputsDOM#createNewDocument()
+	 */
+	public Document createNewDocument() throws DOMValidationException {
+		try {
+			validate();
+			Document d = DomUtil.createDocument();
+			Element root = toXml(d);
+			d.appendChild(root);
+			return d;
+		} catch (Exception e) {
+			log.error("Error creating Document.");
+			throw new DOMValidationException("Error creating Document.");
+		}
+	}
 
-        if (getTextContent() != null){
-            e.setTextContent(getTextContent());
-        }
+	/**
+	 * We also implement the {@link XmlSerializable} interface to connect with the Jackrabbit's
+	 * WebDAV implementation.
+	 *
+	 * @param document Document to add the Element to.
+	 * @return Current Element
+	 */
+	public Element toXml(Document document) {
+		Element root = null;
+		try {
+			validate();
+			root = DomUtil.createElement(document, getElementName(), getNamespace());
+			fillElement(root, document);
+		} catch (DOMValidationException e) {
+			log.error("Error creating element. Validation failed.");
+			e.printStackTrace();
+		}
 
-        /*
-         * Add Attributes
-         */
-        Map<String, String> attributes = getAttributes();
-        if(attributes != null && !attributes.isEmpty()) {
-            for (Map.Entry<String, String> entry : attributes.entrySet()) {
-                e.setAttribute(entry.getKey(), entry.getValue());
-            }
-        }
-    }
-    
-    /**
-     * Convienience method for validating all the objects in a collection
-     * @param c
-     * @throws DOMValidationException
-     */
-    protected void validate(Collection<? extends OutputsDOM> c) throws DOMValidationException{
-        for (Iterator<? extends OutputsDOM> i = c.iterator(); i.hasNext(); ){
-            OutputsDOM o = i.next();
-            o.validate();
-        }
-    }
-    
-    protected void throwValidationException(String m) throws DOMValidationException{
-        String message = getQualifiedName() + " - " + m;
-        throw new DOMValidationException(message);
-    }
+		return root;
+	}
+
+	/**
+	 * Protected method to add all the children and attributes to the document
+	 *
+	 * @param e        associated Element
+	 * @param document associated Document
+	 * @throws DOMValidationException on validation error
+	 */
+	protected void fillElement(Element e, Document document) throws DOMValidationException {
+		/*
+		 * Add children elements
+		 */
+		Collection<? extends XmlSerializable> children = getChildren();
+		if (children != null && !children.isEmpty()) {
+			for (XmlSerializable child : children) {
+				Element childNode = child.toXml(document);
+				e.appendChild(childNode);
+			}
+		}
+
+		if (getTextContent() != null) {
+			e.setTextContent(getTextContent());
+		}
+
+		/*
+		 * Add Attributes
+		 */
+		Map<String, String> attributes = getAttributes();
+		if (attributes != null && !attributes.isEmpty()) {
+			for (Map.Entry<String, String> entry : attributes.entrySet()) {
+				e.setAttribute(entry.getKey(), entry.getValue());
+			}
+		}
+	}
+
+	/**
+	 * Convenience method for validating all the objects in a collection
+	 *
+	 * @param c Collection of objects to validate
+	 * @throws DOMValidationException on validation error
+	 */
+	protected void validate(Collection<? extends OutputsDOM> c) throws DOMValidationException {
+		for (Iterator<? extends OutputsDOM> i = c.iterator(); i.hasNext(); ) {
+			OutputsDOM o = i.next();
+			o.validate();
+		}
+	}
+
+	/**
+	 * Convenience method to throw exception, based on the string.
+	 *
+	 * @param m Error string.
+	 * @throws DOMValidationException
+	 */
+	protected void throwValidationException(String m) throws DOMValidationException {
+		String message = getQualifiedName() + " - " + m;
+		throw new DOMValidationException(message);
+	}
 }

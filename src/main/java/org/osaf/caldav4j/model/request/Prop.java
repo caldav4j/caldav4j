@@ -23,7 +23,7 @@ import org.osaf.caldav4j.CalDAVConstants;
 import java.util.Collection;
 
 /**
- * Defines a container DAV:prop Property.
+ * Defines a container DAV:prop Property. Based on the {@link PropProperty}
  *
  * @param <T>
  */

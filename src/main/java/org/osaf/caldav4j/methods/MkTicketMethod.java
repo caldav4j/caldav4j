@@ -44,10 +44,11 @@ import java.io.InputStream;
 import java.util.Vector;
 
 /**
- * Method to make a ticket on a valid URI.
+ * Method to make a ticket on a valid URI. Based on the draft for
+ * <a href=https://tools.ietf.org/html/draft-ito-dav-ticket-00>Ticket Based ACL extension on WebDAV</a>
  * 
  * @author EdBindl
- * @deprecated
+ * @deprecated All Ticket related classes are now deprecated. Since, 0.9
  */
 public class MkTicketMethod extends DavMethodBase {
     private static final Logger log = LoggerFactory.getLogger(CalDAVReportMethod.class);
@@ -61,9 +62,9 @@ public class MkTicketMethod extends DavMethodBase {
     protected DocumentBuilder builder = null;
     
     /**
-     * 
-     * @param path
-     * @param ticketRequest
+     * Contructor with the TicketRequest
+     * @param path Path to resource
+     * @param ticketRequest Request
      */
     public MkTicketMethod(String path, TicketRequest ticketRequest) {
         super(UrlUtils.removeDoubleSlashes(path));
@@ -82,23 +83,35 @@ public class MkTicketMethod extends DavMethodBase {
         return CalDAVConstants.METHOD_MKTICKET;
     }
 
-    public TicketRequest getTicketRequest() {
-        return ticketRequest;
-    }
+	/**
+	 * @return Return the Ticket Request.
+	 */
+	public TicketRequest getTicketRequest() {
+		return ticketRequest;
+	}
 
-    public void setTicketRequest(TicketRequest ticketRequest) {
-        this.ticketRequest = ticketRequest;
-    }
+	/**
+	 * Set the TicketRequest
+	 *
+	 * @param ticketRequest
+	 */
+	public void setTicketRequest(TicketRequest ticketRequest) {
+		this.ticketRequest = ticketRequest;
+	}
 
-    public Document getResponseDocument() {
-        return this.responseDocument;
-    }
+	/**
+	 * Response Document
+	 * @return
+	 */
+	public Document getResponseDocument() {
+		return this.responseDocument;
+	}
 
     /**
      * Creates a DOM Representation of the TicketRequest, turns into XML and
      * returns it in a bytes
-     * 
-     * @return
+     *
+     * @see DavMethodBase#generateRequestBody()
      */
     protected byte[] generateRequestBody() {
         Document doc = null;

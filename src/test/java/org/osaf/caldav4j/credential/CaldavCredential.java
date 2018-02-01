@@ -6,15 +6,15 @@ public class CaldavCredential {
 	static String CALDAV_YAHOO = "https://caldav.calendar.yahoo.com/dav/%s/Calendar/";
 	static String CALDAV_GOOGLE = "https://www.google.com/calendar/dav/%s/";
 	static String CALDAV_BEDEWORK = "http://revolver:8080/ucaldav/user/%s/";
-	static String CALDAV_CHANDLER = "http://localhost/cal.php/calendars/%s/";
+	static String CALDAV_CHANDLER = "https://hub.chandlerproject.org/dav/%s/";
 
 	// sample class for storing credentials 
     //public static final String CALDAV_SERVER_HOST = "10.0.8.205";
-    public  String host = "localhost";
-    public  int port = 80;
-    public  String protocol = "http";
+	public String host = "";
+	public  int port = 443;
+    public  String protocol = "https";
     public  String user = "caldav4j";
-    public  String home = "/cal.php/calendars/"+user+"/";
+    public  String home = "/dav/"+user+"/";
     public  String password = "CalDAV4J";
     public  String collection      = "collection_changeme/";
 	private String proxyHost = null;
