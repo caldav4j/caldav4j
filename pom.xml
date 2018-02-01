@@ -40,6 +40,12 @@
       <email>robipolli@gmail.com</email>
       <url>http://github.com/ioggstream</url>
     </developer>
+    <developer>
+      <id>antimist</id>
+      <name>Ankush Mishra</name>
+      <email>ankushmishra9@gmail.com</email>
+      <url>http://github.com/TheAntimist</url>
+    </developer>
   </developers>
   <dependencies>
     <dependency>
