@@ -2,8 +2,12 @@ package org.osaf.caldav4j.methods;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.jackrabbit.webdav.DavConstants;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
 import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
+import org.apache.jackrabbit.webdav.property.DavPropertyName;
+import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,6 +18,7 @@ import org.osaf.caldav4j.util.CaldavStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +32,7 @@ import static org.junit.Assert.assertEquals;
  * TODO This whole class can be fixturized and shortened. The only reason not to do so
  * 				is to keep things simple when testing bare methods.
  */
-@Ignore
+//@Ignore
 public class MkCalendarTest extends BaseTestCase {
 
 	private static final Logger log = LoggerFactory.getLogger(MkCalendarTest.class);
@@ -55,15 +60,11 @@ public class MkCalendarTest extends BaseTestCase {
 	 * @see http://tools.ietf.org/html/rfc4791#section-5.3.1.2
 	 */
 	@Test
-	public void testPrintMkCalendar() throws UnsupportedEncodingException {
-		MkCalendarMethod mk = new MkCalendarMethod(caldavCredential.home + caldavCredential.collection);
+	public void testPrintMkCalendar() throws IOException {
+		MkCalendarMethod mk = new MkCalendarMethod(caldavCredential.home + caldavCredential.collection,
+				"My display Name", "this is my default calendar", "en");
 
-		mk.addDisplayName("My display Name");
-		mk.addDescription("this is my default calendar", "en");
-		mk.addDescription("this is my default calendar");
-
-		//generateRequestBody, returns a byte array.
-		log.info(new String(mk.generateRequestBody(), "UTF-8"));
+		mk.getRequestEntity().writeRequest(System.out);
 
 	}
 
@@ -84,10 +85,9 @@ public class MkCalendarTest extends BaseTestCase {
 	public void testCreateRemoveCalendarCollection() throws Exception{
 		String collectionPath = caldavCredential.home + caldavCredential.collection;
 
-		MkCalendarMethod mk = new MkCalendarMethod(collectionPath);
-		//mk.setPath(collectionPath);
-		mk.addDisplayName("My display Name");
-		mk.addDescription("this is my default calendar", "en");
+		MkCalendarMethod mk = new MkCalendarMethod(collectionPath,
+				"My Display Name", "This is my Default Calendar",
+				"en");
 
 		HttpClient http = createHttpClient();
 		HostConfiguration hostConfig = createHostConfiguration();
@@ -121,7 +121,6 @@ public class MkCalendarTest extends BaseTestCase {
 		statusCode = get.getStatusCode();
 		assertEquals("Status code for get:", CaldavStatus.SC_OK, statusCode);
 
-
 		DeleteMethod delete = new DeleteMethod(collectionPath);
 
 		http.executeMethod(hostConfig, delete);
@@ -136,7 +135,5 @@ public class MkCalendarTest extends BaseTestCase {
 		http.executeMethod(hostConfig, get);
 		statusCode = get.getStatusCode();
 		assertEquals("Status code for get:", CaldavStatus.SC_NOT_FOUND, statusCode);
-
-
 	}
 }

@@ -47,7 +47,7 @@ import java.util.Vector;
  * Method to make a ticket on a valid URI.
  * 
  * @author EdBindl
- * 
+ * @deprecated
  */
 public class MkTicketMethod extends DavMethodBase {
     private static final Logger log = LoggerFactory.getLogger(CalDAVReportMethod.class);
@@ -71,6 +71,9 @@ public class MkTicketMethod extends DavMethodBase {
         setPath(path);
     }
 
+    /**
+     * @see org.apache.commons.httpclient.HttpMethodBase#setPath(String)
+     */
     public void setPath(String path){
         super.setPath(UrlUtils.removeDoubleSlashes(path));
     }

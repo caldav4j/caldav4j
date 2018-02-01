@@ -34,7 +34,7 @@ import java.util.List;
  *
  */
 public class NewPropFindTest extends BaseTestCase{
-    private static final Logger log = LoggerFactory.getLogger(PropFindTest.class);
+    private static final Logger log = LoggerFactory.getLogger(NewPropFindTest.class);
 
     @Before
     public void setUp() throws Exception {

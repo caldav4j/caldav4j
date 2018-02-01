@@ -217,11 +217,11 @@ public class CalDavFixture
 		return dialect;
 	}
 
-	protected void mkcalendar(String path){
-	    MkCalendarMethod mk = new MkCalendarMethod(path);
-	    //mk.setPath(path);
-	    mk.addDescription(TestConstants.CALENDAR_DESCRIPTION, "en");
+	protected void mkcalendar(String path) {
+
 	    try {
+			MkCalendarMethod mk = new MkCalendarMethod(path, null,
+					TestConstants.CALENDAR_DESCRIPTION, "en");
 	    	executeMethod(HttpStatus.SC_CREATED,  mk, true);
 	    } catch (Exception e){
 	        throw new RuntimeException(e);

@@ -31,6 +31,10 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 
 
+/**
+ * Extends the {@link GetMethod} to provide functionality to read into calendars.
+ * @see org.apache.commons.httpclient.methods.GetMethod
+ */
 public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
     private static final String CONTENT_TYPE_TEXT_HTML = "text/html";
 
@@ -81,8 +85,10 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
         	throw new CalDAV4JException("Error retrieving and parsing server response at " + getPath(), e);
         }	       
     }
-    
-    // remove double slashes
+
+	/**
+	 * @see org.apache.commons.httpclient.HttpMethodBase#setPath(String)
+	 */
     public void setPath(String path) {
     	super.setPath(UrlUtils.removeDoubleSlashes(path));
     }

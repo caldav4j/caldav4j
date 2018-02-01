@@ -245,10 +245,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * Creates a calendar at the specified path 
 	 * @param httpClient the httpClient which will make the request
 	 */
-	public void createCalendar(HttpClient httpClient) throws CalDAV4JException{
-		MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(getCalendarCollectionRoot());
+	public void createCalendar(HttpClient httpClient) throws CalDAV4JException {
 
+		MkCalendarMethod mkCalendarMethod = null;
 		try {
+			mkCalendarMethod = new MkCalendarMethod(getCalendarCollectionRoot());
 			httpClient.executeMethod(hostConfiguration, mkCalendarMethod);
 			int statusCode = mkCalendarMethod.getStatusCode();
 			if (statusCode != CaldavStatus.SC_CREATED){
@@ -257,7 +258,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		} catch (Exception e) {
 			throw new CalDAV4JException("Trouble executing MKCalendar", e);
 		} finally {
-            mkCalendarMethod.releaseConnection();
+			if(mkCalendarMethod != null)
+            	mkCalendarMethod.releaseConnection();
         }
     }
 
