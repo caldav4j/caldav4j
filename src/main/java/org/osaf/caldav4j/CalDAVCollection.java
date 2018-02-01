@@ -131,7 +131,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param httpClient the httpClient which will make the request
 	 * @param icsRelativePath the path, relative to the collection path
 	 * @return the Calendar object at the specified path
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 */
 	public Calendar getCalendar(HttpClient httpClient, String icsRelativePath) 
 	throws CalDAV4JException{
@@ -145,7 +145,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param uid UID of the Calendar
 	 * @param recurrenceId If not null, then provides the recurrence ID
 	 * @return  The Calendar with the given UID. null if not found
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 */
 	public Calendar queryCalendar(HttpClient httpClient, String component, String uid, String recurrenceId) throws CalDAV4JException {
 		String filter =  String.format("%s : UID==%s", component, uid);
@@ -194,7 +194,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * 
 	 * @param httpClient the httpClient which will make the request
 	 * @param uid UID to delete
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 * 
 	 * TODO this method should be refined with recurrenceid
 	 */
@@ -268,7 +268,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
      * @param calendar iCal body to place on the server
      * @param path Path to the new/old resource
      * @param etag ETag if updation of calendar has to take place.
-     * @throws CalDAV4JException
+     * @throws CalDAV4JException on error
      */
     void put(HttpClient httpClient, Calendar calendar, String path,
              String etag)
@@ -323,7 +323,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * 
 	 * @param timezone The VTimeZone of the VEvent if it references one, 
 	 *                 otherwise null
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 */
 	public void add(HttpClient httpClient, CalendarComponent vevent, VTimeZone timezone)
 	throws CalDAV4JException {
@@ -343,7 +343,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * Adds a calendar object to caldav collection using UID.ics as file name
 	 * @param httpClient the httpClient which will make the request
 	 * @param c Calendar to Add
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 */
 	public void add(HttpClient httpClient, Calendar c) 
 	throws CalDAV4JException {
@@ -437,7 +437,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param read Read permission
 	 * @param write Write permission
 	 * @return The id of the created ticket
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 *             Is thrown if the execution of the MkTicketMethod fails
 	 * @deprecated Will be removed along with other Ticket related methods
 	 */
@@ -485,7 +485,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param relativePath the path, relative to the collection path for
 	 *                     which to revoke the ticket 
 	 * @param ticketId the ticketID which to revoke
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 *             Is thrown if the execution of the DelTicketMethod fails
 	 * @deprecated Will be removed along with other Ticket related methods
 	 */
@@ -518,7 +518,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param relativePath the path, relative to the collection path for which
 	 *                     to get the tickets
 	 * @return List of Ticket ID's
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 * @deprecated Will be removed along with other Ticket related methods
 	 */
 	public List<String> getTicketsIDs(HttpClient httpClient, String relativePath)
@@ -571,7 +571,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param httpClient the httpClient which will make the request
 	 * @param uid UID of the Event
 	 * @return CalDAVResource representing the Event
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 * @deprecated This query is too specialized @see{getCalDAVResourceByUID()}
 	 */
 	private CalDAVResource getCalDAVResourceForEventUID(
@@ -680,7 +680,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param path Path to Resource
 	 * @param currentEtag Current Etag of the resource
 	 * @return
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 */
 	protected CalDAVResource getCalDAVResource(HttpClient httpClient,
 			String path, String currentEtag) throws CalDAV4JException {
@@ -841,7 +841,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param httpClient Client which makes the request.
 	 * @param path Path to the Calendar Resource
 	 * @return ETag Value of the Resource
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
      */
 	protected String getETagbyMultiget(HttpClient httpClient, String path) throws CalDAV4JException {
 		String etag = null;
@@ -869,7 +869,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param propertyName Property whose value is to be returned
 	 * @param query Query to specify the Calendars
 	 * @return a list of property values of events. 
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 * @deprecated maybe create a method in ICalendarUtils or an "asString()" method
 	 */
 	protected List <String> getComponentProperty(HttpClient httpClient, String componentName, String propertyName, CalendarQuery query)
@@ -897,7 +897,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * Return a list of components using REPORT
 	 * @param query Query to return the calendars for.
 	 * @return a new Calendar list with no elements if 0
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 */
 	public List<Calendar> queryCalendars(HttpClient httpClient, CalendarQuery query)
             throws CalDAV4JException {
@@ -916,7 +916,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param httpClient the httpClient which will make the request
 	 * @param query Query to get the Calendar from.
 	 * @return List of Calendars
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 * @deprecated This is still a proposed feature
 	 */
 	public List<Calendar> getCalendarLight(HttpClient httpClient, CalendarQuery query)
@@ -999,7 +999,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param httpClient the httpClient which will make the request
 	 * @param query Query to get the CalDAV resources for
 	 * @return List of CalDAVResource's
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 */
 	protected List<CalDAVResource> getCalDAVResources(HttpClient httpClient, CalendarQuery query)
             throws CalDAV4JException {
@@ -1059,7 +1059,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param httpClient the httpClient which will make the request
 	 * @param query Multiget Query to get.
 	 * @return Returns a list of Calendar Components represented by the query.
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 */
 	protected List<Calendar> getComponentByMultiget(HttpClient httpClient, CalendarMultiget query) throws CalDAV4JException {
 		if (isCacheEnabled()) {

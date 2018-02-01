@@ -40,11 +40,8 @@ public class ITipUtils {
 	 *  ATTENDEE:PARTSTAT...
 	 * 
 	 * @param invite
-	 * @return
-	 * @throws URISyntaxException 
-	 * @throws IOException 
-	 * @throws ParseException 
-	 * @throws CalDAV4JException 
+	 * @return a Calendar object
+	 * @throws CalDAV4JException on error
 	 */
 	public static Calendar ManageInvitation(Calendar invite, Attendee mySelf, Method responseMethod, PartStat responsePartStat) 
 		throws CalDAV4JException 

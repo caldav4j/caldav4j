@@ -25,6 +25,22 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>A business-friendly OSS license</comments>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>ioggstream</id>
+      <name>Roberto Polli</name>
+      <email>robipolli@gmail.com</email>
+      <url>http://github.com/ioggstream</url>
+    </developer>
+  </developers>
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
