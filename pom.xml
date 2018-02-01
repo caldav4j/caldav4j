@@ -14,27 +14,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <name>CalDav4j</name>
   <groupId>com.github.caldav4j</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>0.9.1</version>
+  <version>0.9-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.12</version>
+      <version>1.7.25</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.12</version>
+      <version>1.7.25</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
@@ -45,7 +46,7 @@
     <dependency>
       <groupId>org.mnode.ical4j</groupId>
       <artifactId>ical4j</artifactId>
-      <version>2.0-beta1</version>
+      <version>2.0.0</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -56,12 +57,12 @@
     <dependency>
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>jackrabbit-webdav</artifactId>
-      <version>2.12.1</version>
+      <version>2.13.5</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
-      <version>1.7.21</version>
+      <version>1.7.25</version>
     </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
@@ -78,12 +79,12 @@
     <dependency>
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache</artifactId>
-      <version>2.10.2</version>
+      <version>2.10.4</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.4</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -94,9 +95,9 @@
     <url>https://github.com/caldav4j/caldav4j/issues</url>
   </issueManagement>
   <scm>
-    <url>https://github.com/caldav4j/caldav4j.git</url>
     <developerConnection>scm:git:ssh://github.com/caldav4j/caldav4j.git</developerConnection>
     <tag>0.9.1</tag>
+    <url>https://github.com/caldav4j/caldav4j.git</url>
   </scm>
   <build>
     <pluginManagement>
@@ -128,7 +129,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
+        <version>3.0.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -142,7 +143,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.10.3</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -166,21 +167,16 @@
       </plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <id>project.local</id>
-      <name>Local Repository for jackarta-slide-webdavlib</name>
-      <url>file:${project.basedir}/repo</url>
-    </repository>
-  </repositories>
   <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
     <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <id>local-m2</id>
+      <name>local M2 Repository</name>
+      <url>file:///${user.home}/workspace/caldav4j-maven</url>
     </repository>
+    <snapshotRepository>
+      <id>local-m2</id>
+      <name>local M2 Repository</name>
+      <url>file:///${user.home}/workspace/caldav4j-maven</url>
+    </snapshotRepository>
   </distributionManagement>
 </project>

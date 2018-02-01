@@ -52,7 +52,7 @@ mvn clean package -Dcaldav4jUri='http//vbede:bedework@localhost:8080/ucaldav/use
 
 # Status
 
-CalDAV4j 0.7 is the current (tagged) release.
+CalDAV4j 0.8.1 is the current (tagged) release.
 
 In 0.9.x (jcr-dev) we're working on:
 
