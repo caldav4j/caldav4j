@@ -77,7 +77,7 @@ public abstract class CalDAVCalendarCollectionBase {
 
 	/**
 	 * Set base path, appending trailing "/" and  removing unneeded "/"
-	 * @param path
+	 * @param path Calendar Collection Root
 	 */
 	public void setCalendarCollectionRoot(String path) {
 		this.calendarCollectionRoot = UrlUtils.removeDoubleSlashes(path.concat("/"));
@@ -156,6 +156,7 @@ public abstract class CalDAVCalendarCollectionBase {
 	/**
 	 * Create cache resources: UID_TO_HREF, HREF_TO_RESOURCE
 	 * XXX create test method
+	 * @throws CalDAV4JException on error creating Cache
 	 */
 	public void enableSimpleCache() throws CalDAV4JException {
 		EhCacheResourceCache cache = null;
@@ -236,8 +237,10 @@ public abstract class CalDAVCalendarCollectionBase {
 	/**
 	 * Check whether server allows the given action
 	 *
+	 * @param httpClient Client making the request
 	 * @param action Action to check for
-	 * @return boolean value
+	 * @param hList Allow Headers list.
+	 * @return true if aloowed, false otherwise
 	 */
 	/*
 	 XXX we should implement it as allowed props should be an attribute of this class,

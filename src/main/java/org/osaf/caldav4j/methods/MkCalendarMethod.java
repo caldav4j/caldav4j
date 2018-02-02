@@ -55,7 +55,7 @@ public class MkCalendarMethod extends DavMethodBase {
 	 * @param DisplayName     Display Name of Calendar
 	 * @param description     Description of Calendar
 	 * @param DescriptionLang Language of Description.
-	 * @throws IOException
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public MkCalendarMethod(String uri, String DisplayName, String description, String DescriptionLang)
 			throws IOException {
@@ -75,7 +75,7 @@ public class MkCalendarMethod extends DavMethodBase {
 	 * @param uri Location to the CalendarResource
 	 * @param DisplayName Display Name of Calendar
 	 * @param description Description of Calendar
-	 * @throws IOException
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public MkCalendarMethod(String uri, String DisplayName, String description) throws IOException {
 		this(uri, DisplayName, description, null);
@@ -83,8 +83,7 @@ public class MkCalendarMethod extends DavMethodBase {
 
 	/**
 	 * Default Constructor, makes a calendar at URI.
-	 * @param uri
-	 * @throws IOException
+	 * @param uri Location to the CalendarResource
 	 */
 	public MkCalendarMethod(String uri) {
 		super(uri);
@@ -94,7 +93,7 @@ public class MkCalendarMethod extends DavMethodBase {
 	 * Create a calendar with the MkCalendar object and properties.
 	 * @param uri Location to the CalendarResource
 	 * @param m MkCalendar Object
-	 * @throws IOException
+	 * @throws IOException if error occurred during parsing of MkCalendar
 	 */
 	public MkCalendarMethod(String uri, MkCalendar m) throws IOException {
 		super(UrlUtils.removeDoubleSlashes(uri));
@@ -105,7 +104,7 @@ public class MkCalendarMethod extends DavMethodBase {
 
 	/**
 	 * Process the MkCalendar object and set it as request body.
-	 * @throws IOException
+	 * @throws IOException if error occurred during parsing.
 	 */
 	private void processRequest() throws IOException {
 

@@ -55,7 +55,7 @@ public class ICalendarUtils {
 	 * @param milliseconds MilliSeconds
 	 * @param tz TimeZone
 	 * @param utc UTC Enabled
-	 * @return {@link DateTime) object
+	 * @return {@link DateTime} object
 	 */
 	public static DateTime createDateTime(int year, int month, int day,
 	                                      int hour, int minutes, int seconds, int milliseconds, TimeZone tz,
@@ -81,7 +81,7 @@ public class ICalendarUtils {
 	 * @param minutes Minutes
 	 * @param tz      TimeZone
 	 * @param utc     UTC Enabled
-	 * @return {@link DateTime) object
+	 * @return {@link DateTime} object
 	 */
 	public static DateTime createDateTime(int year, int month, int day,
 	                                      int hour, int minutes, TimeZone tz, boolean utc) {
@@ -101,7 +101,7 @@ public class ICalendarUtils {
 	 * @param year Year
 	 * @param month Month
 	 * @param day Day
-	 * @return {@link Date) object
+	 * @return {@link Date} object
 	 */
 	public static Date createDate(int year, int month, int day) {
 		Date date = new Date();
@@ -123,7 +123,7 @@ public class ICalendarUtils {
 	 * @param day Day
 	 * @param tz TimeZone
 	 * @param utc UTC Enabled
-	 * @return {@link DateTime) object
+	 * @return {@link DateTime} object
 	 */
 	public static Date createDateTime(int year, int month, int day,
 	                                  TimeZone tz, boolean utc) {
@@ -145,6 +145,8 @@ public class ICalendarUtils {
 
 	/**
 	 * Get first non-timezone component
+	 * @param resource CalDavResource to retrieve from.
+	 * @param component Component to retrieve.
 	 * @return null if not present
 	 */
 	public static CalendarComponent getFirstComponent(CalDAVResource resource, String component) {
@@ -171,10 +173,10 @@ public class ICalendarUtils {
 	 * @param calendar Calendar
 	 * @param skipTimezone To skip the Timezone Component
 	 * @return Component
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error
 	 */
-	public static CalendarComponent getFirstComponent(net.fortuna.ical4j.model
-			                                                  .Calendar calendar, boolean skipTimezone) throws CalDAV4JException {
+	public static CalendarComponent getFirstComponent(net.fortuna.ical4j.model.Calendar calendar,
+	                                                  boolean skipTimezone) throws CalDAV4JException {
 		// XXX this works only if the ics is a caldav resource
 		CalendarComponent ret = null;
 		String compType = null;
@@ -203,9 +205,9 @@ public class ICalendarUtils {
 	 * unique UID value
 	 * @param calendar Calendar
 	 * @return UID Value
+	 * @throws CalDAV4JException on error
 	 */
-	public static String getUIDValue(net.fortuna.ical4j.model
-			                                 .Calendar calendar) throws CalDAV4JException {
+	public static String getUIDValue(net.fortuna.ical4j.model.Calendar calendar) throws CalDAV4JException {
 		return getUIDValue(getFirstComponent(calendar));
 	}
 
@@ -217,7 +219,7 @@ public class ICalendarUtils {
 	 * @param uid UID to set for the Calendar.
 	 */
 	public static void setUIDValue(net.fortuna.ical4j.model.Calendar calendar,
-	                               String uid) throws CalDAV4JException{
+	                               String uid) {
 		for (Object c : calendar.getComponents()) {
 			if (c!=null && ! (c  instanceof VTimeZone)) {
 				addOrReplaceProperty((Component) c, new Uid(uid));
@@ -301,6 +303,7 @@ public class ICalendarUtils {
 	/**
 	 * Returns the "master" VEvent - one that does not have a RECURRENCE-ID
 	 *
+	 * @param calendar Calendar from where the Master Event is supposed to be retrieved
 	 * @param uid UID of the VEvent
 	 * @return VEvent that does not have Recurrence ID
 	 */
@@ -360,7 +363,7 @@ public class ICalendarUtils {
 	 * @param uid UID of Component
 	 * @param recurrenceId Recurrence ID
 	 * @return the modified calendar
-	 * @throws ParseException
+	 * @throws ParseException on error parsing Recurrence
 	 */
 	/// TODO create junit
 	public static net.fortuna.ical4j.model.Calendar removeOccurrence(net.fortuna.ical4j.model.Calendar calendar,

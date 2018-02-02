@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * <p>
  * usage:
  * <pre>
- * QueryGenerator qg = new QueryGenerator();
+ * GenerateQuery qg = new GenerateQuery();
  * qg.setComponent("VEVENT"); // retrieve the whole VEVENT
  * qg.setComponent("VEVENT : UID, ATTENDEE, DTSTART, DTEND"); // retrieve the given properties
  *
@@ -44,9 +44,10 @@ import java.util.regex.Pattern;
  * qg.setFilter("VEVENT [start;end] : UID==value1 , DTSTART==[start;end], DESCRIPTION==UNDEF, SUMMARY!=not my summary,")
  * </pre>
  * start and end values can be empty strings "" or RFC2445-UTC timestamp
+ * <p>
+ * <b>Note: This class is still experimental</b>
  *
  * @since 0.5
- * @experimental this class is still experimental
  */
 public class GenerateQuery  {
 	
@@ -97,7 +98,7 @@ public class GenerateQuery  {
 	}
 
 	/**
-	 * Constructor with Comp & CompFilter
+	 * Constructor with Comp and CompFilter
 	 * <p>
 	 * Note: This is too low level.
 	 *
@@ -112,7 +113,8 @@ public class GenerateQuery  {
 	}
 	
 	/**
-	 * Constructor with Comp & CompFilter & collation
+	 * Constructor with Comp, CompFilter and collation
+	 *
 	 * @param c COMPONENT, such as VEVENT, VCALENDAR ...
 	 * @param cProp PROP1,PROP2,..,PROPn for the Component
 	 * @param cFilter COMP-FILTER, to be used
@@ -142,6 +144,7 @@ public class GenerateQuery  {
 	/**
 	 * Validator
 	 * TODO this method should provide at least a basic validation of the calendar-query
+	 * @return Returns true if valid, false otherwise.
 	 * @deprecated This method does nothing but returning true!!!
 	 */
 	public boolean validate() {
@@ -219,10 +222,12 @@ public class GenerateQuery  {
 	 * <pre>
 	 * VTODO [;] : UID==1231423423145231 , DTSTART=[1214313254324;$3214234231] , SUMMARY!=Caldav4j
 	 * </pre>
-	 * @throws ParseException on parsing errors
+	 *
+	 * @param filterComponent Filter Component to set
+	 * @throws CalDAV4JException on error parsing Time
 	 */
 	public void setFilter(String filterComponent) 
-	  throws CalDAV4JException  {		
+	  throws CalDAV4JException  {
 		if (filterComponent != null) {
 			String c[] = filterComponent.split("\\s*:\\s*",2); // split string in two
 			Pattern compFilterString = Pattern.compile("(.+?)\\s*(\\[(.*?);(.*?)\\])?");
@@ -347,7 +352,9 @@ public class GenerateQuery  {
 	}
 	
 	/**
-	 * Create a CalendarQuery 
+	 * Create a CalendarQuery
+	 * @return Returns the CalendaryQuery object.
+	 * @throws CalDAV4JException on error
 	 * @deprecated Use generate() instead;
 	 */
 	public CalendarQuery generateQuery() throws  CalDAV4JException {
@@ -356,8 +363,8 @@ public class GenerateQuery  {
 	/**
 	 * This should parse QueryGenerator attributes
 	 * and create the CalendarQuery
+	 * @return The generated CalendarQuery
 	 * @throws CalDAV4JException on parsing errors
-	 * @throws ParseException on parsing errors
 	 */
 	public CalendarQuery generate() 
 		throws  CalDAV4JException {

@@ -63,7 +63,7 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
 	/**
 	 * Set the CalendarBuilder instance to use.
 	 *
-	 * @param calendarBuilder
+	 * @param calendarBuilder Calendar Builder object to set.
 	 */
 	public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
 		this.calendarBuilder = calendarBuilder;
@@ -73,8 +73,8 @@ public class GetMethod extends org.apache.commons.httpclient.methods.GetMethod{
 	 * Return the reponse as a calendar object.
 	 *
 	 * @return Calendar Object
-	 * @throws ParserException
-	 * @throws CalDAV4JException
+	 * @throws ParserException on error parsing Calendar
+	 * @throws CalDAV4JException on error in retrieving and parsing the response.
 	 */
 	public Calendar getResponseBodyAsCalendar()  throws
 			ParserException, CalDAV4JException {

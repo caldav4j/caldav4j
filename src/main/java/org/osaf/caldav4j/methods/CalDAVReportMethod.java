@@ -62,7 +62,7 @@ public class CalDAVReportMethod extends DavMethodBase {
      * Depth is set to 1, by default.
      * @param uri URI to the calendar resource.
      * @param reportRequest Report for the Request to handle.
-     * @throws IOException
+     * @throws IOException on error parsing report.
      */
     public CalDAVReportMethod(String uri, CalDAVReportRequest reportRequest) throws IOException {
         this(uri, reportRequest, CalDAVConstants.DEPTH_1);
@@ -73,7 +73,7 @@ public class CalDAVReportMethod extends DavMethodBase {
      * @param uri URI to the calendar resource.
      * @param reportRequest Report for the Request to handle.
      * @param depth Depth of the Report Request
-     * @throws IOException
+     * @throws IOException on error parsing report.
      */
     public CalDAVReportMethod(String uri, CalDAVReportRequest reportRequest, int depth) throws IOException {
         super(uri);
@@ -94,7 +94,7 @@ public class CalDAVReportMethod extends DavMethodBase {
     /**
      * Set the current request as the Report specified.
      * @param reportRequest Report to set.
-     * @throws IOException
+     * @throws IOException on error processing report
      */
     public void setReportRequest(CalDAVReportRequest reportRequest) throws IOException {
         this.reportRequest = reportRequest;
@@ -103,7 +103,8 @@ public class CalDAVReportMethod extends DavMethodBase {
 
     /**
      * Change the depth of the Request.
-     * @param depth
+     * @param depth Depth to set, can be {@link CalDAVConstants#DEPTH_0} or {@link CalDAVConstants#DEPTH_1}
+     * or {{@link CalDAVConstants#DEPTH_INFINITY}
      */
     public void setDepth(int depth){
         isDeep = depth > CalDAVConstants.DEPTH_0;
@@ -113,7 +114,7 @@ public class CalDAVReportMethod extends DavMethodBase {
 
     /**
      * Set the Calendar Builder used to create the calendar.
-     * @param calendarBuilder
+     * @param calendarBuilder CalendarBuilder to set
      */
     public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
         this.calendarBuilder = calendarBuilder;
@@ -121,7 +122,7 @@ public class CalDAVReportMethod extends DavMethodBase {
 
     /**
      * Retrieve the current Calendar Builder.
-     * @return
+     * @return Current CalendarBuilder
      */
     public CalendarBuilder getCalendarBuilder() {
         return this.calendarBuilder;
@@ -137,7 +138,7 @@ public class CalDAVReportMethod extends DavMethodBase {
 
     /**
      *
-     * @param statusCode
+     * @param statusCode Status Code returned from the MultiStatus response.
      * @return true if status code is {@link DavServletResponse#SC_OK 200 (OK)}
      * or {@link DavServletResponse#SC_MULTI_STATUS 207 (Multi Status)}. If the
      * report request included a depth other than {@link CalDAVConstants#DEPTH_0 0}
@@ -154,8 +155,8 @@ public class CalDAVReportMethod extends DavMethodBase {
 
     /**
      * Overriding to check if the Response contains Calendar or not.
-     * @param state
-     * @param conn
+     *
+     * @see HttpMethodBase#processResponseHeaders(HttpState, HttpConnection)
      */
     @Override
     protected void processResponseHeaders(HttpState state, HttpConnection conn) {
@@ -185,8 +186,8 @@ public class CalDAVReportMethod extends DavMethodBase {
     /**
      * Overridden to build the Calendar from the stream provided.
      * If the calendarBuilder was not specified, then this will not work correctly.
-     * @param httpState
-     * @param httpConnection
+     *
+     * @see HttpMethodBase#processResponseBody(HttpState, HttpConnection)
      */
     @Override
     protected void processResponseBody(HttpState httpState, HttpConnection httpConnection) {
@@ -256,7 +257,9 @@ public class CalDAVReportMethod extends DavMethodBase {
     /**
      * Returns the MultiStatusResponse to the corresponding uri.
      * @param uri URI to the calendar resource.
-     * @return
+     * @return The MultiStatus Response object
+     * @throws IOException on error parsing xml.
+     * @throws DavException on error HTTP status error
      */
     public MultiStatusResponse getResponseBodyAsMultiStatusResponse(String uri) throws IOException, DavException {
         MultiStatusResponse[] responses = getResponseBodyAsMultiStatus().getResponses();

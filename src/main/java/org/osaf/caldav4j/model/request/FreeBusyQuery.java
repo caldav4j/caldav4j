@@ -29,14 +29,12 @@ import java.util.Map;
 
 /**
  * Writes a CALDAV:free-busy-query REPORT.
- * 
- * <!ELEMENT free-busy-query (time-range)>
- * 
- * <!ELEMENT time-range EMPTY>
- * 
- * <!ATTLIST time-range start CDATA #IMPLIED
- *                      end   CDATA #IMPLIED>
- * 
+ * <pre>
+ * &lt;!ELEMENT free-busy-query (time-range)&gt;
+ * &lt;!ELEMENT time-range EMPTY&gt;
+ * &lt;!ATTLIST time-range start CDATA #IMPLIED
+ *                      end   CDATA #IMPLIED&gt;
+ * </pre>
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
  * @version $Id$
  * @see <a href="http://tools.ietf.org/html/rfc4791#section-7.10">7.10. CALDAV:free-busy-query REPORT</a>

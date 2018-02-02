@@ -141,9 +141,8 @@ public abstract class OutputsDOMBase implements OutputsDOM{
 	 *
 	 * @param e        associated Element
 	 * @param document associated Document
-	 * @throws DOMValidationException on validation error
 	 */
-	protected void fillElement(Element e, Document document) throws DOMValidationException {
+	protected void fillElement(Element e, Document document) {
 		/*
 		 * Add children elements
 		 */
@@ -187,7 +186,7 @@ public abstract class OutputsDOMBase implements OutputsDOM{
 	 * Convenience method to throw exception, based on the string.
 	 *
 	 * @param m Error string.
-	 * @throws DOMValidationException
+	 * @throws DOMValidationException on validation error
 	 */
 	protected void throwValidationException(String m) throws DOMValidationException {
 		String message = getQualifiedName() + " - " + m;

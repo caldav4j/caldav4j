@@ -82,7 +82,7 @@ public class TicketRequest extends OutputsDOMBase {
 	 * The value for infinity is stored in
 	 * org.osaf.caldav4j.CalDAVConstants.INFINITY
 	 * 
-	 * @return 
+	 * @return Current value of visits
 	 */
 	public Integer getVisits() {
 		return this.visits;
@@ -99,7 +99,7 @@ public class TicketRequest extends OutputsDOMBase {
 	/**
 	 * The assumed unit for timeout is seconds.
 	 * 
-	 * @param timeout
+	 * @param timeout Timeout value in seconds
 	 */
 	public void setTimeout(Integer timeout) {
 		this.timeout = timeout;
@@ -109,7 +109,7 @@ public class TicketRequest extends OutputsDOMBase {
 	 * The value for infinity is stored in
 	 * org.osaf.caldav4j.CalDAVConstants.INFINITY
 	 * 
-	 * @param visits
+	 * @param visits Value of visits to set
 	 */
 	public void setVisits(Integer visits) {
 		this.visits = visits;

@@ -31,11 +31,10 @@ import java.util.Map;
  * Limits the search to specific parameter values. It specifies a query targeted
  * at a specific calendar property parameter (e.g., PARTSTAT) in
  * the scope of the calendar property on which it is defined.
- *
- * <!ELEMENT param-filter (is-not-defined | text-match?) >
- *
- * <!ATTLIST param-filter name CDATA #REQUIRED>
- *  
+ * <pre>
+ * &lt;!ELEMENT param-filter (is-not-defined | text-match?) &gt;
+ * &lt;!ATTLIST param-filter name CDATA #REQUIRED&gt;
+ * </pre>
  * @author bobbyrullo
  * 
  */
@@ -114,10 +113,10 @@ public class ParamFilter extends OutputsDOMBase {
     }
     
     /**
-     * <!ELEMENT param-filter (is-defined | text-match) >
-     * 
-     * <!ATTLIST param-filter name CDATA #REQUIRED>
-     * 
+     * <pre>
+     * &lt;!ELEMENT param-filter (is-defined | text-match) &gt;
+     * &lt;!ATTLIST param-filter name CDATA #REQUIRED&gt;
+     * </pre>
      */
     public void validate() throws DOMValidationException{
        if (name == null){

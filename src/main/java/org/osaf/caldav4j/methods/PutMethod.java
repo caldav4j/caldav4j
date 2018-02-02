@@ -237,9 +237,9 @@ public class PutMethod extends org.apache.commons.httpclient.methods.PutMethod{
 	}
 
 	/**
-	 * Set the CalendarOutputter to be used for generating the request body based
-	 * on the calendar.
-	 * @param calendarOutputter
+
+	 * @param calendarOutputter Set the CalendarOutputter to be used for generating the request body based
+	 *                          on the calendar.
 	 */
 	public void setCalendarOutputter(CalendarOutputter calendarOutputter) {
 		this.calendarOutputter = calendarOutputter;

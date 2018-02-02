@@ -50,7 +50,7 @@ public class DeleteMethod extends org.apache.jackrabbit.webdav.client.methods.De
 
     /**
      * Sets the Request ETag for the DELETE method.
-     * @param etag
+     * @param etag ETag to set
      */
     public void setETag(String etag){
         if(etag != null && !etag.equals(""))

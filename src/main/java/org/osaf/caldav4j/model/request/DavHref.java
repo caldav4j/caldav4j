@@ -26,11 +26,11 @@ import java.util.Map;
 
 /**
  * Identifies the content of the element as a URI.
- *
- * <!ELEMENT href (#PCDATA)>
- * 
- *  ex. <D:HREF>
- *  @see <a href=http://tools.ietf.org/html/rfc2518#section-12.3></a>
+ * <pre>
+ * &lt;!ELEMENT href (#PCDATA)&gt;
+ * </pre>
+ *  ex. &lt;D:HREF&gt;
+ *  @see <a href=http://tools.ietf.org/html/rfc2518#section-12.3>Defined in RFC 2518 Section 12.3</a>
  * @author rpolli@babel.it
  * 
  */
@@ -76,8 +76,7 @@ public class DavHref extends OutputsDOMBase {
     }
 
 	/**
-	 * No other attributes
-	 * @return
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected Map<String, String> getAttributes() {

@@ -32,8 +32,8 @@ import java.util.*;
  * A simple, customizable DAV property with children. This can be used with practically any node,
  * this has been extended from {@link DefaultDavProperty} to include the ability to add Attributes
  * and Children.
- *
- * ex. <D:ACL></D:ACL>
+ * <p>
+ * ex. &lt;D:ACL&gt;&lt;/D:ACL&gt;
  * @author Ankush Mishra
  * @see DefaultDavProperty
  */
@@ -41,31 +41,70 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
 
     private Map<String, String> attributes = null;
     private Collection<XmlSerializable> children = new ArrayList<XmlSerializable>();
-    
-    public PropProperty(String namespaceURI, String namespaceQualifier,
+
+	/**
+	 * Create a Property from the parameters
+	 * @param namespaceURI Namespace URI
+	 * @param namespaceQualifier Namespace qualifier
+	 * @param propertyName Property Name
+	 */
+	public PropProperty(String namespaceURI, String namespaceQualifier,
             String propertyName) {
         this(namespaceURI, namespaceQualifier, propertyName, null);
     }
-    
-    public PropProperty(String namespaceURI, String namespaceQualifier,
+
+	/**
+	 * Create a Property from the parameters
+	 * @param namespaceURI Namespace URI
+	 * @param namespaceQualifier Namespace qualifier
+	 * @param propertyName Property Name
+	 * @param children Children of property
+	 */
+	public PropProperty(String namespaceURI, String namespaceQualifier,
             String propertyName, Collection<XmlSerializable> children) {
 
         this(propertyName, null, Namespace.getNamespace(namespaceQualifier, namespaceURI), null, children);;
     }
 
-    public PropProperty(String name, Namespace namespace){
+	/**
+	 * Create a Property from the parameters
+	 * @param name Property Name
+	 * @param namespace Namespace of the property.
+	 */
+	public PropProperty(String name, Namespace namespace){
         super(name, null, namespace);
     }
 
+	/**
+	 * Create a Property from the parameters
+	 * @param name Property Name
+	 * @param namespace Namespace of the property.
+	 * @param value Value of the property
+	 */
     public PropProperty(String name, T value, Namespace namespace){
         super(name, value, namespace);
     }
 
+	/**
+	 * Create a Property from the parameters
+	 * @param name Property Name
+	 * @param namespace Namespace of the property.
+	 * @param value Value of the property
+	 * @param attributes Map of Key-value pairs serving as attributes
+	 */
     public PropProperty(String name, T value, Namespace namespace, Map<String, String> attributes){
         super(name, value, namespace);
         this.attributes = attributes;
     }
 
+	/**
+	 * Create a Property from the parameters
+	 * @param name Property Name
+	 * @param namespace Namespace of the property.
+	 * @param value Value of the property
+	 * @param attributes Map of Key-value pairs serving as attributes
+	 * @param children Collection of Children of property
+	 */
     public PropProperty(String name, T value, Namespace namespace,
                         Map<String, String> attributes, Collection<XmlSerializable> children){
         super(name, value, namespace);
@@ -73,6 +112,14 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
         this.children = children;
     }
 
+	/**
+	 * Create a Property from the parameters
+	 * @param name Property Name
+	 * @param namespace Namespace of the property.
+	 * @param value Value of the property
+	 * @param attributes Map of Key-value pairs serving as attributes
+	 * @param children DavPropertyNameSet of Children of property
+	 */
     public PropProperty(String name, T value, Namespace namespace,
                         Map<String, String> attributes, DavPropertyNameSet children){
         super(name, value, namespace);
@@ -80,6 +127,14 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
         this.addChildren(children);
     }
 
+	/**
+	 * Create a Property from the parameters
+	 * @param name Property Name
+	 * @param namespace Namespace of the property.
+	 * @param value Value of the property
+	 * @param attributes Map of Key-value pairs serving as attributes
+	 * @param children DavPropertySet of Children of property
+	 */
     public PropProperty(String name, T value, Namespace namespace,
                         Map<String, String> attributes, DavPropertySet children){
         super(name, value, namespace);
@@ -87,12 +142,17 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
         this.addChildren(children);
     }
 
-    public Map<String, String> getAttributes() {
+	/**
+	 * @return Return the map of attributes of the property
+	 */
+	public Map<String, String> getAttributes() {
         return attributes;
     }
 
     /**
      * Add attribute to current element.
+     * @param key Key of Attribute
+     * @param value Value of the Key
      */
     public void addAttribute(String key, String value){
         if (attributes == null)
@@ -100,7 +160,11 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
         attributes.put(key, value);
     }
 
-    public void addChild(XmlSerializable property){
+	/**
+	 * Add individual child to property.
+	 * @param property Property to add.
+	 */
+	public void addChild(XmlSerializable property){
         if(this.getValue() != null) throw new
                 java.lang.IllegalStateException("Adding of children not allowed, when value is non null");
 
@@ -108,20 +172,31 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
 
     }
 
-    public void addChildren(Collection<? extends XmlSerializable> collection){
+	/**
+	 * Add collection of Children to property
+	 * @param collection Collection to add
+	 */
+	public void addChildren(Collection<? extends XmlSerializable> collection){
         if(collection == null || collection.isEmpty()) return;
 
             children.addAll(collection);
 
     }
 
+	/**
+	 * Add collection of Children to property
+	 * @param propertyNames Set to add as children
+	 */
     public void addChildren(DavPropertyNameSet propertyNames){
         if(propertyNames == null || propertyNames.isEmpty()) return;
 
             children.addAll(propertyNames.getContent());
     }
 
-
+	/**
+	 * Add collection of Children to property
+	 * @param properties PropertySet to add.
+	 */
     public void addChildren(DavPropertySet properties){
         if(properties == null || properties.isEmpty()) return;
 
@@ -130,24 +205,43 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
         }
     }
 
-    public void addChildren(Prop<?> prop){
+	/**
+	 * Add collection of Prop as children to property
+	 * @param prop Prop to add.
+	 */
+	public void addChildren(Prop<?> prop){
         this.children.addAll(prop.getChildren());
     }
 
-    public Collection<? extends XmlSerializable> getChildren(){
+	/**
+	 * @return Returns the Collection of children.
+	 */
+	public Collection<? extends XmlSerializable> getChildren(){
         return children;
     }
 
-    public void removeChild(XmlSerializable prop){
+	/**
+	 * Remove individual child as specified by prop
+	 * @param prop Property to remove
+	 */
+	public void removeChild(XmlSerializable prop){
         if(children != null && prop != null)
             children.remove(prop);
     }
 
+	/**
+	 * Remove multiple child as specified by the parameter
+	 * @param props PropertyNameSet to remove
+	 */
     public void removeChildren(DavPropertyNameSet props){
         if(children != null && props != null)
             children.removeAll(props.getContent());
     }
 
+	/**
+	 * Remove multiple child as specified by the parameter
+	 * @param props PropertySet to remove
+	 */
     public void removeChildren(DavPropertySet props){
         if(children != null && props != null)
             for(DavProperty prop: props){
@@ -155,15 +249,22 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
             }
     }
 
+	/**
+	 * Remove multiple child as specified by the parameter
+	 * @param props Collection to remove
+	 */
     public void removeChildren(Collection<? extends XmlSerializable> props){
         children.removeAll(props);
     }
 
-    public boolean isChildrenEmpty(){ return (children == null || children.isEmpty()); }
+	/**
+	 * @return Return true, if no children exist, else false.
+	 */
+	public boolean isChildrenEmpty(){ return (children == null || children.isEmpty()); }
 
     /**
-     *      *
-     * @param property
+     * Returns Children object from the {@link DavProperty} property
+     * @param property Property to retrieve children from.
      * @return Collection of DavProperties, with all the child properties, of the property,
      *         from the Value of the property.
      */
@@ -197,10 +298,12 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
         return coll;
     }
 
-    protected void fillElement(Element e, Document document) {
-        /*
-         * Add children elements
-         */
+	/**
+	 * Add children elements
+	 * @param e Element to fill
+	 * @param document Document to add to the element
+	 */
+	protected void fillElement(Element e, Document document) {
         Collection<? extends XmlSerializable> children = getChildren();
         if (children != null) {
             for(XmlSerializable node : children){
@@ -260,11 +363,18 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
         return elem;
     }
 
-    public PropPropertyIterator Iterator(){
+	/**
+	 * @return Return the Property Iterator to iterate through all the children
+	 */
+	public PropPropertyIterator Iterator(){
         return new PropPropertyIterator();
     }
 
     //Iterator of all children
+
+	/**
+	 * Iterator class for iterating through the children.
+	 */
     protected class PropPropertyIterator {
 
         private Iterator<XmlSerializable> iter;

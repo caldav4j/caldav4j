@@ -33,11 +33,11 @@ import java.util.Map;
  * CalDAV report used to retrieve specific calendar object resources.
  * It takes a list of DAV:href elements, instead of a CALDAV:filter element, to determine
  * which calendar object resources to return.
- *
- * <!ELEMENT calendar-multiget ((DAV:allprop |
+ * <pre>
+ * &lt;!ELEMENT calendar-multiget ((DAV:allprop |
  *                               DAV:propname |
- *                               DAV:prop)?, DAV:href+)>
- *
+ *                               DAV:prop)?, DAV:href+)&gt;
+ * </pre>
  * @author rpolli
  * @see <a href=http://tools.ietf.org/html/rfc4791#section-7.9>RFC 4791 Section 7.9</a>
  */
@@ -211,8 +211,10 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
 
     /**
      * Validates that the object validates against the following dtd:
-     * 
-     * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)? filter>
+     * <pre>
+     * &lt;!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)? filter&gt;
+     * </pre>
+     * @see OutputsDOMBase#validate()
      */
     public void validate() throws DOMValidationException{
         if (calendarDataProp != null){

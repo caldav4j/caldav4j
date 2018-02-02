@@ -31,12 +31,11 @@ import java.util.*;
  * is the calendar object when used as  a child of the {@link CalendarQuery} or
  * {@link CalendarMultiget} XML element. The scope of the element is the enclosing calendar
  * component when used as a child of another CALDAV:comp-filter XML element.
- *
- * <!ELEMENT comp-filter (is-defined | time-range)?
- *                        comp-filter* prop-filter*>
- *
- * <!ATTLIST comp-filter name CDATA #REQUIRED>
- *  
+ * <pre>
+ * &lt;!ELEMENT comp-filter (is-defined | time-range)?
+ *                        comp-filter* prop-filter*&gt;
+ * &lt;!ATTLIST comp-filter name CDATA #REQUIRED&gt;
+ * </pre>
  * @author bobbyrullo
  * 
  */
@@ -64,7 +63,15 @@ public class CompFilter extends OutputsDOMBase {
     }
     
     /**
-     * Create a CompFilter
+     * Create a CompFilter based on the parameters
+     * @param caldavNamespaceQualifier Caldav NameSpace qualifier
+     * @param name        a calendar object or calendar component type (e.g., VEVENT)
+     * @param isDefined   if true, the calendar object or calendar component type specified by
+     *                    the "name" attribute does not exist in the current scope
+     * @param start       Start of the time range of the recurrence
+     * @param end         end of the time range of recurrence
+     * @param compFilters Comp Filters nested under this filter
+     * @param propFilters Prop filters under this filter.
      */
     public CompFilter(String caldavNamespaceQualifier, String name,
             boolean isDefined, Date start, Date end, List<CompFilter> compFilters,
@@ -73,6 +80,7 @@ public class CompFilter extends OutputsDOMBase {
     }
 
 	/**
+	 * Create a CompFilter based on the parameters
 	 * @param name        a calendar object or calendar component type (e.g., VEVENT)
 	 * @param isDefined   if true, the calendar object or calendar component type specified by
 	 *                    the "name" attribute does not exist in the current scope
@@ -187,10 +195,11 @@ public class CompFilter extends OutputsDOMBase {
     }
     
     /**
-     *   <!ELEMENT comp-filter (is-defined | time-range)?
-     *                        comp-filter* prop-filter*>
-     *                        
-     *   <!ATTLIST comp-filter name CDATA #REQUIRED> 
+     * <pre>
+     *   &lt;!ELEMENT comp-filter (is-defined | time-range)?
+     *                        comp-filter* prop-filter*&gt;
+     *   &lt;!ATTLIST comp-filter name CDATA #REQUIRED&gt;
+     * </pre>
      */
     public void validate() throws DOMValidationException{
         if (name == null){

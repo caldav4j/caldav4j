@@ -46,7 +46,7 @@ public class CalDAV4JMethodFactory {
 	}
 
 	/**
-	 * Returns the value of the current PRODID, which will be used during ICAL Generation.
+	 * @return Returns the value of the current PRODID, which will be used during ICAL Generation.
 	 */
 	public String getProdID() {
 		return prodID;
@@ -88,8 +88,7 @@ public class CalDAV4JMethodFactory {
 	 * @return the instance
 	 */
 	public MkCalendarMethod createMkCalendarMethod(String uri) {
-		MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri);
-		return mkCalendarMethod;
+		return new MkCalendarMethod(uri);
 	}
 
 	/**
@@ -99,6 +98,7 @@ public class CalDAV4JMethodFactory {
 	 * @param Description Description of Calendar.
 	 * @param DescriptionLanguage Language of the Description. Optional.
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public MkCalendarMethod createMkCalendarMethod(String uri, String DisplayName, String Description,
 												   String DescriptionLanguage) throws IOException {
@@ -112,10 +112,10 @@ public class CalDAV4JMethodFactory {
 	 * @param mkCalendar {@link MkCalendar} instance which
 	 * contains all the details for creating a calendar.
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public MkCalendarMethod createMkCalendarMethod(String uri, MkCalendar mkCalendar) throws IOException {
-		MkCalendarMethod mkCalendarMethod = new MkCalendarMethod(uri, mkCalendar);
-		return mkCalendarMethod;
+		return new MkCalendarMethod(uri, mkCalendar);
 	}
 
 	/**
@@ -144,6 +144,7 @@ public class CalDAV4JMethodFactory {
 	 * Creates a {@link PropFindMethod} instance.
 	 * @param uri URI to the Calendar resource.
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public PropFindMethod createPropFindMethod(String uri) throws IOException {
 		PropFindMethod propFindMethod = new PropFindMethod(uri);
@@ -156,6 +157,7 @@ public class CalDAV4JMethodFactory {
 	 * @param propertyNames Properties to make the Propfind request for.
 	 * @param depth Depth of the Request
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public PropFindMethod createPropFindMethod(String uri, DavPropertyNameSet propertyNames, int depth)
 			throws IOException {
@@ -170,6 +172,7 @@ public class CalDAV4JMethodFactory {
 	 * @param propertyNames Properties to make the Propfind request for.
 	 * @param depth Depth of the Request
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public PropFindMethod createPropFindMethod(String uri, int propfindtype, DavPropertyNameSet propertyNames,
 											   int depth) throws IOException {
@@ -203,6 +206,7 @@ public class CalDAV4JMethodFactory {
 	 * @param uri URI to the Calendar resource.
 	 * @param request The Report to make a request for.
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public CalDAVReportMethod createCalDAVReportMethod(String uri, CalDAVReportRequest request) throws IOException {
 		CalDAVReportMethod reportMethod = new CalDAVReportMethod(uri, request);

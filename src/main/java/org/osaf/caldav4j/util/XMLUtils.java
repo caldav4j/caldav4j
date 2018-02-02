@@ -44,6 +44,7 @@ public class XMLUtils {
 	 * Creates a new xml DOM Document using a DOM 3.0 DOM Implementation
 	 *
 	 * @return a new document
+	 * @throws ParserConfigurationException on erroneous state, mostly should not happen.
 	 */
 	public static Document createNewDocument() throws ParserConfigurationException {
 		return  DomUtil.createDocument();
@@ -70,7 +71,7 @@ public class XMLUtils {
 	 * Transformer for it's task
 	 *
 	 * @param doc Document to transform
-	 * @return
+	 * @return String representation of the XML document
 	 */
 	public static String toPrettyXML(Document doc) {
 		DOMSource domSource = new DOMSource(doc);

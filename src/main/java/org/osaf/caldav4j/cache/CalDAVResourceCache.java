@@ -17,6 +17,8 @@ public interface CalDAVResourceCache {
 	 * if none has been cached yet.
 	 *
 	 * @param href the href to use to lookup the CalDAVResource
+	 * @return CalDAVResource referred by the href, null if not found.
+	 * @throws CacheException If error is encountered.
 	 */
 	public CalDAVResource getResource(String href) throws CacheException;
 
@@ -27,6 +29,7 @@ public interface CalDAVResourceCache {
 	 * retrievable by the UID of the event.
 	 *
 	 * @param calDAVResource the resource to cache
+	 * @throws CacheException If error is encountered.
 	 */
 	public void putResource(CalDAVResource calDAVResource) throws CacheException;
 
@@ -35,14 +38,16 @@ public interface CalDAVResourceCache {
 	 * UID is stored.
 	 *
 	 * @param uid the uid for the resource whose href you want
-	 * @return
+	 * @return The href defined by the Event with that UID.
+	 * @throws CacheException If error is encountered.
 	 */
 	public String getHrefForEventUID(String uid) throws CacheException;
 
 	/**
 	 * Removes a resource from the cache
 	 *
-	 * @param href
+	 * @param href the href to use to lookup the CalDAVResource
+	 * @throws CacheException If error is encountered.
 	 */
 	public void removeResource(String href) throws CacheException;
 

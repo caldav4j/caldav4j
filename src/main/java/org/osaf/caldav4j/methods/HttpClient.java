@@ -48,7 +48,7 @@ public class HttpClient extends org.apache.commons.httpclient.HttpClient {
          * Indicates that the ticket should be passed as a query parameter
          */
         QUERY_PARAM
-    };
+    }
 
     private TicketLocation ticketLocation = TicketLocation.HEADER;
 
@@ -74,7 +74,7 @@ public class HttpClient extends org.apache.commons.httpclient.HttpClient {
 
     /**
      * Indicates where to pass the header
-     * @return
+     * @return TicketLocation
      */
     public TicketLocation getTicketLocation() {
         return this.ticketLocation;
@@ -82,6 +82,7 @@ public class HttpClient extends org.apache.commons.httpclient.HttpClient {
 
     /**
      * Overwritten to Handle tickets.
+     * @see org.apache.commons.httpclient.HttpClient#executeMethod(HostConfiguration, HttpMethod, HttpState)
      */
     public int executeMethod(HostConfiguration hostConfiguration,
             HttpMethod method, HttpState state) throws IOException,

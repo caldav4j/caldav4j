@@ -19,9 +19,6 @@ import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.text.ParseException;
 import java.util.TimeZone;
 
 public class ITipUtils {
@@ -39,7 +36,10 @@ public class ITipUtils {
 	 *  METHOD:REPLY
 	 *  ATTENDEE:PARTSTAT...
 	 * 
-	 * @param invite
+	 * @param invite Calendar containing the invitation
+	 * @param mySelf Attendee User to check
+	 * @param responseMethod Type of Response, could be {@link Method#REPLY} or {@link Method#REQUEST}
+	 * @param responsePartStat The PartStat object for reponse
 	 * @return a Calendar object
 	 * @throws CalDAV4JException on error
 	 */
@@ -72,7 +72,12 @@ public class ITipUtils {
 		}
 	}
 
-	// check if Calendar contains the given method, in a faster way (string comparison)
+	/**
+	 * Check if Calendar contains the given method, in a faster way (string comparison)
+	 * @param m Method to compare
+	 * @param n Method to compare
+	 * @return true if same else false
+	 */
 	private static boolean compareMethod(Method m, Method n) {
 		try {
 			return m.getValue().equals(n.getValue());
@@ -82,6 +87,14 @@ public class ITipUtils {
 	}
 
 	// remove attendees, returning number of attendees matching user
+
+	/**
+	 * Remove attendees, returning number of attendees matching user
+	 * @param c Calendar containing attendees
+	 * @param user Attendee to match
+	 * @param action Action to replace for attendee
+	 * @throws CalDAV4JException on error
+	 */
 	private static void processAttendees(Calendar c, Attendee user, PartStat action)
 		throws CalDAV4JException 
 	{

@@ -29,16 +29,14 @@ import java.util.Map;
 
 /**
  * Defines a report for querying calendar object resources.
- *
- * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)?
- *                            filter>
- * <!ELEMENT filter comp-filter>
- * 
- * <!ELEMENT comp-filter (is-defined | time-range)?
- *                         comp-filter* prop-filter*>
- *
- * <!ATTLIST comp-filter name CDATA #REQUIRED>
- *
+ * <pre>
+ * &lt;!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)?
+ *                            filter&gt;
+ * &lt;!ELEMENT filter comp-filter&gt;
+ * &lt;!ELEMENT comp-filter (is-defined | time-range)?
+ *                         comp-filter* prop-filter*&gt;
+ * &lt;!ATTLIST comp-filter name CDATA #REQUIRED&gt;
+ * </pre>
  * @author bobbyrullo
  * @see <a href=http://tools.ietf.org/html/rfc4791#section-9.5>RFC 4791 Section 9.5</a>
  */
@@ -183,7 +181,8 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
 	/**
 	 * Validates that the object validates against the following dtd:
 	 * <p>
-	 * <!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)? filter>
+	 * &lt;!ELEMENT calendar-query (DAV:allprop | DAV:propname | DAV:prop)? filter&gt;
+	 * @see OutputsDOMBase#validate()
 	 */
 	public void validate() throws DOMValidationException {
 		if (calendarDataProp != null) {

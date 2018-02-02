@@ -32,6 +32,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	 * Create a Simple/Dummy cache
 	 *
 	 * @return a simple EhCacheResourceCache
+	 * @throws CalDAV4JException on error
 	 */
 	public static EhCacheResourceCache createSimpleCache()
 			throws CalDAV4JException {

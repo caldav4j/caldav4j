@@ -29,11 +29,11 @@ import java.util.*;
  * The CALDAV:prop-filter XML element specifies a query targeted at a specific calendar
  * property (e.g., CATEGORIES) scope of the enclosing calendar component.
  *
- *  <!ELEMENT prop-filter (is-defined | time-range | text-match)?
- *                          param-filter*>
- *
- *  <!ATTLIST prop-filter name CDATA #REQUIRED>
- *  
+ * <pre>
+ *  &lt;!ELEMENT prop-filter (is-defined | time-range | text-match)?
+ *                          param-filter*&gt;
+ *  &lt;!ATTLIST prop-filter name CDATA #REQUIRED&gt;
+ * </pre>
  * @author bobbyrullo
  * 
  */
@@ -56,6 +56,7 @@ public class PropFilter extends OutputsDOMBase {
     }
 
 	/**
+	 * Create a ParamFilter based on the parameters
 	 * @param name               a calendar property name (e.g., ATTENDEE)
 	 * @param isDefined          if true check for existence of property
 	 * @param timeRangeStart     Start date of time range
@@ -88,6 +89,7 @@ public class PropFilter extends OutputsDOMBase {
     }
     
     /**
+     * Create a ParamFilter based on the parameters
      * @deprecated The Full constructor should be used
      * @param name a calendar property name (e.g., ATTENDEE)
      * @param isDefined if true check for existence of property
@@ -200,14 +202,13 @@ public class PropFilter extends OutputsDOMBase {
     }
     
     /**
-    *  <!ELEMENT prop-filter (is-defined | time-range | text-match)?
-    *                          param-filter*>
-    *
-    *  <!ATTLIST prop-filter name CDATA #REQUIRED>
-    *  
-    * @author bobbyrullo
-    * 
-    */
+     * <pre>
+     *  &lt;!ELEMENT prop-filter (is-defined | time-range | text-match)?
+     *                          param-filter*&gt;
+     *  &lt;!ATTLIST prop-filter name CDATA #REQUIRED&gt;
+     *  </pre>
+     * @author bobbyrullo
+     */
     public void validate() throws DOMValidationException{
         if (name == null){
             throwValidationException("Name is a required property");

@@ -30,34 +30,34 @@ import java.util.Map;
 /**
  * The CALDAV:calendar-data XML element specifies a media type supported
  * by the CalDAV server for calendar object resources.
- *
- *  <!ELEMENT calendar-data ((comp?, (expand-recurrence-set |
+ * <pre>
+ *  &lt;!ELEMENT calendar-data ((comp?, (expand-recurrence-set |
  *                                    limit-recurrence-set)?) |
- *                            #PCDATA)?>
+ *                            #PCDATA)?&gt;
  *
- *  <!ATTLIST calendar-data content-type CDATA "text/calendar">
+ *  &lt;!ATTLIST calendar-data content-type CDATA "text/calendar"&gt;
  *
- *  <!ATTLIST calendar-data version CDATA "2.0">
+ *  &lt;!ATTLIST calendar-data version CDATA "2.0"&gt;
  *  
- *  <!ELEMENT expand EMPTY>
+ *  &lt;!ELEMENT expand EMPTY&gt;
  *  
- *  <!ATTLIST expand start CDATA #REQUIRED
- *                                  end CDATA #REQUIRED>
+ *  &lt;!ATTLIST expand start CDATA #REQUIRED
+ *                                  end CDATA #REQUIRED&gt;
  *                                  
- *  <!ELEMENT limit-recurrence-set EMPTY>
+ *  &lt;!ELEMENT limit-recurrence-set EMPTY&gt;
  *  
- *  <!ATTLIST limit-recurrence-set start CDATA #REQUIRED
- *                                 end CDATA #REQUIRED>
- *                                 
+ *  &lt;!ATTLIST limit-recurrence-set start CDATA #REQUIRED
+ *                                 end CDATA #REQUIRED&gt;
+ *  </pre>
  *    NOTE: The CALDAV:prop and CALDAV:allprop elements used here have the
  *  same name as elements defined in WebDAV.  However, the elements used
  *  here have the "urn:ietf:params:xml:ns:caldav" namespace, as opposed
  *  to the "DAV:" namespace used for elements defined in WebDAV.
  *
- *  <!ELEMENT comp ((allcomp, (allprop | prop*)) |
- *                  (comp*, (allprop | prop*)))>
+ *  &lt;!ELEMENT comp ((allcomp, (allprop | prop*)) |
+ *                  (comp*, (allprop | prop*)))&gt;
  *
- * <!ATTLIST comp name CDATA #REQUIRED>
+ * &lt;!ATTLIST comp name CDATA #REQUIRED&gt;
  *
  * @author bobbyrullo
  * @see <a href=http://tools.ietf.org/html/rfc4791#section-9.6>RFC 4791 Section 9.6</a>
@@ -164,21 +164,24 @@ public class CalendarData extends OutputsDOMBase {
     }
 
     /**
-     * <!ELEMENT calendar-data ((comp?, (expand-recurrence-set |
-     * limit-recurrence-set)?) | #PCDATA)?>
+     * <pre>
+     * &lt;!ELEMENT calendar-data ((comp?, (expand-recurrence-set |
+     * limit-recurrence-set)?) | #PCDATA)?&gt;
      * 
-     * <!ATTLIST calendar-data content-type CDATA "text/calendar">
+     * &lt;!ATTLIST calendar-data content-type CDATA "text/calendar"&gt;
      * 
-     * <!ATTLIST calendar-data version CDATA "2.0">
+     * &lt;!ATTLIST calendar-data version CDATA "2.0"&gt;
      * 
-     * <!ELEMENT expand-recurrence-set EMPTY>
+     * &lt;!ELEMENT expand-recurrence-set EMPTY&gt;
      * 
-     * <!ATTLIST expand-recurrence-set start CDATA #REQUIRED end CDATA
-     * #REQUIRED>
+     * &lt;!ATTLIST expand-recurrence-set start CDATA #REQUIRED end CDATA
+     * #REQUIRED&gt;
      * 
-     * <!ELEMENT limit-recurrence-set EMPTY>
+     * &lt;!ELEMENT limit-recurrence-set EMPTY&gt;
      * 
-     * <!ATTLIST limit-recurrence-set start CDATA #REQUIRED end CDATA #REQUIRED>
+     * &lt;!ATTLIST limit-recurrence-set start CDATA #REQUIRED end CDATA #REQUIRED&gt;
+     * </pre>
+     * @see OutputsDOMBase#validate()
      */
     public void validate() throws DOMValidationException {
         if (expandOrLimitRecurrenceSet != null

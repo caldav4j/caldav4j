@@ -31,9 +31,9 @@ public class CalDAVResource implements Serializable{
 	private Calendar calendar = null;
 
 	/**
-	 * Construct a Resource based on the Reponse.
+	 * Construct a Resource based on the Response.
 	 *
-	 * @param response
+	 * @param response Response to contruct from.
 	 */
 	public CalDAVResource(MultiStatusResponse response) {
 		this.calendar = CalendarDataProperty.getCalendarfromResponse(response);

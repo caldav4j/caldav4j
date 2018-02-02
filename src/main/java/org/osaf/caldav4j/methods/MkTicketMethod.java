@@ -93,7 +93,7 @@ public class MkTicketMethod extends DavMethodBase {
 	/**
 	 * Set the TicketRequest
 	 *
-	 * @param ticketRequest
+	 * @param ticketRequest Ticket Request object to set
 	 */
 	public void setTicketRequest(TicketRequest ticketRequest) {
 		this.ticketRequest = ticketRequest;
@@ -101,7 +101,7 @@ public class MkTicketMethod extends DavMethodBase {
 
 	/**
 	 * Response Document
-	 * @return
+	 * @return Response XML
 	 */
 	public Document getResponseDocument() {
 		return this.responseDocument;
@@ -127,18 +127,15 @@ public class MkTicketMethod extends DavMethodBase {
     }
 
     /**
-     * Returns a TicketResponse from the response body.
      * 
-     * @return
-     * @throws IOException
-     * @throws SAXException
-     * @throws CalDAV4JProtocolException -
-     *             If the Response Body is not XML
-     * @throws CalDAV4JException -
-     *             if the Response Body is unavailable
+     * @return Returns a TicketResponse from the response body.
+     * @throws IOException on error parsing
+     * @throws SAXException on error creating Xml
+     * @throws CalDAV4JProtocolException If the Response Body is not XML
+     * @throws CalDAV4JException if the Response Body is unavailable
      */
     public TicketResponse getResponseBodyAsTicketResponse() throws IOException,
-            SAXException, CalDAV4JProtocolException, CalDAV4JException {
+            SAXException, CalDAV4JException, CalDAV4JProtocolException {
         Header header = getResponseHeader("Content-Type");
         String contentType = (header != null) ? header.getValue() : ""; 
         if (!contentType.startsWith("text/xml")) {
@@ -197,6 +194,8 @@ public class MkTicketMethod extends DavMethodBase {
     
     /**
      * Handles the authoring of the Request Body
+     *
+     * @see org.apache.commons.httpclient.HttpMethodBase#writeRequest(HttpState, HttpConnection)
      */
     protected void writeRequest(HttpState state, HttpConnection conn)
             throws IOException, HttpException {

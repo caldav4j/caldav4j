@@ -69,7 +69,7 @@ public class TicketResponse {
 	/**
 	 * The assumed unit for timeout is seconds.
 	 * 
-	 * @return
+	 * @return The timeout
 	 */
 	public Integer getTimeout() {
 		return this.timeout;
@@ -79,7 +79,7 @@ public class TicketResponse {
 	 * The value for infinity is stored in
 	 * org.osaf.caldav4j.CalDAVConstants.INFINITY .
 	 * 
-	 * @return
+	 * @return Visits of the ticket
 	 */
 	public Integer getVisits() {
 		return this.visits;
@@ -96,7 +96,7 @@ public class TicketResponse {
 	/**
 	 * The assumed unit for timeout is seconds.
 	 * 
-	 * @param timeout
+	 * @param timeout Set the Timeout in seconds
 	 */
 	public void setTimeout(Integer timeout) {
 		this.timeout = timeout;
@@ -106,7 +106,7 @@ public class TicketResponse {
 	 * The value for infinity is stored in
 	 * org.osaf.caldav4j.CalDAVConstants.INFINITY .
 	 * 
-	 * @param visits
+	 * @param visits Set the value of visits
 	 */
 	public void setVisits(Integer visits) {
 		this.visits = visits;

@@ -119,7 +119,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 *  @deprecated use a less-specialized query
 	 */
 	public Calendar getCalendarForEventUID(HttpClient httpClient, String uid)
-            throws CalDAV4JException, IOException {
+            throws CalDAV4JException {
 		// implement it using a simplequery: here we don't need meta-data/tags
 
 		return getCalDAVResourceForEventUID(httpClient, uid).getCalendar();
@@ -193,6 +193,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * collection  it should remove only one Calendar resource
 	 * 
 	 * @param httpClient the httpClient which will make the request
+	 * @param component Component to remove
 	 * @param uid UID to delete
 	 * @throws CalDAV4JException on error
 	 * 
@@ -244,6 +245,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	/**
 	 * Creates a calendar at the specified path 
 	 * @param httpClient the httpClient which will make the request
+	 * @throws CalDAV4JException on error
 	 */
 	public void createCalendar(HttpClient httpClient) throws CalDAV4JException {
 
@@ -411,7 +413,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 */
 	// TODO: Deal with SEQUENCE
 	public void updateMasterEvent(HttpClient httpClient, VEvent vevent, VTimeZone timezone)
-            throws CalDAV4JException, IOException {
+            throws CalDAV4JException {
 		String uid = getUIDValue(vevent);
 		CalDAVResource resource = getCalDAVResourceByUID(httpClient, Component.VEVENT, uid);
 		Calendar calendar = resource.getCalendar();
@@ -593,6 +595,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param component Calendar Component
 	 * @param uid UID of retrieved component
 	 * @return a Caldav resource containing the component type with the given uid
+	 * @throws CalDAV4JException on error
+	 * @throws ResourceNotFoundException When resource is not found
 	 */
 	protected CalDAVResource getCalDAVResourceByUID(
 			HttpClient httpClient, String component, String uid)
@@ -679,7 +683,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param httpClient the httpClient which will make the request
 	 * @param path Path to Resource
 	 * @param currentEtag Current Etag of the resource
-	 * @return
+	 * @return Corresponding CalDAVResource
 	 * @throws CalDAV4JException on error
 	 */
 	protected CalDAVResource getCalDAVResource(HttpClient httpClient,
@@ -896,6 +900,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	/**
 	 * Return a list of components using REPORT
 	 * @param query Query to return the calendars for.
+	 * @param httpClient the httpClient which will make the request
 	 * @return a new Calendar list with no elements if 0
 	 * @throws CalDAV4JException on error
 	 */
@@ -966,6 +971,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
      * @param httpClient Client which makes the request.
      * @param query Query for the Report Method to execute.
      * @return MultiStatus Response for the Query
+     * @throws CalDAV4JException on error
      */
 	public MultiStatus getResponseforQuery(HttpClient httpClient, CalDAVReportRequest query) throws CalDAV4JException {
 
@@ -1105,12 +1111,15 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	}
 
 	/**
-	 * Implementing calendar multiget
+	 * Implementing calendar multiget with Properties: getetag, calendar-data
+	 *
 	 * @see <a href="http://tools.ietf.org/html/rfc4791#section-7.9">RFC 4791 Section 7.9</a>
-	 * with Properties: getetag, calendar-data
+	 *
 	 * @author rpolli
 	 * @param httpClient the httpClient which will make the request
      * @param calendarUris URI's for Multiget
+	 * @return List of Calendars based on the uris.
+	 * @throws CalDAV4JException on error
 	 */
 	public List<Calendar> multigetCalendarUris(HttpClient httpClient,
 			List<String> calendarUris )

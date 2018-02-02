@@ -27,12 +27,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <!ELEMENT prop EMPTY>
+ * <pre>
+ * &lt;!ELEMENT prop EMPTY&gt;
  * 
- * <!ATTLIST prop name CDATA #REQUIRED
- *                novalue (yes|no) "no">
- *  ex. <C:PROP name="DESCRIPTION" />
- *
+ * &lt;!ATTLIST prop name CDATA #REQUIRED
+ *                novalue (yes|no) "no"&gt;
+ * </pre>
+ *  ex. &lt;C:PROP name="DESCRIPTION" /&gt;
+ * <p>
  *  Based on RFC 4791, Defines which properties to return in the response.
  * @author bobbyrullo
  * @see <a href=http://tools.ietf.org/html/rfc4791#section-9.6.4>RFC 4791 Section 9.6.4</a>
@@ -117,10 +119,11 @@ public class CalDAVProp extends OutputsDOMBase {
     }
     
     /**
-     * <!ELEMENT prop EMPTY>
+     * &lt;!ELEMENT prop EMPTY&gt;
      * 
-     * <!ATTLIST prop name CDATA #REQUIRED
-     *                novalue (yes|no) "no">
+     * &lt;!ATTLIST prop name CDATA #REQUIRED
+     *                novalue (yes|no) "no"&gt;
+     * @see OutputsDOMBase#validate()
      */
     public void validate() throws DOMValidationException {
         if (name == null){

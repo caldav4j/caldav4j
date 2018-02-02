@@ -28,12 +28,12 @@ import java.util.Map;
 
 /**
  * Specifies a substring match on a property or parameter value.
- *
- * <!ELEMENT text-match #PCDATA>
- * <!ATTLIST text-match caseless (yes|no)>
- * <!ATTLIST text-match negate-conditon (yes|no)>
- * <!ATTLIST text-match collation (i;octet|i;ascii-casemap)>
- *
+ * <pre>
+ * &lt;!ELEMENT text-match #PCDATA&gt;
+ * &lt;!ATTLIST text-match caseless (yes|no)&gt;
+ * &lt;!ATTLIST text-match negate-conditon (yes|no)&gt;
+ * &lt;!ATTLIST text-match collation (i;octet|i;ascii-casemap)&gt;
+ * </pre>
  *  Note: The caseless attribute is mostly ignored by servers.
  *  
  * @author bobbyrullo
@@ -129,9 +129,10 @@ public class TextMatch extends OutputsDOMBase {
     }
     
     /**
-     * <!ELEMENT text-match #PCDATA>
-     * 
-     * <!ATTLIST text-match caseless (yes|no)>
+     * <pre>
+     * &lt;!ELEMENT text-match #PCDATA&gt;
+     * &lt;!ATTLIST text-match caseless (yes|no)&gt;
+     * </pre>
      */
     public void validate() throws DOMValidationException{
         return;

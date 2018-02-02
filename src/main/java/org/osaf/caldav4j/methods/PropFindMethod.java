@@ -48,7 +48,7 @@ import java.util.List;
  *   specified in <code>propNameSet</code>
  *   <li>{@link CalDAVConstants#PROPFIND_PROPERTY_NAMES}: just the property names
  * </ul>
- * </p>
+ * <p>
  * This is based on the Jackrabbit's WebDAV implementation of PROPFIND, which has
  * been extended for use with Calendar specific methods.
  * @see org.apache.jackrabbit.webdav.client.methods.PropFindMethod
@@ -62,7 +62,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
 	 * Default Constuctor
 	 *
 	 * @param uri URI to the calendar resource
-	 * @throws IOException
+	 * @throws IOException on error.
 	 */
 	public PropFindMethod(String uri) throws IOException {
 		super(uri);
@@ -74,7 +74,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
      * @param path Path of the principal
      * @param propNameSet Properties to make the Propfind, call for.
      * @param depth Depth of the Propfind Method.
-     * @throws IOException
+     * @throws IOException on error.
      */
     public PropFindMethod(String path, DavPropertyNameSet propNameSet, int depth) throws IOException {
         super(path, propNameSet, depth);
@@ -86,7 +86,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
 	 * @param propfindType Type of Propfind Call. Specified, in DavConstants or CalDavConstants
 	 * @param propNameSet Properties to make the Propfind, call for.
 	 * @param depth Depth of the Propfind Method.
-	 * @throws IOException
+	 * @throws IOException on error.
 	 */
 	public PropFindMethod(String uri, int propfindType, DavPropertyNameSet propNameSet,
 	                      int depth) throws IOException {
@@ -118,7 +118,7 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
 	 * Return the ACL Ace returned from the PROPFIND call.
 	 * @param urlPath URL of the ACL
 	 * @return List of {@link AclProperty.Ace}
-	 * @throws CalDAV4JException
+	 * @throws CalDAV4JException on error retrieving them.
 	 */
 	public List<AclProperty.Ace> getAces(String urlPath) throws CalDAV4JException {
 		if(succeeded()) {
@@ -211,6 +211,8 @@ public class PropFindMethod extends org.apache.jackrabbit.webdav.client.methods.
      * Returns the MultiStatusResponse to the corresponding uri.
      * @param uri Location of the CalendarResource
      * @return MultiStatus Response retrieved from the HTTP Response.
+     * @throws IOException on error parsing xml.
+     * @throws DavException on error HTTP status error
      */
     public MultiStatusResponse getResponseBodyAsMultiStatusResponse(String uri) throws IOException, DavException {
         MultiStatusResponse[] responses = getResponseBodyAsMultiStatus().getResponses();

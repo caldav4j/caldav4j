@@ -27,8 +27,9 @@ import java.util.Map;
 /**
  *  Specifies a request that includes the WebDAV property values to be set for a calendar
  *  collection resource when it is created.
- *
- * <!ELEMENT mkcalendar (DAV:set)>
+ * <pre>
+ * &lt;!ELEMENT mkcalendar (DAV:set)&gt;
+ * </pre>
  * @author bobbyrullo
  *
  */

@@ -52,6 +52,7 @@ public class CalendarDataProperty {
     };
 
     /**
+     * @param property Property from whom value we retrieve the Calendar from.
      * @return Returns the Calendar in the Property specified.
      */
     public static Calendar getCalendarfromProperty(DavProperty property) {
@@ -90,6 +91,8 @@ public class CalendarDataProperty {
 
     /**
      * Convenience method to return the Calendar from the Response object.
+     * @param response Response to retrieve the Calendar from.
+     * @return Calendar retrieved from Response
      */
     public static Calendar getCalendarfromResponse(MultiStatusResponse response){
         return getCalendarfromProperty(response.getProperties(CaldavStatus.SC_OK).get(CalDAVConstants.DNAME_CALENDAR_DATA));
@@ -97,12 +100,15 @@ public class CalendarDataProperty {
 
     /**
      * Convenience method to return the ETag from the Response object.
+     * @param response Response to retrieve the ETag from.
+	 * @return ETag String
      */
     public static String getEtagfromResponse(MultiStatusResponse response){
         return getEtagfromProperty(response.getProperties(CaldavStatus.SC_OK).get(DavPropertyName.GETETAG));
     }
 
     /**
+     * @param property Property containing the {@link CalDAVConstants#ELEM_GETETAG}
      * @return Returns the ETag from the specified Property, null otherwise.
      */
     public static String getEtagfromProperty(DavProperty property){

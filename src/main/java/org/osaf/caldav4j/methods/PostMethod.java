@@ -62,15 +62,17 @@ public class PostMethod extends org.apache.commons.httpclient.methods.PostMethod
     }
     
     /**
-     * The set of eTags that will be used in "if-none-match" or "if-match" if the
+     * @return The set of eTags that will be used in "if-none-match" or "if-match" if the
      * ifMatch or ifNoneMatch properties are set
-     * @return
      */
     public Set getEtags() {
         return etags;
     }
 
-    public void setEtags(Set<String> etags) {
+	/**
+	 * @param etags The set of eTags that will be used in "if-none-match" or "if-match"
+	 */
+	public void setEtags(Set<String> etags) {
         this.etags = etags;
     }
     
@@ -78,56 +80,81 @@ public class PostMethod extends org.apache.commons.httpclient.methods.PostMethod
      * Add's the etag provided to the "if-none-match" or "if-match" header.
      * 
      * Note - You MUST provide a quoted string!
-     * @param etag
+     * @param etag ETag to add
      */
     public void addEtag(String etag){
         etags.add(etag);
     }
-    
-    
-    public void removeEtag(String etag){
+
+	/**
+	 * Remove the ETag from set.
+	 * @param etag ETag to remove.
+	 */
+	public void removeEtag(String etag){
         etags.remove(etag);
     }
 
     /**
-     * If true the "if-match" conditional header is used with the etags set in the 
-     * etags property.
-     * @return
+     * @return Returns true if the "if-match" conditional header is set. The matched ETags are set through
+     * {@link #setEtags(Set)} or {@link #setAllEtags(boolean)}
      */
     public boolean isIfMatch() {
         return ifMatch;
     }
 
-    public void setIfMatch(boolean ifMatch) {
+	/**
+	 * Set the "if-match" conditional header.
+	 * @param ifMatch True to set, else False to disable.
+	 */
+	public void setIfMatch(boolean ifMatch) {
         this.ifMatch = ifMatch;
     }
 
     /**
-     * If true the "if-none-match" conditional header is used with the etags set in the 
-     * etags property.
-     * @return
+     * @return Returns true if the "if-none-match" conditional header is set. The ETags are set through
+     * {@link #setEtags(Set)} or {@link #setAllEtags(boolean)}
      */
     public boolean isIfNoneMatch() {
         return ifNoneMatch;
     }
 
-    public void setIfNoneMatch(boolean ifNoneMatch) {
+	/**
+	 * Set the "if-none-match" conditional header.
+	 * @param ifNoneMatch True to set, else False to disable.
+	 */
+	public void setIfNoneMatch(boolean ifNoneMatch) {
         this.ifNoneMatch = ifNoneMatch;
     }
 
-    public boolean isAllEtags() {
+	/**
+	 * @return True if enabled, else false.
+	 */
+	public boolean isAllEtags() {
         return allEtags;
     }
 
-    public void setAllEtags(boolean allEtags) {
+	/**
+	 * Set the value of ETags as "*" i.e. match or do not match all ETags. Used along with
+	 * {@link #setIfMatch(boolean)} or {@link #setIfNoneMatch(boolean)}
+	 * @param allEtags True to enable, else disable
+	 */
+	public void setAllEtags(boolean allEtags) {
         this.allEtags = allEtags;
     }
 
-    public void setRequestBody(Calendar calendar){
+	/**
+	 * @param calendar Calendar to Set as request.
+	 */
+	public void setRequestBody(Calendar calendar){
         this.calendar = calendar;
     }
-    
-    public void setRequestBody(VEvent vevent, VTimeZone vtimeZone){
+
+	/**
+	 * Convenience method for creating a calendar from VEvent and VTimezone
+	 * @param vevent Event
+	 * @param vtimeZone Timezone
+	 */
+	public void setRequestBody(VEvent vevent, VTimeZone vtimeZone){
         Calendar calendar = new Calendar();
         calendar.getProperties().add(new ProdId("-//Open Source Applications Foundation//NONSGML Scooby Server//EN"));
         calendar.getProperties().add(Version.VERSION_2_0);
@@ -138,22 +165,24 @@ public class PostMethod extends org.apache.commons.httpclient.methods.PostMethod
         }
         this.calendar = calendar;
     }
-    
-    public void setRequestBody(VEvent vevent){
+
+	/**
+	 * Convenience method for creating a request calendar from VEvent without a timezone.
+	 * @param vevent Event
+	 */
+	public void setRequestBody(VEvent vevent){
         setRequestBody(vevent, null);
     }
     
     /**
-     * The ProcID to use when creating a new VCALENDAR component
-     * @return
+     * @return The ProcID to use when creating a new VCALENDAR component
      */
     public String getProcID() {
         return procID;
     }
     
     /**
-     * Sets the ProcID to use when creating a new VCALENDAR component
-     * @param procID
+     * @param procID The ProcID to use when creating a new VCALENDAR component
      */
     public void setProcID(String procID) {
         this.procID = procID;

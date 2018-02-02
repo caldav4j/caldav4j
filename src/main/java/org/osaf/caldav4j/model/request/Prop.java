@@ -25,33 +25,59 @@ import java.util.Collection;
 /**
  * Defines a container DAV:prop Property. Based on the {@link PropProperty}
  *
- * @param <T>
+ * @param <T> Type of Value of the Property
  */
 
 public class Prop<T> extends PropProperty<T>{
     public static final String ELEMENT_NAME = "prop";
 
-    public Prop( ){ super(ELEMENT_NAME, CalDAVConstants.NAMESPACE_WEBDAV); }
+	/**
+	 * Default Constructor
+	 */
+	public Prop( ){ super(ELEMENT_NAME, CalDAVConstants.NAMESPACE_WEBDAV); }
 
+	/**
+	 * Create a Property with children
+	 * @param children Children of this property.
+	 */
     public Prop(Collection<XmlSerializable> children){
         super(ELEMENT_NAME, null, CalDAVConstants.NAMESPACE_WEBDAV, null, children);
     }
 
-    public Prop(DavPropertyNameSet children){
+	/**
+	 * Create a Property with children
+	 * @param children Children of this property.
+	 */
+	public Prop(DavPropertyNameSet children){
         super(ELEMENT_NAME, null, CalDAVConstants.NAMESPACE_WEBDAV, null, children);
     }
 
+	/**
+	 * Create a Property with children
+	 * @param children Children of this property.
+	 */
     public Prop(DavPropertySet children){
         super(ELEMENT_NAME, null, CalDAVConstants.NAMESPACE_WEBDAV, null, children);
     }
 
-    public boolean isEmpty(){ return this.isChildrenEmpty(); }
+	/**
+	 * @return Return true if children are empty, false otherwise.
+	 */
+	public boolean isEmpty(){ return this.isChildrenEmpty(); }
 
-    public void add(XmlSerializable prop){
+	/**
+	 * Add child to this property
+	 * @param prop Child to add
+	 */
+	public void add(XmlSerializable prop){
         this.addChild(prop);
     }
 
-    public void remove(XmlSerializable prop){
+	/**
+	 * Remove individual children from this property
+	 * @param prop Prop to remove
+	 */
+	public void remove(XmlSerializable prop){
         this.removeChild(prop);
     }
 }

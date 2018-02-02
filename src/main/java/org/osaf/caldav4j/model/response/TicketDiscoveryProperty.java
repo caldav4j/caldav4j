@@ -94,7 +94,7 @@ public class TicketDiscoveryProperty {
 	/**
 	 * Handles the reponse and Stores each ticketinfo as a TicketResponse
 	 * Object, in a List of TicketResponses
-	 *
+	 * @param element Xml Element containing Tickets
 	 */
 	public void parseTickets(Element element) {
 		tickets = new ArrayList<TicketResponse>();

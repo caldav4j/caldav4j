@@ -27,16 +27,16 @@ import java.util.*;
 /**
  *  Defines which component types to return. The name value is a calendar
  *  component name (e.g., VEVENT).
- *
- *  <!ELEMENT comp ((allcomp, (allprop | prop*)) |
- *                  (comp*, (allprop | prop*)))>
- * <!ATTLIST comp name CDATA #REQUIRED>
- * <!ELEMENT allcomp EMPTY>
- * <!ELEMENT allprop EMPTY>
- * <!ELEMENT prop EMPTY>
- * <!ATTLIST prop name CDATA #REQUIRED
- *                novalue (yes|no) "no">
- *
+ * <pre>
+ * &lt;!ELEMENT comp ((allcomp, (allprop | prop*)) |
+ *                  (comp*, (allprop | prop*)))&gt;
+ * &lt;!ATTLIST comp name CDATA #REQUIRED&gt;
+ * &lt;!ELEMENT allcomp EMPTY&gt;
+ * &lt;!ELEMENT allprop EMPTY&gt;
+ * &lt;!ELEMENT prop EMPTY&gt;
+ * &lt;!ATTLIST prop name CDATA #REQUIRED
+ *                novalue (yes|no) "no"&gt;
+ * </pre>
  * @see <a href=http://tools.ietf.org/html/rfc4791#section-9.6.1>RFC 4791 Section 9.6.1</a>
  * @author bobbyrullo
  * 
@@ -188,19 +188,17 @@ public class Comp extends OutputsDOMBase {
 	}
 
 	/**
-	 * <!ELEMENT comp ((allcomp, (allprop | prop*)) |
-	 * (comp*, (allprop | prop*)))>
-	 * <p>
-	 * <!ATTLIST comp name CDATA #REQUIRED>
-	 * <p>
-	 * <!ELEMENT allcomp EMPTY>
-	 * <p>
-	 * <!ELEMENT allprop EMPTY>
-	 * <p>
-	 * <!ELEMENT prop EMPTY>
-	 * <p>
-	 * <!ATTLIST prop name CDATA #REQUIRED
-	 * novalue (yes|no) "no">
+	 * &lt;!ELEMENT comp ((allcomp, (allprop | prop*)) |
+	 * (comp*, (allprop | prop*)))&gt;
+	 * <pre>
+	 * &lt;!ATTLIST comp name CDATA #REQUIRED&gt;
+	 * &lt;!ELEMENT allcomp EMPTY&gt;
+	 * &lt;!ELEMENT allprop EMPTY&gt;
+	 * &lt;!ELEMENT prop EMPTY&gt;
+	 * &lt;!ATTLIST prop name CDATA #REQUIRED
+	 * novalue (yes|no) "no"&gt;
+	 * </pre>
+	 * @see OutputsDOMBase#validate()
 	 */
 	public void validate() throws DOMValidationException {
 		if (name == null) {
