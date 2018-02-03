@@ -1,0 +1,2 @@
+language: java
+script: mvn package -Dmaven.test.skip=true -B -V
