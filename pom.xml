@@ -19,7 +19,7 @@
   <name>CalDav4j</name>
   <groupId>com.github.caldav4j</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>0.9-SNAPSHOT</version>
+  <version>0.9.1</version>
   <packaging>jar</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -149,15 +149,26 @@
     </pluginManagement>
     <plugins>
       <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
         <version>3.0.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
-              <goal>jar</goal>
+              <goal>jar-no-fork</goal>
             </goals>
           </execution>
         </executions>
@@ -169,7 +180,7 @@
         <executions>
           <execution>
             <id>attach-javadocs</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
               <goal>jar</goal>
             </goals>
@@ -186,6 +197,20 @@
           <releaseProfiles>release</releaseProfiles>
           <goals>deploy</goals>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
