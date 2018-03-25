@@ -2,7 +2,7 @@
 
 CalDAV4j is a java library implementing the CalDAV protocol. 
 
-It makes easy to issue complex queries to a caldav server, supporting free-busy and calendar-collections. Moreover supports the standard add/remove of events.
+CalDAV4j makes it easy to issue complex queries to a caldav server, supporting free-busy and calendar-collections. Moreover, it supports the standard adding and removal of events.
 CalDAV4j extends the Android Calendar App with Caldav Sync implementation for Android.
 
 While we're moving to jackrabbit, CalDAV4j is still based on Slide project's WebDAV client library (which itself is an extension of the Apache's HttpClient library) to allow high level manipulation of CalDAV calendar collections as well as lower level CalDAV protocol interactions.
@@ -16,20 +16,20 @@ While we're moving to jackrabbit, CalDAV4j is still based on Slide project's Web
 
 ## Goals
 
-A high level API: This API works at the level of ical4j objects, and allows for high level operations. All the "hard" protocol work that you need to do to make this happen is hidden from the end user. Supports:
+A high level API: This API works at the level of ical4j objects, and allows for high level operations. All the "hard" protocol work that you need to do to make this happen is hidden from the end user.
 
-an easy and flexible query language (eg. for events in a given date range);
-recurring event management (eg. updating master events and recurrence instances);
+Supports: An easy and flexible query language (eg. for events in a given date range); and Recurring event management (eg. updating master events and recurrence instances).
+
 A lower level protocol API: Let's you work at the Http/WebDAV/CalDAV protocol level by creating instances of HttpMethods (like GetMethod, MkCalendar, ReportMethod) and executing them.
 
-Performance: When possible caches (such as caches of etags and icalendar resources) are maintained so that network chatter and parsing of icalender files is minimized.
+Performance: When possible, caches (such as caches of etags and icalendar resources) are maintained so that network chatter and parsing of icalender files is minimized.
 
-Compliance: We aim to be implement the following specs
+Compliance: We aim to be compliant with the following specs
 
-  * CalDAV spec and updates
-  * WebDAV tickets spec
-  * CalDAV Scheduling specs
-  * Reliability: a lot of functional tests and the "rails" for checking your caldav implementation support.
+  * CalDAV spec and updates.
+  * WebDAV tickets spec.
+  * CalDAV Scheduling specs.
+  * Reliability: Many functional tests and the "rails" for checking your caldav implementation support.
 
 # Join us
 
@@ -37,13 +37,13 @@ Consider joining: WhyJoin
 
 # Testing
 
-You can test your caldav server replacing the `caldav4jUri` with your one.
+You can test your caldav server replacing the `caldav4jUri` with your own custom one.
 
 ```
 mvn package -Dcaldav4jUri='https//user:password@hostname.fqdn.com/base/user/collections/'
 ```
 
-A docker image of a caldav server ~900MB is distributed via docker hub:
+A Docker image of a caldav server ~900MB is distributed via Docker Hub:
 
 ```
 docker run -d -p 8080:8080 ioggstream/bedework
