@@ -125,11 +125,12 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
             children.add(new PropProperty(ELEM_PROPNAME, CalDAVConstants.NAMESPACE_WEBDAV));
         } else if ((properties != null && !properties.isEmpty())
                 || calendarDataProp != null) {
-
+			Prop temp = new Prop();
+			temp.addChildren(properties.getChildren());
             if (calendarDataProp != null){
-              properties.addChild(calendarDataProp);
+              temp.addChild(calendarDataProp);
             }
-            children.add(properties);
+            children.add(temp);
         }
         
         // remove double "//" from paths
