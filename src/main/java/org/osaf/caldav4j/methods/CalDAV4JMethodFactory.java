@@ -252,4 +252,122 @@ public class CalDAV4JMethodFactory {
 		}
 		return builder;
 	}
+	
+	//- - - - - - - - - - - - - Http4Client - - - - - - - - - - - - - - - - - - - -
+
+	/**
+	 * Creates a {@link PutMethod} instance.
+	 * @return the instance
+	 */
+	public HttpPutMethod createHttpPutMethod(){
+		HttpPutMethod putMethod = new HttpPutMethod();
+		putMethod.setProcID(prodID);
+		putMethod.setCalendarOutputter(getCalendarOutputterInstance());
+		return putMethod;
+	}
+	
+	/**
+	 * Creates a {@link HttpMkCalendarMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @return the instance
+	 */
+	public HttpMkCalendarMethod createHttpMkCalendarMethod(String uri) {
+		return new HttpMkCalendarMethod(uri); 
+	}
+
+	/**
+	 * Creates a {@link HttpMkCalendarMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @param displayName Display Name of Calendar
+	 * @param description Description of Calendar.
+	 * @param descriptionLanguage Language of the Description. Optional.
+	 * @return the instance
+	 */
+	public HttpMkCalendarMethod createHttpMkCalendarMethod(String uri, String displayName, String description,
+			   String descriptionLanguage) throws IOException {
+		return new HttpMkCalendarMethod(uri, displayName, description, descriptionLanguage);
+	}
+
+	/**
+	 * Creates a {@link MkCalendarMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @param mkCalendar {@link MkCalendar} instance which
+	 * contains all the details for creating a calendar.
+	 * @return the instance
+	 */
+	public HttpMkCalendarMethod createHttpMkCalendarMethod(String uri, MkCalendar mkCalendar) throws IOException {
+		return new HttpMkCalendarMethod(uri, mkCalendar); 
+	}
+	
+	/**
+	 * Creates a {@link MkTicketMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param tr {@link TicketRequest} instance regarding the request.
+	 * @return the instance
+	 */
+	public HttpMkTicketMethod createHttpMkTicketMethod(String uri, TicketRequest tr){
+		HttpMkTicketMethod mkTicketMethod = new HttpMkTicketMethod(uri, tr);
+		mkTicketMethod.addRequestHeaders();
+		mkTicketMethod.generateRequestBody();		
+		return mkTicketMethod;
+	}
+	
+	/**
+	 * Creates a {@link DelTicketMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param ticket ID of the Ticket to be Deleted.
+	 * @return the instance
+	 */
+	public HttpDelTicketMethod createHttpDelTicketMethod(String uri, String ticket){
+		return new HttpDelTicketMethod(uri, ticket);
+	}
+	
+	/**
+	 * Creates a {@link HttpPropFindMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param propertyNames Properties to make the Propfind request for.
+	 * @param depth Depth of the Request
+	 * @return the instance
+	 */
+	public HttpPropFindMethod createHttpPropFindMethod(String uri, DavPropertyNameSet propertyNames, int depth)
+			throws IOException {
+		return new HttpPropFindMethod(uri, propertyNames, depth);
+	}
+	
+	/**
+	 * Creates a {@link PropFindMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param propfindtype Type of Propfind Call.
+	 * @param propertyNames Properties to make the Propfind request for.
+	 * @param depth Depth of the Request
+	 * @return the instance
+	 */
+	public HttpPropFindMethod createHttpPropFindMethod(String uri, int propfindtype, DavPropertyNameSet propertyNames,
+											   int depth) throws IOException {
+		return new HttpPropFindMethod(uri, propfindtype, propertyNames, depth);
+	}
+	
+	/**
+	 * Creates a {@link HttpGetMethod} instance.
+	 * @return the instance
+	 */
+	public HttpGetMethod createHttpGetMethod() {
+		HttpGetMethod getMethod = new HttpGetMethod();
+		getMethod.setCalendarBuilder(getCalendarBuilderInstance());
+		return getMethod;
+	}
+	
+	/**
+	 * Creates a {@link CalDAVReportMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param request The Report to make a request for.
+	 * @return the instance
+	 */
+	public HttpCalDAVReportMethod createHttpCalDAVReportMethod(String uri, CalDAVReportRequest request) throws IOException {
+		HttpCalDAVReportMethod reportMethod = new HttpCalDAVReportMethod(uri, request);
+		reportMethod.setCalendarBuilder(getCalendarBuilderInstance());
+		return reportMethod;
+	}	
+	
+	
 }
