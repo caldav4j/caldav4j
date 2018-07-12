@@ -6,7 +6,7 @@ CalDAV4j is a java library implementing the CalDAV protocol for the client side 
 
 CalDAV4j makes it easy to issue complex queries to a caldav server, supporting free-busy and calendar-collections. Moreover, it supports the standard adding and removal of events.
 
-CalDAV4j used to have a version extends the Android Calendar App with Caldav Sync implementation for Android.
+CalDAV4j used to have a version which extends the Android Calendar App with Caldav Sync implementation for Android.
 
 # CalDAV4j
 
@@ -71,8 +71,7 @@ mvn clean package -Dcaldav4jUri='http//vbede:bedework@localhost:8080/ucaldav/use
 # License
 
 CalDAV4j is licensed under the Apache 2.0 License
-
-Originally under Copyright © 2007 Open Source Application Foundation, but this has since lapsed.
+Copyright © 2005-2007 Open Source Application Foundation
 
 # Contributing Organizations
 
