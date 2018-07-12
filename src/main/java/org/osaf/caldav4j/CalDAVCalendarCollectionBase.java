@@ -25,6 +25,7 @@ import org.osaf.caldav4j.exceptions.CacheException;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpClient;
+import org.osaf.caldav4j.methods.HttpPutMethod;
 import org.osaf.caldav4j.methods.OptionsMethod;
 import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
@@ -254,4 +255,40 @@ public abstract class CalDAVCalendarCollectionBase {
 		}
 		return false;
 	}
+	
+	//- - - - - - - - - - - - - Http4Client - - - - - - - - - - - - - - - - - - - -
+	
+	 //Replaces the old hostConfiguration. 
+	 protected org.apache.http.HttpHost httpHostConfiguration = null; 
+	 
+	public org.apache.http.HttpHost getHttpHostConfiguration() {
+		return httpHostConfiguration; 
+	}
+	
+	public void setHttpHostConfiguration(org.apache.http.HttpHost httpHostConfig)  {
+		this.httpHostConfiguration = httpHostConfig;
+		this.hostConfiguration = new HostConfiguration();
+		hostConfiguration.setHost(httpHostConfig.getHostName(),httpHostConfig.getPort(),httpHostConfig.getSchemeName());
+	}
+
+	/**
+	 * Create a PUT method setting If-None-Match: *
+	 * this tag causes PUT fails if a given event exist  
+	 * @param resourceName
+	 * @param calendar
+	 * @return a PutMethod for creating events
+	 */
+	 HttpPutMethod createHttpPutMethodForNewResource(String resourceName,
+	        Calendar calendar) {
+	    HttpPutMethod putMethod = methodFactory.createHttpPutMethod();
+	    putMethod.setPath(calendarCollectionRoot + "/"
+	    		+ resourceName);
+	    putMethod.setAllEtags(true);
+	    putMethod.setIfNoneMatch(true);
+	    putMethod.setRequestBody(calendar);
+	    putMethod.addRequestHeaders();
+	    putMethod.generateRequestBody();
+	    return putMethod;
+	}		
+	
 }

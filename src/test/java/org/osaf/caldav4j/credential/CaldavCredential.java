@@ -29,7 +29,8 @@ public class CaldavCredential {
 			URI server = new URI(uri);
 			protocol = server.getScheme().replaceAll("://", "");
 			host = server.getHost();
-			port = server.getPort() != -1 ? server.getPort() : (server.getScheme().endsWith("s") ? 443: 80);
+			//port = server.getPort() != -1 ? server.getPort() : (server.getScheme().endsWith("s") ? 443: 80);
+			port = server.getPort(); //!A! For 3.1 ports 80 and 443 were assigned automatically. But fixing the https port to 443 led to error 502 - Connection refused.			
 			home = server.getPath().replace("\\w+/$", "");
 			String userInfo = server.getUserInfo();
 			if (userInfo != null) {
@@ -79,6 +80,16 @@ public class CaldavCredential {
 	public void setProxyHost(String proxyHost) {
 		this.proxyHost = proxyHost;
 	}
+	
+	/** Sets the collection string, replacing <code>"%user%"</code> with the current user name.
+	 *  In the following string 
+	 *  <code>dav/%user%/Calendar/myCalendar</code>
+	 *  the <code>%user%</code> part will be replaced with the current name (if any). 
+	 *   */
+	public void setCollectionString(String value) {
+		this.collection = value.replace("%user%", this.user); 
+	}
+	
     
 }
 

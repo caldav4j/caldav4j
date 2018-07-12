@@ -18,6 +18,7 @@ package org.osaf.caldav4j.util;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.http.HttpResponse;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -135,4 +136,18 @@ public class UrlUtils {
 	public static boolean isNotBlank(String str) {
 		return !isBlank(str);
 	}
+	
+	//- - - - - - - - - - - - - Http4Client - - - - - - - - - - - - - - - - - - - -
+	
+    public static String getHeaderPrettyValue(HttpResponse response, String headerName) {
+    	if (response != null && headerName != null) {
+    		org.apache.http.Header header  = response.getFirstHeader(headerName);  
+    		if (header != null) {
+    			return header.getValue();
+    		}
+    	}
+    	
+    	return null;
+    }	
+	
 }
