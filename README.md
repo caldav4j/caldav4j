@@ -1,5 +1,7 @@
 # CalDAV4j Overview
 
+[![Build Status](https://travis-ci.org/caldav4j/caldav4j.svg?branch=master)](https://travis-ci.org/caldav4j/caldav4j)
+
 CalDAV4j is a java library implementing the CalDAV protocol. 
 
 CalDAV4j makes it easy to issue complex queries to a caldav server, supporting free-busy and calendar-collections. Moreover, it supports the standard adding and removal of events.
