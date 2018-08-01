@@ -44,14 +44,24 @@ public class CalendarDataProperty {
      *
      * @see CalendarBuilder for further information about it.
      */
-    private static ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>(){
-        @Override
-        protected CalendarBuilder initialValue(){
-            return new CalendarBuilder();
-        }
-    };
+    private static ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = null;
 
-    /**
+    public  static ThreadLocal<CalendarBuilder> getCalendarBuilderThreadLocal() {
+    	if(calendarBuilderThreadLocal == null)
+    		calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>(){
+			    @Override
+			    protected CalendarBuilder initialValue(){
+				    return new CalendarBuilder();
+			    }
+		    };
+    	return calendarBuilderThreadLocal;
+    }
+
+	public static void setCalendarBuilderThreadLocal(ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal) {
+		CalendarDataProperty.calendarBuilderThreadLocal = calendarBuilderThreadLocal;
+	}
+
+	/**
      * @param property Property from whom value we retrieve the Calendar from.
      * @return Returns the Calendar in the Property specified.
      */
@@ -66,7 +76,8 @@ public class CalendarDataProperty {
         //this fix the problem occurred when lines are breaked only with \n
         text = text.replaceAll("\n", "\r\n").replaceAll("\r\r\n", "\r\n");
 
-        CalendarBuilder calendarBuilder = calendarBuilderThreadLocal.get();
+        ThreadLocal<CalendarBuilder> threadLocalCalendarBuilder = getCalendarBuilderThreadLocal();
+        CalendarBuilder calendarBuilder = threadLocalCalendarBuilder.get();
 
         StringReader stringReader = new StringReader(text);
         try {
@@ -85,7 +96,7 @@ public class CalendarDataProperty {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        calendarBuilderThreadLocal.remove();
+        threadLocalCalendarBuilder.remove();
         return calendar;
     }
 

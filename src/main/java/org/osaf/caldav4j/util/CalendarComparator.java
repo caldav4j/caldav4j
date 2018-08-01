@@ -6,7 +6,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import java.util.Comparator;
 
 /**
- * This class provides the ability to compares two calendar by the first event date.
+ * This class provides the ability to compare two calendar by the first event date.
  */
 //maybe the better place for this class is the package net.fortuna.ical4j.model.Calendar;
 public class CalendarComparator implements Comparator<Calendar> {

@@ -18,6 +18,8 @@ import org.osaf.caldav4j.CalDAVConstants;
  */
 public class CalendarDescription extends PropProperty {
 
+	public static final String CALENDAR_DESCRIPTION = "calendar-description";
+
 	public CalendarDescription(){
         this(null);
     }

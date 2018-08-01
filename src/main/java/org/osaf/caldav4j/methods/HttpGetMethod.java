@@ -19,31 +19,26 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 
 public class HttpGetMethod  extends HttpGet {
-
 	
 	private static final String HEADER_ACCEPT = "Accept";
 	
 	private static final String ERR_CONTENT_TYPE = "Expected content-type text/calendar. Was: ";
 
-	private static final Logger log = LoggerFactory.getLogger(GetMethod.class);
+	private static final Logger log = LoggerFactory.getLogger(HttpGetMethod.class);
     
     private CalendarBuilder calendarBuilder = null;
 
-    protected HttpGetMethod (){
-        super();
+    public HttpGetMethod (URI uri, CalendarBuilder calendarBuilder){
+        super(uri);
+        this.calendarBuilder = calendarBuilder;
         this.addHeader(HEADER_ACCEPT, 
         		"text/calendar; text/html; text/xml;"); // required for bedework
     }
 
-    public CalendarBuilder getCalendarBuilder() {
-        return calendarBuilder;
-    }
+	public HttpGetMethod (String uri, CalendarBuilder calendarBuilder){
+		this(URI.create(uri), calendarBuilder);
+	}
 
-    public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
-        this.calendarBuilder = calendarBuilder;
-    }
-
-    //TODO !A! switch to CloseAbleHttpResponse? Use EntityUtils.consumeQuietly()?
     public Calendar getResponseBodyAsCalendar(HttpResponse response)  throws
             ParserException, CalDAV4JException {
     	Calendar ret = null;
@@ -57,7 +52,9 @@ public class HttpGetMethod  extends HttpGet {
 		    		stream = new BufferedInputStream(response.getEntity().getContent());
 		    		ret =  calendarBuilder.build(stream);
 		    		return ret;		        
-		    	} else throw new CalDAV4JException("Error: No content stream at "+ getURI());
+		    	}
+
+		    	throw new CalDAV4JException("Error: No content stream at "+ getURI());
 	    	} else {
 		        log.error(ERR_CONTENT_TYPE + contentType);
 		        throw new CalDAV4JProtocolException(ERR_CONTENT_TYPE + contentType );
@@ -65,15 +62,9 @@ public class HttpGetMethod  extends HttpGet {
 	    	}
         } catch (IOException e) {
         	if (stream != null && log.isWarnEnabled()) { //the server sends the response
-        			log.warn("Server response is " + UrlUtils.parseISToString(stream)); //TODO !A! Not sure whether stream can be read again
+        			log.warn("Server response is " + UrlUtils.parseISToString(stream));
         	}
         	throw new CalDAV4JException("Error retrieving and parsing server response at " + getURI(), e);
         }	       
     }
-
-    public void setPath(String path) {
-    	super.setURI(URI.create(UrlUtils.removeDoubleSlashes(path)));    	
-    }
-	
-	
 }

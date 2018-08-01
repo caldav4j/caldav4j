@@ -34,7 +34,6 @@ import org.osaf.caldav4j.dialect.CalDavDialect;
 import org.osaf.caldav4j.dialect.ChandlerCalDavDialect;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
-import org.osaf.caldav4j.methods.CalDAVReportMethod;
 import org.osaf.caldav4j.model.request.FreeBusyQuery;
 import org.osaf.caldav4j.model.request.TimeRange;
 import org.osaf.caldav4j.support.CalendarBuilder;

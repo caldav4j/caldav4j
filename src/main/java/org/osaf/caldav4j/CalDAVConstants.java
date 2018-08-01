@@ -41,7 +41,7 @@ public interface CalDAVConstants {
 	public static final String NS_QUAL_TICKET = "T";//"ticket";
 
 
-	public static final String PROC_ID_DEFAULT =  "-//OSAF//NONSGML CalDAV4j Client//EN";
+	public static final String PROC_ID_DEFAULT =  "-//NONSGML CalDAV4j Client//EN";
 
 	public static final String HEADER_IF_NONE_MATCH = "If-None-Match";
 	public static final String HEADER_IF_MATCH = "If-Match";

@@ -14,8 +14,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
-import org.osaf.caldav4j.methods.HttpClient;
-import org.osaf.caldav4j.methods.PropFindMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

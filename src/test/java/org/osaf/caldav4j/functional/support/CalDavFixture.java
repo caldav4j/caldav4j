@@ -23,7 +23,7 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
+import org.apache.jackrabbit.webdav.client.methods.HttpMkcol;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.TestConstants;
 import org.osaf.caldav4j.credential.CaldavCredential;

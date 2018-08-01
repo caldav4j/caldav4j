@@ -18,7 +18,6 @@ package org.osaf.caldav4j.support;
 import net.fortuna.ical4j.model.Calendar;
 
 import org.apache.commons.httpclient.HttpMethod;
-import org.osaf.caldav4j.methods.CalDAVReportMethod;
 import org.osaf.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
 
 /**

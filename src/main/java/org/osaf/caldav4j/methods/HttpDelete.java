@@ -6,13 +6,13 @@ import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.util.UrlUtils;
 
 public class HttpDelete  extends org.apache.jackrabbit.webdav.client.methods.HttpDelete {
-	
+
     /**
      * Default Constructor to delete at location specified by uri.
      * @param uri The location to the resource to be deleted.
      */
-	public HttpDelete(String uri) {
-		super(UrlUtils.removeDoubleSlashes(uri));
+	public HttpDelete(URI uri) {
+		this(uri, null);
 	}
 
     /**
@@ -21,26 +21,26 @@ public class HttpDelete  extends org.apache.jackrabbit.webdav.client.methods.Htt
      * @param uri Location to the resource on the server
      * @param etag ETag of the resource.
      */
-    public HttpDelete(String uri, String etag){
-        super(UrlUtils.removeDoubleSlashes(uri));
+    public HttpDelete(URI uri, String etag){
+        super(uri);
         setETag(etag);
     }
 
-    
-	/**
-	 * @see org.apache.http.client.methods.HttpRequestBase#setURI(java.net.URI)
-	 */
-	public void setPath(String path) {
-    	super.setURI(URI.create(UrlUtils.removeDoubleSlashes(path)));
-    }
+	public HttpDelete(String uri) {
+		this(URI.create(uri));
+	}
 
-    /**
+	public HttpDelete(String uri, String etag) {
+		this(URI.create(uri), etag);
+	}
+
+	/**
      * Sets the Request ETag for the DELETE method.
      * @param etag
      */
     public void setETag(String etag){
         if(etag != null && !etag.equals(""))
-            super.setHeader(CalDAVConstants.HEADER_IF_MATCH, etag);
+            setHeader(CalDAVConstants.HEADER_IF_MATCH, etag);
     }
 	
 	

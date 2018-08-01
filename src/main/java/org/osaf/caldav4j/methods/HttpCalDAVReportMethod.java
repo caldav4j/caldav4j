@@ -38,31 +38,9 @@ import net.fortuna.ical4j.model.Calendar;
 public class HttpCalDAVReportMethod extends BaseDavRequest {
 
 	private static final Logger log = LoggerFactory.getLogger(HttpCalDAVReportMethod.class);
-	
-    private boolean isCalendarResponse = false;
     private boolean isDeep = false;
     private Calendar calendarResponse = null;
     private CalDAVReportRequest reportRequest = null;
-    private CalendarBuilder calendarBuilder = null;
-	
-    /**
-     * Default Constructor.
-     * @param uri URI to the calendar resource.
-     */
-    public HttpCalDAVReportMethod(String uri) {
-        super(URI.create(uri));
-    }
-    
-    
-    /**
-     * Depth is set to 1, by default.
-     * @param uri URI to the calendar resource.
-     * @param reportRequest Report for the Request to handle.
-     * @throws IOException
-     */
-    public HttpCalDAVReportMethod(String uri, CalDAVReportRequest reportRequest) throws IOException {
-        this(uri, reportRequest, CalDAVConstants.DEPTH_1);
-    }
     
     /**
     *
@@ -71,12 +49,43 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
     * @param depth Depth of the Report Request
     * @throws IOException
     */
-   public HttpCalDAVReportMethod(String uri, CalDAVReportRequest reportRequest, int depth) throws IOException {
-       super(URI.create(uri));
+   public HttpCalDAVReportMethod(URI uri, CalDAVReportRequest reportRequest, int depth) throws IOException {
+       super(uri);
        this.reportRequest = reportRequest;
        processReportRequest(reportRequest);
        setDepth(depth);
    }
+
+	/**
+	 * Depth is set to 1, by default.
+	 * @param uri URI to the calendar resource.
+	 * @param reportRequest Report for the Request to handle.
+	 * @throws IOException
+	 */
+	public HttpCalDAVReportMethod(URI uri, CalDAVReportRequest reportRequest) throws IOException {
+		this(uri, reportRequest, CalDAVConstants.DEPTH_1);
+	}
+
+    /**
+     *
+     * @param uri URI to the calendar resource.
+     * @param reportRequest Report for the Request to handle.
+     * @param depth Depth of the Report Request
+     * @throws IOException
+     */
+    public HttpCalDAVReportMethod(String uri, CalDAVReportRequest reportRequest, int depth) throws IOException {
+        this(URI.create(uri), reportRequest, depth);
+    }
+
+	/**
+	 * Depth is set to 1, by default.
+	 * @param uri URI to the calendar resource.
+	 * @param reportRequest Report for the Request to handle.
+	 * @throws IOException
+	 */
+	public HttpCalDAVReportMethod(String uri, CalDAVReportRequest reportRequest) throws IOException {
+		this(uri, reportRequest, CalDAVConstants.DEPTH_1);
+	}
    
    @Override
    public String getMethod() {
@@ -89,17 +98,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
     * @throws IOException
     */
    private void processReportRequest(CalDAVReportRequest reportRequest) throws IOException {
-	   super.setEntity(XmlEntity.create(reportRequest));	   
-   }
-   
-   /**
-    * Set the current request as the Report specified.
-    * @param reportRequest Report to set.
-    * @throws IOException
-    */
-   public void setReportRequest(CalDAVReportRequest reportRequest) throws IOException {
-       this.reportRequest = reportRequest;
-       processReportRequest(reportRequest);
+	   setEntity(XmlEntity.create(reportRequest));
    }
 
    /**
@@ -112,23 +111,6 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
        setHeader(dh.getHeaderName(),dh.getHeaderValue());
    }
 
-   /**
-    * Set the Calendar Builder used to create the calendar.
-    * @param calendarBuilder
-    */
-   public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
-       this.calendarBuilder = calendarBuilder;
-   }
-
-   /**
-    * Retrieve the current Calendar Builder.
-    * @return
-    */
-   public CalendarBuilder getCalendarBuilder() {
-       return this.calendarBuilder;
-   }
-
-
    @Override
    public boolean succeeded(HttpResponse response) {
 	   int statusCode = response.getStatusLine().getStatusCode();
@@ -136,25 +118,6 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
            return statusCode == CaldavStatus.SC_MULTI_STATUS;
        } else {
            return statusCode == CaldavStatus.SC_OK || statusCode == CaldavStatus.SC_MULTI_STATUS;
-       }
-   }   
-
-   
-   /**
-    * Check if the Response contains Calendar or not.
-    * @param response
-    */
-   protected void processResponseHeaders(HttpResponse response) {
-       Header header = response.getFirstHeader(CalDAVConstants.HEADER_CONTENT_TYPE);
-
-       //Note: Sometimes this does not happen. To take that into account.
-       if(header != null) {
-           for (HeaderElement element : header.getElements()) {
-               if (element.getName().equals(CalDAVConstants.CONTENT_TYPE_CALENDAR)) {
-                   isCalendarResponse = true;
-                   log.info("Response Content-Type: text/calendar");
-               }
-           }
        }
    }
 
@@ -164,26 +127,6 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
     */
    public Calendar getResponseBodyAsCalendar(){
        return this.calendarResponse;
-   }
-
-   /**
-    * Builds the Calendar from the stream provided.
-    * If the calendarBuilder was not specified, then this will not work correctly.
-    * @param response
-    */
-   protected void processResponseBody(HttpResponse response) {
-	   int statusCode = response.getStatusLine().getStatusCode();
-       if (statusCode == CaldavStatus.SC_OK && isCalendarResponse){
-           try {
-               InputStream stream = response.getEntity().getContent(); //TODO !A! 
-               calendarResponse = calendarBuilder.build(stream);
-           } catch (Exception e) {
-               e.printStackTrace();                                    //TODO !A! Do we really want this in here?                                    
-               log.error("Error while parsing Calendar response: " + e);
-           }
-       }
-       else 
-           EntityUtils.consumeQuietly(response.getEntity()); //TODO !A! HttpClient 3 version called super.processResponseBody(). Not applicable here.
    }
 
    /**
@@ -249,6 +192,4 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
        log.warn("No Response found for uri: {}", uri);
        return null;
    }
-
-    
 }

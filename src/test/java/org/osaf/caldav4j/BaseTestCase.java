@@ -29,7 +29,6 @@ import org.osaf.caldav4j.dialect.CalDavDialect;
 import org.osaf.caldav4j.dialect.ChandlerCalDavDialect;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
-import org.osaf.caldav4j.methods.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

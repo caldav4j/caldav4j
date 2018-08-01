@@ -27,17 +27,30 @@ import org.slf4j.LoggerFactory;
 public class HttpPropFindMethod extends HttpPropfind {
 	
 	private static final Logger log = LoggerFactory.getLogger(HttpPropFindMethod.class);
-	
-    /**
+
+
+	public HttpPropFindMethod(URI uri, int propfindType, DavPropertyNameSet names, int depth) throws IOException {
+		super(uri, propfindType, names, depth);
+	}
+
+	public HttpPropFindMethod(URI uri, DavPropertyNameSet names, int depth) throws IOException {
+		super(uri, names, depth);
+	}
+
+	public HttpPropFindMethod(URI uri, int propfindType, int depth) throws IOException {
+		super(uri, propfindType, depth);
+	}
+
+	/**
      * Constructor, which takes in the Properties
      *
-     * @param path Path of the principal
-     * @param propNameSet Properties to make the Propfind, call for.
+     * @param uri Path of the principal
+     * @param names Properties to make the Propfind, call for.
      * @param depth Depth of the Propfind Method.
      * @throws IOException
      */
-    public HttpPropFindMethod(String path, DavPropertyNameSet propNameSet, int depth) throws IOException {
-        super(path, propNameSet, depth);
+    public HttpPropFindMethod(String uri, DavPropertyNameSet names, int depth) throws IOException {
+        super(uri, names, depth);
     }
     
     /**
@@ -47,19 +60,22 @@ public class HttpPropFindMethod extends HttpPropfind {
      * @param depth Depth of the Propfind Method.
      * @throws IOException
      */
-    public HttpPropFindMethod(String uri, int propfindType, DavPropertyNameSet propNameSet,
-                          int depth) throws IOException {
+    public HttpPropFindMethod(String uri, int propfindType, DavPropertyNameSet propNameSet, int depth) throws IOException {
         super(uri, propfindType, propNameSet, depth);
     }
+
+	public HttpPropFindMethod(String uri, int propfindType, int depth) throws IOException {
+		super(uri, propfindType, depth);
+	}
     
     /**
      * return the AclProperty relative to a given url
-     * @author rpolli
+     * @author rpolli, ankushm
      * @param urlPath
      * @return AclProperty xml response or null if missing
      */
     public AclProperty getAcl(HttpResponse httpResponse,String urlPath) {
-        DavProperty p = getDavProperty(httpResponse,urlPath, CalDAVConstants.DNAME_ACL);
+        DavProperty p = getDavProperty(httpResponse, urlPath, CalDAVConstants.DNAME_ACL);
         if(p != null) {
             try {
                 return AclProperty.createFromXml(p.toXml(DomUtil.createDocument()));
@@ -104,8 +120,6 @@ public class HttpPropFindMethod extends HttpPropfind {
      * @param urlPath Location of the CalendarResource
      * @param property DavPropertyName of the property whose value is to be returned.
      * @return DavProperty
-     *
-     *
      */
     public DavProperty getDavProperty(HttpResponse httpResponse, String urlPath, DavPropertyName property) {
         try {

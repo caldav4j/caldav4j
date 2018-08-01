@@ -17,15 +17,9 @@ import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.osaf.caldav4j.CalDAV4JException;
 import org.osaf.caldav4j.CaldavCredential;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
-import org.osaf.caldav4j.methods.HttpClient;
-import org.osaf.caldav4j.methods.MkCalendarMethod;
-import org.osaf.caldav4j.methods.PutMethod;
 
 
-
-
-
-	/**
+/**
 	 * Base class for CalDAV4j connection,
 	 * .TODO use SSL?
 	 * FIXME it shouldn't be possibile to change serverhost/port:

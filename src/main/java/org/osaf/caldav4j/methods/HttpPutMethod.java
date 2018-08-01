@@ -20,6 +20,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.osaf.caldav4j.CalDAVConstants;
+import org.osaf.caldav4j.model.request.CalendarRequest;
 import org.osaf.caldav4j.util.UrlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,197 +33,66 @@ import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 
+/**
+ * Extended HttpPut class to allow easy addition of the Calendar.
+ *
+ * @see HttpPut
+ */
 public class HttpPutMethod extends HttpPut {
 
 	Logger log = LoggerFactory.getLogger(HttpPutMethod.class);
-	
-    private Calendar calendar = null; 
-    private String procID = CalDAVConstants.PROC_ID_DEFAULT;
-    private CalendarOutputter calendarOutputter = null;
-    private Set<String> etags = new HashSet<String>();
-    private boolean ifMatch = false;
-    private boolean ifNoneMatch = false;
-    private boolean allEtags = false;
-    private Charset charset = null;
-    
-    public void setCharset(Charset charset) {
-		this.charset = charset;
+
+	public HttpPutMethod(URI uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+		super(uri);
+		addRequestHeaders(calendarRequest);
+		generateRequestBody(calendarRequest, calendarOutputter);
 	}
-    public Charset getCharset() {
-    	if (charset == null) {
-    		charset = Charset.forName("UTF-8");
-    	}
-		return charset;
+
+	public HttpPutMethod(String uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+		this(URI.create(uri), calendarRequest, calendarOutputter);
 	}
-    
-    public HttpPutMethod (){
-        super();
-    }
 
-    @Override
-    /**
-     * @see HttpMethodBase#getName()
-     */
-    public String getMethod() {
-        return CalDAVConstants.METHOD_PUT;
-    }
-    
-    /**
-     * The set of eTags that will be used in "if-none-match" or "if-match" if the
-     * ifMatch or ifNoneMatch properties are set
-     * @return
-     */
-    public Set getEtags() {
-        return etags;
-    }
+	/**
+	 * Generates the calendar request body, and sets the entity.
+	 */
+	protected void generateRequestBody(CalendarRequest calendarRequest, CalendarOutputter calendarOutputter)  {
+		Calendar calendar = calendarRequest.getCalendar();
+		if ( calendar != null){
+			StringWriter writer = new StringWriter();
+			try{
+				calendarOutputter.output(calendar, writer);
 
-    public void setEtags(Set<String> etags) {
-        this.etags.addAll(etags);
-    }
-    
-    /**
-     * Add's the etag provided to the "if-none-match" or "if-match" header.
-     * 
-     * Note - You MUST provide a quoted string!
-     * @param etag
-     */
-    public void addEtag(String etag){
-        etags.add(etag);
-    }
-    
-    
-    public void removeEtag(String etag){
-        etags.remove(etag);
-    }
+				ContentType ct = ContentType.create(CalDAVConstants.CONTENT_TYPE_CALENDAR, calendarRequest.getCharset());
 
-    /**
-     * If true the "if-match" conditional header is used with the etags set in the 
-     * etags property.
-     * @return
-     */
-    public boolean isIfMatch() {
-        return ifMatch;
-    }
+				setEntity(new StringEntity(writer.toString(), ct));
+			} catch (UnsupportedCharsetException e) {
+				log.error("Unsupported encoding in event" + writer.toString());
+				throw new RuntimeException("Problem generating calendar. ", e);
+			} catch (Exception e){
+				log.error("Problem generating calendar: ", e);
+				throw new RuntimeException("Problem generating calendar. ", e);
+			}
+		}
+	}
 
-    public void setIfMatch(boolean ifMatch) {
-        this.ifMatch = ifMatch;
-    }
-
-    /**
-     * If true the "if-none-match" conditional header is used with the etags set in the 
-     * etags property.
-     * @return
-     */
-    public boolean isIfNoneMatch() {
-        return ifNoneMatch;
-    }
-
-    public void setIfNoneMatch(boolean ifNoneMatch) {
-        this.ifNoneMatch = ifNoneMatch;
-    }
-
-    public boolean isAllEtags() {
-        return allEtags;
-    }
-
-    public void setAllEtags(boolean allEtags) {
-        this.allEtags = allEtags;
-    }
-
-    public void setRequestBody(Calendar calendar){
-        this.calendar = calendar;
-    }
-    
-    public void setRequestBody(VEvent vevent, VTimeZone vtimeZone){
-        Calendar cal = new Calendar();
-        cal.getProperties().add(new ProdId("-//Open Source Applications Foundation//NONSGML Scooby Server//EN"));
-        cal.getProperties().add(Version.VERSION_2_0);
-        cal.getProperties().add(CalScale.GREGORIAN);
-        cal.getComponents().add(vevent);
-        if (vtimeZone != null){
-            cal.getComponents().add(vtimeZone);
-        }
-        this.calendar = cal;
-    }
-    
-    public void setRequestBody(VEvent vevent){
-        setRequestBody(vevent, null);
-    }
-    
-    /**
-     * The ProcID to use when creating a new VCALENDAR component
-     * @return
-     */
-    public String getProcID() {
-        return procID;
-    }
-    
-    /**
-     * Sets the ProcID to use when creating a new VCALENDAR component
-     * @param procID
-     */
-    public void setProcID(String procID) {
-        this.procID = procID;
-    }
-
-    public CalendarOutputter getCalendarOutputter() {
-        return calendarOutputter;
-    }
-
-    public void setCalendarOutputter(CalendarOutputter calendarOutputter) {
-        this.calendarOutputter = calendarOutputter;
-    }
-
-    /** In httpclient 3.1 this was a protected method which was called automatically. 
-     * In httpclient 4 this method must be called explicitly to set the request entity. */
-    public void generateRequestBody()  {
-        if (calendar != null){
-            StringWriter writer = new StringWriter();
-            try{
-                calendarOutputter.output(calendar, writer);
-                
-                ContentType ct = ContentType.create(CalDAVConstants.CONTENT_TYPE_CALENDAR,getCharset());
-                setEntity(new StringEntity(writer.toString(),ct));
-            } catch (UnsupportedCharsetException e) {
-            	 log.error("Unsupported encoding in event" + writer.toString());
-            	 throw new RuntimeException("Problem generating calendar. ", e);
-            } catch (Exception e){
-                log.error("Problem generating calendar: ", e);
-                throw new RuntimeException("Problem generating calendar. ", e);
-            }
-        }
-    }
-    
-    /** For httpclient 3.1 this was a protected method that was called automatically before the request 
-     *  was executed. With httpclient 4 this method needs to be called explicitly.  */
-    public void addRequestHeaders() {    
-        if (ifMatch || ifNoneMatch){
-            String name = ifMatch ? CalDAVConstants.HEADER_IF_MATCH : CalDAVConstants.HEADER_IF_NONE_MATCH;
-            String value = null;
-            if (allEtags){
-                value = "*";
-            } else {
-                StringBuilder buf = new StringBuilder();
-                int x = 0;
-                for (Iterator i = etags.iterator();i.hasNext();){
-                    if (x > 0){
-                        buf.append(", ");
-                    }
-                    String etag = (String)i.next();
-                    buf.append(etag);
-                    x++;
-                }
-                value = buf.toString();
-            }
-            setHeader(name, value);
-        }
-    }
-
-    /**
-     * @see org.apache.commons.httpclient.HttpMethodBase#setPath(String)
-     */
-    public void setPath(String path) {
-    	super.setURI(URI.create(UrlUtils.removeDoubleSlashes(path)));
-    }
-    
+	/**
+	 * Adds the respective Request headers based on the provided flags.
+	 */
+	protected void addRequestHeaders(CalendarRequest calendarRequest) {
+		boolean ifMatch = calendarRequest.isIfMatch(), ifNoneMatch = calendarRequest.isIfNoneMatch();
+		if (ifMatch || ifNoneMatch){
+			String name = ifMatch ? CalDAVConstants.HEADER_IF_MATCH : CalDAVConstants.HEADER_IF_NONE_MATCH;
+			String value = null;
+			if (calendarRequest.isAllEtags()){
+				value = "*";
+			} else {
+				StringBuilder buf = new StringBuilder();
+				for (String etag : calendarRequest.getEtags()){
+					buf.append(etag);
+				}
+				value = buf.toString();
+			}
+			addHeader(name, value);
+		}
+	}
 }

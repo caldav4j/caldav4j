@@ -32,8 +32,6 @@ import org.osaf.caldav4j.CaldavCredential;
 import org.osaf.caldav4j.ResourceNotFoundException;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.GetMethod;
-import org.osaf.caldav4j.methods.HttpClient;
-import org.osaf.caldav4j.methods.MkCalendarMethod;
 import org.osaf.caldav4j.util.CalendarComparator;
 import org.osaf.caldav4j.util.ICalendarUtils;
 import org.osaf.caldav4j.util.CaldavStatus;;

@@ -16,8 +16,6 @@ import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.credential.GCaldavCredential;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.GetMethod;
-import org.osaf.caldav4j.methods.HttpClient;
-import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 import org.slf4j.Logger;

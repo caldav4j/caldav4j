@@ -36,6 +36,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
@@ -49,10 +50,11 @@ import org.osaf.caldav4j.exceptions.ResourceNotFoundException;
 import org.osaf.caldav4j.exceptions.ResourceNotFoundException.IdentifierType;
 import org.osaf.caldav4j.exceptions.ResourceOutOfDateException;
 import org.osaf.caldav4j.methods.*;
-import org.osaf.caldav4j.model.request.*;
+import org.osaf.caldav4j.model.request.CalDAVReportRequest;
+import org.osaf.caldav4j.model.request.CalendarData;
+import org.osaf.caldav4j.model.request.CalendarMultiget;
+import org.osaf.caldav4j.model.request.CalendarQuery;
 import org.osaf.caldav4j.model.response.CalendarDataProperty;
-import org.osaf.caldav4j.model.response.TicketDiscoveryProperty;
-import org.osaf.caldav4j.model.response.TicketResponse;
 import org.osaf.caldav4j.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -353,7 +355,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param c Calendar to Add
 	 * @throws CalDAV4JException on error
 	 */
-	public void add(HttpClient httpClient, Calendar c) 
+	public void add(HttpClient httpClient, Calendar c)
 	throws CalDAV4JException {
 
 		//
@@ -434,142 +436,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				stripHost(resource.getResourceMetadata().getHref()),
 				resource.getResourceMetadata().getETag());
 	}
-	/**
-	 * Creates a ticket for the speccified resource and returns the ticket id.
-	 * 
-	 * @param httpClient the httpClient which will make the request
-	 * @param relativePath the path, relative to the collection path for 
-	 *                     which to grant the ticket on
-	 * @param visits Max Visits on Ticket
-	 * @param timeout Timeout of ticket
-	 * @param read Read permission
-	 * @param write Write permission
-	 * @return The id of the created ticket
-	 * @throws CalDAV4JException on error
-	 *             Is thrown if the execution of the MkTicketMethod fails
-	 * @deprecated Will be removed along with other Ticket related methods
-	 */
-	public String createTicket(HttpClient httpClient, String relativePath,
-			Integer visits, Integer timeout, boolean read, boolean write)
-	throws CalDAV4JException {
-		TicketRequest ticketRequest = new TicketRequest();
-		ticketRequest.setVisits(visits);
-		ticketRequest.setTimeout(timeout);
-		ticketRequest.setRead(read);
-		ticketRequest.setWrite(write);
-
-		// Make the ticket
-		MkTicketMethod mkTicketMethod = methodFactory.createMkTicketMethod(getAbsolutePath(relativePath), ticketRequest);
-		try {
-			httpClient.executeMethod(hostConfiguration, mkTicketMethod);
-			int statusCode = mkTicketMethod.getStatusCode();
-			if (statusCode != CaldavStatus.SC_OK) {
-				throw new CalDAV4JException("Create Ticket Failed with Status: "
-						+ statusCode + " and body: \n"
-						+ mkTicketMethod.getResponseBodyAsString());
-			}
-		} catch (Exception e) {
-			throw new CalDAV4JException("Trouble executing MKTicket", e);
-		} finally {
-			mkTicketMethod.releaseConnection();
-		}
-
-		TicketResponse ticketResponse = null;
-
-		try {
-			ticketResponse = mkTicketMethod.getResponseBodyAsTicketResponse();
-		} catch (Exception e) {
-			throw new CalDAV4JException("Trouble handling MkTicket Response", e);
-		}
-
-		return ticketResponse.getID();
-
-	}
-
-	/**
-	 * Deletes the specified ticket on the specified resource.
-	 * 
-	 * @param httpClient the httpClient which will make the request
-	 * @param relativePath the path, relative to the collection path for
-	 *                     which to revoke the ticket 
-	 * @param ticketId the ticketID which to revoke
-	 * @throws CalDAV4JException on error
-	 *             Is thrown if the execution of the DelTicketMethod fails
-	 * @deprecated Will be removed along with other Ticket related methods
-	 */
-	public void deleteTicket(HttpClient httpClient, String relativePath, String ticketId)
-	throws CalDAV4JException {
-		DelTicketMethod delTicketMethod = methodFactory.createDelTicketMethod(getAbsolutePath(relativePath), ticketId);
-
-		try {
-			httpClient.executeMethod(hostConfiguration, delTicketMethod);
-			int statusCode = delTicketMethod.getStatusCode();
-			if (statusCode != CaldavStatus.SC_NO_CONTENT) {
-				throw new CalDAV4JException(
-						"Delete Ticket Failed with Status: " + statusCode
-						+ " and body: \n"
-						+ delTicketMethod.getResponseBodyAsString());
-			}
-		} catch (Exception e) {
-			throw new CalDAV4JException("Trouble executing DelTicket", e);
-		} finally {
-			delTicketMethod.releaseConnection();
-		}
-
-	}
-
-	/**
-	 * Returns all the ticket ID's from all tickets the requesting user has
-	 * permision to view on a resource.
-	 * 
-	 * @param httpClient the httpClient which will make the request
-	 * @param relativePath the path, relative to the collection path for which
-	 *                     to get the tickets
-	 * @return List of Ticket ID's
-	 * @throws CalDAV4JException on error
-	 * @deprecated Will be removed along with other Ticket related methods
-	 */
-	public List<String> getTicketsIDs(HttpClient httpClient, String relativePath)
-            throws CalDAV4JException {
-
-		PropFindMethod propFindMethod = null;
-
-        List<String> ticketIDList = new ArrayList<String>();
-
-        try{
-            DavPropertyNameSet propertyNames = new DavPropertyNameSet();
-            propertyNames.add(CalDAVConstants.DNAME_TICKETDISCOVERY);
-            propertyNames.add("owner", CalDAVConstants.NAMESPACE_WEBDAV);
-
-            propFindMethod = methodFactory.createPropFindMethod(getAbsolutePath(relativePath),
-                    propertyNames, CalDAVConstants.DEPTH_0);
-            httpClient.executeMethod(hostConfiguration, propFindMethod);
-
-            int statusCode = propFindMethod.getStatusCode();
-
-            if (statusCode != CaldavStatus.SC_MULTI_STATUS) {
-                throw new CalDAV4JException("PropFind Failed with Status: "
-                        + statusCode + " and body: \n"
-                        + propFindMethod.getResponseBodyAsString());
-            }
-
-            String href = getHref(getAbsolutePath(relativePath));
-            MultiStatusResponse responses = propFindMethod.getResponseBodyAsMultiStatusResponse(href);
-
-            TicketDiscoveryProperty ticketDiscoveryProp = new TicketDiscoveryProperty(responses);
-            ticketIDList.addAll(ticketDiscoveryProp.getTicketIDs());
-
-
-        } catch (Exception e){
-            log.error("Unable to perform PROPFIND Method:" + httpClient.getHostConfiguration().getHost());
-        } finally {
-            if(propFindMethod != null)
-                propFindMethod.releaseConnection();
-        }
-
-        return ticketIDList;
-	}
-
 
 	/**
 	 * Get a CalDAVResource by UID
@@ -1651,146 +1517,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				resource.getResourceMetadata().getETag());
 	}
 
-	/**
-	 * Creates a ticket for the specified resource and returns the ticket id.
-	 * 
-	 * @param httpClient
-	 *            the httpClient which will make the request
-	 * @param relativePath
-	 *            the path, relative to the collection path for which to grant the
-	 *            ticket on
-	 * @param visits
-	 * @param timeout
-	 * @param read
-	 * @param write
-	 * @return The id of the created ticket
-	 * @throws CalDAV4JException
-	 *             Is thrown if the execution of the MkTicketMethod fails
-	 */
-	public String createTicket(org.apache.http.client.HttpClient httpClient, String relativePath, Integer visits,
-			Integer timeout, boolean read, boolean write) throws CalDAV4JException {
-		TicketRequest ticketRequest = new TicketRequest();
-		ticketRequest.setVisits(visits);
-		ticketRequest.setTimeout(timeout);
-		ticketRequest.setRead(read);
-		ticketRequest.setWrite(write);
-
-		HttpResponse response = null;
-
-		// Make the ticket
-		HttpMkTicketMethod mkTicketMethod = methodFactory.createHttpMkTicketMethod(getAbsolutePath(relativePath),
-				ticketRequest);
-		try {
-			response = httpClient.execute(httpHostConfiguration, mkTicketMethod);
-
-			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode != CaldavStatus.SC_OK) {
-				throw new CalDAV4JException(
-						"Create Ticket Failed with Status: " + statusCode 
-						+ " and body: \n" + getResponseBodyAsString(response));
-			}
-		} catch (Exception e) {
-			throw new CalDAV4JException("Trouble executing MKTicket", e);
-		} finally {
-			mkTicketMethod.releaseConnection();
-		}
-
-		TicketResponse ticketResponse = null;
-
-		try {
-			ticketResponse = mkTicketMethod.getResponseBodyAsTicketResponse(response);
-		} catch (Exception e) {
-			throw new CalDAV4JException("Trouble handling MkTicket Response", e);
-		}
-
-		return ticketResponse.getID();
-
-	}
-	
-	/**
-	 * Deletes the specified ticket on the specified resource.
-	 * 
-	 * @param httpClient
-	 *            the httpClient which will make the request
-	 * @param relativePath
-	 *            the path, relative to the collection path for which to revoke the
-	 *            ticket
-	 * @param ticketId
-	 *            the ticketID which to revoke
-	 * @throws CalDAV4JException
-	 *             Is thrown if the execution of the DelTicketMethod fails
-	 */
-	public void deleteTicket(org.apache.http.client.HttpClient httpClient, String relativePath, String ticketId)
-			throws CalDAV4JException {
-		HttpDelTicketMethod delTicketMethod = methodFactory.createHttpDelTicketMethod(getAbsolutePath(relativePath),
-				ticketId);
-
-		try {
-			HttpResponse response = httpClient.execute(httpHostConfiguration, delTicketMethod);
-			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode != CaldavStatus.SC_NO_CONTENT) {
-				throw new CalDAV4JException("Delete Ticket Failed with Status: " + statusCode 
-						+ " and body: \n" 
-						+ getResponseBodyAsString(response));
-			}
-		} catch (Exception e) {
-			throw new CalDAV4JException("Trouble executing DelTicket", e);
-		} finally {
-			delTicketMethod.releaseConnection();
-		}
-
-	}	
-	
-	/**
-	 * Returns all the ticket ID's from all tickets the requesting user has
-	 * permision to view on a resource.
-	 * 
-	 * @param httpClient
-	 *            the httpClient which will make the request
-	 * @param relativePath
-	 *            the path, relative to the collection path for which to get the
-	 *            tickets
-	 * @return
-	 * @throws CalDAV4JException
-	 */
-	public List<String> getTicketsIDs(org.apache.http.client.HttpClient httpClient, String relativePath) throws CalDAV4JException {
-
-		HttpPropFindMethod propFindMethod = null;
-
-		List<String> ticketIDList = new ArrayList<String>();
-
-		try {
-			DavPropertyNameSet propertyNames = new DavPropertyNameSet();
-			propertyNames.add(CalDAVConstants.DNAME_TICKETDISCOVERY);
-			propertyNames.add("owner", CalDAVConstants.NAMESPACE_WEBDAV);
-
-			propFindMethod = methodFactory.createHttpPropFindMethod(getAbsolutePath(relativePath), propertyNames,
-					CalDAVConstants.DEPTH_0);
-			HttpResponse response = httpClient.execute(httpHostConfiguration, propFindMethod);
-
-			int statusCode = response.getStatusLine().getStatusCode();
-
-			if (statusCode != CaldavStatus.SC_MULTI_STATUS) {
-				throw new CalDAV4JException("PropFind Failed with Status: " + statusCode + " and body: \n"
-						+ getResponseBodyAsString(response));
-			}
-
-			String href = getHref(getAbsolutePath(relativePath));
-			MultiStatusResponse responses = propFindMethod.getResponseBodyAsMultiStatusResponse(response,href);
-
-			TicketDiscoveryProperty ticketDiscoveryProp = new TicketDiscoveryProperty(responses);
-			ticketIDList.addAll(ticketDiscoveryProp.getTicketIDs());
-
-		} catch (Exception e) {
-			log.error("Unable to perform PROPFIND Method: "+httpHostConfiguration.getHostName());			
-		} finally {
-			if (propFindMethod != null)
-				propFindMethod.releaseConnection();
-		}
-
-		return ticketIDList;
-	}
-	
 	/**
 	 * get a CalDAVResource by UID it tries - first by a REPORT - then by GET /path
 	 * 

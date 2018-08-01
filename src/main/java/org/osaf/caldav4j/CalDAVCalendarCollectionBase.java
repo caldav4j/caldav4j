@@ -17,6 +17,9 @@ package org.osaf.caldav4j;
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.http.Header;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpOptions;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
 import org.osaf.caldav4j.cache.NoOpResourceCache;
@@ -24,10 +27,7 @@ import org.osaf.caldav4j.exceptions.BadStatusException;
 import org.osaf.caldav4j.exceptions.CacheException;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
-import org.osaf.caldav4j.methods.HttpClient;
 import org.osaf.caldav4j.methods.HttpPutMethod;
-import org.osaf.caldav4j.methods.OptionsMethod;
-import org.osaf.caldav4j.methods.PutMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.UrlUtils;
 
@@ -73,7 +73,7 @@ public abstract class CalDAVCalendarCollectionBase {
 	 * @return CalendarCollectionRoot
 	 */
 	public String getCalendarCollectionRoot() {
-		return UrlUtils.removeDoubleSlashes(calendarCollectionRoot);
+		return calendarCollectionRoot;
 	}
 
 	/**
@@ -209,8 +209,8 @@ public abstract class CalDAVCalendarCollectionBase {
 			throws CalDAV4JException {
 		List<Header> hList = new ArrayList<Header>();
 
-		OptionsMethod optMethod = new OptionsMethod(this.calendarCollectionRoot);
-		optMethod.setRequestHeader(new Header("Host",
+		HttpOptions optMethod = new HttpOptions(this.calendarCollectionRoot);
+		optMethod.setHeader(new Header("Host",
 				hostConfiguration.getHost()));
 
 		try {

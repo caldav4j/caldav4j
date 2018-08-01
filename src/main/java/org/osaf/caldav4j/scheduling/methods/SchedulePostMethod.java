@@ -10,7 +10,6 @@ import net.fortuna.ical4j.model.property.Organizer;
 import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
-import org.osaf.caldav4j.methods.PostMethod;
 
 import java.io.IOException;
 
