@@ -10,7 +10,6 @@ import org.osaf.caldav4j.credential.BedeworkCaldavCredential;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.dialect.BedeworkCalDavDialect;
 import org.osaf.caldav4j.dialect.CalDavDialect;
-import org.osaf.caldav4j.dialect.ChandlerCalDavDialect;
 import org.osaf.caldav4j.methods.CalDAVReportMethodTest;
 
 @RunWith(Parameterized.class)

@@ -15,7 +15,6 @@
  */
 package org.osaf.caldav4j.exceptions;
 
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 
@@ -43,14 +42,8 @@ public class BadStatusException extends CalDAV4JException {
     public BadStatusException(int status, String method, String path) {
     	super(String.format(MESSAGE,status,method,path));
     }
-    public BadStatusException(HttpMethod method) {
-    	super(String.format(MESSAGE,method.getStatusCode(),method.getName(),method.getPath()));
-    }
-    
-	//- - - - - - - - - - - - - Http4Client - - - - - - - - - - - - - - - - - - - -
-    
-    public BadStatusException(HttpRequestBase method, HttpResponse response) {
-    	super(String.format(MESSAGE,response.getStatusLine().getStatusCode(),method.getMethod(),method.getURI()));
+    public <T extends HttpRequestBase> BadStatusException(T method, HttpResponse response) {
+    	super(String.format(MESSAGE,response.getStatusLine().getStatusCode(), method.getMethod(), method.getURI()));
     }
     
     

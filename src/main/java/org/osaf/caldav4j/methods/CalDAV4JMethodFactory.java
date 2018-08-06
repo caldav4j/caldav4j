@@ -19,6 +19,7 @@ package org.osaf.caldav4j.methods;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
+import org.apache.jackrabbit.webdav.security.AclProperty;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.model.request.CalendarRequest;
@@ -160,6 +161,22 @@ public class CalDAV4JMethodFactory {
 	 */
 	public HttpGetMethod createGetMethod(URI uri) {
 		return new HttpGetMethod(uri, getCalendarBuilderInstance());
+	}
+
+	/**
+	 * Creates a {@link HttpGetMethod} instance.
+	 * @return the instance
+	 */
+	public HttpGetMethod createGetMethod(String uri) {
+		return new HttpGetMethod(uri, getCalendarBuilderInstance());
+	}
+
+	public HttpAclMethod createAclMethod(URI uri, AclProperty property) throws IOException {
+		return new HttpAclMethod(uri, property);
+	}
+
+	public HttpAclMethod createAclMethod(String uri, AclProperty property) throws IOException {
+		return new HttpAclMethod(uri, property);
 	}
 
 	/**

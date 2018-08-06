@@ -106,9 +106,11 @@ public interface CalDAVConstants {
 	//Jackrabbit Constants
 
 	// Depth
-	public static final int DEPTH_INFINITY = Integer.MAX_VALUE;
-	public static final int DEPTH_0 = 0;
-	public static final int DEPTH_1 = 1;
+	//Definitions taken from: https://stackoverflow.com/questions/31284615/meaning-of-depth-header-in-webdav-propfind-method
+
+	public static final int DEPTH_INFINITY = Integer.MAX_VALUE; // as 1 + properties of all files in sub-directories of the directory (recursively)
+	public static final int DEPTH_0 = 0; //Retrieve properties of the directory
+	public static final int DEPTH_1 = 1; //as 0 + properties of all files in the directory
 
 	//DavPropertyNames
 	public static final DavPropertyName DNAME_CALENDAR_DESCRIPTION = DavPropertyName.create(CALDAV_CALENDAR_DESCRIPTION, NAMESPACE_CALDAV);

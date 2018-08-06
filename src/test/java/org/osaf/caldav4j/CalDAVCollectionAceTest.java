@@ -55,10 +55,10 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		fixture.tearDown();
 	}
 
-	/**
+	/*
 	 * make a OPTIONS  requesto to caldav server
 	 * @throws Exception
-	 */
+	 *
 	@Test
 	public void testGetOptions() throws Exception {
 		List<Header> headerList = uncachedCollection.getOptions(fixture.getHttpClient());
@@ -76,7 +76,7 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 		if (uncachedCollection.allows(fixture.getHttpClient(), "NOOP", headerList)) {
 			log.info("NOOP exists");
 		}
-	}
+	}*/
 
 
 	//

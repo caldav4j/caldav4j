@@ -320,6 +320,21 @@ public class ICalendarUtils {
 	}
 
 	/**
+	 * Returns the "master" VEvent - one that does not have a RECURRENCE-ID
+	 *
+	 * @param calendar Calendar from where the Master Event is supposed to be retrieved
+	 * @param uid UID of the VEvent
+	 * @return VEvent that does not have Recurrence ID
+	 */
+	public static VTimeZone getTimezone(net.fortuna.ical4j.model.Calendar calendar){
+		ComponentList clist = calendar.getComponents().getComponents(Component.VTIMEZONE);
+		for (Object o : clist){
+			return (VTimeZone) o;
+		}
+		return null;
+	}
+
+	/**
 	 *  Returns the "master" Component - one that does not have a RECURRENCE-ID
 	 * @param calendar Calendar
 	 * @param uid UID of Component

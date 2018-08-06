@@ -101,6 +101,10 @@ public class CalendarRequest {
 		this.etags = etags;
 	}
 
+	public void addEtag(String etag) {
+		etags.add(etag);
+	}
+
 	public boolean isIfMatch() {
 		return ifMatch;
 	}

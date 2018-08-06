@@ -4,7 +4,6 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.sf.ehcache.*;
 import org.osaf.caldav4j.CalDAVResource;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.util.ICalendarUtils;
 import org.osaf.caldav4j.util.UrlUtils;
 
@@ -22,8 +21,20 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";
 	private static final String UID_TO_HREF_CACHE = "uidToHrefCache";
 
+	private static EhCacheResourceCache cache = null;
 
-	public EhCacheResourceCache() {
+	public static EhCacheResourceCache getCacheInstance() throws org.osaf.caldav4j.exceptions.CacheException {
+		if(cache == null)
+			cache = createSimpleCache();
+
+		return cache;
+	}
+
+	public static void destroyCacheInstance() {
+		removeSimpleCache();
+	}
+
+	private EhCacheResourceCache() {
 
 	}
 
@@ -32,10 +43,10 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	 * Create a Simple/Dummy cache
 	 *
 	 * @return a simple EhCacheResourceCache
-	 * @throws CalDAV4JException on error
+	 * @throws org.osaf.caldav4j.exceptions.CacheException on error
 	 */
-	public static EhCacheResourceCache createSimpleCache()
-			throws CalDAV4JException {
+	private static EhCacheResourceCache createSimpleCache()
+			throws org.osaf.caldav4j.exceptions.CacheException {
 
 		CacheManager cacheManager = CacheManager.create();
 		EhCacheResourceCache myCache = new EhCacheResourceCache();
@@ -57,7 +68,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	/**
 	 * Remove simple cache from the manager
 	 */
-	public static void removeSimpleCache() {
+	private static void removeSimpleCache() {
 		CacheManager cacheManager = CacheManager.create();
 		cacheManager.removeCache(UID_TO_HREF_CACHE);
 		cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
@@ -141,10 +152,10 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 		CalDAVResource resource = getResource(href);
 		if (resource != null) {
 			hrefToResourceCache.remove(href);
-		}
-		String uid = getEventUID(resource);
-		if (uid != null) {
-			uidToHrefCache.remove(uid);
+			String uid = getEventUID(resource);
+			if (uid != null) {
+				uidToHrefCache.remove(uid);
+			}
 		}
 	}
 

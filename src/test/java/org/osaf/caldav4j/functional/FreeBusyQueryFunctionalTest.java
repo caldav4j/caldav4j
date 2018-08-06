@@ -31,7 +31,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.dialect.CalDavDialect;
-import org.osaf.caldav4j.dialect.ChandlerCalDavDialect;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.model.request.FreeBusyQuery;
