@@ -17,15 +17,19 @@ package org.osaf.caldav4j;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.dialect.CalDavDialect;
+import org.osaf.caldav4j.dialect.ChandlerCalDavDialect;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 import org.slf4j.Logger;
@@ -70,42 +74,27 @@ public abstract class BaseTestCase   implements TestConstants {
 		this.caldavDialect = dialect;	
 	}
 	public HttpClient createHttpClient(){
-        HttpClient http = new HttpClient();
-
-        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.user, 
-        		caldavCredential.password);
-        http.getState().setCredentials(
-        		new AuthScope(this.getCalDAVServerHost(), this.getCalDAVServerPort()),
-        		credentials);
-        http.getParams().setAuthenticationPreemptive(true);
-        return http;
+		return createHttpClient(this.caldavCredential);
     }
 	public static HttpClient createHttpClient(CaldavCredential caldavCredential){
-        HttpClient http = new HttpClient();
+		// HttpClient 4 requires a Cred providers, to be added during creation of client
+		CredentialsProvider credsProvider = new BasicCredentialsProvider();
+		credsProvider.setCredentials(
+				AuthScope.ANY,
+				new UsernamePasswordCredentials(caldavCredential.user, caldavCredential.password));
 
-        Credentials credentials = new UsernamePasswordCredentials(caldavCredential.user, 
-        		caldavCredential.password);
-        http.getState().setCredentials(
-        		new AuthScope(caldavCredential.host, caldavCredential.port),
-        		credentials);
-        http.getParams().setAuthenticationPreemptive(true);
-        return http;
+		return HttpClients.custom()
+				.setDefaultCredentialsProvider(credsProvider).build();
     }
     public static HttpClient createHttpClientWithNoCredentials(){
+        return HttpClients.createDefault();
+    }
 
-        HttpClient http = new HttpClient();
-        http.getParams().setAuthenticationPreemptive(true);
-        return http;
+    public HttpHost createHostConfiguration(){
+        return createHostConfiguration(this.caldavCredential);
     }
-    public HostConfiguration createHostConfiguration(){
-        HostConfiguration hostConfig = new HostConfiguration();
-        hostConfig.setHost(getCalDAVServerHost(), getCalDAVServerPort(), getCalDavSeverProtocol());
-        return hostConfig;
-    }
-    public static HostConfiguration createHostConfiguration(CaldavCredential caldavCredential){
-        HostConfiguration hostConfig = new HostConfiguration();
-        hostConfig.setHost(caldavCredential.host,caldavCredential.port, caldavCredential.protocol);
-        return hostConfig;
+    public static HttpHost createHostConfiguration(CaldavCredential caldavCredential){
+        return new HttpHost(caldavCredential.host,caldavCredential.port, caldavCredential.protocol);
     }
     
 

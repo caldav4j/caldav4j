@@ -24,18 +24,19 @@ import net.fortuna.ical4j.model.component.VFreeBusy;
 import net.fortuna.ical4j.model.parameter.FbType;
 import net.fortuna.ical4j.model.property.FreeBusy;
 import net.fortuna.ical4j.model.property.Uid;
-import org.apache.commons.httpclient.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.dialect.CalDavDialect;
+import org.osaf.caldav4j.dialect.ChandlerCalDavDialect;
 import org.osaf.caldav4j.functional.support.CalDavFixture;
-import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
+import org.osaf.caldav4j.methods.HttpCalDAVReportMethod;
 import org.osaf.caldav4j.model.request.FreeBusyQuery;
 import org.osaf.caldav4j.model.request.TimeRange;
 import org.osaf.caldav4j.support.CalendarBuilder;
+import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 
 import java.io.IOException;
@@ -100,11 +101,11 @@ public class FreeBusyQueryFunctionalTest
 	@Test
 	public void freeBusyQueryReportWithEmptyCalendar() throws Exception
 	{
-		CalDAVReportMethod method = createFreeBusyQueryMethod("", "20000101T000000Z", "20000201T000000Z");
+		HttpCalDAVReportMethod method = createFreeBusyQueryMethod("", "20000101T000000Z", "20000201T000000Z");
 		
 		Calendar expected = createFreeBusyCalendar("20000101T000000Z", "20000201T000000Z", null);
 
-		Calendar actual = fixture.executeMethod(HttpStatus.SC_OK, method, false, calendarReportCallback());
+		Calendar actual = fixture.executeMethod(CaldavStatus.SC_OK, method, false, calendarReportCallback());
 		
 		assertEqualsIgnoringUidAndDtStampAndAttendee(expected, actual);
 	}
@@ -114,12 +115,12 @@ public class FreeBusyQueryFunctionalTest
 	{
 		fixture.putEvent("a.ics", createEvent("a","20000107T000000Z", "P1D", "a"));
 		
-		CalDAVReportMethod method = createFreeBusyQueryMethod("", "20000101T000000Z", "20000201T000000Z");
+		HttpCalDAVReportMethod method = createFreeBusyQueryMethod("", "20000101T000000Z", "20000201T000000Z");
 		
 		Calendar expected = createFreeBusyCalendar("20000101T000000Z", "20000201T000000Z",
 			"20000107T000000Z/20000108T000000Z");
 		
-		Calendar actual = fixture.executeMethod(HttpStatus.SC_OK, method, false, calendarReportCallback());
+		Calendar actual = fixture.executeMethod(CaldavStatus.SC_OK, method, false, calendarReportCallback());
 		
 		assertEqualsIgnoringUidAndDtStampAndAttendee(expected, actual);
 	}
@@ -134,13 +135,12 @@ public class FreeBusyQueryFunctionalTest
 		return  e;
 	}
 	
-	private CalDAVReportMethod createFreeBusyQueryMethod(String relativePath, String rangeStart,
+	private HttpCalDAVReportMethod createFreeBusyQueryMethod(String relativePath, String rangeStart,
 		String rangeEnd) throws ParseException, IOException {
 		FreeBusyQuery query = new FreeBusyQuery();
 		query.setTimeRange(new TimeRange(new DateTime(rangeStart), new DateTime(rangeEnd)));
-		CalDAVReportMethod method = new CalDAV4JMethodFactory().createCalDAVReportMethod(relativePath, query);
 		
-		return method;
+		return new HttpCalDAVReportMethod(relativePath, query);
 	}
 
 	private Calendar createFreeBusyCalendar(String start, String end, String busyPeriods) throws ParseException

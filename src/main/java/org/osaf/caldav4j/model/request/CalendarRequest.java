@@ -93,6 +93,14 @@ public class CalendarRequest {
 		this.calendar = calendar;
 	}
 
+	public void setCalendar(VEvent event, String prodId) {
+		setCalendar(event, null, prodId);
+	}
+
+	public void setCalendar(VEvent event) {
+		setCalendar(event, null, null);
+	}
+
 	public Set<String> getEtags() {
 		return etags;
 	}

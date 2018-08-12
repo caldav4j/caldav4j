@@ -1,13 +1,9 @@
 package org.osaf.caldav4j.methods;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.jackrabbit.webdav.DavConstants;
-import org.apache.jackrabbit.webdav.MultiStatusResponse;
-import org.apache.jackrabbit.webdav.client.methods.DeleteMethod;
-import org.apache.jackrabbit.webdav.client.methods.MkColMethod;
-import org.apache.jackrabbit.webdav.property.DavPropertyName;
-import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.jackrabbit.webdav.client.methods.HttpMkcol;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -19,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,14 +53,14 @@ public class MkCalendarTest extends BaseTestCase {
 
 	/**
 	 * this should return something like
-	 * @see http://tools.ietf.org/html/rfc4791#section-5.3.1.2
+	 * @see <a href='http://tools.ietf.org/html/rfc4791#section-5.3.1.2'>RFC4791 Section 5.3.1.2</a>
 	 */
 	@Test
 	public void testPrintMkCalendar() throws IOException {
-		MkCalendarMethod mk = new MkCalendarMethod(caldavCredential.home + caldavCredential.collection,
+		HttpMkCalendarMethod mk = new HttpMkCalendarMethod(caldavCredential.home + caldavCredential.collection,
 				"My display Name", "this is my default calendar", "en");
 
-		mk.getRequestEntity().writeRequest(System.out);
+		mk.getEntity().writeTo(System.out);
 
 	}
 
@@ -74,10 +70,10 @@ public class MkCalendarTest extends BaseTestCase {
 		String collectionPath = fixture.getCollectionPath();
 		addedItems.add("root1/");
 
-		MkColMethod mk = new MkColMethod(collectionPath + "root1/");
+		HttpMkcol mk = new HttpMkcol(collectionPath + "root1/");
 		fixture.executeMethod(CaldavStatus.SC_CREATED, mk, true, null, true);
 
-		mk.setPath(collectionPath + "root1/sub/");
+		mk.setURI(URI.create(collectionPath + "root1/sub/"));
 		fixture.executeMethod(CaldavStatus.SC_CREATED, mk, false, null, true );
 	}
 
@@ -85,15 +81,15 @@ public class MkCalendarTest extends BaseTestCase {
 	public void testCreateRemoveCalendarCollection() throws Exception{
 		String collectionPath = caldavCredential.home + caldavCredential.collection;
 
-		MkCalendarMethod mk = new MkCalendarMethod(collectionPath,
+		HttpMkCalendarMethod mk = new HttpMkCalendarMethod(collectionPath,
 				"My Display Name", "This is my Default Calendar",
 				"en");
 
 		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
-		http.executeMethod(hostConfig, mk);
+		HttpHost hostConfig = createHostConfiguration();
+		HttpResponse response = http.execute(hostConfig, mk);
 
-		int statusCode = mk.getStatusCode();        
+		int statusCode = response.getStatusLine().getStatusCode();
 		// whatever successful status code the caldav server returns,
 		//   the base collection is created, and should be removed.
 		//   TODO CaldavFixture may handle it automagically
@@ -115,25 +111,20 @@ public class MkCalendarTest extends BaseTestCase {
 		assertEquals("Status code for mk:", CaldavStatus.SC_CREATED, statusCode);
 
 		//now let's try and get it, make sure it's there
-		GetMethod get = fixture.getMethodFactory().createGetMethod();
-		get.setPath(collectionPath);
-		http.executeMethod(hostConfig, get);
-		statusCode = get.getStatusCode();
+		HttpGetMethod get = fixture.getMethodFactory().createGetMethod(collectionPath);
+
+		statusCode = http.execute(hostConfig, get).getStatusLine().getStatusCode();
 		assertEquals("Status code for get:", CaldavStatus.SC_OK, statusCode);
 
-		DeleteMethod delete = new DeleteMethod(collectionPath);
+		HttpDeleteMethod delete = new HttpDeleteMethod(collectionPath);
 
-		http.executeMethod(hostConfig, delete);
-
-		statusCode = delete.getStatusCode();
+		statusCode = http.execute(hostConfig, delete).getStatusLine().getStatusCode();
 		assertEquals("Status code for delete:", CaldavStatus.SC_NO_CONTENT, statusCode);
 		addedItems.remove("");
 
 		//Now make sure that it goes away
-		get = fixture.getMethodFactory().createGetMethod();
-		get.setPath( collectionPath);
-		http.executeMethod(hostConfig, get);
-		statusCode = get.getStatusCode();
+		get = fixture.getMethodFactory().createGetMethod(collectionPath);
+		statusCode = http.execute(hostConfig, get).getStatusLine().getStatusCode();
 		assertEquals("Status code for get:", CaldavStatus.SC_NOT_FOUND, statusCode);
 	}
 }

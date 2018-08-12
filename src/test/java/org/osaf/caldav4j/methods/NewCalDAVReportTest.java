@@ -4,7 +4,9 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.DateTime;
-import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -16,7 +18,6 @@ import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
 import org.osaf.caldav4j.model.request.*;
 import org.osaf.caldav4j.model.response.CalendarDataProperty;
@@ -111,12 +112,12 @@ public class NewCalDAVReportTest extends BaseTestCase{
     }
 
     @Test
-    public void queryPartialCalendar() throws CalDAV4JException, IOException, TransformerException, ParserConfigurationException, ParseException, DavException {
+    public void queryPartialCalendar() throws IOException, TransformerException, ParserConfigurationException, ParseException, DavException {
         String collectionPath = fixture.getCollectionPath();
         Calendar calendar = null;
 
         HttpClient http = fixture.getHttpClient();
-        HostConfiguration hostConfig = http.getHostConfiguration();
+        HttpHost hostConfig = fixture.getHostConfig();
 
         CalendarQuery calendarQuery = new CalendarQuery();
         CalendarData calendarData = new CalendarData(CalendarData.EXPAND, new DateTime("20060103T000000Z"), new DateTime("20060105T230000Z"), null);//new Comp("VCALENDAR"));
@@ -127,12 +128,12 @@ public class NewCalDAVReportTest extends BaseTestCase{
         calendarQuery.setCalendarDataProp(calendarData);
         calendarQuery.setCompFilter(vcalendar);
         printXml(calendarQuery);
-        CalDAVReportMethod calDAVReportMethod = new CalDAVReportMethod(collectionPath, calendarQuery);
+        HttpCalDAVReportMethod calDAVReportMethod = new HttpCalDAVReportMethod(collectionPath, calendarQuery);
 
-        http.executeMethod(hostConfig, calDAVReportMethod);
-        log.info(calDAVReportMethod.getStatusLine().toString());
+        HttpResponse response = http.execute(hostConfig, calDAVReportMethod);
+        log.info(response.getStatusLine().toString());
 
-        Collection<DavProperty> calendars = calDAVReportMethod.getDavProperties(CalDAVConstants.DNAME_CALENDAR_DATA);
+        Collection<DavProperty> calendars = calDAVReportMethod.getDavProperties(response, CalDAVConstants.DNAME_CALENDAR_DATA);
 
         ComponentList templist = new ComponentList();
 

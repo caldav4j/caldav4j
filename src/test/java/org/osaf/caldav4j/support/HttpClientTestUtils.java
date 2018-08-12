@@ -15,10 +15,13 @@
  */
 package org.osaf.caldav4j.support;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConnection;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpState;
+import org.apache.http.HttpConnection;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -36,9 +39,9 @@ public final class HttpClientTestUtils
 {
 	// types ------------------------------------------------------------------
 	
-	public interface HttpMethodCallback<R, M extends HttpMethod, E extends Exception>
+	public interface HttpMethodCallback<R, M extends HttpRequestBase, E extends Exception>
 	{
-		R getResponse(M method) throws E;
+		R getResponse(M method, HttpResponse httpResponse) throws E;
 	}
 	
 	// constants --------------------------------------------------------------
@@ -78,55 +81,46 @@ public final class HttpClientTestUtils
 		fakeFactory.setInput(response);
 	}
 	
-	public static <R, M extends HttpMethod, E extends Exception> R executeMethod(int expectedStatus,
-		HttpClient httpClient, M method, HttpMethodCallback<R, M, E> methodCallback) throws IOException, E
+	public static <R, M extends HttpRequestBase, E extends Exception> R executeMethod(int expectedStatus,
+	                                                                                  HttpClient httpClient, M method, HttpMethodCallback<R, M, E> methodCallback) throws IOException, E
 	{
 		try
 		{
-			int actualStatus = httpClient.executeMethod(method);
+			HttpResponse response = httpClient.execute(method);
+			int actualStatus = response.getStatusLine().getStatusCode();
 			assertEquals("Response status", expectedStatus, actualStatus);
 			if(methodCallback != null)
-				return methodCallback.getResponse(method);
+				return methodCallback.getResponse(method, response);
 			else
                 return null;
 		}
 		finally
 		{
-			method.releaseConnection();
+			method.reset();
 		}
 	}
 	
-	public static <R, M extends HttpMethod, E extends Exception> R executeMethod(int expectedStatus, M method,
+	public static <R, M extends HttpRequestBase, E extends Exception> R executeMethod(int expectedStatus, M method,
 		HttpMethodCallback<R, M, E> methodCallback) throws IOException, E
 	{
-		HttpConnection connection = new HttpConnection("localhost", 80);
-		
-		return executeMethod(expectedStatus, method, connection, methodCallback);
+		HttpHost host = new HttpHost("localhost", 80);
+		HttpClient client = HttpClients.createDefault();
+		return executeMethod(expectedStatus, method, client, host, methodCallback);
 	}
 	
-	public static <R, M extends HttpMethod, E extends Exception> R executeMethod(int expectedStatus, M method,
-		HttpConnection connection, HttpMethodCallback<R, M, E> methodCallback) throws IOException, E
+	public static <R, M extends HttpRequestBase, E extends Exception> R executeMethod(int expectedStatus, M method, HttpClient httpClient, HttpHost httpHost, HttpMethodCallback<R, M, E> methodCallback) throws IOException, E
 	{
-		HttpState state = new HttpState();
-		
-		return executeMethod(expectedStatus, method, connection, state, methodCallback);
-	}
-	
-	public static <R, M extends HttpMethod, E extends Exception> R executeMethod(int expectedStatus, M method,
-		HttpConnection connection, HttpState state, HttpMethodCallback<R, M, E> methodCallback) throws IOException, E
-	{
-		connection.open();
-		
 		try
 		{
-			int actualStatus = method.execute(state, connection);
+			HttpResponse response = httpClient.execute(httpHost, method);
+			int actualStatus = response.getStatusLine().getStatusCode();
 			assertEquals("Response status", expectedStatus, actualStatus);
 		
-			return (methodCallback != null) ? methodCallback.getResponse(method) : null;
+			return (methodCallback != null) ? methodCallback.getResponse(method, response) : null;
 		}
 		finally
 		{
-			connection.close();
+			method.reset();
 		}
 	}
 	

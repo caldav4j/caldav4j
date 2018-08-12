@@ -1,9 +1,9 @@
 package org.osaf.caldav4j.methods;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.jackrabbit.webdav.DavException;
-import org.apache.jackrabbit.webdav.client.methods.AclMethod;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.security.AclProperty;
@@ -59,18 +59,18 @@ public class PropFindTest extends BaseTestCase {
 		// TODO here we should use fixture.getHttpClient()
 		String path = fixture.getCollectionPath();
 		HttpClient http = fixture.getHttpClient();;
-		HostConfiguration hostConfig = http.getHostConfiguration();
+		HttpHost hostConfig = fixture.getHostConfig();
 
 		DavPropertyNameSet set = new DavPropertyNameSet();
         set.add(CalDAVConstants.DNAME_ACL);
 
-        PropFindMethod propfind = new PropFindMethod(path, set, CalDAVConstants.DEPTH_0);
+        HttpPropFindMethod propfind = new HttpPropFindMethod(path, set, CalDAVConstants.DEPTH_0);
 
 
 		try {
-			http.executeMethod(hostConfig,propfind);
+			HttpResponse response = http.execute(hostConfig,propfind);
 
-			AclProperty aclProperty = propfind.getAcl(path);
+			AclProperty aclProperty = propfind.getAcl(response, path);
 			/*
 			 * response
 			 *   href
@@ -90,7 +90,7 @@ public class PropFindTest extends BaseTestCase {
 			 */
 
 				print_Xml(aclProperty);
-				List<AclProperty.Ace> aces =  propfind.getAces(path);
+				List<AclProperty.Ace> aces =  propfind.getAces(response, path);
 				print_Xml(aces.get(0));
 
 				log.info("There are aces # "+ aces.size() );
@@ -128,23 +128,23 @@ public class PropFindTest extends BaseTestCase {
 	public void testGetAcl_1() throws IOException {
         String path = fixture.getCollectionPath();
 		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
+		HttpHost hostConfig = createHostConfiguration();
 
 		DavPropertyNameSet set = new DavPropertyNameSet();
 		set.add(CalDAVConstants.DNAME_ACL);
         set.add(CalDAVConstants.DNAME_DISPLAYNAME);
         set.add(CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
 
-		PropFindMethod propfind = new PropFindMethod(path, set, CalDAVConstants.DEPTH_0);
+		HttpPropFindMethod propfind = new HttpPropFindMethod(path, set, CalDAVConstants.DEPTH_0);
 
 		try {
-			http.executeMethod(hostConfig,propfind);
+			HttpResponse response = http.execute(hostConfig,propfind);
 
-			AclProperty responses= propfind.getAcl(path);
+			AclProperty responses= propfind.getAcl(response, path);
 
 
 				log.info("new Property element");
-				List<AclProperty.Ace> aces = propfind.getAces(path);
+				List<AclProperty.Ace> aces = propfind.getAces(response, path);
 				log.info("There are aces # "+ aces.size() );
                 print_ListAce(aces);
 
@@ -168,27 +168,27 @@ public class PropFindTest extends BaseTestCase {
 	public void testNewPropfind() throws CalDAV4JException, IOException, ParserConfigurationException, DavException {
 		log.info("New Propfind");
 		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
+		HttpHost hostConfig = createHostConfiguration();
 
         DavPropertyNameSet set = new DavPropertyNameSet();
         set.add(CalDAVConstants.DNAME_ACL);
         set.add(CalDAVConstants.DNAME_DISPLAYNAME);
         set.add(CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
 
-        PropFindMethod propfind = new PropFindMethod(fixture.getCollectionPath(), set, CalDAVConstants.DEPTH_0);
+        HttpPropFindMethod propfind = new HttpPropFindMethod(fixture.getCollectionPath(), set, CalDAVConstants.DEPTH_0);
 
 		try {
-			http.executeMethod(hostConfig,propfind);
+			HttpResponse response = http.execute(hostConfig,propfind);
 
 			// check that Calendar-description and DisplayName matches
-			log.debug("DisplayName: " + propfind.getDisplayName(fixture.getCollectionPath()));
-			assertEquals(caldavCredential.collection.replaceAll("/$", ""), propfind.getDisplayName(fixture.getCollectionPath()).replaceAll("/$", ""));			
+			log.debug("DisplayName: " + propfind.getDisplayName(response, fixture.getCollectionPath()));
+			assertEquals(caldavCredential.collection.replaceAll("/$", ""), propfind.getDisplayName(response, fixture.getCollectionPath()).replaceAll("/$", ""));
 
-			log.debug("CalendarDescription: " +  propfind.getCalendarDescription(fixture.getCollectionPath()));
-			assertEquals(CALENDAR_DESCRIPTION, propfind.getCalendarDescription(fixture.getCollectionPath()));
+			log.debug("CalendarDescription: " +  propfind.getCalendarDescription(response, fixture.getCollectionPath()));
+			assertEquals(CALENDAR_DESCRIPTION, propfind.getCalendarDescription(response, fixture.getCollectionPath()));
 
 			// check that ACLs matches
-			List<AclProperty.Ace> aces = propfind.getAces(fixture.getCollectionPath());
+			List<AclProperty.Ace> aces = propfind.getAces(response, fixture.getCollectionPath());
 			log.info("There are aces # "+ aces.size());
 
 			for (AclProperty.Ace ace: aces) {
@@ -215,8 +215,6 @@ public class PropFindTest extends BaseTestCase {
 				print_Xml(ace);
 			}
 
-		} catch (HttpException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (TransformerException e) {
@@ -234,19 +232,19 @@ public class PropFindTest extends BaseTestCase {
 	public void testAclMethod() throws IOException {
 		log.info("New Propfind");
 		HttpClient http = fixture.getHttpClient();
-		HostConfiguration hostConfig = http.getHostConfiguration();
+		HttpHost hostConfig = fixture.getHostConfig();
 
         Privilege[] privileges = { CalDAVPrivilege.SCHEDULE_DELIVER, Privilege.PRIVILEGE_READ, Privilege.PRIVILEGE_WRITE};
         AclProperty.Ace ace = AclProperty.createGrantAce(Principal.getPropertyPrincipal(DavPropertyName.create(DavPropertyName.XML_OWNER)),
                 privileges, false, false, null);
         AclProperty aclProperty = new AclProperty(new AclProperty.Ace[] { ace });
-		AclMethod method = new AclMethod(fixture.getCollectionPath(), aclProperty);
+		HttpAclMethod method = new HttpAclMethod(fixture.getCollectionPath(), aclProperty);
 
 
 
 
 		try {
-			http.executeMethod(hostConfig, method);
+			http.execute(hostConfig, method);
 
 
             DavPropertyNameSet set = new DavPropertyNameSet();
@@ -254,11 +252,12 @@ public class PropFindTest extends BaseTestCase {
             set.add(CalDAVConstants.DNAME_DISPLAYNAME);
             set.add(CalDAVConstants.DNAME_CALENDAR_DESCRIPTION);
 			// verify output
-			PropFindMethod propfind = new PropFindMethod(fixture.getCollectionPath(), set, CalDAVConstants.DEPTH_0);
-			http.executeMethod(hostConfig,propfind);
+			HttpPropFindMethod propfind = new HttpPropFindMethod(fixture.getCollectionPath(), set, CalDAVConstants.DEPTH_0);
+
+			HttpResponse response = http.execute(hostConfig,propfind);
 
 			log.info("post setacl returns: ");
-            print_Xml(propfind.getResponseBodyAsMultiStatus());
+            print_Xml(propfind.getResponseBodyAsMultiStatus(response));
 			// TODO check returned ACIS
 		} catch (Exception e) {
 			e.printStackTrace();

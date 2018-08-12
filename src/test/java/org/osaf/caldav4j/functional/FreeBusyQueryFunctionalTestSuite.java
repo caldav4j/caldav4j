@@ -8,6 +8,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.dialect.CalDavDialect;
+import org.osaf.caldav4j.dialect.ChandlerCalDavDialect;
 
 @RunWith(Parameterized.class)
 public class FreeBusyQueryFunctionalTestSuite extends FreeBusyQueryFunctionalTest {

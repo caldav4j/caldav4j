@@ -47,10 +47,14 @@ public abstract class CalDAVCalendarCollectionBase {
 
 	//Configuration Methods
 
-	public HttpHost getHttpHost(URI path) {
+	public HttpHost getDefaultHttpHost(URI path) {
 		if(httpHost == null)
 			return URIUtils.extractHost(path);
 
+		return httpHost;
+	}
+
+	public HttpHost getHttpHost() {
 		return httpHost;
 	}
 

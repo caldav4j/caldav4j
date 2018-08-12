@@ -25,8 +25,8 @@ public class HttpGetMethod  extends HttpGet {
 	private static final String ERR_CONTENT_TYPE = "Expected content-type text/calendar. Was: ";
 
 	private static final Logger log = LoggerFactory.getLogger(HttpGetMethod.class);
-    
-    private CalendarBuilder calendarBuilder = null;
+
+	private CalendarBuilder calendarBuilder = null;
 
     public HttpGetMethod (URI uri, CalendarBuilder calendarBuilder){
         super(uri);
@@ -67,4 +67,13 @@ public class HttpGetMethod  extends HttpGet {
         	throw new CalDAV4JException("Error retrieving and parsing server response at " + getURI(), e);
         }	       
     }
+
+	public CalendarBuilder getCalendarBuilder() {
+		return calendarBuilder;
+	}
+
+	public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
+		this.calendarBuilder = calendarBuilder;
+	}
+
 }

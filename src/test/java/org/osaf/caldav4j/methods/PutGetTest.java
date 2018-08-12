@@ -5,11 +5,14 @@ import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Summary;
-import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.model.request.CalendarRequest;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.osaf.caldav4j.util.ICalendarUtils;
 import org.osaf.caldav4j.util.MethodUtil;
@@ -60,41 +63,37 @@ public class PutGetTest extends BaseTestCase {
 	@Test
 	public void testAddRemoveCalendarResource() throws Exception{
 		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
+		HttpHost hostConfig = createHostConfiguration();
 		String eventPath = UrlUtils.removeDoubleSlashes(String.format("%s/%s.ics", fixture.getCollectionPath(),BaseTestCase.ICS_DAILY_NY_5PM_UID));
 
 		Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM_PATH);
-		PutMethod put = fixture.getMethodFactory().createPutMethod();
-		put.setIfNoneMatch(true);
-		put.setAllEtags(true);
-		put.setRequestBody(cal);
-		put.setPath(eventPath);
-		http.executeMethod(hostConfig, put);
-		int statusCode = put.getStatusCode();
+
+		CalendarRequest cr = new CalendarRequest(cal, false, true, true);
+		HttpPutMethod put = fixture.getMethodFactory().createPutMethod(eventPath, cr);
+		HttpResponse response = http.execute(hostConfig, put);
+		int statusCode = response.getStatusLine().getStatusCode();
 		assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
 		addedEventsFile.add(BaseTestCase.ICS_DAILY_NY_5PM_UID + ".ics");
 		//ok, so we created it...let's make sure it's there!
-		GetMethod get = fixture.getMethodFactory().createGetMethod();
-		get.setPath(eventPath);
-		http.executeMethod(hostConfig, get);
-		statusCode = get.getStatusCode();
-		MethodUtil.StatusToExceptions(get);
+		HttpGetMethod get = fixture.getMethodFactory().createGetMethod(eventPath);
+
+		response = http.execute(hostConfig, get);
+		statusCode = response.getStatusLine().getStatusCode();
+		MethodUtil.StatusToExceptions(get, response);
 		assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
 
 		//now let's make sure we can get the resource body as a calendar
-		Calendar calendar = get.getResponseBodyAsCalendar();
+		Calendar calendar = get.getResponseBodyAsCalendar(response);
 		VEvent event = ICalendarUtils.getFirstEvent(calendar);
 		String uid = ICalendarUtils.getUIDValue(event);
 		assertEquals(ICS_DAILY_NY_5PM_UID, uid);
 
 		//let's make sure that a subsequent put with "if-none-match: *" fails
-		put = fixture.getMethodFactory().createPutMethod();
-		put.setIfNoneMatch(true);
-		put.setAllEtags(true);
-		put.setRequestBody(cal);
-		put.setPath(eventPath);
-		http.executeMethod(hostConfig, put);
-		statusCode = put.getStatusCode();
+
+		put = fixture.getMethodFactory().createPutMethod(eventPath, new CalendarRequest(cal, false, true, true));
+
+		response = http.execute(hostConfig, put);
+		statusCode = response.getStatusLine().getStatusCode();
 		assertEquals("Status code for put:",
 				CaldavStatus.SC_PRECONDITION_FAILED, statusCode);
 	}
@@ -107,7 +106,7 @@ public class PutGetTest extends BaseTestCase {
 	throws Exception {
 
 		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
+		HttpHost hostConfig = createHostConfiguration();
 
 		// load an ICS and substitute summary with non-latin chars
 		Locale mylocale = new Locale("ru", "RU");
@@ -123,26 +122,25 @@ public class PutGetTest extends BaseTestCase {
 				ICalendarUtils.getPropertyValue(calendarComponent, Property.SUMMARY));
 
 		// create a PUT request with the given ICS
-		PutMethod put = fixture.getMethodFactory().createPutMethod();
-		String eventPath =  BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics"; 
-		put.setIfNoneMatch(true);
-		put.setAllEtags(true);
-		put.setRequestBody(cal);
-		put.setPath(fixture.getCollectionPath() + "/" + eventPath);
-		http.executeMethod(hostConfig, put);
-		int statusCode = put.getStatusCode();
+
+		String eventPath =  BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics";
+
+		HttpPutMethod put = fixture.getMethodFactory().createPutMethod(fixture.getCollectionPath() + "/" + eventPath, new CalendarRequest(cal, false, true, true));
+
+		HttpResponse response = http.execute(hostConfig, put);
+		int statusCode = response.getStatusLine().getStatusCode();
 		assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
 		addedEventsFile.add(eventPath);
 
 		//ok, so we created it...let's make sure it's there!
-		GetMethod get = fixture.getMethodFactory().createGetMethod();
-		get.setPath(fixture.getCollectionPath() + "/" +eventPath);
-		http.executeMethod(hostConfig, get);
-		statusCode = get.getStatusCode();
+		HttpGetMethod get = fixture.getMethodFactory().createGetMethod(fixture.getCollectionPath() + "/" +eventPath);
+
+		response = http.execute(hostConfig, get);
+		statusCode = response.getStatusLine().getStatusCode();
 		assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
 
 		//now let's make sure we can get the resource body as a calendar
-		Calendar calendar = get.getResponseBodyAsCalendar();
+		Calendar calendar = get.getResponseBodyAsCalendar(response);
 		VEvent event = ICalendarUtils.getFirstEvent(calendar);
 		String uid = ICalendarUtils.getUIDValue(event);
 		String summary = ICalendarUtils.getPropertyValue(event, Property.SUMMARY);
@@ -151,13 +149,10 @@ public class PutGetTest extends BaseTestCase {
 
 
 		//let's make sure that a subsequent put with "if-none-match: *" fails
-		put = fixture.getMethodFactory().createPutMethod();
-		put.setIfNoneMatch(true);
-		put.setAllEtags(true);
-		put.setRequestBody(cal);
-		put.setPath(fixture.getCollectionPath() + "/" +eventPath);
-		http.executeMethod(hostConfig, put);
-		statusCode = put.getStatusCode();
+		put = fixture.getMethodFactory().createPutMethod(fixture.getCollectionPath() + "/" +eventPath, new CalendarRequest(cal, false, true, true));
+
+		response = http.execute(hostConfig, put);
+		statusCode = response.getStatusLine().getStatusCode();
 		assertEquals("Status code for put:",
 				CaldavStatus.SC_PRECONDITION_FAILED, statusCode);
 

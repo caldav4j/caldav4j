@@ -245,7 +245,7 @@ public void testDateTime() throws ParseException {
     }
     
     /**
-     * @see http://tools.ietf.org/html/rfc4791#section-7.8.7
+     * @see <a href='http://tools.ietf.org/html/rfc4791#section-7.8.7'>RFC4791 7.8.7</a>
      */
     @Test
     public void testParamFilterProperties()  {

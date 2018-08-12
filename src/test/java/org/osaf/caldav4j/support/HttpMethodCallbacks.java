@@ -17,7 +17,9 @@ package org.osaf.caldav4j.support;
 
 import net.fortuna.ical4j.model.Calendar;
 
-import org.apache.commons.httpclient.HttpMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.osaf.caldav4j.methods.HttpCalDAVReportMethod;
 import org.osaf.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
 
 /**
@@ -30,21 +32,21 @@ public final class HttpMethodCallbacks
 {
 	// constants --------------------------------------------------------------
 	
-	private static final HttpMethodCallback<Void, HttpMethod, RuntimeException> NULL_CALLBACK =
-		new HttpMethodCallback<Void, HttpMethod, RuntimeException>()
+	private static final HttpMethodCallback<HttpResponse, HttpRequestBase, RuntimeException> NULL_CALLBACK =
+		new HttpMethodCallback<HttpResponse, HttpRequestBase, RuntimeException>()
 		{
-			public Void getResponse(HttpMethod method) throws RuntimeException
+			public HttpResponse getResponse(HttpRequestBase method, HttpResponse response) throws RuntimeException
 			{
-				return null;
+				return response;
 			}
 		};
 
-	private static final HttpMethodCallback<Calendar, CalDAVReportMethod, Exception> CALENDAR_REPORT_CALLBACK =
-		new HttpMethodCallback<Calendar, CalDAVReportMethod, Exception>()
+	private static final HttpMethodCallback<Calendar, HttpCalDAVReportMethod, Exception> CALENDAR_REPORT_CALLBACK =
+		new HttpMethodCallback<Calendar, HttpCalDAVReportMethod, Exception>()
 		{
-			public Calendar getResponse(CalDAVReportMethod method) throws Exception
+			public Calendar getResponse(HttpCalDAVReportMethod method, HttpResponse response) throws Exception
 			{
-				return method.getResponseBodyAsCalendar();
+				return method.getResponseBodyAsCalendar(response);
 			}
 		};
 		
@@ -57,12 +59,12 @@ public final class HttpMethodCallbacks
 	
 	// public methods ---------------------------------------------------------
 	
-	public static HttpMethodCallback<Void, HttpMethod, RuntimeException> nullCallback()
+	public static HttpMethodCallback<HttpResponse, HttpRequestBase, RuntimeException> nullCallback()
 	{
 		return NULL_CALLBACK;
 	}
 	
-	public static HttpMethodCallback<Calendar, CalDAVReportMethod, Exception> calendarReportCallback()
+	public static HttpMethodCallback<Calendar, HttpCalDAVReportMethod, Exception> calendarReportCallback()
 	{
 		return CALENDAR_REPORT_CALLBACK;
 	}

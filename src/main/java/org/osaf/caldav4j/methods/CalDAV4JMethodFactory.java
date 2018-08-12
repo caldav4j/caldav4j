@@ -110,6 +110,38 @@ public class CalDAV4JMethodFactory {
 	}
 
 	/**
+	 * Creates a {@link HttpMkCalendarMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @return the instance
+	 */
+	public HttpMkCalendarMethod createMkCalendarMethod(String uri) {
+		return new HttpMkCalendarMethod(uri);
+	}
+
+	/**
+	 * Creates a {@link HttpMkCalendarMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @param displayName Display Name of Calendar
+	 * @param description Description of Calendar.
+	 * @param descriptionLanguage Language of the Description. Optional.
+	 * @return the instance
+	 */
+	public HttpMkCalendarMethod createMkCalendarMethod(String uri, String displayName, String description, String descriptionLanguage) throws IOException {
+		return new HttpMkCalendarMethod(uri, displayName, description, descriptionLanguage);
+	}
+
+	/**
+	 * Creates a {@link HttpMkCalendarMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @param mkCalendar {@link MkCalendar} instance which
+	 * contains all the details for creating a calendar.
+	 * @return the instance
+	 */
+	public HttpMkCalendarMethod createMkCalendarMethod(String uri, MkCalendar mkCalendar) throws IOException {
+		return new HttpMkCalendarMethod(uri, mkCalendar);
+	}
+
+	/**
 	 * Creates a {@link HttpPropFindMethod} instance.
 	 * @param uri URI to the Calendar resource.
 	 * @param names Properties to make the Propfind request for.
@@ -141,7 +173,9 @@ public class CalDAV4JMethodFactory {
 	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpCalDAVReportMethod createCalDAVReportMethod(URI uri, CalDAVReportRequest request) throws IOException {
-		return new HttpCalDAVReportMethod(uri, request);
+		HttpCalDAVReportMethod m = new HttpCalDAVReportMethod(uri, request);
+		m.setCalendarBuilder(getCalendarBuilderInstance());
+		return m;
 	}
 
 	/**
@@ -152,7 +186,31 @@ public class CalDAV4JMethodFactory {
 	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpCalDAVReportMethod createCalDAVReportMethod(URI uri, CalDAVReportRequest request, int depth) throws IOException {
-		return new HttpCalDAVReportMethod(uri, request, depth);
+		HttpCalDAVReportMethod m = new HttpCalDAVReportMethod(uri, request, depth);
+		m.setCalendarBuilder(getCalendarBuilderInstance());
+		return m;
+	}
+
+	/**
+	 * Creates a {@link HttpCalDAVReportMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param request The Report to make a request for.
+	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
+	 */
+	public HttpCalDAVReportMethod createCalDAVReportMethod(String uri, CalDAVReportRequest request) throws IOException {
+		return createCalDAVReportMethod(URI.create(uri), request);
+	}
+
+	/**
+	 * Creates a {@link HttpCalDAVReportMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param request The Report to make a request for.
+	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
+	 */
+	public HttpCalDAVReportMethod createCalDAVReportMethod(String uri, CalDAVReportRequest request, int depth) throws IOException {
+		return createCalDAVReportMethod(URI.create(uri), request, depth);
 	}
 
 	/**

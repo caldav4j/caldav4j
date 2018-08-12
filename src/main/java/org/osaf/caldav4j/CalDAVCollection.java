@@ -49,11 +49,8 @@ import org.osaf.caldav4j.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ConnectException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -251,7 +248,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		HttpMkCalendarMethod mkCalendarMethod = null;
 		try {
 			mkCalendarMethod = methodFactory.createMkCalendarMethod(getCalendarCollectionRoot());
-			HttpResponse response = httpClient.execute(getHttpHost(mkCalendarMethod.getURI()), mkCalendarMethod);
+			HttpResponse response = httpClient.execute(getDefaultHttpHost(mkCalendarMethod.getURI()), mkCalendarMethod);
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode != CaldavStatus.SC_CREATED){
 				MethodUtil.StatusToExceptions(mkCalendarMethod, response);
@@ -281,7 +278,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
         HttpPutMethod putMethod = methodFactory.createPutMethod(path, cr);
 
         try {
-            HttpResponse response = httpClient.execute(getHttpHost(putMethod.getURI()), putMethod);
+            HttpResponse response = httpClient.execute(getDefaultHttpHost(putMethod.getURI()), putMethod);
             int statusCode = response.getStatusLine().getStatusCode();
             switch(statusCode) {
                 case CaldavStatus.SC_NO_CONTENT:
@@ -375,7 +372,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			HttpPutMethod putMethod = createPutMethodForNewResource(uid + ".ics", c);
 			HttpResponse response = null;
 			try {
-				response = httpClient.execute(getHttpHost(putMethod.getURI()), putMethod);
+				response = httpClient.execute(getDefaultHttpHost(putMethod.getURI()), putMethod);
 
 				String etag = UrlUtils.getHeaderPrettyValue(response, CalDAVConstants.HEADER_ETAG);
 
@@ -592,7 +589,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		CalDAVResource calDAVResource = null;
 		HttpGetMethod getMethod = getMethodFactory().createGetMethod(path);
 		try {
-			HttpResponse response = httpClient.execute(getHttpHost(getMethod.getURI()), getMethod);
+			HttpResponse response = httpClient.execute(getDefaultHttpHost(getMethod.getURI()), getMethod);
 
             if (response.getStatusLine().getStatusCode() != CaldavStatus.SC_OK){
                 MethodUtil.StatusToExceptions(getMethod, response);
@@ -678,7 +675,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		HttpHead headMethod = new HttpHead(path);
 
 		try {
-			HttpResponse response = httpClient.execute(getHttpHost(headMethod.getURI()), headMethod);
+			HttpResponse response = httpClient.execute(getDefaultHttpHost(headMethod.getURI()), headMethod);
 			int statusCode = response.getStatusLine().getStatusCode();
 
 			if (statusCode == CaldavStatus.SC_NOT_FOUND) {
@@ -692,7 +689,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 						+ response.getStatusLine().getStatusCode());
 			}
 		} catch (IOException e) {
-			throw new CalDAV4JException("Problem executing HEAD method on: " + getHttpHost(headMethod.getURI()), e);
+			throw new CalDAV4JException("Problem executing HEAD method on: " + getDefaultHttpHost(headMethod.getURI()), e);
 		}
 
 		Header h = headMethod.getFirstHeader(CalDAVConstants.HEADER_ETAG);
@@ -800,7 +797,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		HttpCalDAVReportMethod reportMethod = null;
 		try {
             reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), query);
-			HttpResponse httpResponse = httpClient.execute(getHttpHost(reportMethod.getURI()), reportMethod);
+			HttpResponse httpResponse = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
 
             MultiStatusResponse[] set = reportMethod.getResponseBodyAsMultiStatus(httpResponse).getResponses();
             for(MultiStatusResponse response: set){
@@ -844,7 +841,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		HttpCalDAVReportMethod reportMethod = null;
 		try {
             reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), query);
-			HttpResponse response = httpClient.execute(getHttpHost(reportMethod.getURI()), reportMethod);
+			HttpResponse response = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
 
             if(reportMethod.succeeded(response))
                 return reportMethod.getResponseBodyAsMultiStatus(response);
@@ -888,7 +885,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		try {
             reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(),
                     query);
-			HttpResponse httpResponse = httpClient.execute(getHttpHost(reportMethod.getURI()), reportMethod);
+			HttpResponse httpResponse = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
 
             log.trace("Parsing response.. " );
 
@@ -910,7 +907,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 		} catch (ConnectException connEx) {
 			throw new CalDAV4JException("Can't connecto to "+
-					getHttpHost(reportMethod.getURI()), connEx.getCause());
+					getDefaultHttpHost(reportMethod.getURI()), connEx.getCause());
 		} catch (Exception he) {
 			throw new CalDAV4JException("Problem executing method", he);
 		} finally {
@@ -942,7 +939,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 		try {
             reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), query);
-			HttpResponse httpResponse = httpClient.execute(getHttpHost(reportMethod.getURI()), reportMethod);
+			HttpResponse httpResponse = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
 
             MultiStatusResponse[] e = reportMethod.getResponseBodyAsMultiStatus(httpResponse).getResponses();
 
@@ -1018,7 +1015,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 		HttpResponse response = null;
 		try {
-			response = httpClient.execute(getHttpHost(method.getURI()), method);
+			response = httpClient.execute(getDefaultHttpHost(method.getURI()), method);
 		} catch (Exception e) {
 			throw new CalDAV4JException(e.getMessage(), new Throwable(e.getCause()));
 		}
@@ -1064,7 +1061,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		try {
 			method = methodFactory.createPropFindMethod(getCalendarCollectionRoot().resolve(UrlUtils.defaultString(path, "")),
 					propfind, CalDAVConstants.DEPTH_0);
-			HttpResponse response = httpClient.execute(getHttpHost(method.getURI()), method);
+			HttpResponse response = httpClient.execute(getDefaultHttpHost(method.getURI()), method);
 
 			int status =  response.getStatusLine().getStatusCode();
 

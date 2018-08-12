@@ -9,7 +9,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
-import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.http.HttpHost;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -83,8 +83,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 			e.printStackTrace();
 			assertNull(e);
 		}
-		HostConfiguration hostConfig = collection.getHostConfiguration();
-		hostConfig.setHost("UNEXISTENT");
+		HttpHost hostConfig = HttpHost.create("http://UNEXISTENT");
 		try {
 			int actual = collection.testConnection(fixture.getHttpClient());
 			assertFalse("Hey! We shouldn't be able to connect now", 

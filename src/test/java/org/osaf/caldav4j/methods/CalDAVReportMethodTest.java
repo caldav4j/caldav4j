@@ -42,21 +42,11 @@ public class CalDAVReportMethodTest extends BaseTestCase {
 		fixture.tearDown();
 	}
 
-	@Test
-	public void testCheckTrailingSlash() throws Exception{
-		CalDAVReportMethod method = fixture.getMethodFactory().createCalDAVReportMethod(fixture.getCollectionPath());
-		assertNotNull(method);
-
-		assertNotNull(method.getPath());
-		assertTrue(method.getPath().endsWith("/"));
-
-	}
-
     //Below are the merged tests from CalendarCalDAVReportMethod
 	@Test
 	public void executeCalendarReportMethod() throws Exception
 	{
-		CalDAVReportMethod method = createMethod("/path", new FakeCalDAVReportRequest());
+		HttpCalDAVReportMethod method = createMethod("/path", new FakeCalDAVReportRequest());
 
 		String expectedRequest = "REPORT /path HTTP/1.1\r\n"
 				+ "User-Agent: Jakarta Commons-HttpClient/3.1\r\n"
@@ -85,8 +75,8 @@ public class CalDAVReportMethodTest extends BaseTestCase {
 
 	// private methods --------------------------------------------------------
 
-	private static CalDAVReportMethod createMethod(String path, CalDAVReportRequest reportRequest) throws IOException {
-		CalDAVReportMethod method = new CalDAVReportMethod(path, reportRequest);
+	private static HttpCalDAVReportMethod createMethod(String path, CalDAVReportRequest reportRequest) throws IOException {
+		HttpCalDAVReportMethod method = new HttpCalDAVReportMethod(path, reportRequest);
 
 		method.setCalendarBuilder(new CalendarBuilder());
 

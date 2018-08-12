@@ -2,7 +2,6 @@ package org.osaf.caldav4j.scheduling;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.ParseException;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -15,12 +14,18 @@ import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.XProperty;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpException;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.util.EntityUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.exceptions.CalDAV4JException;
+import org.osaf.caldav4j.methods.HttpPostMethod;
+import org.osaf.caldav4j.methods.HttpPutMethod;
+import org.osaf.caldav4j.model.request.CalendarRequest;
 import org.osaf.caldav4j.scheduling.methods.CalDAV4JScheduleMethodFactory;
 import org.osaf.caldav4j.scheduling.methods.SchedulePostMethod;
 import org.osaf.caldav4j.scheduling.util.ITipUtils;
@@ -34,7 +39,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	private CalDAV4JScheduleMethodFactory scheduleMethodFactory = new CalDAV4JScheduleMethodFactory();
 
 	HttpClient http = createHttpClient();
-	HostConfiguration hostConfig = createHostConfiguration();
+	HttpHost hostConfig = createHostConfiguration();
 	
 	public static final String BEDEWORK_RTSVC_URL = "/pubcaldav/rtsvc";
 	/**
@@ -53,17 +58,15 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		.getCalendarResource("scheduling/meeting_reply.ics");
 		ICalendarUtils.addOrReplaceProperty(refreshEvent.getComponent(Component.VEVENT), myUid);
 
-		SchedulePostMethod request = scheduleMethodFactory.createSchedulePostMethod();
-		request.setPath(BEDEWORK_RTSVC_URL);
-		request.setHostConfiguration(hostConfig);
-		request.setRequestBody(invite);
+	    CalendarRequest cr = new CalendarRequest(invite);
+		SchedulePostMethod request = scheduleMethodFactory.createSchedulePostMethod(BEDEWORK_RTSVC_URL, cr);
 		try {
-			http.executeMethod(request);
-			if (request.getStatusCode() != 200) {
-				log.info("error: " + request.getStatusText()); 
+			HttpResponse response = http.execute(hostConfig, request);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				log.info("error: " + response.getStatusLine().getReasonPhrase());
 			}
-			log.info(request.getResponseBodyAsString());
-		} catch (HttpException e) {
+			log.info(EntityUtils.toString(response.getEntity()));
+		} catch (org.apache.http.ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -72,20 +75,18 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		}
 
 		//refresh invitation
-		PostMethod refresh = fixture.getMethodFactory().createPostMethod();
-		refresh.setPath(BEDEWORK_RTSVC_URL);
-		refresh.setHostConfiguration(hostConfig);
-		refresh.setRequestBody(refreshEvent);
-		refresh.setRequestHeader("Originator","mailto:r@r.it");
-		refresh.setRequestHeader("Recipient","mailto:r@r.it");
-		refresh.setRequestHeader("Recipient","mailto:robipolli@gmail.com");
+	    cr.setCalendar(refreshEvent);
+		HttpPostMethod refresh = fixture.getMethodFactory().createPostMethod(BEDEWORK_RTSVC_URL, cr);
+		refresh.addHeader("Originator","mailto:r@r.it");
+		refresh.addHeader("Recipient","mailto:r@r.it");
+		refresh.addHeader("Recipient","mailto:robipolli@gmail.com");
 		try {
-			http.executeMethod(refresh);
-			if (refresh.getStatusCode() != 200) {
-				log.info("error: " + refresh.getStatusText()); 
+			HttpResponse response = http.execute(hostConfig, refresh);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				log.info("error: " + response.getStatusLine().getReasonPhrase());
 			}
-			log.info(refresh.getResponseBodyAsString());
-		} catch (HttpException e) {
+			log.info(EntityUtils.toString(response.getEntity()));
+		} catch (org.apache.http.ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -123,17 +124,16 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		ICalendarUtils.addOrReplaceProperty(event, 
 				new Uid(new DateTime().toString()));
 
-		SchedulePostMethod request = scheduleMethodFactory.createSchedulePostMethod();
-		request.setPath(BEDEWORK_RTSVC_URL);
-		request.setHostConfiguration(hostConfig);
-		request.setRequestBody(invite);
+		CalendarRequest cr = new CalendarRequest(invite);
+		SchedulePostMethod request = scheduleMethodFactory.createSchedulePostMethod(BEDEWORK_RTSVC_URL, cr);
+
 		try {
-			http.executeMethod(request);
-			if (request.getStatusCode() != 200) {
-				log.info("error: " + request.getStatusText()); 
+			HttpResponse response = http.execute(hostConfig, request);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				log.info("error: " + response.getStatusLine().getReasonPhrase());
 			}
-			log.info(request.getResponseBodyAsString());
-		} catch (HttpException e) {
+			log.info(EntityUtils.toString(response.getEntity()));
+		} catch (org.apache.http.ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -147,12 +147,11 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	 * process a REPLY retrieved from email
 	 * @throws URISyntaxException 
 	 * @throws IOException 
-	 * @throws HttpException 
-	 * @throws ParseException 
+	 * @throws HttpException
 	 */
     @Test
 	public void testRealTimeScheduling_SimpleMeetingReply() 
-	throws URISyntaxException, HttpException, IOException, ParseException, CalDAV4JException
+	throws URISyntaxException, HttpException, IOException, CalDAV4JException
 	{
 		Calendar invite = BaseTestCase
 		.getCalendarResource("scheduling/meeting_invitation.ics");
@@ -170,34 +169,29 @@ public class SchedulePostMethodTest extends BaseTestCase {
 			// Create meeting in /calendar 
 			log.info("PUT...");
 
-			PutMethod request = fixture.getMethodFactory().createPutMethod();
-			request.setPath(caldavCredential.home + "/calendar/" + event.getUid().getValue() + ".ics");
-			request.setHostConfiguration(hostConfig);
-			request.setRequestBody(invite);
+			CalendarRequest cr = new CalendarRequest(invite);
+			HttpPutMethod request = fixture.getMethodFactory().createPutMethod(caldavCredential.home + "/calendar/" + event.getUid().getValue() + ".ics", cr);
 
-			http.executeMethod(request);
-			if (request.getStatusCode() != 200) {
-				log.info("error: " + request.getStatusText()); 
+			HttpResponse response = http.execute(hostConfig, request);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				log.info("error: " + response.getStatusLine().getReasonPhrase());
 			}
-			log.info(request.getResponseBodyAsString());
+			log.info(EntityUtils.toString(response.getEntity()));
 
 			// update event like a REPLY from robipolli@gmail.com
-			Calendar response = ITipUtils.ReplyInvitation(invite, new Attendee("mailto:robipolli@gmail.com"), PartStat.ACCEPTED);
+			Calendar responseCalendar = ITipUtils.ReplyInvitation(invite, new Attendee("mailto:robipolli@gmail.com"), PartStat.ACCEPTED);
 
 			// POST to /rtsvc a REPLY from GMAIL
 			log.info("REPLY...#" + j);
-			PostMethod reply = fixture.getMethodFactory().createPostMethod();
-			reply.setPath(BEDEWORK_RTSVC_URL);
-			reply.setHostConfiguration(hostConfig);
-			reply.setRequestBody(response);
-			reply.setRequestHeader("originator", "mailto:r@r.it");
-			reply.setRequestHeader("recipient", "mailto:r@r.it");
+			HttpPostMethod reply = fixture.getMethodFactory().createPostMethod(BEDEWORK_RTSVC_URL, new CalendarRequest(responseCalendar));
+			reply.addHeader("originator", "mailto:r@r.it");
+			reply.addHeader("recipient", "mailto:r@r.it");
 
-			http.executeMethod(reply);
-			if (request.getStatusCode() != 200) {
-				log.info("error: " + reply.getStatusText()); 
+			response = http.execute(hostConfig, reply);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				log.info("error: " + response.getStatusLine().getReasonPhrase());
 			}
-			log.info(reply.getResponseBodyAsString());
+			log.info(EntityUtils.toString(response.getEntity()));
 		}
 
 	}
@@ -209,7 +203,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
     @Test
 	public void testSimpleMeetingInvitation() throws URISyntaxException {
 		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
+		HttpHost hostConfig = createHostConfiguration();
 
 		Calendar invite = this
 		.getCalendarResource("scheduling/meeting_invitation.ics");
@@ -231,17 +225,14 @@ public class SchedulePostMethodTest extends BaseTestCase {
 				new Uid(new DateTime().toString()));
 
 		SchedulePostMethod request = scheduleMethodFactory
-		.createSchedulePostMethod();
-		request.setPath(caldavCredential.home + "/Outbox/");
-		request.setHostConfiguration(hostConfig);
-		request.setRequestBody(invite);
+		.createSchedulePostMethod(caldavCredential.home + "/Outbox/", new CalendarRequest(invite));
 		try {
-			http.executeMethod(request);
-			if (request.getStatusCode() != 200) {
-				log.info("error: " + request.getStatusText()); 
+			HttpResponse response = http.execute(hostConfig, request);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				log.info("error: " + response.getStatusLine().getReasonPhrase());
 			}
-			log.info(request.getResponseBodyAsString());
-		} catch (HttpException e) {
+			log.info(EntityUtils.toString(response.getEntity()));
+		} catch (org.apache.http.ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {

@@ -1,11 +1,15 @@
 package org.osaf.caldav4j.methods;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.http.Header;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.jackrabbit.webdav.client.methods.HttpOptions;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.osaf.caldav4j.BaseTestCase;
+import org.osaf.caldav4j.util.CaldavStatus;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -42,18 +46,18 @@ public class OptionsTest extends BaseTestCase {
 	@Test
 	public void testOptions() {
         HttpClient http = createHttpClient();
-        HostConfiguration hostConfig = createHostConfiguration();
+        HttpHost hostConfig = createHostConfiguration();
         
         for (String s : new String[] {INBOX, OUTBOX} ) {
         	
 	
-	        OptionsMethod options = new OptionsMethod(caldavCredential.home + s);
+	        HttpOptions options = new HttpOptions(caldavCredential.home + s);
 
 	        try {
-				http.executeMethod(hostConfig,options);
-				if (options.succeeded()) {
-					log.info(options.getResponseHeader("Allow").toString());
-					for (Header h : options.getResponseHeaders("DAV")) {
+				HttpResponse response = http.execute(hostConfig, options);
+				if (response.getStatusLine().getStatusCode() == CaldavStatus.SC_OK) {
+					log.info(response.getFirstHeader("Allow").toString());
+					for (Header h : response.getHeaders("DAV")) {
 						if (h != null) {
 							 if (h.getValue().contains("calendar-access")) { 
 								 log.info(h.toString());

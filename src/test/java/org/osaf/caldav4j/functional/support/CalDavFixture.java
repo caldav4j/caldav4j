@@ -18,17 +18,35 @@ package org.osaf.caldav4j.functional.support;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.component.VEvent;
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.conn.routing.HttpRoute;
+import org.apache.http.conn.routing.HttpRoutePlanner;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.DefaultRoutePlanner;
+import org.apache.http.impl.conn.DefaultSchemePortResolver;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.apache.jackrabbit.webdav.client.methods.HttpMkcol;
 import org.osaf.caldav4j.BaseTestCase;
 import org.osaf.caldav4j.TestConstants;
 import org.osaf.caldav4j.credential.CaldavCredential;
 import org.osaf.caldav4j.dialect.CalDavDialect;
-import org.osaf.caldav4j.methods.*;
+import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
+import org.osaf.caldav4j.methods.HttpDeleteMethod;
+import org.osaf.caldav4j.methods.HttpMkCalendarMethod;
+import org.osaf.caldav4j.methods.HttpPutMethod;
+import org.osaf.caldav4j.model.request.CalendarRequest;
 import org.osaf.caldav4j.support.HttpClientTestUtils;
 import org.osaf.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
 import org.osaf.caldav4j.util.CaldavStatus;
@@ -38,6 +56,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +84,8 @@ public class CalDavFixture
 	private List<String> deleteOnTearDownPaths;
 	
 	private CalDavDialect dialect;
+
+	private HttpHost hostConfig;
 	
 	// public methods ---------------------------------------------------------
 	
@@ -81,14 +103,14 @@ public class CalDavFixture
 	}
 	public void setUp(CaldavCredential credential, CalDavDialect dialect, boolean skipCreateCollection) throws IOException
 	{
-		httpClient = new HttpClient();
-		configure(httpClient, credential);
+		hostConfig = new HttpHost(credential.host, credential.port, credential.protocol);
+		httpClient = configureHttpClient(credential);
 		
 		methodFactory = new CalDAV4JMethodFactory();
 		collectionPath = UrlUtils.removeDoubleSlashes(credential.home + credential.collection);
 		deleteOnTearDownPaths = new ArrayList<String>();
 		this.dialect = dialect;
-		
+
 		// eventually make collection, unless skipCreateCollection
 		if (!skipCreateCollection && (getDialect() != null ) && getDialect().isCreateCollection()) {
 			makeCalendar("");
@@ -108,60 +130,51 @@ public class CalDavFixture
 	
 	public void makeCalendar(String relativePath) throws IOException
 	{
-		/*
-		GoogleCalDavDialect gdialect = new GoogleCalDavDialect();
-		if (dialect.equals(gdialect.getProdId())) {
-			log.warn("Google Caldav Server doesn't support MKCALENDAR");
-			return;
-		}
-		*/
-		MkCalendarMethod method = methodFactory.createMkCalendarMethod(relativePath);
-		//method.setPath(relativePath);
+		// Note Google Calendar Doesn't support creating a calendar
+		HttpMkCalendarMethod method = methodFactory.createMkCalendarMethod(relativePath);
 
-		executeMethod(HttpStatus.SC_CREATED, method, true);
+		executeMethod(CaldavStatus.SC_CREATED, method, true);
 	}
 	public void makeCollection(String relativePath) throws IOException
 	{
-		MkColMethod method = new MkColMethod(UrlUtils.removeDoubleSlashes(relativePath));
+		HttpMkcol method = new HttpMkcol(relativePath);
 
-		executeMethod(HttpStatus.SC_CREATED, method, true);
+		executeMethod(CaldavStatus.SC_CREATED, method, true);
 	}
 	public void putEvent(String relativePath, VEvent event) throws IOException
 	{
-		PutMethod method = methodFactory.createPutMethod();
-		method.setPath(relativePath);
-		method.setRequestBody(event);
+		CalendarRequest cr = new CalendarRequest();
+		cr.setCalendar(event);
+		HttpPutMethod method = methodFactory.createPutMethod(relativePath, cr);
 		
-		executeMethod(HttpStatus.SC_CREATED, method, true);
+		executeMethod(CaldavStatus.SC_CREATED, method, true);
 	}
 	
 	public void delete(String relativePath) throws IOException
 	{
-		DeleteMethod method = new DeleteMethod(relativePath);
-		//method.setPath(relativePath);
+		HttpDeleteMethod method = new HttpDeleteMethod(relativePath);
 
-		executeMethod(HttpStatus.SC_NO_CONTENT, method, false);
+		executeMethod(CaldavStatus.SC_NO_CONTENT, method, false);
 	}
 	public void delete(String path, boolean isAbsolutePath) throws IOException
 	{
-		DeleteMethod method = new DeleteMethod(path);
-		//method.setPath(path);
+		HttpDeleteMethod method = new HttpDeleteMethod(path);
 
-		executeMethod(HttpStatus.SC_NO_CONTENT, method, false, nullCallback(), isAbsolutePath);
+		executeMethod(CaldavStatus.SC_NO_CONTENT, method, false, nullCallback(), isAbsolutePath);
 	}
 
-	public void executeMethod(int expectedStatus, HttpMethod method, boolean deleteOnTearDown) throws IOException
+	public HttpResponse executeMethod(int expectedStatus, HttpRequestBase method, boolean deleteOnTearDown) throws IOException
 	{
-		executeMethod(expectedStatus, method, deleteOnTearDown, nullCallback());
+		return executeMethod(expectedStatus, method, deleteOnTearDown, nullCallback());
 	}
 	
-	public <R, M extends HttpMethod, E extends Exception> R executeMethod(int expectedStatus, M method,
-		boolean deleteOnTearDown, HttpMethodCallback<R, M, E> methodCallback) throws IOException, E
+	public <R, M extends HttpRequestBase, E extends Exception> R executeMethod(int expectedStatus, M method,
+	                                                                           boolean deleteOnTearDown, HttpMethodCallback<R, M, E> methodCallback) throws IOException, E
 	{
-		String relativePath = method.getPath();
+		String relativePath = method.getURI().toString();
 		
 		// prefix path with collection path
-		method.setPath(collectionPath + relativePath);
+		method.setURI(URI.create(collectionPath).resolve(method.getURI()));
 		
 		R response = HttpClientTestUtils.executeMethod(expectedStatus, httpClient, method, methodCallback);
 		
@@ -172,14 +185,15 @@ public class CalDavFixture
 		
 		return response;
 	}
-	public <R, M extends HttpMethod, E extends Exception> R executeMethod(int expectedStatus, M method,
+
+	public <R, M extends HttpRequestBase, E extends Exception> R executeMethod(int expectedStatus, M method,
 			boolean deleteOnTearDown, HttpMethodCallback<R, M, E> methodCallback, boolean absolutePath) throws IOException, E
 		{
-			String relativePath = method.getPath();
+			String relativePath = method.getURI().toString();
 			
 			// prefix path with collection path
 			if (!absolutePath) {
-				method.setPath(collectionPath + relativePath);
+				method.setURI(URI.create(collectionPath + relativePath));
 			}
 			
 			R response = HttpClientTestUtils.executeMethod(expectedStatus, httpClient, method, methodCallback);
@@ -194,19 +208,39 @@ public class CalDavFixture
 
 	// private methods --------------------------------------------------------
 	
-	private static void configure(HttpClient httpClient, CaldavCredential credential)
+	private static HttpClient configureHttpClient(final CaldavCredential credential)
 	{
-		httpClient.getHostConfiguration().setHost(credential.host, credential.port, credential.protocol);
-		
-		Credentials httpCredentials = new UsernamePasswordCredentials(credential.user, credential.password);
-		httpClient.getState().setCredentials(AuthScope.ANY, httpCredentials);
-		
-		httpClient.getParams().setAuthenticationPreemptive(true);
+		// HttpClient 4 requires a Cred providers, to be added during creation of client
+		CredentialsProvider credsProvider = new BasicCredentialsProvider();
+		credsProvider.setCredentials(
+				AuthScope.ANY,
+				new UsernamePasswordCredentials(credential.user, credential.password));
+
+
+
+		HttpRoutePlanner routePlanner = new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE) {
+
+			@Override
+			public HttpRoute determineRoute(
+					final HttpHost target,
+					final HttpRequest request,
+					final HttpContext context) throws HttpException {
+				return super.determineRoute(
+						target != null ? target : new HttpHost(credential.host, credential.port,
+								credential.protocol), request, context);
+			}
+
+		};
+
+		HttpClientBuilder builder = HttpClients.custom()
+				.setDefaultCredentialsProvider(credsProvider)
+				.setRoutePlanner(routePlanner);
 
 		if (credential.getProxyHost() != null) {
-			httpClient.getHostConfiguration().setProxy(credential.getProxyHost(), (credential.getProxyPort() > 0) ? credential.getProxyPort() : 8080);
+			builder.setProxy(new HttpHost(credential.getProxyHost(), (credential.getProxyPort() > 0) ? credential.getProxyPort() : 8080));
 		}
 
+		return builder.build();
 	}
 
 	public void setDialect(CalDavDialect dialect) {
@@ -220,18 +254,18 @@ public class CalDavFixture
 	protected void mkcalendar(String path) {
 
 	    try {
-			MkCalendarMethod mk = new MkCalendarMethod(path, null,
+			HttpMkCalendarMethod mk = new HttpMkCalendarMethod(path, null,
 					TestConstants.CALENDAR_DESCRIPTION, "en");
-	    	executeMethod(HttpStatus.SC_CREATED,  mk, true);
+	    	executeMethod(CaldavStatus.SC_CREATED,  mk, true);
 	    } catch (Exception e){
 	        throw new RuntimeException(e);
 	    }
 	}
 
 	protected void mkcol(String path) {
-		MkColMethod mk = new MkColMethod(path);
+		HttpMkcol mk = new HttpMkcol(path);
 	    try {
-	    	executeMethod(HttpStatus.SC_CREATED,  mk, true);
+	    	executeMethod(CaldavStatus.SC_CREATED,  mk, true);
 	    } catch (Exception e){
 	        throw new RuntimeException(e);
 	    }
@@ -243,22 +277,26 @@ public class CalDavFixture
 	 * @param resourceFileName
 	 * @param path
 	 */
-	public void put(String resourceFileName, String path) {    	
-	    PutMethod put = methodFactory.createPutMethod();
+	public void put(String resourceFileName, String path) {
+	    HttpPutMethod put = methodFactory.createPutMethod(path, new CalendarRequest());
 	    InputStream stream = this.getClass().getClassLoader()
 	    .getResourceAsStream(resourceFileName);
 	    String event = UrlUtils.parseISToString(stream);
 	    event = event.replaceAll("DTSTAMP:.*", "DTSTAMP:" + new DateTime(true).toString());
 	    log.debug(new DateTime(true).toString());
-	    //log.trace(event);        
-	    
-	    put.setRequestEntity(event);
-	    put.setPath(path);
-		log.debug("\nPUT " + put.getPath());
+	    //log.trace(event);
+
+		try {
+			put.setEntity(new StringEntity(event));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		log.debug("\nPUT " + put.getURI());
 	    try {
-	        executeMethod(CaldavStatus.SC_CREATED, put, true);
+	        HttpResponse response = executeMethod(CaldavStatus.SC_CREATED, put, true);
 	        
-	        int statusCode =  put.getStatusCode();
+	        int statusCode =  response.getStatusLine().getStatusCode();
 	        
 	        switch (statusCode) {
 			case CaldavStatus.SC_CREATED:
@@ -270,8 +308,9 @@ public class CalDavFixture
 			case CaldavStatus.SC_CONFLICT:
 				log.error("conflict: item still on server");
 			default:
-	            log.error(put.getResponseBodyAsString());
-				throw new Exception("trouble executing PUT of " +resourceFileName + "\nresponse:" + put.getResponseBodyAsString());
+				String respBody = EntityUtils.toString(response.getEntity());
+	            log.error(respBody);
+				throw new Exception("trouble executing PUT of " +resourceFileName + "\nresponse:" + respBody);
 	
 			}
 	    } catch (Exception e){
@@ -334,6 +373,14 @@ public class CalDavFixture
 
 	public void setHttpClient(HttpClient httpClient) {
 		this.httpClient = httpClient;
+	}
+
+	public HttpHost getHostConfig() {
+		return hostConfig;
+	}
+
+	public void setHostConfig(HttpHost hostConfig) {
+		this.hostConfig = hostConfig;
 	}
 	
 }

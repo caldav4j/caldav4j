@@ -1,6 +1,8 @@
 package org.osaf.caldav4j.methods;
 
-import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
@@ -50,38 +52,38 @@ public class NewPropFindTest extends BaseTestCase{
     @Test
     public void basicTest() throws IOException, DavException {
         HttpClient http = fixture.getHttpClient();;
-        HostConfiguration hostConfig = http.getHostConfiguration();
+        HttpHost hostConfig = fixture.getHostConfig();
         DavPropertyNameSet props = new DavPropertyNameSet();
         props.add(DavPropertyName.DISPLAYNAME);
 
-        PropFindMethod p = new PropFindMethod(fixture.getCollectionPath(), props, DavConstants.DEPTH_0);
+        HttpPropFindMethod p = new HttpPropFindMethod(fixture.getCollectionPath(), props, DavConstants.DEPTH_0);
 
-        http.executeMethod(hostConfig, p);
-        log.info(p.getStatusLine().toString());
-        MultiStatusResponse[] responses = p.getResponseBodyAsMultiStatus().getResponses();
+        HttpResponse response = http.execute(hostConfig, p);
+        log.info(response.getStatusLine().toString());
+        MultiStatusResponse[] responses = p.getResponseBodyAsMultiStatus(response).getResponses();
         for(MultiStatusResponse r: responses){
             log.info(r.getHref());
         }
-        log.info(p.getDisplayName(fixture.getCollectionPath()));
+        log.info(p.getDisplayName(response, fixture.getCollectionPath()));
     }
 
     @Test
     public  void testGetAcl() throws IOException, DavException, ParserConfigurationException, CalDAV4JException {
         String collectionPath = fixture.getCollectionPath();
         HttpClient http = fixture.getHttpClient();
-        HostConfiguration hostConfig = http.getHostConfiguration();
+        HttpHost hostConfig = fixture.getHostConfig();
         DavPropertyNameSet props = new DavPropertyNameSet();
         //Propfind for only DAV:acl
         props.add(CalDAVConstants.DAV_ACL, CalDAVConstants.NAMESPACE_WEBDAV);
 
 
-        PropFindMethod p = new PropFindMethod(collectionPath, props, DavConstants.DEPTH_0);
+        HttpPropFindMethod p = new HttpPropFindMethod(collectionPath, props, DavConstants.DEPTH_0);
 
-        http.executeMethod(hostConfig, p);
-        log.info(p.getStatusLine().toString());
+        HttpResponse response = http.execute(hostConfig, p);
+        log.info(response.getStatusLine().toString());
 
         //Get all the processed aces and print them to log.
-        List<AclProperty.Ace> aces = p.getAces(collectionPath);
+        List<AclProperty.Ace> aces = p.getAces(response, collectionPath);
         try {
             print_Ace(aces);
         } catch (TransformerException e) {

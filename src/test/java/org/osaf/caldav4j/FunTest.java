@@ -4,7 +4,9 @@ import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.parameter.Value;
-import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -14,6 +16,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.osaf.caldav4j.functional.support.CaldavFixtureHarness;
+import org.osaf.caldav4j.methods.HttpPropFindMethod;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,16 +44,16 @@ public class FunTest extends BaseTestCase {
 	@Test
 	public void testFun() throws Exception{
 		HttpClient http = createHttpClient();
-		HostConfiguration hostConfig = createHostConfiguration();
+		HttpHost hostConfig = createHostConfiguration();
 
 		DavPropertyNameSet set = new DavPropertyNameSet();
         DavPropertyName resourcetype= DavPropertyName.create("resourcetype");
 		set.add(resourcetype);
-		PropFindMethod propFindMethod = new PropFindMethod(fixture.getCollectionPath(), set,
+		HttpPropFindMethod propFindMethod = new HttpPropFindMethod(fixture.getCollectionPath(), set,
 				CalDAVConstants.DEPTH_INFINITY);
 
-		http.executeMethod(hostConfig, propFindMethod);
-		MultiStatusResponse[] e = propFindMethod.getResponseBodyAsMultiStatus().getResponses();
+		HttpResponse httpResponse = http.execute(hostConfig, propFindMethod);
+		MultiStatusResponse[] e = propFindMethod.getResponseBodyAsMultiStatus(httpResponse).getResponses();
 
         for(MultiStatusResponse response : e){
             DavPropertySet properties = response.getProperties(CaldavStatus.SC_OK);

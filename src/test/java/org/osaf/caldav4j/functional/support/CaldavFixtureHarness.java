@@ -2,11 +2,12 @@ package org.osaf.caldav4j.functional.support;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.http.HttpHost;
 import org.osaf.caldav4j.CalDAVCollection;
 import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.TestConstants;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
+import org.osaf.caldav4j.exceptions.CacheException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +17,9 @@ public class CaldavFixtureHarness implements TestConstants {
 	
 	
 	public static CalDAVCollection createCollectionFromFixture(CalDavFixture fixture) {
-		HostConfiguration conf = (HostConfiguration) fixture.getHttpClient().getHostConfiguration().clone();
-		 return new CalDAVCollection(
+		HttpHost conf = new HttpHost(fixture.getHostConfig());
+
+		return new CalDAVCollection(
 					fixture.getCollectionPath(),
 					conf,
 					fixture.getMethodFactory(),
@@ -54,10 +56,10 @@ public class CaldavFixtureHarness implements TestConstants {
 	/**
 	 * 
 	 */
-	public static EhCacheResourceCache createSimpleCache() {
+	public static EhCacheResourceCache createSimpleCache() throws CacheException {
 		//initialize cache
 		CacheManager cacheManager = CacheManager.create();
-		EhCacheResourceCache myCache = new EhCacheResourceCache();
+		EhCacheResourceCache myCache = EhCacheResourceCache.getCacheInstance();
 		Cache uidToHrefCache = new Cache(UID_TO_HREF_CACHE, 1000, null, false,
 				System.getProperty("java.io.tmpdir"), false, 600, 300, false, 0, null);
 		Cache hrefToResourceCache = new Cache(HREF_TO_RESOURCE_CACHE, 1000,

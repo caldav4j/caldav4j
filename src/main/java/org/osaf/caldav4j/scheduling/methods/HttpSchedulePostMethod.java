@@ -1,13 +1,7 @@
 package org.osaf.caldav4j.scheduling.methods;
 
-import java.io.IOException;
-
-import org.apache.commons.httpclient.HttpConnection;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.http.client.methods.HttpPost;
-import org.osaf.caldav4j.methods.HttpPostMethod;
-
+import net.fortuna.ical4j.data.CalendarOutputter;
+import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.CalendarComponent;
@@ -15,20 +9,32 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Organizer;
+import org.osaf.caldav4j.methods.HttpPostMethod;
+import org.osaf.caldav4j.model.request.CalendarRequest;
+
+import java.net.URI;
 
 /** Make sure to call addRequestHeaders() before the method is executed. */
 public class HttpSchedulePostMethod extends HttpPostMethod {
 
-	@Override
+	public HttpSchedulePostMethod(URI uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+		super(uri, calendarRequest, calendarOutputter);
+	}
+
+	public HttpSchedulePostMethod(String uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+		super(uri, calendarRequest, calendarOutputter);
+	}
+
 	// we have to set the Attendees and Organize headers taken from Calendar
-	public void addRequestHeaders() {
+	protected void addRequestHeaders(CalendarRequest calendarRequest) {
 
 		boolean addOrganizerToAttendees = false;
 		boolean hasAttendees = false;
-		
+
+		Calendar calendar = calendarRequest.getCalendar();
 		// get ATTENDEES and ORGANIZER from ical and add 
 		// Originator and Recipient to Header
-		if ( this.calendar != null) {
+		if ( calendar != null) {
 			ComponentList cList = calendar.getComponents(); 
 			if (Method.REPLY.equals(calendar.getProperty(Property.METHOD))) {
 				addOrganizerToAttendees = true;
@@ -58,7 +64,7 @@ public class HttpSchedulePostMethod extends HttpPostMethod {
 			}    					
 		}
 
-		super.addRequestHeaders();
+		super.addRequestHeaders(calendarRequest);
 	}
 	
 }

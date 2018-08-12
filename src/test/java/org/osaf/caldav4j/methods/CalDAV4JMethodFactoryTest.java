@@ -38,7 +38,7 @@ public class CalDAV4JMethodFactoryTest
 	public void createCalDAVReportMethod() throws IOException {
 		CalDAV4JMethodFactory factory = new CalDAV4JMethodFactory();
 
-		CalDAVReportMethod method = factory.createCalDAVReportMethod("url");
+		HttpGetMethod method = factory.createGetMethod("url");
 		
 		assertNotNull("Method", method);
 		assertNotNull("Calendar builder", method.getCalendarBuilder());
