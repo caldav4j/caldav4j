@@ -1,11 +1,10 @@
 package com.github.caldav4j.util;
 
 import com.github.caldav4j.exceptions.*;
+import com.github.caldav4j.exceptions.ResourceNotFoundException.IdentifierType;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.util.EntityUtils;
-import org.osaf.caldav4j.exceptions.*;
-import com.github.caldav4j.exceptions.ResourceNotFoundException.IdentifierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

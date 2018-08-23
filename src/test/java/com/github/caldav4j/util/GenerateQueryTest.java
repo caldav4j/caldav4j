@@ -6,6 +6,10 @@
  */
 package com.github.caldav4j.util;
 
+import com.github.caldav4j.BaseTestCase;
+import com.github.caldav4j.CalDAVConstants;
+import com.github.caldav4j.exceptions.CalDAV4JException;
+import com.github.caldav4j.exceptions.DOMValidationException;
 import com.github.caldav4j.methods.PutGetTest;
 import com.github.caldav4j.model.request.*;
 import net.fortuna.ical4j.model.Component;
@@ -13,11 +17,6 @@ import net.fortuna.ical4j.model.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.github.caldav4j.BaseTestCase;
-import com.github.caldav4j.CalDAVConstants;
-import com.github.caldav4j.exceptions.CalDAV4JException;
-import com.github.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.model.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;

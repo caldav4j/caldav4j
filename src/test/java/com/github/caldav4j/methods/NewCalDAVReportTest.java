@@ -1,7 +1,11 @@
 package com.github.caldav4j.methods;
 
+import com.github.caldav4j.BaseTestCase;
+import com.github.caldav4j.CalDAVConstants;
+import com.github.caldav4j.cache.EhCacheResourceCache;
 import com.github.caldav4j.functional.support.CaldavFixtureHarness;
 import com.github.caldav4j.model.request.*;
+import com.github.caldav4j.model.response.CalendarDataProperty;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
@@ -17,11 +21,6 @@ import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import com.github.caldav4j.BaseTestCase;
-import com.github.caldav4j.CalDAVConstants;
-import com.github.caldav4j.cache.EhCacheResourceCache;
-import org.osaf.caldav4j.model.request.*;
-import com.github.caldav4j.model.response.CalendarDataProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;

@@ -1,15 +1,14 @@
 package com.github.caldav4j.util;
 
+import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.exceptions.CalDAV4JException;
+import com.github.caldav4j.exceptions.CalDAV4JProtocolException;
+import com.github.caldav4j.exceptions.DOMValidationException;
 import com.github.caldav4j.model.request.*;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
-import com.github.caldav4j.CalDAVConstants;
-import com.github.caldav4j.exceptions.CalDAV4JProtocolException;
-import com.github.caldav4j.exceptions.DOMValidationException;
-import org.osaf.caldav4j.model.request.*;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
