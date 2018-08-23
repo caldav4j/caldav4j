@@ -1,0 +1,32 @@
+package com.github.caldav4j.functional;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import com.github.caldav4j.credential.CaldavCredential;
+import com.github.caldav4j.dialect.CalDavDialect;
+import com.github.caldav4j.dialect.ChandlerCalDavDialect;
+
+@RunWith(Parameterized.class)
+public class FreeBusyQueryFunctionalTestSuite extends FreeBusyQueryFunctionalTest {
+	public FreeBusyQueryFunctionalTestSuite(CaldavCredential credential,
+			CalDavDialect dialect) {
+		super(credential, dialect);
+	}
+
+	@Parameters
+	public static Collection<Object[]> getCaldavCredentials() {
+		return Arrays.asList(new Object[][] {
+				{new CaldavCredential(), new ChandlerCalDavDialect()}
+				// ,{new BedeworkCaldavCredential(), new BedeworkCalDavDialect()}
+				// TODO Google doesn't support FB
+				// , {new GCaldavCredential(), new GoogleCalDavDialect()} 
+
+		});
+	}
+
+	
+}

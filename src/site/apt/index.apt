@@ -89,7 +89,7 @@ FAQ
   
 **  FAQ 2.2
 
-  Q: I cannot run the tests, getting errors like org.osaf.caldav4j.exceptions.CalDAV4JException: Unexpected status code: 400
+  Q: I cannot run the tests, getting errors like CalDAV4JException: Unexpected status code: 400
   
   A: Ensure you're pointing to the right caldav uri, eventually testing the uri with your browser. eg.
   
