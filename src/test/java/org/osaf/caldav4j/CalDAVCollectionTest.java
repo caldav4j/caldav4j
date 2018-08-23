@@ -84,6 +84,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 			assertNull(e);
 		}
 		HttpHost hostConfig = HttpHost.create("http://UNEXISTENT");
+		collection.setHttpHost(hostConfig);
 		try {
 			int actual = collection.testConnection(fixture.getHttpClient());
 			assertFalse("Hey! We shouldn't be able to connect now", 

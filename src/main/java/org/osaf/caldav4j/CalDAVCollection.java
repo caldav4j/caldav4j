@@ -29,7 +29,9 @@ import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.jackrabbit.webdav.MultiStatus;
@@ -54,9 +56,7 @@ import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.osaf.caldav4j.util.ICalendarUtils.getMasterEvent;
-import static org.osaf.caldav4j.util.ICalendarUtils.getTimezone;
-import static org.osaf.caldav4j.util.ICalendarUtils.getUIDValue;
+import static org.osaf.caldav4j.util.ICalendarUtils.*;
 import static org.osaf.caldav4j.util.UrlUtils.stripHost;
 
 /**
@@ -597,7 +597,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
             }
 
             String href = getHref(path);
-			String etag = getMethod.getFirstHeader(CalDAVConstants.HEADER_ETAG).getValue();
+			String etag = response.getFirstHeader(CalDAVConstants.HEADER_ETAG).getValue();
 			Calendar calendar = null;
 
 
@@ -659,7 +659,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @return a path with double slashes removed
 	 */
 	protected String getAbsolutePath(String relativePath){
-		return   (getCalendarCollectionRoot() + "/" + relativePath).replaceAll("/+", "/");
+		return   (getCalendarCollectionRoot() + relativePath).replaceAll("/+", "/");
 	}
 
 
@@ -796,7 +796,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		}
 		HttpCalDAVReportMethod reportMethod = null;
 		try {
-            reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), query);
+            reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), query, CalDAVConstants.DEPTH_1);
 			HttpResponse httpResponse = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
 
             MultiStatusResponse[] set = reportMethod.getResponseBodyAsMultiStatus(httpResponse).getResponses();
@@ -840,7 +840,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 		HttpCalDAVReportMethod reportMethod = null;
 		try {
-            reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), query);
+            reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), query, CalDAVConstants.DEPTH_1);
 			HttpResponse response = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
 
             if(reportMethod.succeeded(response))
@@ -884,7 +884,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
         List<CalDAVResource> list = new ArrayList<CalDAVResource>();
 		try {
             reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(),
-                    query);
+                    query, CalDAVConstants.DEPTH_1);
 			HttpResponse httpResponse = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
 
             log.trace("Parsing response.. " );
@@ -938,7 +938,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
         List<Calendar> list = new ArrayList<Calendar>();
 
 		try {
-            reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), query);
+            reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), query, CalDAVConstants.DEPTH_1);
 			HttpResponse httpResponse = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
 
             MultiStatusResponse[] e = reportMethod.getResponseBodyAsMultiStatus(httpResponse).getResponses();
@@ -1024,7 +1024,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			case CaldavStatus.SC_OK:
 				break;
 			default:
-				throw new BadStatusException(response.getStatusLine().getStatusCode(), method.getMethod(), getCalendarCollectionRoot().toString());
+				throw new BadStatusException(response.getStatusLine().getStatusCode(), method.getMethod(), getCalendarCollectionRoot());
 		}
 		return response.getStatusLine().getStatusCode();
 	}
@@ -1059,7 +1059,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		HttpPropFindMethod method = null;
 
 		try {
-			method = methodFactory.createPropFindMethod(getCalendarCollectionRoot().resolve(UrlUtils.defaultString(path, "")),
+			method = methodFactory.createPropFindMethod(getCalendarCollectionRoot() + UrlUtils.defaultString(path, ""),
 					propfind, CalDAVConstants.DEPTH_0);
 			HttpResponse response = httpClient.execute(getDefaultHttpHost(method.getURI()), method);
 
@@ -1093,7 +1093,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		HttpAclMethod method = null;
 
 		try {
-			method = methodFactory.createAclMethod(getCalendarCollectionRoot().resolve(UrlUtils.defaultString(path, ""))
+			method = methodFactory.createAclMethod(getCalendarCollectionRoot() + UrlUtils.defaultString(path, "")
 					, new AclProperty(aces));
 			HttpResponse response = client.execute(method);
 			int status = response.getStatusLine().getStatusCode();
@@ -1104,7 +1104,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 					throw new ResourceNotFoundException(IdentifierType.PATH, method.getURI().toString());
 				case CaldavStatus.SC_UNAUTHORIZED:
 				default:
-					throw new BadStatusException(status, method.getMethod(),  getCalendarCollectionRoot().toString());
+					throw new BadStatusException(status, method.getMethod(),  getCalendarCollectionRoot());
 			}
 
 		} catch (IOException e) {

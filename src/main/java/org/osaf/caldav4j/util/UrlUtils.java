@@ -53,6 +53,10 @@ public class UrlUtils {
 		return s.replaceAll("([^:])/{2,}", "$1/");
 	}
 
+	public static String ensureTrailingSlash(String s) {
+		return (s.endsWith("/"))? s.concat("/") : s;
+	}
+
 	/**
 	 * Return the Value of the Header
 	 *

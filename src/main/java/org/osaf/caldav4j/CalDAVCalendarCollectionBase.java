@@ -16,7 +16,6 @@ package org.osaf.caldav4j;
 
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.http.HttpHost;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIUtils;
 import org.osaf.caldav4j.cache.CalDAVResourceCache;
 import org.osaf.caldav4j.cache.EhCacheResourceCache;
@@ -26,6 +25,7 @@ import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.methods.CalDAV4JMethodFactory;
 import org.osaf.caldav4j.methods.HttpPutMethod;
 import org.osaf.caldav4j.model.request.CalendarRequest;
+import org.osaf.caldav4j.util.UrlUtils;
 
 import java.net.URI;
 import java.util.Random;
@@ -38,7 +38,7 @@ import java.util.Random;
 public abstract class CalDAVCalendarCollectionBase {
 
 	protected CalDAV4JMethodFactory methodFactory = null;
-	protected URI calendarCollectionRoot = null;
+	protected String calendarCollectionRoot = null;
 	protected HttpHost httpHost = null;
 	protected String prodId = null;
 	protected Random random = new Random();
@@ -88,7 +88,7 @@ public abstract class CalDAVCalendarCollectionBase {
 	 *
 	 * @return CalendarCollectionRoot
 	 */
-	public URI getCalendarCollectionRoot() {
+	public String getCalendarCollectionRoot() {
 		return calendarCollectionRoot;
 	}
 
@@ -97,15 +97,7 @@ public abstract class CalDAVCalendarCollectionBase {
 	 * @param path Calendar Collection Root
 	 */
 	public void setCalendarCollectionRoot(String path) {
-		this.calendarCollectionRoot = URI.create(path);
-	}
-
-	/**
-	 * Set base path, creates a URI object from the string
-	 * @param uri Calendar Collection Root
-	 */
-	public void setCalendarCollectionRoot(URI uri) {
-		this.calendarCollectionRoot = uri;
+		this.calendarCollectionRoot = UrlUtils.removeDoubleSlashes(UrlUtils.ensureTrailingSlash(path));
 	}
 
 
@@ -143,7 +135,7 @@ public abstract class CalDAVCalendarCollectionBase {
 		cr.setAllEtags(true);
 		cr.setIfNoneMatch(true);
 		cr.setCalendar(calendar);
-		return methodFactory.createPutMethod(calendarCollectionRoot.resolve("/" + resourceName), cr);
+		return methodFactory.createPutMethod(calendarCollectionRoot + resourceName, cr);
 	}
 
 	/**
@@ -155,7 +147,7 @@ public abstract class CalDAVCalendarCollectionBase {
 		EhCacheResourceCache cache = null;
 		if (!isCacheEnabled()) {
 			try {
-				cache = EhCacheResourceCache.getCacheInstance();
+				cache = EhCacheResourceCache.createSimpleCache();
 			} catch (CacheException e) {
 				// avoid error if cache doesn't exist
 				e.printStackTrace();
@@ -169,7 +161,7 @@ public abstract class CalDAVCalendarCollectionBase {
 	 *
 	 */
 	public void disableSimpleCache() {
-		EhCacheResourceCache.destroyCacheInstance();
+		EhCacheResourceCache.removeSimpleCache();
 		this.setCache(NoOpResourceCache.getCacheInstance());
 	}
 

@@ -23,17 +23,6 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 
 	private static EhCacheResourceCache cache = null;
 
-	public static EhCacheResourceCache getCacheInstance() throws org.osaf.caldav4j.exceptions.CacheException {
-		if(cache == null)
-			cache = createSimpleCache();
-
-		return cache;
-	}
-
-	public static void destroyCacheInstance() {
-		removeSimpleCache();
-	}
-
 	private EhCacheResourceCache() {
 
 	}
@@ -45,7 +34,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	 * @return a simple EhCacheResourceCache
 	 * @throws org.osaf.caldav4j.exceptions.CacheException on error
 	 */
-	private static EhCacheResourceCache createSimpleCache()
+	public static EhCacheResourceCache createSimpleCache()
 			throws org.osaf.caldav4j.exceptions.CacheException {
 
 		CacheManager cacheManager = CacheManager.create();
@@ -68,7 +57,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	/**
 	 * Remove simple cache from the manager
 	 */
-	private static void removeSimpleCache() {
+	public static void removeSimpleCache() {
 		CacheManager cacheManager = CacheManager.create();
 		cacheManager.removeCache(UID_TO_HREF_CACHE);
 		cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);

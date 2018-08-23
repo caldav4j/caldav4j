@@ -1,20 +1,11 @@
 package org.osaf.caldav4j.methods;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-
+import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.HttpEntity;
+import net.fortuna.ical4j.model.Calendar;
 import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavMethods;
-import org.apache.jackrabbit.webdav.DavServletResponse;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.client.methods.BaseDavRequest;
 import org.apache.jackrabbit.webdav.client.methods.XmlEntity;
@@ -23,14 +14,16 @@ import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import org.osaf.caldav4j.CalDAVConstants;
-import org.osaf.caldav4j.exceptions.CalDAV4JException;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.util.CaldavStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.model.Calendar;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * HttpCalDAVReport Method, which extends BaseDavRequest. Implements Section
@@ -64,7 +57,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 	 * @throws IOException
 	 */
 	public HttpCalDAVReportMethod(URI uri, CalDAVReportRequest reportRequest) throws IOException {
-		this(uri, reportRequest, CalDAVConstants.DEPTH_0);
+		this(uri, reportRequest, CalDAVConstants.DEPTH_1);
 	}
 
     /**

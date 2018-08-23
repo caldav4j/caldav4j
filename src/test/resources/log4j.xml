@@ -50,7 +50,7 @@
   <logger name="org.osaf">
     <level value="INFO"/>
   </logger>
-  <logger name="httpclient.wire">
+  <logger name="org.apache.http.wire">
     <level value="WARN"/>
   </logger>
   <root>

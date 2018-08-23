@@ -20,7 +20,6 @@ import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.security.AclProperty;
-import org.osaf.caldav4j.CalDAVConstants;
 import org.osaf.caldav4j.model.request.CalDAVReportRequest;
 import org.osaf.caldav4j.model.request.CalendarRequest;
 import org.osaf.caldav4j.model.request.MkCalendar;
@@ -50,7 +49,7 @@ public class CalDAV4JMethodFactory {
 	 * @return the instance
 	 */
 	public HttpPutMethod createPutMethod(URI uri, CalendarRequest calendarRequest){
-		return new HttpPutMethod(uri, calendarRequest, calendarOutputter);
+		return new HttpPutMethod(uri, calendarRequest, getCalendarOutputterInstance());
 	}
 
 	/**
@@ -58,7 +57,7 @@ public class CalDAV4JMethodFactory {
 	 * @return the instance
 	 */
 	public HttpPutMethod createPutMethod(String uri, CalendarRequest calendarRequest){
-		return new HttpPutMethod(uri, calendarRequest, calendarOutputter);
+		return new HttpPutMethod(uri, calendarRequest, getCalendarOutputterInstance());
 	}
 
 	/**
@@ -66,7 +65,7 @@ public class CalDAV4JMethodFactory {
 	 * @return the instance
 	 */
 	public HttpPostMethod createPostMethod(URI uri, CalendarRequest calendarRequest){
-		return new HttpPostMethod(uri, calendarRequest, calendarOutputter);
+		return new HttpPostMethod(uri, calendarRequest, getCalendarOutputterInstance());
 	}
 
 	/**
@@ -74,7 +73,7 @@ public class CalDAV4JMethodFactory {
 	 * @return the instance
 	 */
 	public HttpPostMethod createPostMethod(String uri, CalendarRequest calendarRequest){
-		return new HttpPostMethod(uri, calendarRequest, calendarOutputter);
+		return new HttpPostMethod(uri, calendarRequest, getCalendarOutputterInstance());
 	}
 
 	/**
@@ -162,6 +161,30 @@ public class CalDAV4JMethodFactory {
 	 * @return the instance
 	 */
 	public HttpPropFindMethod createPropFindMethod(URI uri, int propfindtype, DavPropertyNameSet names, int depth) throws IOException {
+		return new HttpPropFindMethod(uri, propfindtype, names, depth);
+	}
+
+	/**
+	 * Creates a {@link HttpPropFindMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param names Properties to make the Propfind request for.
+	 * @param depth Depth of the Request
+	 * @return the instance
+	 */
+	public HttpPropFindMethod createPropFindMethod(String uri, DavPropertyNameSet names, int depth)
+			throws IOException {
+		return new HttpPropFindMethod(uri, names, depth);
+	}
+
+	/**
+	 * Creates a {@link HttpPropFindMethod} instance.
+	 * @param uri URI to the Calendar resource.
+	 * @param propfindtype Type of Propfind Call.
+	 * @param names Properties to make the Propfind request for.
+	 * @param depth Depth of the Request
+	 * @return the instance
+	 */
+	public HttpPropFindMethod createPropFindMethod(String uri, int propfindtype, DavPropertyNameSet names, int depth) throws IOException {
 		return new HttpPropFindMethod(uri, propfindtype, names, depth);
 	}
 
