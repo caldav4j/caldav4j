@@ -119,7 +119,21 @@ public abstract class CalDAVCalendarCollectionBase {
 	}
 
 	public String getHref(String path) {
-		return URI.create(path).toString();
+		HttpHost httpHost = getDefaultHttpHost(URI.create(calendarCollectionRoot));
+		int port = httpHost.getPort();
+		String scheme = httpHost.getSchemeName();
+		String portString = "";
+		if ( (port != 80 && "http".equals(scheme)) ||
+				(port != 443 && "https".equals(scheme))
+		) {
+			portString = ":" + port;
+		}
+
+		return UrlUtils.removeDoubleSlashes(
+				String.format("%s://%s%s/%s", scheme,
+						httpHost.getHostName(),
+						portString, path )
+		);
 	}
 
 	/**

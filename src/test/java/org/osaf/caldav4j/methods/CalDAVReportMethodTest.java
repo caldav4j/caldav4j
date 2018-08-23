@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.osaf.caldav4j.support.HttpClientTestUtils.executeMethod;
 import static org.osaf.caldav4j.support.HttpMethodCallbacks.calendarReportCallback;
 
@@ -49,14 +49,15 @@ public class CalDAVReportMethodTest extends BaseTestCase {
 		HttpCalDAVReportMethod method = createMethod("/path", new FakeCalDAVReportRequest());
 
 		String expectedRequest = "REPORT /path HTTP/1.1\r\n"
-				+ "User-Agent: Jakarta Commons-HttpClient/3.1\r\n"
-				+ "Host: localhost\r\n"
-				+ "Content-Length: 36\r\n"
 				+ "Depth: 1\r\n"
-				+ "Content-Type: text/xml\r\n"
+				+ "Content-Length: 67\r\n"
+				+ "Content-Type: application/xml; charset=UTF-8\r\n"
+				+ "Host: localhost:80\r\n"
+				+ "Connection: Keep-Alive\r\n"
+				+ "User-Agent: Apache-HttpClient/4.5.6 (Java/1.8.0_171)\r\n"
+				+ "Accept-Encoding: gzip,deflate\r\n"
 				+ "\r\n"
-				+ "<?xml version=\"1.0\"?>\n"
-				+ "<fake-query/>\n";
+				+ "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><fake-query/>";
 
 		String response = "HTTP/1.1 200 OK\r\n"
 				+ "Content-Type: text/calendar"
@@ -67,6 +68,7 @@ public class CalDAVReportMethodTest extends BaseTestCase {
 				+ "VERSION:2.0\n"
 				+ "END:VCALENDAR\n";
 
+		HttpClientTestUtils.setFakeSocketImplFactory();
 		HttpClientTestUtils.setFakeSocketImpl(expectedRequest, response);
 		Calendar actual = executeMethod(CaldavStatus.SC_OK, method, calendarReportCallback());
 
