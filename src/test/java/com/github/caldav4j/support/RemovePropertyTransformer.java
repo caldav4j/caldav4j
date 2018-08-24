@@ -33,7 +33,7 @@ import net.fortuna.ical4j.transform.Transformer;
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
  * @version $Id$
  */
-class RemovePropertyTransformer extends Transformer
+class RemovePropertyTransformer implements Transformer<Calendar>
 {
 	// fields -----------------------------------------------------------------
 	
