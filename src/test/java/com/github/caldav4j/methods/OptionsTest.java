@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import com.github.caldav4j.BaseTestCase;
-import com.github.caldav4j.util.CaldavStatus;
+import com.github.caldav4j.util.CalDAVStatus;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -55,7 +55,7 @@ public class OptionsTest extends BaseTestCase {
 
 	        try {
 				HttpResponse response = http.execute(hostConfig, options);
-				if (response.getStatusLine().getStatusCode() == CaldavStatus.SC_OK) {
+				if (response.getStatusLine().getStatusCode() == CalDAVStatus.SC_OK) {
 					log.info(response.getFirstHeader("Allow").toString());
 					for (Header h : response.getHeaders("DAV")) {
 						if (h != null) {

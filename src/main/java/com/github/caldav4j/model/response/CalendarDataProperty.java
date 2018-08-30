@@ -25,7 +25,7 @@ import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import com.github.caldav4j.CalDAVConstants;
-import com.github.caldav4j.util.CaldavStatus;
+import com.github.caldav4j.util.CalDAVStatus;
 
 import java.io.StringReader;
 
@@ -48,12 +48,7 @@ public class CalendarDataProperty {
 
     public  static ThreadLocal<CalendarBuilder> getCalendarBuilderThreadLocal() {
     	if(calendarBuilderThreadLocal == null)
-    		calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>(){
-			    @Override
-			    protected CalendarBuilder initialValue(){
-				    return new CalendarBuilder();
-			    }
-		    };
+    		calendarBuilderThreadLocal = ThreadLocal.withInitial(CalendarBuilder::new);
     	return calendarBuilderThreadLocal;
     }
 
@@ -106,7 +101,7 @@ public class CalendarDataProperty {
      * @return Calendar retrieved from Response
      */
     public static Calendar getCalendarfromResponse(MultiStatusResponse response){
-        return getCalendarfromProperty(response.getProperties(CaldavStatus.SC_OK).get(CalDAVConstants.DNAME_CALENDAR_DATA));
+        return getCalendarfromProperty(response.getProperties(CalDAVStatus.SC_OK).get(CalDAVConstants.DNAME_CALENDAR_DATA));
     }
 
     /**
@@ -115,7 +110,7 @@ public class CalendarDataProperty {
 	 * @return ETag String
      */
     public static String getEtagfromResponse(MultiStatusResponse response){
-        return getEtagfromProperty(response.getProperties(CaldavStatus.SC_OK).get(DavPropertyName.GETETAG));
+        return getEtagfromProperty(response.getProperties(CalDAVStatus.SC_OK).get(DavPropertyName.GETETAG));
     }
 
     /**

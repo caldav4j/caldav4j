@@ -7,9 +7,7 @@ import com.github.caldav4j.functional.support.CaldavFixtureHarness;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.DtStart;
-import net.fortuna.ical4j.model.property.Summary;
-import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.*;
 import org.apache.http.HttpHost;
 import org.junit.After;
 import org.junit.Before;
@@ -20,7 +18,7 @@ import com.github.caldav4j.exceptions.CalDAV4JException;
 import com.github.caldav4j.exceptions.ResourceNotFoundException;
 import com.github.caldav4j.model.request.CalendarData;
 import com.github.caldav4j.model.request.CalendarQuery;
-import com.github.caldav4j.util.CaldavStatus;
+import com.github.caldav4j.util.CalDAVStatus;
 import com.github.caldav4j.util.GenerateQuery;
 import com.github.caldav4j.util.ICalendarUtils;
 import org.slf4j.Logger;
@@ -78,7 +76,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 			// test with the right collection is ok
 			int actual = collection.testConnection(fixture.getHttpClient());
 
-			assertEquals(CaldavStatus.SC_OK, actual);
+			assertEquals(CalDAVStatus.SC_OK, actual);
 		} catch (CalDAV4JException e) {
 			e.printStackTrace();
 			assertNull(e);
@@ -87,8 +85,8 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		collection.setHttpHost(hostConfig);
 		try {
 			int actual = collection.testConnection(fixture.getHttpClient());
-			assertFalse("Hey! We shouldn't be able to connect now", 
-					actual==CaldavStatus.SC_OK);
+			assertFalse("Hey! We shouldn't be able to connect now",
+					actual == CalDAVStatus.SC_OK);
 		} catch (CalDAV4JException e) {
 			// do nothing, it should except
 			assertNotNull("Server shouldn't connect now", e);
@@ -143,11 +141,9 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	@Ignore
 	@Test
 	public void queryPartialCalendar() throws CalDAV4JException, IOException {
-		Calendar calendar = null;
 		GenerateQuery gq=new GenerateQuery();
 
 		//query by UID in a given timerange
-		calendar = null;
 		gq.setFilter("VEVENT : UID=="+ICS_GOOGLE_DAILY_NY_5PM_UID );
 		gq.setRecurrenceSet("20060101T170000Z","20060103T230000Z", CalendarData.EXPAND);
 		CalendarQuery query = gq.generate();
@@ -155,7 +151,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		assertNotNull(calendars);
 		assertEquals("bad number of responses: ",3,calendars.size());
 		for (Calendar c : calendars) {
-			assertEquals(ICalendarUtils.getUIDValue(calendar), ICS_GOOGLE_DAILY_NY_5PM_UID);
+			assertEquals(ICalendarUtils.getUIDValue(c), ICS_GOOGLE_DAILY_NY_5PM_UID);
 			assertNotNull(ICalendarUtils.getPropertyValue(c.getComponent(Component.VEVENT), Property.RECURRENCE_ID));
 		}
 		//check if is in cache

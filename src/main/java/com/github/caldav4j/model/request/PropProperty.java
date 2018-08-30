@@ -40,7 +40,7 @@ import java.util.*;
 public class PropProperty<T> extends DefaultDavProperty<T>{
 
     private Map<String, String> attributes = null;
-    private Collection<XmlSerializable> children = new ArrayList<XmlSerializable>();
+    private Collection<XmlSerializable> children = new ArrayList<>();
 
 	/**
 	 * Create a Property from the parameters
@@ -63,7 +63,7 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
 	public PropProperty(String namespaceURI, String namespaceQualifier,
             String propertyName, Collection<XmlSerializable> children) {
 
-        this(propertyName, null, Namespace.getNamespace(namespaceQualifier, namespaceURI), null, children);;
+        this(propertyName, null, Namespace.getNamespace(namespaceQualifier, namespaceURI), null, children);
     }
 
 	/**
@@ -156,7 +156,7 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
      */
     public void addAttribute(String key, String value){
         if (attributes == null)
-            attributes = new HashMap<String, String>();
+            attributes = new HashMap<>();
         attributes.put(key, value);
     }
 
@@ -271,7 +271,7 @@ public class PropProperty<T> extends DefaultDavProperty<T>{
 
     public static Collection<DavProperty> getChildrenfromValue(DavProperty property) {
 
-        Collection<DavProperty> coll = new ArrayList<DavProperty>();
+        Collection<DavProperty> coll = new ArrayList<>();
         if(property != null) {
 
             if (property.getValue() instanceof DavProperty) {

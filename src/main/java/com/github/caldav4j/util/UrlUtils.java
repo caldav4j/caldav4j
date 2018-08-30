@@ -87,9 +87,10 @@ public class UrlUtils {
 
 			String line = null;
 			while((line=din.readLine()) != null){
-				sb.append(line+"\n");
+				sb.append(line);
+				sb.append("\n");
 			}
-		}catch(Exception ex){
+		} catch(Exception ex){
 			ex.getMessage();
 		}finally{
 			try{
@@ -126,9 +127,7 @@ public class UrlUtils {
 	 * @return True if blank.
 	 */
 	public static boolean isBlank(String str) {
-		if (str == null || (str.length()) == 0 || "".equals(str.trim()))
-			return true;
-		else return false;
+		return (str == null || (str.length()) == 0 || "".equals(str.trim()));
 	}
 
 	/**

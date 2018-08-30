@@ -75,7 +75,7 @@ public class TimeRange extends OutputsDOMBase {
     }
     
     protected Map<String, String> getAttributes() {
-        Map<String, String> m =  new LinkedHashMap<String, String>();
+        Map<String, String> m = new LinkedHashMap<>();
         if (start != null) {
         	m.put(ATTR_START, start.toString());
         }

@@ -9,6 +9,8 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 
@@ -50,15 +52,16 @@ import java.util.regex.Pattern;
  * @since 0.5
  */
 public class GenerateQuery  {
-	
+
+	private static final Logger log = LoggerFactory.getLogger(GenerateQuery.class);
 	// component attributes
 	private String requestedComponent = null; // VEVENT, VTODO
-	private List<String> requestedComponentProperties = new ArrayList<String>(); // a list of properties to be retrieved
+	private List<String> requestedComponentProperties = new ArrayList<>(); // a list of properties to be retrieved
 		
 
 	// Nested object queries should be managed nesting two generated queries
 	private String filterComponent = null; // VEVENT, VTODO
-	private List<String> filterComponentProperties = new ArrayList<String>();
+	private List<String> filterComponentProperties = new ArrayList<>();
 	private Date timeRangeStart = null;
 	private Date timeRangeEnd = null;
 	private boolean allProp = true;
@@ -200,14 +203,13 @@ public class GenerateQuery  {
 				vEventComp.addProp(new CalDAVProp(propertyName, false, false)); // @see modification to CalDAVProp
 			}
 			// add only one component...maybe more ;)
-			List <Comp> comps = new ArrayList<Comp> ();			
+			List <Comp> comps = new ArrayList<>();
 
 			try {				
 				vEventComp.validate();
 				comps.add(vEventComp);
 			} catch (DOMValidationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn("Comp not valid");
 			}
 			vCalendarComp.setComps(comps);
 
@@ -271,7 +273,7 @@ public class GenerateQuery  {
 	 */ 
 	private List<PropFilter> getPropFilters()
 	throws CalDAV4JException {
-		List<PropFilter> pf = new ArrayList<PropFilter>();
+		List<PropFilter> pf = new ArrayList<>();
 		Pattern filter = Pattern.compile("(.+?)([!=]=)(\\[(.*?);(.*?)\\]|([^\\]].+))");
 
 		for (String p : this.filterComponentProperties) {
@@ -316,6 +318,7 @@ public class GenerateQuery  {
 				}
 			} else {
 					// not a valid filter
+				log.warn("Not a valid filter");
 			}
 
 			
@@ -325,7 +328,6 @@ public class GenerateQuery  {
 	
 	/**
 	 * Transform filters in a CompFilter
-	 * @throws ParseException on error parsing
 	 */ 
 	private CompFilter getFilter()
 			throws CalDAV4JException {
@@ -344,7 +346,7 @@ public class GenerateQuery  {
 				vCalendarCompFilter.addCompFilter(vEventCompFilter);
 			} catch (DOMValidationException e) {
 				// if filter is bad, don't add nothing
-				e.printStackTrace();
+				log.warn("CompFilter is not valid");
 			}
 		}
 				

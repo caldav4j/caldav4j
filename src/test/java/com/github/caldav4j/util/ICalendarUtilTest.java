@@ -27,7 +27,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 	private static final Logger log = LoggerFactory.getLogger(PutGetTest.class);
 
 	// list of different components
-	private List<String> calendarList = new ArrayList<String>();
+	private List<String> calendarList = new ArrayList<>();
 
 	@Before
 	@Override

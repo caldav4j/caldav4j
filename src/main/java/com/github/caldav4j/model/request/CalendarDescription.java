@@ -16,7 +16,7 @@ import com.github.caldav4j.CalDAVConstants;
  * @author robipolli@gmail.com
  * @see <a href=http://tools.ietf.org/html/rfc4791#section-5.2.1>RFC 4791 Section 5.2.1</a>
  */
-public class CalendarDescription extends PropProperty {
+public class CalendarDescription extends PropProperty<String> {
 
 	public static final String CALENDAR_DESCRIPTION = "calendar-description";
 

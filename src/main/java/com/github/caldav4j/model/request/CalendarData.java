@@ -139,7 +139,7 @@ public class CalendarData extends OutputsDOMBase {
     }
 
     protected Collection<? extends XmlSerializable> getChildren() {
-        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
+        ArrayList<XmlSerializable> children = new ArrayList<>();
         if (comp != null) {
             children.add(comp);
         }

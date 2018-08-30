@@ -57,6 +57,7 @@ public class FreeBusyQuery extends OutputsDOMBase implements CalDAVReportRequest
 
     }
 
+	@SuppressWarnings("unchecked")
     public FreeBusyQuery(Prop propertyNames,
                          TimeRange timeRange)
     {

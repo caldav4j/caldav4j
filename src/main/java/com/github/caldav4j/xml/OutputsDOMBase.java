@@ -83,9 +83,7 @@ public abstract class OutputsDOMBase implements OutputsDOM{
 	 *
 	 * @throws DOMValidationException on validation error
 	 */
-	public void validate() throws DOMValidationException {
-		return;
-	}
+	public void validate() throws DOMValidationException {}
 
 	/**
 	 * @return Return Qualified name
@@ -176,8 +174,7 @@ public abstract class OutputsDOMBase implements OutputsDOM{
 	 * @throws DOMValidationException on validation error
 	 */
 	protected void validate(Collection<? extends OutputsDOM> c) throws DOMValidationException {
-		for (Iterator<? extends OutputsDOM> i = c.iterator(); i.hasNext(); ) {
-			OutputsDOM o = i.next();
+		for (OutputsDOM o : c) {
 			o.validate();
 		}
 	}

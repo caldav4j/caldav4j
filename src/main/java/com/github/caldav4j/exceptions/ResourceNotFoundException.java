@@ -25,7 +25,7 @@ public class ResourceNotFoundException extends CalDAV4JException {
 
 	public enum IdentifierType{
 		UID,
-		PATH;
+		PATH
 	}
 
 	public ResourceNotFoundException(IdentifierType identifierType, String identifier) {

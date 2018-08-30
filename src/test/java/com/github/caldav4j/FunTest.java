@@ -17,7 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import com.github.caldav4j.methods.HttpPropFindMethod;
-import com.github.caldav4j.util.CaldavStatus;
+import com.github.caldav4j.util.CalDAVStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +56,7 @@ public class FunTest extends BaseTestCase {
 		MultiStatusResponse[] e = propFindMethod.getResponseBodyAsMultiStatus(httpResponse).getResponses();
 
         for(MultiStatusResponse response : e){
-            DavPropertySet properties = response.getProperties(CaldavStatus.SC_OK);
+            DavPropertySet properties = response.getProperties(CalDAVStatus.SC_OK);
             log.info("HREF: " + response.getHref());
             for(DavProperty property: properties) {
                 String nodeName = property.getName().toString();

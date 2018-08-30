@@ -49,7 +49,7 @@ public class PropFilter extends OutputsDOMBase {
 
     private TimeRange timeRange = null;
     private TextMatch textMatch = null;
-    private List<ParamFilter> paramFilters = new ArrayList<ParamFilter>();
+    private List<ParamFilter> paramFilters = new ArrayList<>();
     
     public PropFilter() {
 
@@ -127,7 +127,7 @@ public class PropFilter extends OutputsDOMBase {
     }
 
     protected Collection<XmlSerializable> getChildren() {
-        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
+        ArrayList<XmlSerializable> children = new ArrayList<>();
         
         if (isDefined != null) {
             children.add(new PropProperty(isDefined ? ELEM_IS_DEFINED :  ELEM_IS_NOT_DEFINED, CalDAVConstants.NAMESPACE_CALDAV));
@@ -148,7 +148,7 @@ public class PropFilter extends OutputsDOMBase {
     }
     
     protected Map<String, String> getAttributes() {
-        Map<String, String> m = new HashMap<String, String>();
+        Map<String, String> m = new HashMap<>();
         m.put(ATTR_NAME, name);
         return m;
     }

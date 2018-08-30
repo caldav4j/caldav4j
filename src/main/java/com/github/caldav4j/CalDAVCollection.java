@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * This class provides a high level API to a calendar collection on a CalDAV server.
@@ -200,7 +201,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		ComponentList eventList = calendar.getComponents().getComponents(component);
 
 		// get a list of components to remove
-		List<Component> componentsToRemove = new ArrayList<Component>();
+		List<Component> componentsToRemove = new ArrayList<>();
 		boolean hasOtherEvents = false;
 		for (Object o : eventList){
 			CalendarComponent event = (CalendarComponent) o;
@@ -246,7 +247,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			mkCalendarMethod = methodFactory.createMkCalendarMethod(getCalendarCollectionRoot());
 			HttpResponse response = httpClient.execute(getDefaultHttpHost(mkCalendarMethod.getURI()), mkCalendarMethod);
 			int statusCode = response.getStatusLine().getStatusCode();
-			if (statusCode != CaldavStatus.SC_CREATED){
+			if (statusCode != CalDAVStatus.SC_CREATED){
 				MethodUtil.StatusToExceptions(mkCalendarMethod, response);
 			}
 		} catch (Exception e) {
@@ -277,10 +278,10 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
             HttpResponse response = httpClient.execute(getDefaultHttpHost(putMethod.getURI()), putMethod);
             int statusCode = response.getStatusLine().getStatusCode();
             switch(statusCode) {
-                case CaldavStatus.SC_NO_CONTENT:
-                case CaldavStatus.SC_CREATED:
+                case CalDAVStatus.SC_NO_CONTENT:
+                case CalDAVStatus.SC_CREATED:
                     break;
-                case CaldavStatus.SC_PRECONDITION_FAILED:
+                case CalDAVStatus.SC_PRECONDITION_FAILED:
                     throw new ResourceOutOfDateException("Etag was not matched: "+ etag);
                 default:
                     throw new BadStatusException(statusCode, putMethod.getMethod(), path);
@@ -296,9 +297,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
             }
             cache.putResource(new CalDAVResource(calendar, newEtag, putMethod.getURI().toString()));
 
-        } catch (ResourceOutOfDateException e){
-            throw e;
-        } catch (BadStatusException e){
+        } catch (ResourceOutOfDateException | BadStatusException e){
             throw e;
         } catch (Exception e){
             throw new CalDAV4JException("Problem executing put method",e);
@@ -344,6 +343,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	public void add(HttpClient httpClient, Calendar c)
 	throws CalDAV4JException {
 
+		Random random = new Random();
 		//
 		// retry 3 times while caldav server returns PRECONDITION_FAILED
 		//
@@ -359,7 +359,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			}
 
 			// TODO move all these lines into ICalendarUtils
-			uid = ICalendarUtils.getUIDValue(c);		
+			uid = ICalendarUtils.getUIDValue(c);
 			if (uid == null) {
 				uid = random.nextLong() + "-" + random.nextLong();
 				ICalendarUtils.setUIDValue(c, uid);
@@ -386,8 +386,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			
 			int statusCode = response.getStatusLine().getStatusCode();
 			switch (statusCode) {
-			case CaldavStatus.SC_CREATED:			
-			case CaldavStatus.SC_NO_CONTENT:
+			case CalDAVStatus.SC_CREATED:
+			case CalDAVStatus.SC_NO_CONTENT:
 				didIt = true;
 				break;
 			default:
@@ -587,7 +587,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		try {
 			HttpResponse response = httpClient.execute(getDefaultHttpHost(getMethod.getURI()), getMethod);
 
-            if (response.getStatusLine().getStatusCode() != CaldavStatus.SC_OK){
+            if (response.getStatusLine().getStatusCode() != CalDAVStatus.SC_OK){
                 MethodUtil.StatusToExceptions(getMethod, response);
                 throw new BadStatusException(getMethod, response);
             }
@@ -642,7 +642,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			throw new CalDAV4JException("Problem executing delete method",e);
 		}
 		
-		if (response == null || response.getStatusLine().getStatusCode() != CaldavStatus.SC_NO_CONTENT){
+		if (response == null || response.getStatusLine().getStatusCode() != CalDAVStatus.SC_NO_CONTENT){
 			MethodUtil.StatusToExceptions(deleteMethod, response);
 			throw new CalDAV4JException("Problem executing delete method");
 		}
@@ -674,12 +674,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			HttpResponse response = httpClient.execute(getDefaultHttpHost(headMethod.getURI()), headMethod);
 			int statusCode = response.getStatusLine().getStatusCode();
 
-			if (statusCode == CaldavStatus.SC_NOT_FOUND) {
+			if (statusCode == CalDAVStatus.SC_NOT_FOUND) {
 				throw new ResourceNotFoundException(
 						ResourceNotFoundException.IdentifierType.PATH, path);
 			}
 
-			if (statusCode != CaldavStatus.SC_OK){
+			if (statusCode != CalDAVStatus.SC_OK){
 				throw new CalDAV4JException(
 						"Unexpected Status returned from Server: "
 						+ response.getStatusLine().getStatusCode());
@@ -715,7 +715,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 		MultiStatus multiStatus = getResponseforQuery(httpClient, query);
 		for(MultiStatusResponse response : multiStatus.getResponses()){
-			if(response.getStatus()[0].getStatusCode() == CaldavStatus.SC_OK){
+			if(response.getStatus()[0].getStatusCode() == CalDAVStatus.SC_OK){
 				etag = CalendarDataProperty.getEtagfromResponse(response);
 			}
 		}
@@ -740,7 +740,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	{
 
 
-		List<String> propertyList = new ArrayList<String>();
+		List<String> propertyList = new ArrayList<>();
 		List<Calendar> calendarList = getCalendarLight(httpClient, query);
 
 		for (Calendar cal : calendarList){
@@ -765,7 +765,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 */
 	public List<Calendar> queryCalendars(HttpClient httpClient, CalendarQuery query)
             throws CalDAV4JException {
-		List <Calendar> list = new ArrayList<Calendar>();
+		List <Calendar> list = new ArrayList<>();
 		for (CalDAVResource cr: getCalDAVResources(httpClient, query)) {
 			list.add(cr.getCalendar());
 		}
@@ -785,7 +785,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 */
 	public List<Calendar> getCalendarLight(HttpClient httpClient, CalendarQuery query)
 			throws CalDAV4JException {
-		List <Calendar> list = new ArrayList<Calendar>();
+		List <Calendar> list = new ArrayList<>();
 
 		if (isCacheEnabled()) {
 			query.setCalendarDataProp(null);
@@ -877,7 +877,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 		HttpCalDAVReportMethod reportMethod = null;
 
-        List<CalDAVResource> list = new ArrayList<CalDAVResource>();
+        List<CalDAVResource> list = new ArrayList<>();
 		try {
             reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(),
                     query, CalDAVConstants.DEPTH_1);
@@ -931,7 +931,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		}
 
 		HttpCalDAVReportMethod reportMethod = null;
-        List<Calendar> list = new ArrayList<Calendar>();
+        List<Calendar> list = new ArrayList<>();
 
 		try {
             reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), query, CalDAVConstants.DEPTH_1);
@@ -1003,7 +1003,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * Uses the HTTP HEAD Method to check if the connection is possible.
 	 * @param httpClient HTTPClient to make the request
 	 * @return StatusCode
-	 * @throws CalDAV4JException when Status is not {@link CaldavStatus#SC_OK}
+	 * @throws CalDAV4JException when Status is not {@link CalDAVStatus#SC_OK}
 	 */
 	public int testConnection(HttpClient httpClient)
 			throws CalDAV4JException {
@@ -1017,7 +1017,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		}
 
 		switch (response.getStatusLine().getStatusCode()) {
-			case CaldavStatus.SC_OK:
+			case CalDAVStatus.SC_OK:
 				break;
 			default:
 				throw new BadStatusException(response.getStatusLine().getStatusCode(), method.getMethod(), getCalendarCollectionRoot());
@@ -1062,7 +1062,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			int status =  response.getStatusLine().getStatusCode();
 
 			switch (status) {
-				case CaldavStatus.SC_MULTI_STATUS:
+				case CalDAVStatus.SC_MULTI_STATUS:
 					return method.getAces(response, method.getURI().toString());
 				default:
 					MethodUtil.StatusToExceptions(method, response);
@@ -1094,11 +1094,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			HttpResponse response = client.execute(method);
 			int status = response.getStatusLine().getStatusCode();
 			switch (status) {
-				case CaldavStatus.SC_OK:
+				case CalDAVStatus.SC_OK:
 					break;
-				case CaldavStatus.SC_NOT_FOUND:
+				case CalDAVStatus.SC_NOT_FOUND:
 					throw new ResourceNotFoundException(ResourceNotFoundException.IdentifierType.PATH, method.getURI().toString());
-				case CaldavStatus.SC_UNAUTHORIZED:
+				case CalDAVStatus.SC_UNAUTHORIZED:
 				default:
 					throw new BadStatusException(status, method.getMethod(),  getCalendarCollectionRoot());
 			}

@@ -24,22 +24,15 @@ import org.apache.jackrabbit.webdav.xml.Namespace;
  */
 public interface CalDAVConstants {
 
-	public static final String TICKET_HEADER = "Ticket";
-
 	public static final String METHOD_MKCALENDAR = "MKCALENDAR";
 	public static final String METHOD_PUT = "PUT";
 	public static final String METHOD_POST = "POST";
 	public static final String METHOD_REPORT = "REPORT";
-	public static final String METHOD_MKTICKET = "MKTICKET";
-	public static final String METHOD_DELTICKET = "DELTICKET";
 
 	public static final String NS_CALDAV = "urn:ietf:params:xml:ns:caldav";
 	public static final String NS_DAV = "DAV:";
 	public static final String NS_QUAL_DAV = "D";
 	public static final String NS_QUAL_CALDAV = "C";
-	public static final String NS_XYTHOS = "http://www.xythos.com/namespaces/StorageServer";
-	public static final String NS_QUAL_TICKET = "T";//"ticket";
-
 
 	public static final String PROC_ID_DEFAULT =  "-//NONSGML CalDAV4j Client//EN";
 
@@ -68,8 +61,6 @@ public interface CalDAVConstants {
 	public static final String ATTR_START = "start";
 	public static final String ATTR_END = "end";
 
-	public static final String ELEM_TICKETDISCOVERY = "ticketdiscovery";
-	public static final String ELEM_TICKETINFO = "ticketinfo";
 	public static final String ELEM_TIMEOUT = "timeout";
 	public static final String ELEM_VISITS = "visits";
 	public static final String ELEM_PRIVILIGE = "privilege";
@@ -100,7 +91,6 @@ public interface CalDAVConstants {
 	//Jackrabbit Namespaces
 	public static final Namespace NAMESPACE_CALDAV = Namespace.getNamespace(NS_QUAL_CALDAV, NS_CALDAV);
 	public static final Namespace NAMESPACE_WEBDAV = Namespace.getNamespace(NS_QUAL_DAV, NS_DAV);
-	public static final Namespace NAMESPACE_XYTHOS = Namespace.getNamespace(NS_QUAL_TICKET, NS_XYTHOS);
 
 
 	//Jackrabbit Constants
@@ -119,8 +109,6 @@ public interface CalDAVConstants {
 	public static final DavPropertyName DNAME_GETETAG = DavPropertyName.create(ELEM_GETETAG, NAMESPACE_WEBDAV);
 	public static final DavPropertyName DNAME_ALLPROP = DavPropertyName.create(ELEM_ALLPROP, NAMESPACE_WEBDAV);
 	public static final DavPropertyName DNAME_DISPLAYNAME = DavPropertyName.create(DAV_DISPLAYNAME, NAMESPACE_CALDAV);
-	public static final DavPropertyName DNAME_TICKETDISCOVERY = DavPropertyName.create(CalDAVConstants.ELEM_TICKETDISCOVERY, NAMESPACE_XYTHOS);
-	public static final DavPropertyName DNAME_TICKETINFO = DavPropertyName.create(CalDAVConstants.ELEM_TICKETINFO, NAMESPACE_XYTHOS);
 	//-------------------------------------------------< PropFind Constants >---
 	public static final int PROPFIND_BY_PROPERTY = 0;
 	public static final int PROPFIND_ALL_PROP = 1;

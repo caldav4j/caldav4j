@@ -52,7 +52,7 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
     private boolean allProp = false;
     private boolean propName = false;
     private CalendarData calendarDataProp = null;
-    private List<String> hrefs = new ArrayList<String>();
+    private List<String> hrefs = new ArrayList<>();
     private Prop properties = new Prop();
 
     public CalendarMultiget() {
@@ -78,6 +78,7 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
 	 * @param allProp To enable retrieval of all properties
 	 * @param propName Enable PropName
 	 */
+	@SuppressWarnings("unchecked")
 	public CalendarMultiget(Prop properties,
 	                        CalendarData calendarData, boolean allProp, boolean propName){
 		this(calendarData, allProp, propName);
@@ -116,8 +117,12 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
         return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
     protected Collection<XmlSerializable> getChildren() {
-        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
+        ArrayList<XmlSerializable> children = new ArrayList<>();
 
         if (allProp){
             children.add(new PropProperty(CalDAVConstants.ELEM_ALLPROP, CalDAVConstants.NAMESPACE_WEBDAV));

@@ -57,6 +57,7 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public CalendarQuery(Prop properties, CompFilter compFilter, CalendarData calendarData,
 	                     boolean allProp, boolean propName) {
 		this(compFilter, calendarData, allProp, propName);
@@ -86,16 +87,26 @@ public class CalendarQuery extends OutputsDOMBase implements CalDAVReportRequest
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected String getElementName() {
 		return ELEMENT_NAME;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected Namespace getNamespace() {
 		return CalDAVConstants.NAMESPACE_CALDAV;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("unchecked")
 	protected Collection<XmlSerializable> getChildren() {
-		ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
+		ArrayList<XmlSerializable> children = new ArrayList<>();
 
 		if (allProp) {
 			children.add(new PropProperty(ELEM_ALLPROP, CalDAVConstants.NAMESPACE_WEBDAV));

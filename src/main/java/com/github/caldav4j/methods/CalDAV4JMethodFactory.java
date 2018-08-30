@@ -35,7 +35,7 @@ public class CalDAV4JMethodFactory {
 
 	private boolean validatingOutputter = false;
 
-	private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<CalendarBuilder>();
+	private ThreadLocal<CalendarBuilder> calendarBuilderThreadLocal = new ThreadLocal<>();
 	private CalendarOutputter calendarOutputter = null;
 
 	/**

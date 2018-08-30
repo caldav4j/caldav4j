@@ -36,7 +36,7 @@ import com.github.caldav4j.methods.HttpCalDAVReportMethod;
 import com.github.caldav4j.model.request.FreeBusyQuery;
 import com.github.caldav4j.model.request.TimeRange;
 import com.github.caldav4j.support.CalendarBuilder;
-import com.github.caldav4j.util.CaldavStatus;
+import com.github.caldav4j.util.CalDAVStatus;
 import com.github.caldav4j.util.ICalendarUtils;
 
 import java.io.IOException;
@@ -105,7 +105,7 @@ public class FreeBusyQueryFunctionalTest
 		
 		Calendar expected = createFreeBusyCalendar("20000101T000000Z", "20000201T000000Z", null);
 
-		Calendar actual = fixture.executeMethod(CaldavStatus.SC_OK, method, false, calendarReportCallback());
+		Calendar actual = fixture.executeMethod(CalDAVStatus.SC_OK, method, false, calendarReportCallback());
 		
 		assertEqualsIgnoringUidAndDtStampAndAttendee(expected, actual);
 	}
@@ -120,7 +120,7 @@ public class FreeBusyQueryFunctionalTest
 		Calendar expected = createFreeBusyCalendar("20000101T000000Z", "20000201T000000Z",
 			"20000107T000000Z/20000108T000000Z");
 		
-		Calendar actual = fixture.executeMethod(CaldavStatus.SC_OK, method, false, calendarReportCallback());
+		Calendar actual = fixture.executeMethod(CalDAVStatus.SC_OK, method, false, calendarReportCallback());
 		
 		assertEqualsIgnoringUidAndDtStampAndAttendee(expected, actual);
 	}

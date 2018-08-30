@@ -75,7 +75,7 @@ public class ParamFilter extends OutputsDOMBase {
     }
 
     protected Collection<XmlSerializable> getChildren() {
-        ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
+        ArrayList<XmlSerializable> children = new ArrayList<>();
         if (isDefined){
             children.add(new PropProperty(ELEM_IS_DEFINED, CalDAVConstants.NAMESPACE_CALDAV));
         } else if (textMatch != null){
@@ -90,7 +90,7 @@ public class ParamFilter extends OutputsDOMBase {
     }
     
     protected Map<String, String> getAttributes() {
-        Map<String, String> m = new HashMap<String, String>();
+        Map<String, String> m = new HashMap<>();
         m.put(ATTR_NAME, name);
         return m;
     }

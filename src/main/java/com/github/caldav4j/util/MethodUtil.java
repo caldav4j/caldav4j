@@ -18,10 +18,9 @@ public class MethodUtil {
 	
 	/**
 	 * Throws various exceptions depending on the status >= 400 of the given method
-	 * @param method
-	 * @return
-	 * @throws CalDAV4JException
-	 * @throws  
+	 * @param method Method causing error
+	 * @param response Response containing error
+	 * @throws CalDAV4JException or an extended class to represent the status.
 	 */
 	public static int StatusToExceptions(HttpRequestBase method, HttpResponse response) throws CalDAV4JException {
 		if (method != null && response != null) {
@@ -35,13 +34,13 @@ public class MethodUtil {
 			}
 			if (status >= 300) {				
 				switch (status) {
-				case CaldavStatus.SC_CONFLICT:
+				case CalDAVStatus.SC_CONFLICT:
 					throw new ResourceOutOfDateException("Conflict accessing: " + method.getURI() );
-				case CaldavStatus.SC_NOT_FOUND:
+				case CalDAVStatus.SC_NOT_FOUND:
 					throw new ResourceNotFoundException(IdentifierType.PATH, method.getURI().toString());
-				case CaldavStatus.SC_UNAUTHORIZED:
+				case CalDAVStatus.SC_UNAUTHORIZED:
 					throw new AuthorizationException("Unauthorized accessing " + method.getURI() );
-				case CaldavStatus.SC_PRECONDITION_FAILED:
+				case CalDAVStatus.SC_PRECONDITION_FAILED:
 					throw new ResourceOutOfDateException("Resource out of date: " + method.getURI());
 				default:
 					throw new BadStatusException(status, method.getMethod(), method.getURI().toString());

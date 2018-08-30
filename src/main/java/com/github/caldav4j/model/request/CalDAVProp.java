@@ -99,7 +99,7 @@ public class CalDAVProp extends OutputsDOMBase {
 	 * @see OutputsDOMBase#getAttributes()
 	 */
 	protected Map<String, String> getAttributes() {
-		Map<String, String> m =  new HashMap<String, String>();
+		Map<String, String> m =  new HashMap<>();
 		m.put(ATTR_NAME, name);
 
 		if (attrNoValueEnabled) {

@@ -135,7 +135,7 @@ public void testDateTime() throws ParseException {
 @Test
     public void testQuery_TODO()  {
 		try {
-			List<String> a = new ArrayList<String> ();
+			List<String> a = new ArrayList<>();
 			a.add("STATUS!=CANCELLED");
 			a.add("COMPLETED==UNDEF");
 			a.add("DTSTART==[;20080810]");
@@ -168,7 +168,7 @@ public void testDateTime() throws ParseException {
     public void testQuery_ATTENDEE()  {
 		try {
 			log.info("VEVENT + ATTENDEE:");
-			List<String> a = new ArrayList<String> ();
+			List<String> a = new ArrayList<>();
 			a.add("ATTENDEE==mailto:lisa@example.com");
 			
 			GenerateQuery gq = new GenerateQuery();
@@ -217,7 +217,7 @@ public void testDateTime() throws ParseException {
     @Test
     public void testFilterProperties()  {
 		try {
-			List<String> a = new ArrayList<String> ();
+			List<String> a = new ArrayList<>();
 			a.add("UID==DSDDAS123-D32423-42332-dasdsafwe");
 			a.add("X-PLUTO-SPADA!=fsdfsdfds");
 			a.add("SUMMARY!=CDSDafsd");

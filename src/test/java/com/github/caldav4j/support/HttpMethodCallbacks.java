@@ -33,22 +33,10 @@ public final class HttpMethodCallbacks
 	// constants --------------------------------------------------------------
 	
 	private static final HttpMethodCallback<HttpResponse, HttpRequestBase, RuntimeException> NULL_CALLBACK =
-		new HttpMethodCallback<HttpResponse, HttpRequestBase, RuntimeException>()
-		{
-			public HttpResponse getResponse(HttpRequestBase method, HttpResponse response) throws RuntimeException
-			{
-				return response;
-			}
-		};
+			(method, response) -> response;
 
 	private static final HttpMethodCallback<Calendar, HttpCalDAVReportMethod, Exception> CALENDAR_REPORT_CALLBACK =
-		new HttpMethodCallback<Calendar, HttpCalDAVReportMethod, Exception>()
-		{
-			public Calendar getResponse(HttpCalDAVReportMethod method, HttpResponse response) throws Exception
-			{
-				return method.getResponseBodyAsCalendar(response);
-			}
-		};
+			HttpCalDAVReportMethod::getResponseBodyAsCalendar;
 		
 	// constructors -----------------------------------------------------------
 	

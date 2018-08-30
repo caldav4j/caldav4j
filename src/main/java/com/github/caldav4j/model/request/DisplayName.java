@@ -5,8 +5,8 @@ import com.github.caldav4j.CalDAVConstants;
 /**
  * This property defines the human-readable name of the calendar.
  */
-public class DisplayName extends PropProperty {
-	protected static String DISPLAY_NAME = "displayname" ;
+public class DisplayName extends PropProperty<String> {
+	public static final String DISPLAY_NAME = "displayname" ;
 
 	public DisplayName(){
 		this(null);

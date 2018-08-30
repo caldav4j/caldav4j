@@ -26,8 +26,7 @@ public class ITipUtilsTest extends BaseTestCase {
 	private static final Logger log = LoggerFactory.getLogger(ITipUtilsTest.class);
 
 	// load a sample meeting request
-	Calendar inviteComplexWithTimezone = this
-	.getCalendarResource("scheduling/meeting_invitation_1.ics");
+	Calendar inviteComplexWithTimezone = getCalendarResource("scheduling/meeting_invitation_1.ics");
 	
 	Attendee mySelf = null;
 	Attendee nobody = null;

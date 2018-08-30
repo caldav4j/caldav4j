@@ -1,8 +1,11 @@
 package com.github.caldav4j.methods;
 
+import com.github.caldav4j.BaseTestCase;
 import com.github.caldav4j.functional.support.CaldavFixtureHarness;
+import com.github.caldav4j.model.request.CalDAVReportRequest;
 import com.github.caldav4j.support.HttpClientTestUtils;
 import com.github.caldav4j.support.HttpMethodCallbacks;
+import com.github.caldav4j.util.CalDAVStatus;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.property.ProdId;
@@ -11,16 +14,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import com.github.caldav4j.BaseTestCase;
-import com.github.caldav4j.model.request.CalDAVReportRequest;
-import com.github.caldav4j.util.CaldavStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
-import static com.github.caldav4j.support.HttpClientTestUtils.executeMethod;
 
 @Ignore
 public class CalDAVReportMethodTest extends BaseTestCase {
@@ -70,7 +69,7 @@ public class CalDAVReportMethodTest extends BaseTestCase {
 
 		HttpClientTestUtils.setFakeSocketImplFactory();
 		HttpClientTestUtils.setFakeSocketImpl(expectedRequest, response);
-		Calendar actual = HttpClientTestUtils.executeMethod(CaldavStatus.SC_OK, method, HttpMethodCallbacks.calendarReportCallback());
+		Calendar actual = HttpClientTestUtils.executeMethod(CalDAVStatus.SC_OK, method, HttpMethodCallbacks.calendarReportCallback());
 
 		assertEquals("Calendar", createCalendar(), actual);
 	}

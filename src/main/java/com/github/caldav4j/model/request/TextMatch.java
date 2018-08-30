@@ -16,11 +16,10 @@
 
 package com.github.caldav4j.model.request;
 
-import org.apache.jackrabbit.webdav.xml.Namespace;
 import com.github.caldav4j.CalDAVConstants;
-import com.github.caldav4j.exceptions.DOMValidationException;
 import com.github.caldav4j.xml.OutputsDOM;
 import com.github.caldav4j.xml.OutputsDOMBase;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -94,8 +93,7 @@ public class TextMatch extends OutputsDOMBase {
     }
     
     protected Map<String, String> getAttributes() {
-        Map<String, String> m = null;
-        m = new HashMap<String, String>();
+        Map<String, String> m = new HashMap<>();
 
         if (caseless != null) {
             m.put(ATTR_CASELESS, caseless ? ATTR_VALUE_YES
@@ -134,7 +132,5 @@ public class TextMatch extends OutputsDOMBase {
      * &lt;!ATTLIST text-match caseless (yes|no)&gt;
      * </pre>
      */
-    public void validate() throws DOMValidationException{
-        return;
-    }
+    public void validate() { }
 }

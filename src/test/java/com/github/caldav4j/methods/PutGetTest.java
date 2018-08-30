@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import com.github.caldav4j.BaseTestCase;
 import com.github.caldav4j.model.request.CalendarRequest;
-import com.github.caldav4j.util.CaldavStatus;
+import com.github.caldav4j.util.CalDAVStatus;
 import com.github.caldav4j.util.ICalendarUtils;
 import com.github.caldav4j.util.MethodUtil;
 import com.github.caldav4j.util.UrlUtils;
@@ -32,7 +32,7 @@ public class PutGetTest extends BaseTestCase {
 	private static final Logger log = LoggerFactory.getLogger(PutGetTest.class);
 	private ResourceBundle messages;
 
-	private List<String> addedEventsFile = new ArrayList<String>();
+	private List<String> addedEventsFile = new ArrayList<>();
 
 	@Before
 	public void setUp() throws Exception {
@@ -72,7 +72,7 @@ public class PutGetTest extends BaseTestCase {
 		HttpPutMethod put = fixture.getMethodFactory().createPutMethod(eventPath, cr);
 		HttpResponse response = http.execute(hostConfig, put);
 		int statusCode = response.getStatusLine().getStatusCode();
-		assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
+		assertEquals("Status code for put:", CalDAVStatus.SC_CREATED, statusCode);
 		addedEventsFile.add(BaseTestCase.ICS_DAILY_NY_5PM_UID + ".ics");
 		//ok, so we created it...let's make sure it's there!
 		HttpGetMethod get = fixture.getMethodFactory().createGetMethod(eventPath);
@@ -80,7 +80,7 @@ public class PutGetTest extends BaseTestCase {
 		response = http.execute(hostConfig, get);
 		statusCode = response.getStatusLine().getStatusCode();
 		MethodUtil.StatusToExceptions(get, response);
-		assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
+		assertEquals("Status code for get: ", CalDAVStatus.SC_OK, statusCode);
 
 		//now let's make sure we can get the resource body as a calendar
 		Calendar calendar = get.getResponseBodyAsCalendar(response);
@@ -95,7 +95,7 @@ public class PutGetTest extends BaseTestCase {
 		response = http.execute(hostConfig, put);
 		statusCode = response.getStatusLine().getStatusCode();
 		assertEquals("Status code for put:",
-				CaldavStatus.SC_PRECONDITION_FAILED, statusCode);
+				CalDAVStatus.SC_PRECONDITION_FAILED, statusCode);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class PutGetTest extends BaseTestCase {
 
 		HttpResponse response = http.execute(hostConfig, put);
 		int statusCode = response.getStatusLine().getStatusCode();
-		assertEquals("Status code for put:", CaldavStatus.SC_CREATED, statusCode);
+		assertEquals("Status code for put:", CalDAVStatus.SC_CREATED, statusCode);
 		addedEventsFile.add(eventPath);
 
 		//ok, so we created it...let's make sure it's there!
@@ -137,7 +137,7 @@ public class PutGetTest extends BaseTestCase {
 
 		response = http.execute(hostConfig, get);
 		statusCode = response.getStatusLine().getStatusCode();
-		assertEquals("Status code for get: ", CaldavStatus.SC_OK, statusCode);
+		assertEquals("Status code for get: ", CalDAVStatus.SC_OK, statusCode);
 
 		//now let's make sure we can get the resource body as a calendar
 		Calendar calendar = get.getResponseBodyAsCalendar(response);
@@ -154,7 +154,7 @@ public class PutGetTest extends BaseTestCase {
 		response = http.execute(hostConfig, put);
 		statusCode = response.getStatusLine().getStatusCode();
 		assertEquals("Status code for put:",
-				CaldavStatus.SC_PRECONDITION_FAILED, statusCode);
+				CalDAVStatus.SC_PRECONDITION_FAILED, statusCode);
 
 
 

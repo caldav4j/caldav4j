@@ -49,7 +49,7 @@ import com.github.caldav4j.methods.HttpPutMethod;
 import com.github.caldav4j.model.request.CalendarRequest;
 import com.github.caldav4j.support.HttpClientTestUtils;
 import com.github.caldav4j.support.HttpClientTestUtils.HttpMethodCallback;
-import com.github.caldav4j.util.CaldavStatus;
+import com.github.caldav4j.util.CalDAVStatus;
 import com.github.caldav4j.util.UrlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,13 +133,13 @@ public class CalDavFixture
 		// Note Google Calendar Doesn't support creating a calendar
 		HttpMkCalendarMethod method = methodFactory.createMkCalendarMethod(relativePath);
 
-		executeMethod(CaldavStatus.SC_CREATED, method, true);
+		executeMethod(CalDAVStatus.SC_CREATED, method, true);
 	}
 	public void makeCollection(String relativePath) throws IOException
 	{
 		HttpMkcol method = new HttpMkcol(relativePath);
 
-		executeMethod(CaldavStatus.SC_CREATED, method, true);
+		executeMethod(CalDAVStatus.SC_CREATED, method, true);
 	}
 	public void putEvent(String relativePath, VEvent event) throws IOException
 	{
@@ -147,20 +147,20 @@ public class CalDavFixture
 		cr.setCalendar(event);
 		HttpPutMethod method = methodFactory.createPutMethod(relativePath, cr);
 		
-		executeMethod(CaldavStatus.SC_CREATED, method, true);
+		executeMethod(CalDAVStatus.SC_CREATED, method, true);
 	}
 	
 	public void delete(String relativePath) throws IOException
 	{
 		HttpDeleteMethod method = new HttpDeleteMethod(relativePath);
 
-		executeMethod(CaldavStatus.SC_NO_CONTENT, method, false);
+		executeMethod(CalDAVStatus.SC_NO_CONTENT, method, false);
 	}
 	public void delete(String path, boolean isAbsolutePath) throws IOException
 	{
 		HttpDeleteMethod method = new HttpDeleteMethod(path);
 
-		executeMethod(CaldavStatus.SC_NO_CONTENT, method, false, nullCallback(), isAbsolutePath);
+		executeMethod(CalDAVStatus.SC_NO_CONTENT, method, false, nullCallback(), isAbsolutePath);
 	}
 
 	public HttpResponse executeMethod(int expectedStatus, HttpRequestBase method, boolean deleteOnTearDown) throws IOException
@@ -256,7 +256,7 @@ public class CalDavFixture
 	    try {
 			HttpMkCalendarMethod mk = new HttpMkCalendarMethod(path, null,
 					TestConstants.CALENDAR_DESCRIPTION, "en");
-	    	executeMethod(CaldavStatus.SC_CREATED,  mk, true);
+	    	executeMethod(CalDAVStatus.SC_CREATED,  mk, true);
 	    } catch (Exception e){
 	        throw new RuntimeException(e);
 	    }
@@ -265,7 +265,7 @@ public class CalDavFixture
 	protected void mkcol(String path) {
 		HttpMkcol mk = new HttpMkcol(path);
 	    try {
-	    	executeMethod(CaldavStatus.SC_CREATED,  mk, true);
+	    	executeMethod(CalDAVStatus.SC_CREATED,  mk, true);
 	    } catch (Exception e){
 	        throw new RuntimeException(e);
 	    }
@@ -294,18 +294,18 @@ public class CalDavFixture
 
 		log.debug("\nPUT " + put.getURI());
 	    try {
-	        HttpResponse response = executeMethod(CaldavStatus.SC_CREATED, put, true);
+	        HttpResponse response = executeMethod(CalDAVStatus.SC_CREATED, put, true);
 	        
 	        int statusCode =  response.getStatusLine().getStatusCode();
 	        
 	        switch (statusCode) {
-			case CaldavStatus.SC_CREATED:
-			case CaldavStatus.SC_NO_CONTENT:
+			case CalDAVStatus.SC_CREATED:
+			case CalDAVStatus.SC_NO_CONTENT:
 				break;
-			case CaldavStatus.SC_PRECONDITION_FAILED:
+			case CalDAVStatus.SC_PRECONDITION_FAILED:
 				log.error("item exists?");
 				break;
-			case CaldavStatus.SC_CONFLICT:
+			case CalDAVStatus.SC_CONFLICT:
 				log.error("conflict: item still on server");
 			default:
 				String respBody = EntityUtils.toString(response.getEntity());

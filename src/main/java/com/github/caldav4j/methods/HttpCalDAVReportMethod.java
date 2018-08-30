@@ -15,7 +15,7 @@ import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.model.request.CalDAVReportRequest;
-import com.github.caldav4j.util.CaldavStatus;
+import com.github.caldav4j.util.CalDAVStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
     * @param uri URI to the calendar resource.
     * @param reportRequest Report for the Request to handle.
     * @param depth Depth of the Report Request
-    * @throws IOException
+    * @throws IOException on error
     */
    public HttpCalDAVReportMethod(URI uri, CalDAVReportRequest reportRequest, int depth) throws IOException {
        super(uri);
@@ -54,7 +54,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 	 * Depth is set to 0, by default. According to the RFC Specs.
 	 * @param uri URI to the calendar resource.
 	 * @param reportRequest Report for the Request to handle.
-	 * @throws IOException
+	 * @throws IOException on error
 	 */
 	public HttpCalDAVReportMethod(URI uri, CalDAVReportRequest reportRequest) throws IOException {
 		this(uri, reportRequest, CalDAVConstants.DEPTH_1);
@@ -65,7 +65,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
      * @param uri URI to the calendar resource.
      * @param reportRequest Report for the Request to handle.
      * @param depth Depth of the Report Request
-     * @throws IOException
+     * @throws IOException on error
      */
     public HttpCalDAVReportMethod(String uri, CalDAVReportRequest reportRequest, int depth) throws IOException {
         this(URI.create(uri), reportRequest, depth);
@@ -75,7 +75,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 	 * Depth is set to 1, by default.
 	 * @param uri URI to the calendar resource.
 	 * @param reportRequest Report for the Request to handle.
-	 * @throws IOException
+	 * @throws IOException on error
 	 */
 	public HttpCalDAVReportMethod(String uri, CalDAVReportRequest reportRequest) throws IOException {
 		this(uri, reportRequest, CalDAVConstants.DEPTH_1);
@@ -89,7 +89,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
    /**
     * Sets the depth and the request body as the Report specified.
     * @param reportRequest Report for Request body
-    * @throws IOException
+    * @throws IOException on error
     */
    private void processReportRequest(CalDAVReportRequest reportRequest) throws IOException {
 	   setEntity(XmlEntity.create(reportRequest));
@@ -97,7 +97,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 
    /**
     * Change the depth of the Request.
-    * @param depth
+    * @param depth Depth to set.
     */
    public void setDepth(int depth){
        DepthHeader dh = new DepthHeader(depth);
@@ -107,7 +107,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
    @Override
    public boolean succeeded(HttpResponse response) {
 	   int statusCode = response.getStatusLine().getStatusCode();
-       return statusCode == CaldavStatus.SC_OK || statusCode == CaldavStatus.SC_MULTI_STATUS;
+       return statusCode == CalDAVStatus.SC_OK || statusCode == CalDAVStatus.SC_MULTI_STATUS;
    }
 
 	public CalendarBuilder getCalendarBuilder() {
@@ -127,13 +127,10 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
    public Calendar getResponseBodyAsCalendar(HttpResponse response) throws IOException {
 	   Calendar calendarResponse = null;
 	   if(this.succeeded(response)) {
-		   InputStream in = response.getEntity().getContent();
-		   try {
+		   try(InputStream in = response.getEntity().getContent()) {
 			   calendarResponse = calendarBuilder.build(in);
 		   } catch (ParserException e) {
 			   throw new IOException("Error parsing calendar from response", e);
-		   } finally {
-			   in.close();
 		   }
 	   }
        return calendarResponse;
@@ -152,7 +149,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 	   if (responses != null && succeeded(response)) {
 		   for (MultiStatusResponse r : responses) {
 			   if (r.getHref().equals(urlPath)) {
-				   DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
+				   DavPropertySet props = r.getProperties(CalDAVStatus.SC_OK);
 				   return props.get(property);
 			   }
 		   }
@@ -166,11 +163,11 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
     * @return Collection of Properties.
     */
    public Collection<DavProperty> getDavProperties(HttpResponse response, DavPropertyName property) throws DavException {
-	   Collection<DavProperty> set = new ArrayList<DavProperty>();
+	   Collection<DavProperty> set = new ArrayList<>();
 	   MultiStatusResponse[] responses = getResponseBodyAsMultiStatus(response).getResponses();
 	   if (responses != null && succeeded(response)) {
 		   for (MultiStatusResponse r : responses) {
-			   DavPropertySet props = r.getProperties(CaldavStatus.SC_OK);
+			   DavPropertySet props = r.getProperties(CalDAVStatus.SC_OK);
 			   if (!props.isEmpty()) set.add(props.get(property));
 		   }
 	   }
@@ -178,9 +175,8 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
    }
 
    /**
-    * Returns the MultiStatusResponse to the corresponding uri.
     * @param uri URI to the calendar resource.
-    * @return
+    * @return Returns the MultiStatusResponse to the corresponding uri.
     */
    public MultiStatusResponse getResponseBodyAsMultiStatusResponse(HttpResponse httpResponse, String uri) throws DavException {
 	   MultiStatusResponse[] responses = getResponseBodyAsMultiStatus(httpResponse).getResponses();

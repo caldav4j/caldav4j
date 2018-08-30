@@ -121,8 +121,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	 *
 	 * @see CalDAVResourceCache#putResource(CalDAVResource)
 	 */
-	public synchronized void putResource(CalDAVResource calDAVResource)
-			throws com.github.caldav4j.exceptions.CacheException {
+	public synchronized void putResource(CalDAVResource calDAVResource) {
 		String href = calDAVResource.getResourceMetadata().getHref();
 		Element resourceElement = new Element(href, calDAVResource);
 		hrefToResourceCache.put(resourceElement);
@@ -155,8 +154,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 		Calendar calendar = calDAVResource.getCalendar();
 		VEvent vevent = ICalendarUtils.getFirstEvent(calendar);
 		if (vevent != null) {
-			String uid = ICalendarUtils.getUIDValue(vevent);
-			return uid;
+			return ICalendarUtils.getUIDValue(vevent);
 		}
 		return null;
 	}

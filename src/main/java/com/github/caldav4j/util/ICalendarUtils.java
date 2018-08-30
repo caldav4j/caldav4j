@@ -36,7 +36,7 @@ import java.util.Calendar;
 public class ICalendarUtils {
 	private static final Logger log = LoggerFactory.getLogger(ICalendarUtils.class);
 
-	private static java.util.TimeZone J_TZ_GMT = TimeZone.getTimeZone("GMT");
+	private static final java.util.TimeZone J_TZ_GMT = TimeZone.getTimeZone("GMT");
 
 	/**
 	 * Creates an iCal4J DateTime. The values for year, month, day, hour,
@@ -323,7 +323,6 @@ public class ICalendarUtils {
 	 * Returns the "master" VEvent - one that does not have a RECURRENCE-ID
 	 *
 	 * @param calendar Calendar from where the Master Event is supposed to be retrieved
-	 * @param uid UID of the VEvent
 	 * @return VEvent that does not have Recurrence ID
 	 */
 	public static VTimeZone getTimezone(net.fortuna.ical4j.model.Calendar calendar){

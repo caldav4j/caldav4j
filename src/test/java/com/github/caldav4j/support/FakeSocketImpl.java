@@ -54,7 +54,7 @@ class FakeSocketImpl extends SocketImpl
 		this.input = input;
 		
 		output = new ByteArrayOutputStream();
-		optionValuesById = new HashMap<Integer, Object>();
+		optionValuesById = new HashMap<>();
 	}
 
 	// SocketImpl methods -----------------------------------------------------

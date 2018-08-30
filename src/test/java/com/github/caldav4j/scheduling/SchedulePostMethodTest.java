@@ -50,12 +50,10 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	public void testSimpeMeetingInvite_Accept() {
 
 
-		Calendar invite = this
-		.getCalendarResource("scheduling/meeting_invitation.ics");
+		Calendar invite = getCalendarResource("scheduling/meeting_invitation.ics");
 		Uid myUid = new Uid(new DateTime().toString());
 		ICalendarUtils.addOrReplaceProperty(invite.getComponent(Component.VEVENT), myUid);
-		Calendar refreshEvent = this
-		.getCalendarResource("scheduling/meeting_reply.ics");
+		Calendar refreshEvent = getCalendarResource("scheduling/meeting_reply.ics");
 		ICalendarUtils.addOrReplaceProperty(refreshEvent.getComponent(Component.VEVENT), myUid);
 
 	    CalendarRequest cr = new CalendarRequest(invite);
@@ -103,8 +101,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 	public void testRealTimeScheduling_SimpleMeetingInvitation() throws URISyntaxException {
 
 
-		Calendar invite = this
-		.getCalendarResource("scheduling/meeting_invitation.ics");
+		Calendar invite = getCalendarResource("scheduling/meeting_invitation.ics");
 
 
 		// replace fields from template
@@ -205,8 +202,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 		HttpClient http = createHttpClient();
 		HttpHost hostConfig = createHostConfiguration();
 
-		Calendar invite = this
-		.getCalendarResource("scheduling/meeting_invitation.ics");
+		Calendar invite = getCalendarResource("scheduling/meeting_invitation.ics");
 
 
 		VEvent event = (VEvent) invite.getComponent(Component.VEVENT);

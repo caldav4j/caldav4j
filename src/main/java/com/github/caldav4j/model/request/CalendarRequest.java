@@ -25,7 +25,7 @@ public class CalendarRequest {
 	private Calendar calendar = null;
 	private Charset charset = null;
 
-	private Set<String> etags = new HashSet<String>();
+	private Set<String> etags = new HashSet<>();
 	private boolean ifMatch = false;
 	private boolean ifNoneMatch = false;
 	private boolean allEtags = false;

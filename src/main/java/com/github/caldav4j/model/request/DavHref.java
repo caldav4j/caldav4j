@@ -13,11 +13,10 @@
  * */
 package com.github.caldav4j.model.request;
 
+import com.github.caldav4j.CalDAVConstants;
+import com.github.caldav4j.xml.OutputsDOMBase;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.apache.jackrabbit.webdav.xml.XmlSerializable;
-import com.github.caldav4j.CalDAVConstants;
-import com.github.caldav4j.exceptions.DOMValidationException;
-import com.github.caldav4j.xml.OutputsDOMBase;
 
 import java.util.Collection;
 import java.util.Map;
@@ -71,9 +70,7 @@ public class DavHref extends OutputsDOMBase {
 	/**
 	 * Nothing to validate, except for containing uri.
 	 */
-    public void validate() throws DOMValidationException{
-    	return;
-    }
+    public void validate() { }
 
 	/**
 	 * {@inheritDoc}

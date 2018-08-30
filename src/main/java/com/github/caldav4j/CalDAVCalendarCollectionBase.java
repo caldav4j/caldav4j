@@ -18,7 +18,6 @@ import com.github.caldav4j.cache.CalDAVResourceCache;
 import com.github.caldav4j.cache.EhCacheResourceCache;
 import com.github.caldav4j.cache.NoOpResourceCache;
 import com.github.caldav4j.exceptions.CacheException;
-import com.github.caldav4j.exceptions.CalDAV4JException;
 import com.github.caldav4j.methods.CalDAV4JMethodFactory;
 import com.github.caldav4j.methods.HttpPutMethod;
 import com.github.caldav4j.model.request.CalendarRequest;
@@ -28,7 +27,6 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.utils.URIUtils;
 
 import java.net.URI;
-import java.util.Random;
 
 /**
  * Abstract Base class providing basic functionality for the CalDAVCollection
@@ -41,7 +39,6 @@ public abstract class CalDAVCalendarCollectionBase {
 	protected String calendarCollectionRoot = null;
 	protected HttpHost httpHost = null;
 	protected String prodId = null;
-	protected Random random = new Random();
 	protected CalDAVResourceCache cache = NoOpResourceCache.getCacheInstance();
 	private boolean tolerantParsing = false;
 
@@ -154,10 +151,9 @@ public abstract class CalDAVCalendarCollectionBase {
 
 	/**
 	 * Create cache resources: UID_TO_HREF, HREF_TO_RESOURCE
-	 * XXX create test method
-	 * @throws CalDAV4JException on error creating Cache
 	 */
-	public void enableSimpleCache() throws CalDAV4JException {
+	// XXX create test method
+	public void enableSimpleCache() {
 		EhCacheResourceCache cache = null;
 		if (!isCacheEnabled()) {
 			try {

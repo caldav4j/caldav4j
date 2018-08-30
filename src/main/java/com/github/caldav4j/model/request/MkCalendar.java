@@ -52,7 +52,7 @@ public class MkCalendar extends OutputsDOMBase{
     }
 
     protected Collection<XmlSerializable> getChildren() {
-        Collection<XmlSerializable> c  = new ArrayList<XmlSerializable>();
+        Collection<XmlSerializable> c  = new ArrayList<>();
         PropProperty set = new PropProperty(SET_ELEMENT_NAME, CalDAVConstants.NAMESPACE_WEBDAV);
         set.addChild(prop);
         c.add(set);

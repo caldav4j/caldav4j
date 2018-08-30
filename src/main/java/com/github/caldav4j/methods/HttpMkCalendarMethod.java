@@ -14,7 +14,7 @@ import com.github.caldav4j.model.request.CalendarDescription;
 import com.github.caldav4j.model.request.DisplayName;
 import com.github.caldav4j.model.request.MkCalendar;
 import com.github.caldav4j.model.request.Prop;
-import com.github.caldav4j.util.CaldavStatus;
+import com.github.caldav4j.util.CalDAVStatus;
 import org.w3c.dom.Document;
 
 
@@ -97,7 +97,7 @@ public class HttpMkCalendarMethod extends BaseDavRequest {
     
     @Override
     public boolean succeeded(HttpResponse response) {
- 	   return response.getStatusLine().getStatusCode() == CaldavStatus.SC_CREATED;
+ 	   return response.getStatusLine().getStatusCode() == CalDAVStatus.SC_CREATED;
     }
 
 }

@@ -50,8 +50,8 @@ public class Comp extends OutputsDOMBase {
 
 	public static final String ATTR_NAME = "name";
 
-	private List<Comp> comps = new ArrayList<Comp>();
-	private List<CalDAVProp> props = new ArrayList<CalDAVProp>();
+	private List<Comp> comps = new ArrayList<>();
+	private List<CalDAVProp> props = new ArrayList<>();
 	private boolean allComp = false;
 	private boolean allProp = false;
 	private String name = null;
@@ -149,7 +149,7 @@ public class Comp extends OutputsDOMBase {
 	}
 
 	protected Collection<? extends XmlSerializable> getChildren() {
-		ArrayList<XmlSerializable> children = new ArrayList<XmlSerializable>();
+		ArrayList<XmlSerializable> children = new ArrayList<>();
 		if (allComp) {
 			children.add(new PropProperty(ELEM_ALLCOMP, CalDAVConstants.NAMESPACE_CALDAV));
 		} else if (comps != null) {
@@ -170,7 +170,7 @@ public class Comp extends OutputsDOMBase {
 	}
 
 	protected Map<String, String> getAttributes() {
-		Map<String, String> m = new HashMap<String, String>();
+		Map<String, String> m = new HashMap<>();
 		m.put(ATTR_NAME, name);
 		return m;
 	}

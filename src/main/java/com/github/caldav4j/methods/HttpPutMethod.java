@@ -21,7 +21,7 @@ import java.nio.charset.UnsupportedCharsetException;
  */
 public class HttpPutMethod extends HttpPut {
 
-	Logger log = LoggerFactory.getLogger(HttpPutMethod.class);
+	private static final Logger log = LoggerFactory.getLogger(HttpPutMethod.class);
 
 	public HttpPutMethod(URI uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
 		super(uri);
