@@ -1,5 +1,7 @@
 package com.github.caldav4j.credential;
 
+import com.github.caldav4j.util.UrlUtils;
+
 import java.net.URI;
 
 public class CaldavCredential {
@@ -32,6 +34,7 @@ public class CaldavCredential {
 			//port = server.getPort() != -1 ? server.getPort() : (server.getScheme().endsWith("s") ? 443: 80);
 			port = server.getPort(); //!A! For 3.1 ports 80 and 443 were assigned automatically. But fixing the https port to 443 led to error 502 - Connection refused.			
 			home = server.getPath().replace("\\w+/$", "");
+		    home = UrlUtils.ensureTrailingSlash(home);
 			String userInfo = server.getUserInfo();
 			if (userInfo != null) {
 				user = userInfo.split(":")[0];

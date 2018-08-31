@@ -104,26 +104,37 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
        setHeader(dh.getHeaderName(),dh.getHeaderValue());
    }
 
-   @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
    public boolean succeeded(HttpResponse response) {
 	   int statusCode = response.getStatusLine().getStatusCode();
        return statusCode == CalDAVStatus.SC_OK || statusCode == CalDAVStatus.SC_MULTI_STATUS;
    }
 
+	/**
+	 * @return Returns the associated CalendarBuilder Instance
+	 */
 	public CalendarBuilder getCalendarBuilder() {
 		return calendarBuilder;
 	}
 
+	/**
+	 * Sets the class calendar builder instance. If not set,
+	 * then can't build a calendar response, when expected
+	 * @param calendarBuilder Instance to set
+	 */
 	public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
 		this.calendarBuilder = calendarBuilder;
 	}
 
 	/**
-    * Set the CalendarBuilder instance, before invoking this.
+	 * Set the CalendarBuilder instance, before invoking this.
 	 * Will be auto assigned if invoked from the {@link CalDAV4JMethodFactory}
-    * @return If the Response was a calendar, then we return the {@link Calendar} instance,
-    * else null is returned.
-    */
+	 * @return If the Response was a calendar, then we return the {@link Calendar} instance,
+	 * else null is returned.
+	 */
    public Calendar getResponseBodyAsCalendar(HttpResponse response) throws IOException {
 	   Calendar calendarResponse = null;
 	   if(this.succeeded(response)) {

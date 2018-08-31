@@ -48,8 +48,6 @@ public class FreeBusyQuery extends OutputsDOMBase implements CalDAVReportRequest
 	// fields -----------------------------------------------------------------
 	
 	private TimeRange timeRange;
-    private Prop properties = new Prop();
-    private int depth = CalDAVConstants.DEPTH_1;
 	
 	// constructors -----------------------------------------------------------
 
@@ -57,27 +55,9 @@ public class FreeBusyQuery extends OutputsDOMBase implements CalDAVReportRequest
 
     }
 
-	@SuppressWarnings("unchecked")
-    public FreeBusyQuery(Prop propertyNames,
-                         TimeRange timeRange)
-    {
-        this.timeRange = timeRange;
-        properties.addChildren(propertyNames);
-    }
-
-	public FreeBusyQuery(DavPropertyNameSet propertyNames,
-						 TimeRange timeRange)
-	{
-        this.timeRange = timeRange;
-        properties.addChildren(propertyNames);
+	public FreeBusyQuery(TimeRange timeRange) {
+    	this.timeRange = timeRange;
 	}
-
-    public FreeBusyQuery(Collection<? extends XmlSerializable> propertyNames,
-                         TimeRange timeRange)
-    {
-        this.timeRange = timeRange;
-        properties.addChildren(propertyNames);
-    }
 	
 	// OutputsDOMBase methods -------------------------------------------------
 	
@@ -103,17 +83,22 @@ public class FreeBusyQuery extends OutputsDOMBase implements CalDAVReportRequest
 	/**
 	 * {@inheritDoc}
 	 */
-
 	protected Collection<? extends OutputsDOM> getChildren()
 	{
 		return Collections.singleton(timeRange);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
     @Override
     protected Map<String, String> getAttributes() {
         return null;
     }
 
+	/**
+	 * {@inheritDoc}
+	 */
     @Override
     protected String getTextContent() {
         return null;
@@ -122,7 +107,6 @@ public class FreeBusyQuery extends OutputsDOMBase implements CalDAVReportRequest
     /**
 	 * {@inheritDoc}
 	 */
-
 	public void validate() throws DOMValidationException
 	{
 		if (timeRange == null)
@@ -144,14 +128,5 @@ public class FreeBusyQuery extends OutputsDOMBase implements CalDAVReportRequest
 	{
 		this.timeRange = timeRange;
 	}
-
-    public void addProperty(XmlSerializable propProperty){
-        properties.add(propProperty);
-    }
-
-    public void addProperty(String propertyName, Namespace namespace) {
-        PropProperty propProperty = new PropProperty(propertyName, namespace);
-        properties.add(propProperty);
-    }
 
 }

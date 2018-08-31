@@ -40,10 +40,10 @@ public class BadStatusException extends CalDAV4JException {
     }
     
     public BadStatusException(int status, String method, String path) {
-    	super(String.format(MESSAGE,status,method,path));
+    	super(String.format(MESSAGE, status, method, path));
     }
     public <T extends HttpRequestBase> BadStatusException(T method, HttpResponse response) {
-    	super(String.format(MESSAGE,response.getStatusLine().getStatusCode(), method.getMethod(), method.getURI()));
+    	super(String.format(MESSAGE, response.getStatusLine().getStatusCode(), method.getMethod(), method.getURI()));
     }
     
     

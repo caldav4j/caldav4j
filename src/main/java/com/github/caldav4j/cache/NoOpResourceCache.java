@@ -14,6 +14,12 @@ public class NoOpResourceCache implements CalDAVResourceCache {
 	 */
 	private static NoOpResourceCache SINGLETON = null;
 
+	/**
+	 * Implements a Cache Singleton access.
+	 * This ensures that only one copy of the cache is ever created.
+	 * @return Cache Instance
+	 * @see #destroyCacheInstance()
+	 */
 	public static NoOpResourceCache getCacheInstance() {
 		if(SINGLETON == null)
 			SINGLETON = new NoOpResourceCache();
@@ -21,6 +27,10 @@ public class NoOpResourceCache implements CalDAVResourceCache {
 		return SINGLETON;
 	}
 
+	/**
+	 * Used to destroy the Singleton Cache Instance.
+	 * @see #getCacheInstance()
+	 */
 	public static void destroyCacheInstance() {
 		SINGLETON = null;
 	}

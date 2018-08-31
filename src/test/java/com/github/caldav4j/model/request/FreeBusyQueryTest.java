@@ -66,12 +66,13 @@ public class FreeBusyQueryTest
 		
 		query.validate();
 	}
-	
+
+	@Test
 	public void validateWithTimeRange() throws ParseException, DOMValidationException
 	{
 		FreeBusyQuery query = createFreeBusyQuery("20000101T000000Z", "20000201T000000Z");
 		
-		query.validate();
+		query.validate(); // Should not throw an exception
 	}
 	
 	// private methods --------------------------------------------------------

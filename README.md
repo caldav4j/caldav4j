@@ -29,18 +29,18 @@ CalDAV4j used to have a version which extends the Android Calendar App with Cald
 
 CalDav4j is currently on Maven Central, thus to add it, you can add a dependancy by adding the following to the `pom.xml`:
 
-```
+```xml
 <dependency>
     <groupId>com.github.caldav4j</groupId>
     <artifactId>caldav4j</artifactId>
-    <version>0.9.1</version>
+    <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
 
 Gradle:
 
 ```
-compile 'com.github.caldav4j:caldav4j:0.9.1'
+compile 'com.github.caldav4j:caldav4j:1.0-SNAPSHOT'
 ```
 
 The unit tests are the best place right now to see how to use CalDAV4j. Tutorials and more documentation are forthcoming.
@@ -49,7 +49,7 @@ The unit tests are the best place right now to see how to use CalDAV4j. Tutorial
 
 CalDAV4j uses Maven as its build system. To build this project, one must simply install through maven, while skipping all the tests:
 
-```
+```sh
 mvn install -DskipTests
 ```
 
@@ -57,13 +57,13 @@ mvn install -DskipTests
 
 During package creation, you can test your caldav server replacing the `caldav4jUri` with your own custom one.
 
-```
+```sh
 mvn package -Dcaldav4jUri='https//user:password@hostname.fqdn.com/base/user/collections/'
 ```
 
 A Docker image of a caldav server, Bedework (~900MB) is distributed via Docker Hub:
 
-```
+```sh
 docker run -d -p 8080:8080 ioggstream/bedework
 mvn clean package -Dcaldav4jUri='http//vbede:bedework@localhost:8080/ucaldav/user/vbede/'
 ```
@@ -71,24 +71,39 @@ mvn clean package -Dcaldav4jUri='http//vbede:bedework@localhost:8080/ucaldav/use
 # License
 
 CalDAV4j is licensed under the Apache 2.0 License
-Copyright © 2005-2007 Open Source Application Foundation
+ - Copyright © 2005-2007 Open Source Application Foundation
+ - Copyright © 2007 - Present Individual Contributors
 
-# Contributing Organizations
+# Contributing Organizations and Individuals
 
- * Par-Tec
- * OSAFoundation
+ * Organizations
+   - Par-Tec
+   - OSAFoundation (No longer contributing)
+ * Individuals
+   - Roberto Polli (@ioggstream)
+   - Ankush Mishra (@The_Antimist)
+   - Mark Hobson (@markhobson)
+   - Bobby Rullo
 
 # Changelog
 
-CalDAV4j 0.9.1 is the current (tagged) release.
+CalDAV4j 0.9.1 is the current (tagged) release and 1.0-SNAPSHOT is the current development branch.
 
 ```
-In 0.9.x (master) we're working on:
+In 1.0.x (http4client-dev):
+
+  * Migration from Apache HttpClient 3.x to HttpClient 4.x
+  * Update java version to 8, and iCal4j to v3.0.1
+  * Change the package structure from `org.osaf.caldav4j` to `com.github.caldav4j`
+  * More consistent API throughout, with Apache Jackrabbit WebDAV
+  * 
+
+In 0.9.x (master):
 
   * major cleanup, deprecated methods removal
   * based on jackrabbit
 
-In 0.8.x we're working on
+In 0.8.x includes:
 
   * fine-grained ACL support 15%
   * small refinement to simplify code

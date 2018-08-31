@@ -29,7 +29,29 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 
 
 	/**
-	 * Create a Simple/Dummy cache
+	 * Implements a Cache Singleton access.
+	 * This ensures that only one copy of the cache is ever created.
+	 * @return Cache Instance
+	 * @throws com.github.caldav4j.exceptions.CacheException on error creating Cache
+	 * @see #destroyCacheInstance()
+	 */
+	public static EhCacheResourceCache getCacheInstance()
+			throws com.github.caldav4j.exceptions.CacheException {
+		if(cache == null)
+			cache = createSimpleCache();
+		return cache;
+	}
+
+	/**
+	 * Used to destroy the Singleton Cache Instance.
+	 * @see #getCacheInstance()
+	 */
+	public static void destroyCacheInstance() {
+		cache = null;
+	}
+
+	/**
+	 * Creates a new Simple/Dummy cache everytime.
 	 *
 	 * @return a simple EhCacheResourceCache
 	 * @throws com.github.caldav4j.exceptions.CacheException on error

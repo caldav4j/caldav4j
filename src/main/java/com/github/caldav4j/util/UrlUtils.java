@@ -54,7 +54,7 @@ public class UrlUtils {
 	}
 
 	public static String ensureTrailingSlash(String s) {
-		return (s.endsWith("/"))? s.concat("/") : s;
+		return (s.endsWith("/"))? s : s.concat("/");
 	}
 
 	/**
@@ -82,8 +82,8 @@ public class UrlUtils {
 	 */
 	public static String parseISToString(InputStream is){
 		StringBuffer sb = new StringBuffer();
-		try {
-			BufferedReader din = new BufferedReader(new InputStreamReader(is));
+		try(InputStream inputStream = is) {
+			BufferedReader din = new BufferedReader(new InputStreamReader(inputStream));
 
 			String line = null;
 			while((line=din.readLine()) != null){
@@ -92,12 +92,8 @@ public class UrlUtils {
 			}
 		} catch(Exception ex){
 			ex.getMessage();
-		}finally{
-			try{
-				is.close();
-			} catch (Exception ex) {
-			}
 		}
+
 		return sb.toString();
 	}
 

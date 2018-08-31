@@ -680,9 +680,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			}
 
 			if (statusCode != CalDAVStatus.SC_OK){
-				throw new CalDAV4JException(
-						"Unexpected Status returned from Server: "
-						+ response.getStatusLine().getStatusCode());
+				throw new BadStatusException(headMethod, response);
 			}
 		} catch (IOException e) {
 			throw new CalDAV4JException("Problem executing HEAD method on: " + getDefaultHttpHost(headMethod.getURI()), e);
@@ -713,7 +711,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		CalendarMultiget query = new CalendarMultiget(props, null, false, false);
 		query.addHref(path);
 
-		MultiStatus multiStatus = getResponseforQuery(httpClient, query);
+		MultiStatus multiStatus = getMultiStatusResponseforQuery(httpClient, query);
 		for(MultiStatusResponse response : multiStatus.getResponses()){
 			if(response.getStatus()[0].getStatusCode() == CalDAVStatus.SC_OK){
 				etag = CalendarDataProperty.getEtagfromResponse(response);
@@ -802,7 +800,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
                 if (isCacheEnabled()) {
                     CalDAVResource resource = getCalDAVResource(httpClient,
                             UrlUtils.stripHost(response.getHref()), etag);
-                    Calendar cal = resource.getCalendar();
 
                     list.add(resource.getCalendar());
 
@@ -832,7 +829,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
      * @return MultiStatus Response for the Query
      * @throws CalDAV4JException on error
      */
-	public MultiStatus getResponseforQuery(HttpClient httpClient, CalDAVReportRequest query) throws CalDAV4JException {
+	public MultiStatus getMultiStatusResponseforQuery(HttpClient httpClient, CalDAVReportRequest query) throws CalDAV4JException {
 
 		HttpCalDAVReportMethod reportMethod = null;
 		try {
@@ -973,7 +970,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 *
 	 * @see <a href="http://tools.ietf.org/html/rfc4791#section-7.9">RFC 4791 Section 7.9</a>
 	 *
-	 * @author rpolli
+	 * @author rpolli, the_antimist
 	 * @param httpClient the httpClient which will make the request
      * @param calendarUris URI's for Multiget
 	 * @return List of Calendars based on the uris.
@@ -992,6 +989,53 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		query.setHrefs(calendarUris);
 
 		return getComponentByMultiget(httpClient, query);
+	}
+
+	/**
+	 * Executes a FreeBusyQuery Report as based on
+	 * <a href="https://tools.ietf.org/html/rfc4791#section-7.10">RFC 4791 Section 7.10</a>
+	 * with a Depth of 1.
+	 *
+	 * @param httpClient the httpClient which will make the request
+	 * @param timeRange timerange to check
+	 * @return VFREEBUSY Calendar
+	 * @throws CalDAV4JException on error
+	 */
+	public Calendar getFreeBusyQueryCalendar(HttpClient httpClient, TimeRange timeRange)
+			throws CalDAV4JException {
+		return this.getFreeBusyQueryCalendar(httpClient, new FreeBusyQuery(timeRange));
+	}
+
+	/**
+	 * Executes a FreeBusyQuery Report as based on
+	 * <a href="https://tools.ietf.org/html/rfc4791#section-7.10">RFC 4791 Section 7.10</a>
+	 * with a Depth of 1.
+	 *
+	 * @param httpClient the httpClient which will make the request
+	 * @param freeBusyQuery Query to execute
+	 * @return VFREEBUSY Calendar
+	 * @throws CalDAV4JException on error
+	 */
+	public Calendar getFreeBusyQueryCalendar(HttpClient httpClient, FreeBusyQuery freeBusyQuery)
+			throws CalDAV4JException {
+
+		HttpCalDAVReportMethod reportMethod = null;
+
+		try {
+			reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), freeBusyQuery, CalDAVConstants.DEPTH_1);
+			HttpResponse response = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
+
+			if(reportMethod.succeeded(response))
+				return reportMethod.getResponseBodyAsCalendar(response);
+
+		} catch (Exception he) {
+			throw new CalDAV4JException("Problem executing method", he);
+		} finally {
+			if(reportMethod != null)
+				reportMethod.reset();
+		}
+
+		return null;
 	}
 
 
