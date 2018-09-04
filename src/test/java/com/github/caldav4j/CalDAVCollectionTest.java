@@ -4,10 +4,14 @@
 package com.github.caldav4j;
 
 import com.github.caldav4j.functional.support.CaldavFixtureHarness;
+import com.github.caldav4j.model.response.CalendarDataProperty;
+import com.github.caldav4j.util.UrlUtils;
+import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.junit.After;
 import org.junit.Before;
@@ -25,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -422,6 +427,21 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		String ret = collection.getHref("PATH");
 		log.info(ret);
 	}
+
+	/**
+	 * Tests add to check if same UID is added again, the UID is modified.
+	 * @throws Exception
+	 */
+	@Test
+	public void testAdd() throws Exception {
+		InputStream stream = this.getClass().getClassLoader()
+				.getResourceAsStream(ICS_GOOGLE_ALL_DAY_JAN1_PATH);
+		Calendar c = (new CalendarBuilder()).build(stream);
+
+		String uid = collection.add(fixture.getHttpClient(), c);
+		assertNotEquals("These should not be equal", uid, ICS_ALL_DAY_JAN1_UID);
+	}
+
 	//
 	// private
 	//

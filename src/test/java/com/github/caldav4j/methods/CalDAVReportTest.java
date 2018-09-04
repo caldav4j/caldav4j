@@ -3,13 +3,18 @@ package com.github.caldav4j.methods;
 import com.github.caldav4j.BaseTestCase;
 import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.cache.EhCacheResourceCache;
+import com.github.caldav4j.exceptions.CalDAV4JException;
 import com.github.caldav4j.functional.support.CaldavFixtureHarness;
 import com.github.caldav4j.model.request.*;
 import com.github.caldav4j.model.response.CalendarDataProperty;
+import com.github.caldav4j.util.ICalendarUtils;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.VFreeBusy;
+import net.fortuna.ical4j.model.property.DtEnd;
+import net.fortuna.ical4j.model.property.DtStart;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -44,9 +49,9 @@ import static org.junit.Assert.assertEquals;
  * Created by emanon on 5/18/16.
  */
 
-public class NewCalDAVReportTest extends BaseTestCase{
+public class CalDAVReportTest extends BaseTestCase{
 
-    private static final Logger log = LoggerFactory.getLogger(NewCalDAVReportTest.class);
+    private static final Logger log = LoggerFactory.getLogger(CalDAVReportTest.class);
     private EhCacheResourceCache myCache = null;
 
     @Before
@@ -142,5 +147,25 @@ public class NewCalDAVReportTest extends BaseTestCase{
         }
 
         assertEquals(3, templist.size());
+    }
+
+    /**
+     * Tests the FreeBusyQuery, on the server and checks the starts and end
+     * dates for verification
+     */
+    @Test
+    public void testFreeBusyQuery() throws ParseException, IOException, CalDAV4JException {
+        HttpClient client = fixture.getHttpClient();
+
+        FreeBusyQuery query = new FreeBusyQuery(new TimeRange(new DateTime("20060104T140000Z"),new DateTime("20060105T220000Z")));
+
+        HttpCalDAVReportMethod method = fixture.getMethodFactory().createCalDAVReportMethod(fixture.getCollectionPath(), query, CalDAVConstants.DEPTH_1);
+        HttpResponse response = client.execute(fixture.getHostConfig(), method);
+        Calendar calendar = method.getResponseBodyAsCalendar(response);
+        VFreeBusy freeBusy = (VFreeBusy) ICalendarUtils.getFirstComponent(calendar);
+
+        /// Check returned Calendar
+        assertEquals("Start Dates are not equal", freeBusy.getStartDate(), new DtStart("20060104T140000Z"));
+        assertEquals("End Dates are not equal", freeBusy.getEndDate(), new DtEnd("20060105T220000Z"));
     }
 }

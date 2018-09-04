@@ -67,6 +67,10 @@ public class HttpMkCalendarMethod extends BaseDavRequest {
         processRequest();
 	}
 
+	public HttpMkCalendarMethod(URI uri, String DisplayName, String description) throws IOException {
+		this(uri, DisplayName, description, null);
+	}
+
 	public HttpMkCalendarMethod(String uri,  String DisplayName, String description, String DescriptionLang) throws IOException {
 		this(URI.create(uri), DisplayName, description, DescriptionLang);
 	}
@@ -90,12 +94,18 @@ public class HttpMkCalendarMethod extends BaseDavRequest {
         }
     }
 
-    @Override
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
     public String getMethod() {
         return CalDAVConstants.METHOD_MKCALENDAR;
     }
-    
-    @Override
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
     public boolean succeeded(HttpResponse response) {
  	   return response.getStatusLine().getStatusCode() == CalDAVStatus.SC_CREATED;
     }

@@ -90,11 +90,15 @@ public abstract class CalDAVCalendarCollectionBase {
 	}
 
 	/**
-	 * Set base path, creates a URI object from the string
+	 * Sets base path. Also set the host, based on if the path was Absolute
 	 * @param path Calendar Collection Root
 	 */
 	public void setCalendarCollectionRoot(String path) {
-		this.calendarCollectionRoot = UrlUtils.removeDoubleSlashes(UrlUtils.ensureTrailingSlash(path));
+		URI temp = URI.create(path);
+		if(temp.isAbsolute())
+			setHttpHost(URIUtils.extractHost(temp));
+
+		this.calendarCollectionRoot = UrlUtils.removeDoubleSlashes(UrlUtils.ensureTrailingSlash(temp.getPath()));
 	}
 
 

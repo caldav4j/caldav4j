@@ -12,25 +12,28 @@ import org.apache.jackrabbit.webdav.security.AclProperty;
 
 public class HttpAclMethod extends BaseDavRequest {
 
-    public HttpAclMethod(URI uri, AclProperty aclProperty) throws IOException {
-        super(uri);
-        super.setEntity(XmlEntity.create(aclProperty));
-    }
+	public HttpAclMethod(URI uri, AclProperty aclProperty) throws IOException {
+		super(uri);
+		super.setEntity(XmlEntity.create(aclProperty));
+	}
 
-    public HttpAclMethod(String uri, AclProperty aclProperty) throws IOException {
-        this(URI.create(uri), aclProperty);
-    }
-    
-    @Override
-    public String getMethod() {
-        return DavMethods.METHOD_ACL;
-    }
-    
-    
-    @Override
-    public boolean succeeded(HttpResponse response) {
-    	return response.getStatusLine().getStatusCode() == DavServletResponse.SC_OK;
-    }
-    
+	public HttpAclMethod(String uri, AclProperty aclProperty) throws IOException {
+		this(URI.create(uri), aclProperty);
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getMethod() {
+		return DavMethods.METHOD_ACL;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean succeeded(HttpResponse response) {
+		return response.getStatusLine().getStatusCode() == DavServletResponse.SC_OK;
+	}
 }

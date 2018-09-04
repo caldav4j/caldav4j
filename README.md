@@ -84,6 +84,7 @@ CalDAV4j is licensed under the Apache 2.0 License
    - Ankush Mishra (@The_Antimist)
    - Mark Hobson (@markhobson)
    - Bobby Rullo
+   - @alexander233
 
 # Changelog
 
@@ -96,7 +97,6 @@ In 1.0.x (http4client-dev):
   * Update java version to 8, and iCal4j to v3.0.1
   * Change the package structure from `org.osaf.caldav4j` to `com.github.caldav4j`
   * More consistent API throughout, with Apache Jackrabbit WebDAV
-  * 
 
 In 0.9.x (master):
 

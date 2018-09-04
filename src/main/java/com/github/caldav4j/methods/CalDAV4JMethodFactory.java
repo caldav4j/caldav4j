@@ -108,6 +108,17 @@ public class CalDAV4JMethodFactory {
 		return new HttpMkCalendarMethod(uri, mkCalendar);
 	}
 
+
+	 /** Creates a {@link HttpMkCalendarMethod} instance.
+	  * @param uri URI to the Calendar resource to create.
+	  * @param displayName Display Name of Calendar
+	  * @param description Description of Calendar.
+	  * @return the instance
+	  */
+	public HttpMkCalendarMethod createMkCalendarMethod(URI uri, String displayName, String description) throws IOException {
+		return new HttpMkCalendarMethod(uri, displayName, description);
+	}
+
 	/**
 	 * Creates a {@link HttpMkCalendarMethod} instance.
 	 * @param uri URI to the Calendar resource to create.
@@ -138,6 +149,16 @@ public class CalDAV4JMethodFactory {
 	 */
 	public HttpMkCalendarMethod createMkCalendarMethod(String uri, MkCalendar mkCalendar) throws IOException {
 		return new HttpMkCalendarMethod(uri, mkCalendar);
+	}
+
+	/** Creates a {@link HttpMkCalendarMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @param displayName Display Name of Calendar
+	 * @param description Description of Calendar.
+	 * @return the instance
+	 */
+	public HttpMkCalendarMethod createMkCalendarMethod(String uri, String displayName, String description) throws IOException {
+		return new HttpMkCalendarMethod(uri, displayName, description);
 	}
 
 	/**
@@ -252,12 +273,66 @@ public class CalDAV4JMethodFactory {
 		return new HttpGetMethod(uri, getCalendarBuilderInstance());
 	}
 
+	/**
+	 * Creates a {@link HttpAclMethod} instance.
+	 * @param uri URI to the resource.
+	 * @param property The AclProperty to make the request with.
+	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
+	 */
 	public HttpAclMethod createAclMethod(URI uri, AclProperty property) throws IOException {
 		return new HttpAclMethod(uri, property);
 	}
 
+	/**
+	 * Creates a {@link HttpAclMethod} instance.
+	 * @param uri URI to the resource.
+	 * @param property The AclProperty to make the request with.
+	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
+	 */
 	public HttpAclMethod createAclMethod(String uri, AclProperty property) throws IOException {
 		return new HttpAclMethod(uri, property);
+	}
+
+	/**
+	 * Creates a {@link HttpDeleteMethod} instance.
+	 * @param uri URI to the resource.
+	 * @return the instance
+	 */
+	public HttpDeleteMethod createDeleteMethod(String uri) {
+		return new HttpDeleteMethod(uri);
+	}
+
+	/**
+	 * Creates a {@link HttpDeleteMethod} instance.
+	 * @param uri URI to the resource.
+	 * @return the instance
+	 */
+	public HttpDeleteMethod createDeleteMethod(URI uri) {
+		return new HttpDeleteMethod(uri);
+	}
+
+	/**
+	 * Creates a {@link HttpDeleteMethod} instance.
+	 * @param uri URI to the resource.
+	 * @param etag Etag to check the resource against.
+	 *             Note: should be a quoted string
+	 * @return the instance
+	 */
+	public HttpDeleteMethod createDeleteMethod(String uri, String etag) {
+		return new HttpDeleteMethod(uri, etag);
+	}
+
+	/**
+	 * Creates a {@link HttpDeleteMethod} instance.
+	 * @param uri URI to the resource.
+	 * @param etag Etag to check the resource against.
+	 *             Note: should be a quoted string
+	 * @return the instance
+	 */
+	public HttpDeleteMethod createDeleteMethod(URI uri, String etag) {
+		return new HttpDeleteMethod(uri, etag);
 	}
 
 	/**

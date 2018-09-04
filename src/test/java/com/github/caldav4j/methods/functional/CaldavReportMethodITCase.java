@@ -5,16 +5,16 @@ import java.util.Collection;
 
 import com.github.caldav4j.credential.BedeworkCaldavCredential;
 import com.github.caldav4j.credential.CaldavCredential;
+import com.github.caldav4j.methods.CalDAVReportTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import com.github.caldav4j.dialect.BedeworkCalDavDialect;
 import com.github.caldav4j.dialect.CalDavDialect;
 import com.github.caldav4j.dialect.ChandlerCalDavDialect;
-import com.github.caldav4j.methods.CalDAVReportMethodTest;
 
 @RunWith(Parameterized.class)
-public class CaldavReportMethodITCase extends  CalDAVReportMethodTest {
+public class CaldavReportMethodITCase extends CalDAVReportTest {
 	
     public CaldavReportMethodITCase(CaldavCredential credential, CalDavDialect dialect) {
     	this.caldavCredential = credential;

@@ -1,7 +1,5 @@
 package com.github.caldav4j.methods;
 
-import com.github.caldav4j.BaseTestCase;
-import com.github.caldav4j.functional.support.CaldavFixtureHarness;
 import com.github.caldav4j.model.request.CalDAVReportRequest;
 import com.github.caldav4j.support.HttpClientTestUtils;
 import com.github.caldav4j.support.HttpMethodCallbacks;
@@ -10,8 +8,6 @@ import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -21,25 +17,14 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests the HttpClient, by overriding the socket and verifying the output there.
+ * Ignored, because this test will set the Socket for the whole JVM.
+ */
 @Ignore
-public class CalDAVReportMethodTest extends BaseTestCase {
+public class HttpClientTest {
 
-	private static final Logger log = LoggerFactory.getLogger(CalDAVReportMethodTest.class);
-	// private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
-
-
-
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-		CaldavFixtureHarness.provisionSimpleEvents(fixture);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		super.tearDown();
-		fixture.tearDown();
-	}
+	private static final Logger log = LoggerFactory.getLogger(HttpClientTest.class);
 
     //Below are the merged tests from CalendarCalDAVReportMethod
 	@Test
@@ -47,13 +32,14 @@ public class CalDAVReportMethodTest extends BaseTestCase {
 	{
 		HttpCalDAVReportMethod method = createMethod("/path", new FakeCalDAVReportRequest());
 
+		method.setHeader("User-Agent", "Apache-HttpClient/CalDAV4j");
 		String expectedRequest = "REPORT /path HTTP/1.1\r\n"
 				+ "Depth: 1\r\n"
+				+ "User-Agent: Apache-HttpClient/CalDAV4j\r\n"
 				+ "Content-Length: 67\r\n"
 				+ "Content-Type: application/xml; charset=UTF-8\r\n"
 				+ "Host: localhost:80\r\n"
 				+ "Connection: Keep-Alive\r\n"
-				+ "User-Agent: Apache-HttpClient/4.5.6 (Java/1.8.0_171)\r\n"
 				+ "Accept-Encoding: gzip,deflate\r\n"
 				+ "\r\n"
 				+ "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><fake-query/>";

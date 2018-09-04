@@ -193,33 +193,31 @@ public class PropFindTest extends BaseTestCase {
 
 			for (AclProperty.Ace ace: aces) {
 				assertEquals("/user", ace.getInheritedHref());
-//
-//                switch (k) {
-//				case :
-//					Principal pdav = AceUtils.getDavPrincipal(ace);
-//					pdav.isOwner();
-//					assertEquals("property", ace.getPrincipal());
-//					assertEquals("owner", ace.getProperty().getLocalName());
-//					Privilege p = (Privilege) aces[k].enumeratePrivileges().nextElement();
-//					assertEquals("all", p.getName());
-//					break;
-//
-//				case 1:
-//					assertEquals(CalDAVConstants.DAV_PRINCIPAL_AUTHENTICATED, ace.getPrincipal());
-//					p = (Privilege) ace.enumeratePrivileges().nextElement();
-//					assertTrue( p.getName().contains(CalDAVConstants.CALDAV_PRIVILEGE_READ_FREE_BUSY));
-//					break;
-//				default:
-//					break;
-//				}
+/*
+                switch (k) {
+				case :
+					Principal pdav = AceUtils.getDavPrincipal(ace);
+					pdav.isOwner();
+					assertEquals("property", ace.getPrincipal());
+					assertEquals("owner", ace.getProperty().getLocalName());
+					Privilege p = (Privilege) aces[k].enumeratePrivileges().nextElement();
+					assertEquals("all", p.getName());
+					break;
+
+				case 1:
+					assertEquals(CalDAVConstants.DAV_PRINCIPAL_AUTHENTICATED, ace.getPrincipal());
+					p = (Privilege) ace.enumeratePrivileges().nextElement();
+					assertTrue( p.getName().contains(CalDAVConstants.CALDAV_PRIVILEGE_READ_FREE_BUSY));
+					break;
+				default:
+					break;
+				}*/
 				print_Xml(ace);
 			}
 
-		} catch (IOException e) {
+		} catch (IOException | TransformerException e) {
 			e.printStackTrace();
-		} catch (TransformerException e) {
-            e.printStackTrace();
-        }
+		}
 
     }
 

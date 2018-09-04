@@ -217,7 +217,7 @@ public class CalDavFixture
 				new UsernamePasswordCredentials(credential.user, credential.password));
 
 
-
+		// Default Host setting
 		HttpRoutePlanner routePlanner = new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE) {
 
 			@Override

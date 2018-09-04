@@ -4,7 +4,9 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.nio.charset.UnsupportedCharsetException;
 
+import com.github.caldav4j.util.CalDAVStatus;
 import net.fortuna.ical4j.model.Calendar;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -84,4 +86,14 @@ public class HttpPostMethod extends HttpPost {
             addHeader(name, value);
         }
     }
+
+	/**
+	 * Check the provided {@link HttpResponse} for successful execution.
+	 * This treats all 2xx status codes.
+	 */
+	public boolean succeeded(HttpResponse response) {
+		int status = response.getStatusLine().getStatusCode();
+		return  status == CalDAVStatus.SC_CREATED ||
+				status == CalDAVStatus.SC_NO_CONTENT;
+	}
 }
