@@ -24,6 +24,7 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.Uid;
 import com.github.caldav4j.CalDAVResource;
+import net.fortuna.ical4j.util.RandomUidGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -420,6 +421,24 @@ public class ICalendarUtils {
 		}
 
 		component.getProperties().add(property);
+	}
+
+	/**
+	 * Sets the UID of the Calendar, if none exists. Otherwise, does nothing
+	 * @param calendar Calendar to which we have to add a UID to
+	 * @return The new UID that has been set. Otherwise the old one.
+	 * @throws CalDAV4JException on error finding Component.
+	 */
+	public static Uid setUID
+			(net.fortuna.ical4j.model.Calendar calendar) throws CalDAV4JException {
+		Component comp = getFirstComponent(calendar);
+		Uid uid =  (Uid) comp.getProperties().getProperty(Property.UID);
+		if(uid == null) {
+			RandomUidGenerator generator = new RandomUidGenerator();
+			uid = generator.generateUid();
+			comp.getProperties().add(uid);
+		}
+		return uid;
 	}
 
 }

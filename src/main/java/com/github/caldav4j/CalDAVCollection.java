@@ -35,6 +35,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import org.apache.http.Header;
@@ -382,24 +383,20 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		// retry 3 times while caldav server returns PRECONDITION_FAILED
 		//
 		boolean didIt = false;
-		String path = "", uid = "";
+		String path = "";
+		Uid uid = null;
 		for (int x = 0; x < 3 && !didIt; x++) {
 			String resourceName = null;
-			uid = ICalendarUtils.getUIDValue(c);
+
+			// Sets the UID if null.
+			uid = ICalendarUtils.setUID(c);
 
 			// change UID at second attempt
 			if (x > 0) {
-				uid += "-"+random.nextInt();				
-				ICalendarUtils.setUIDValue(c, uid);
+				uid.setValue(uid.getValue() + "-" +random.nextInt());
 			}
 
-			// TODO move all these lines into ICalendarUtils
-			uid = ICalendarUtils.getUIDValue(c);
-			if (uid == null) {
-				uid = random.nextLong() + "-" + random.nextLong();
-				ICalendarUtils.setUIDValue(c, uid);
-			}
-			HttpPutMethod putMethod = createPutMethodForNewResource(uid + ".ics", c);
+			HttpPutMethod putMethod = createPutMethodForNewResource(uid.getValue() + ".ics", c);
 			HttpResponse response = null;
 			try {
 				response = httpClient.execute(getDefaultHttpHost(putMethod.getURI()), putMethod);
@@ -433,7 +430,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			}
 
 		} //for
-		return uid;
+		return uid.getValue();
 	}
 
 	/**
