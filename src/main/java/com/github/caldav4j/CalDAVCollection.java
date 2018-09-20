@@ -355,6 +355,10 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	/**
 	 * Same as {@link #add(HttpClient, Calendar, boolean)}, with
 	 * {@code attemptRetry} as true
+	 * @param httpClient the httpClient which will make the request
+	 * @param c Calendar to Add
+	 * @return UID of added resource.
+	 * @throws CalDAV4JException on error
 	 * @see #add(HttpClient, Calendar, boolean)
 	 */
 	public String add(HttpClient httpClient, Calendar c)

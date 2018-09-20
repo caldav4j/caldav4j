@@ -24,19 +24,48 @@ import com.github.caldav4j.util.CalDAVStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Represents an HTTP PROPFIND request. Some of the options can be found in {@link CalDAVConstants}
+ *
+ * @see <a href="http://webdav.org/specs/rfc4918.html#rfc.section.9.1">RFC 4918, Section 9.1</a>
+ */
 public class HttpPropFindMethod extends HttpPropfind {
 
 	private static final Logger log = LoggerFactory.getLogger(HttpPropFindMethod.class);
 
-
+	/**
+	 * @param uri          Path of the principal
+	 * @param propfindType Type of Propfind Call. Specified, in CalDavConstants.
+	 *                     Specifically, {@code CalDavConstants.PROPFIND_BY_PROPERTY},
+	 *                     {@code CalDavConstants.PROPFIND_ALL_PROP},
+	 *                     {@code CalDavConstants.PROPFIND_PROPERTY_NAMES},
+	 *                     {@code CalDavConstants.PROPFIND_ALL_PROP_INCLUDE}
+	 *                     More info, in <a href="http://webdav.org/specs/rfc4918.html#rfc.section.9.1">RFC 4918 Section 9.1</a>
+	 * @param names  Properties to make the Propfind, call for.
+	 * @param depth        Depth of the Propfind Method.
+	 * @throws IOException on error
+	 */
 	public HttpPropFindMethod(URI uri, int propfindType, DavPropertyNameSet names, int depth) throws IOException {
 		super(uri, propfindType, names, depth);
 	}
 
+	/**
+	 * Convenience constructor with Propfind Type as {@code PROPFIND_BY_PROPERTY}
+	 * @param uri          Path of the principal
+	 * @param names  Properties to make the Propfind, call for.
+	 * @param depth        Depth of the Propfind Method.
+	 * @throws IOException on error
+	 */
 	public HttpPropFindMethod(URI uri, DavPropertyNameSet names, int depth) throws IOException {
 		super(uri, names, depth);
 	}
 
+	/**
+	 * Convenience constructor with empty property names
+	 * @param uri          Path of the principal
+	 * @param depth        Depth of the Propfind Method.
+	 * @throws IOException on error
+	 */
 	public HttpPropFindMethod(URI uri, int propfindType, int depth) throws IOException {
 		super(uri, propfindType, depth);
 	}

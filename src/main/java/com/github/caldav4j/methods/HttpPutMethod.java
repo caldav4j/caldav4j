@@ -25,18 +25,35 @@ public class HttpPutMethod extends HttpPut {
 
 	private static final Logger log = LoggerFactory.getLogger(HttpPutMethod.class);
 
+	/**
+	 * @param uri URI to the given resource
+	 * @param calendarRequest Object marshalling all the request options
+	 * @param calendarOutputter Outputter object to generate the calendar.
+	 *                          Only required if {@link CalendarRequest}
+	 *                          contains a calendar
+	 */
 	public HttpPutMethod(URI uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
 		super(uri);
 		addRequestHeaders(calendarRequest);
 		generateRequestBody(calendarRequest, calendarOutputter);
 	}
 
+	/**
+	 * @param uri URI to the given resource
+	 * @param calendarRequest Object marshalling all the request options
+	 * @param calendarOutputter Outputter object to generate the calendar.
+	 *                          Only required if {@link CalendarRequest}
+	 *                          contains a calendar
+	 */
 	public HttpPutMethod(String uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
 		this(URI.create(uri), calendarRequest, calendarOutputter);
 	}
 
 	/**
 	 * Generates the calendar request body, and sets the entity.
+	 * @param calendarRequest Object representing the marshalled properties
+	 *                        of the request
+	 * @param calendarOutputter Outputter object to generate the calendar string output
 	 */
 	protected void generateRequestBody(CalendarRequest calendarRequest, CalendarOutputter calendarOutputter)  {
 		Calendar calendar = calendarRequest.getCalendar();
@@ -60,6 +77,7 @@ public class HttpPutMethod extends HttpPut {
 
 	/**
 	 * Adds the respective Request headers based on the provided flags.
+	 * @param calendarRequest Object representing the marshalled properties of the request
 	 */
 	protected void addRequestHeaders(CalendarRequest calendarRequest) {
 		boolean ifMatch = calendarRequest.isIfMatch(), ifNoneMatch = calendarRequest.isIfNoneMatch();
@@ -82,6 +100,7 @@ public class HttpPutMethod extends HttpPut {
 	/**
 	 * Check the provided {@link HttpResponse} for successful execution.
 	 * This treats all 2xx status codes.
+	 * @param response Response to check
 	 */
 	public boolean succeeded(HttpResponse response) {
 		int status = response.getStatusLine().getStatusCode();

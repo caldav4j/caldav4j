@@ -70,20 +70,13 @@ class RemovePropertyTransformer implements Transformer<Calendar>
 		{
 			return new Calendar(calendar);
 		}
-		catch (ParseException exception)
-		{
-			throw new IllegalStateException("Cannot copy calendar", exception);
-		}
-		catch (IOException exception)
-		{
-			throw new IllegalStateException("Cannot copy calendar", exception);
-		}
-		catch (URISyntaxException exception)
+		catch (ParseException | IOException | URISyntaxException exception)
 		{
 			throw new IllegalStateException("Cannot copy calendar", exception);
 		}
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	private void apply(PropertyList properties)
 	{
 		for (String propertyName : propertyNames)

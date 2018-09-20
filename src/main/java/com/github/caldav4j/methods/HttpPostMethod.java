@@ -27,7 +27,11 @@ public class HttpPostMethod extends HttpPost {
     private static final Logger log = LoggerFactory.getLogger(HttpPostMethod.class);
 
 	/**
-	 *
+	 * @param uri URI to the given resource
+	 * @param calendarRequest Object marshalling all the request options
+	 * @param calendarOutputter Outputter object to generate the calendar.
+	 *                          Only required if {@link CalendarRequest}
+	 *                          contains a calendar
 	 */
 	public HttpPostMethod(URI uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
 		super(uri);
@@ -35,16 +39,22 @@ public class HttpPostMethod extends HttpPost {
 		generateRequestBody(calendarRequest, calendarOutputter);
 	}
 
+	/**
+	 * @param uri URI to the given resource
+	 * @param calendarRequest Object marshalling all the request options
+	 * @param calendarOutputter Outputter object to generate the calendar.
+	 *                          Only required if {@link CalendarRequest}
+	 *                          contains a calendar
+	 */
 	public HttpPostMethod(String uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
 		this(URI.create(uri), calendarRequest, calendarOutputter);
 	}
 
-	public String getMethod() {
-    	return CalDAVConstants.METHOD_POST;
-    }
-
 	/**
 	 * Generates the calendar request body, and sets the entity.
+	 * @param calendarRequest Object representing the marshalled properties
+	 *                        of the request
+	 * @param calendarOutputter Outputter object to generate the calendar string output
 	 */
 	protected void generateRequestBody(CalendarRequest calendarRequest, CalendarOutputter calendarOutputter)  {
 	    Calendar calendar = calendarRequest.getCalendar();
@@ -68,6 +78,7 @@ public class HttpPostMethod extends HttpPost {
 
 	/**
 	 * Adds the respective Request headers based on the provided flags.
+	 * @param calendarRequest Object representing the marshalled properties of the request
 	 */
     protected void addRequestHeaders(CalendarRequest calendarRequest) {
 		boolean ifMatch = calendarRequest.isIfMatch(), ifNoneMatch = calendarRequest.isIfNoneMatch();
@@ -90,6 +101,7 @@ public class HttpPostMethod extends HttpPost {
 	/**
 	 * Check the provided {@link HttpResponse} for successful execution.
 	 * This treats all 2xx status codes.
+	 * @param response Response to check
 	 */
 	public boolean succeeded(HttpResponse response) {
 		int status = response.getStatusLine().getStatusCode();

@@ -46,6 +46,8 @@ public class CalDAV4JMethodFactory {
 
 	/**
 	 * Creates a {@link HttpPutMethod} instance.
+	 * @param calendarRequest Object representing the method execution options.
+	 * @param uri URI to the Calendar resource to create. 
 	 * @return the instance
 	 */
 	public HttpPutMethod createPutMethod(URI uri, CalendarRequest calendarRequest){
@@ -54,6 +56,8 @@ public class CalDAV4JMethodFactory {
 
 	/**
 	 * Creates a {@link HttpPutMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @param calendarRequest Object representing the method execution options.   
 	 * @return the instance
 	 */
 	public HttpPutMethod createPutMethod(String uri, CalendarRequest calendarRequest){
@@ -62,6 +66,8 @@ public class CalDAV4JMethodFactory {
 
 	/**
 	 * Creates a {@link HttpPostMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @param calendarRequest Object representing the method execution options.
 	 * @return the instance
 	 */
 	public HttpPostMethod createPostMethod(URI uri, CalendarRequest calendarRequest){
@@ -70,6 +76,8 @@ public class CalDAV4JMethodFactory {
 
 	/**
 	 * Creates a {@link HttpPostMethod} instance.
+	 * @param uri URI to the Calendar resource to create.
+	 * @param calendarRequest Object representing the method execution options.
 	 * @return the instance
 	 */
 	public HttpPostMethod createPostMethod(String uri, CalendarRequest calendarRequest){
@@ -92,6 +100,7 @@ public class CalDAV4JMethodFactory {
 	 * @param description Description of Calendar.
 	 * @param descriptionLanguage Language of the Description. Optional.
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpMkCalendarMethod createMkCalendarMethod(URI uri, String displayName, String description, String descriptionLanguage) throws IOException {
 		return new HttpMkCalendarMethod(uri, displayName, description, descriptionLanguage);
@@ -103,6 +112,7 @@ public class CalDAV4JMethodFactory {
 	 * @param mkCalendar {@link MkCalendar} instance which
 	 * contains all the details for creating a calendar.
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpMkCalendarMethod createMkCalendarMethod(URI uri, MkCalendar mkCalendar) throws IOException {
 		return new HttpMkCalendarMethod(uri, mkCalendar);
@@ -114,6 +124,7 @@ public class CalDAV4JMethodFactory {
 	  * @param displayName Display Name of Calendar
 	  * @param description Description of Calendar.
 	  * @return the instance
+	  * @throws IOException if error occurred during parsing of parameters
 	  */
 	public HttpMkCalendarMethod createMkCalendarMethod(URI uri, String displayName, String description) throws IOException {
 		return new HttpMkCalendarMethod(uri, displayName, description);
@@ -135,6 +146,7 @@ public class CalDAV4JMethodFactory {
 	 * @param description Description of Calendar.
 	 * @param descriptionLanguage Language of the Description. Optional.
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpMkCalendarMethod createMkCalendarMethod(String uri, String displayName, String description, String descriptionLanguage) throws IOException {
 		return new HttpMkCalendarMethod(uri, displayName, description, descriptionLanguage);
@@ -146,6 +158,7 @@ public class CalDAV4JMethodFactory {
 	 * @param mkCalendar {@link MkCalendar} instance which
 	 * contains all the details for creating a calendar.
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpMkCalendarMethod createMkCalendarMethod(String uri, MkCalendar mkCalendar) throws IOException {
 		return new HttpMkCalendarMethod(uri, mkCalendar);
@@ -156,6 +169,7 @@ public class CalDAV4JMethodFactory {
 	 * @param displayName Display Name of Calendar
 	 * @param description Description of Calendar.
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpMkCalendarMethod createMkCalendarMethod(String uri, String displayName, String description) throws IOException {
 		return new HttpMkCalendarMethod(uri, displayName, description);
@@ -167,6 +181,7 @@ public class CalDAV4JMethodFactory {
 	 * @param names Properties to make the Propfind request for.
 	 * @param depth Depth of the Request
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpPropFindMethod createPropFindMethod(URI uri, DavPropertyNameSet names, int depth)
 			throws IOException {
@@ -180,6 +195,7 @@ public class CalDAV4JMethodFactory {
 	 * @param names Properties to make the Propfind request for.
 	 * @param depth Depth of the Request
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpPropFindMethod createPropFindMethod(URI uri, int propfindtype, DavPropertyNameSet names, int depth) throws IOException {
 		return new HttpPropFindMethod(uri, propfindtype, names, depth);
@@ -191,6 +207,7 @@ public class CalDAV4JMethodFactory {
 	 * @param names Properties to make the Propfind request for.
 	 * @param depth Depth of the Request
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpPropFindMethod createPropFindMethod(String uri, DavPropertyNameSet names, int depth)
 			throws IOException {
@@ -204,6 +221,7 @@ public class CalDAV4JMethodFactory {
 	 * @param names Properties to make the Propfind request for.
 	 * @param depth Depth of the Request
 	 * @return the instance
+	 * @throws IOException if error occurred during parsing of parameters
 	 */
 	public HttpPropFindMethod createPropFindMethod(String uri, int propfindtype, DavPropertyNameSet names, int depth) throws IOException {
 		return new HttpPropFindMethod(uri, propfindtype, names, depth);
@@ -226,6 +244,9 @@ public class CalDAV4JMethodFactory {
 	 * Creates a {@link HttpCalDAVReportMethod} instance.
 	 * @param uri URI to the Calendar resource.
 	 * @param request The Report to make a request for.
+	 * @param depth Depth of the request, the values possible are:
+	 *              {@code CalDAVConstants.DEPTH_0}, {@code CalDAVConstants.DEPTH_1},
+	 *              {@code CalDAVConstants.DEPTH_INFINITY}
 	 * @return the instance
 	 * @throws IOException if error occurred during parsing of parameters
 	 */
@@ -250,6 +271,9 @@ public class CalDAV4JMethodFactory {
 	 * Creates a {@link HttpCalDAVReportMethod} instance.
 	 * @param uri URI to the Calendar resource.
 	 * @param request The Report to make a request for.
+	 * @param depth Depth of the request, the values possible are:
+	 * 	 *              {@code CalDAVConstants.DEPTH_0}, {@code CalDAVConstants.DEPTH_1},
+	 * 	 *              {@code CalDAVConstants.DEPTH_INFINITY}
 	 * @return the instance
 	 * @throws IOException if error occurred during parsing of parameters
 	 */
@@ -259,6 +283,7 @@ public class CalDAV4JMethodFactory {
 
 	/**
 	 * Creates a {@link HttpGetMethod} instance.
+	 * @param uri URI to the resource.
 	 * @return the instance
 	 */
 	public HttpGetMethod createGetMethod(URI uri) {
@@ -267,6 +292,7 @@ public class CalDAV4JMethodFactory {
 
 	/**
 	 * Creates a {@link HttpGetMethod} instance.
+	 * @param uri URI to the resource.
 	 * @return the instance
 	 */
 	public HttpGetMethod createGetMethod(String uri) {

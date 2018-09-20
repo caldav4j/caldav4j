@@ -130,10 +130,15 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 	}
 
 	/**
-	 * Set the CalendarBuilder instance, before invoking this.
+	 * Check the provided {@link HttpResponse} for a {@link Calendar}, response,
+	 * and attempts to build the object.
+	 * <br>
+	 * <b>Note:</b> Set the CalendarBuilder instance, before invoking this.
 	 * Will be auto assigned if invoked from the {@link CalDAV4JMethodFactory}
+	 * @param response Response object to glean the calendar from.
 	 * @return If the Response was a calendar, then we return the {@link Calendar} instance,
 	 * else null is returned.
+	 * @throws IOException on error building calendar
 	 */
    public Calendar getResponseBodyAsCalendar(HttpResponse response) throws IOException {
 	   Calendar calendarResponse = null;
@@ -149,11 +154,11 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 
    /**
     * Return the Property associated with a path.
+    * @param response Response object to glean the response from.
     * @param urlPath Location of the CalendarResource
     * @param property DavPropertyName of the property whose value is to be returned.
     * @return DavProperty
-    *
-    *
+    * @throws DavException on error building Multistatus response.
     */
    public DavProperty getDavProperty(HttpResponse response, String urlPath, DavPropertyName property) throws DavException {
 	   MultiStatusResponse[] responses = getResponseBodyAsMultiStatus(response).getResponses();
@@ -170,8 +175,10 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 
    /**
     * Returns all the set of properties and their value, for all the hrefs
+    * @param response Response object to glean the response from.
     * @param property Property Name to return.
     * @return Collection of Properties.
+    * @throws DavException on error building Multistatus response.
     */
    public Collection<DavProperty> getDavProperties(HttpResponse response, DavPropertyName property) throws DavException {
 	   Collection<DavProperty> set = new ArrayList<>();
@@ -186,8 +193,10 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
    }
 
    /**
+    * @param httpResponse Response object to glean the response from.
     * @param uri URI to the calendar resource.
     * @return Returns the MultiStatusResponse to the corresponding uri.
+    * @throws DavException on error building Multistatus response.
     */
    public MultiStatusResponse getResponseBodyAsMultiStatusResponse(HttpResponse httpResponse, String uri) throws DavException {
 	   MultiStatusResponse[] responses = getResponseBodyAsMultiStatus(httpResponse).getResponses();
