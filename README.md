@@ -1,12 +1,18 @@
 # CalDAV4j Overview
 
-[![Build Status](https://travis-ci.org/caldav4j/caldav4j.svg?branch=master)](https://travis-ci.org/caldav4j/caldav4j)
+|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Build Status | [![Build Status](https://travis-ci.org/caldav4j/caldav4j.svg?branch=master)](https://travis-ci.org/caldav4j/caldav4j)                                                       |
+| Maven        | [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.github.caldav4j/caldav4j/badge.svg)](https://search.maven.org/artifact/com.github.caldav4j/caldav4j/) |
+| License      | [![Apache 2.0 License](https://img.shields.io/hexpm/l/plug.svg)](https://www.apache.org/licenses/LICENSE-2.0)                                                               |
+|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+
+
+
 
 CalDAV4j is a java library implementing the CalDAV protocol for the client side implementation.
 
 CalDAV4j makes it easy to issue complex queries to a caldav server, supporting free-busy and calendar-collections. Moreover, it supports the standard adding and removal of events.
-
-CalDAV4j used to have a version which extends the Android Calendar App with Caldav Sync implementation for Android.
 
 # CalDAV4j
 
@@ -25,7 +31,7 @@ CalDAV4j used to have a version which extends the Android Calendar App with Cald
    * CalDAV Scheduling specs. (Work in Progress, [RFC 6638](https://tools.ietf.org/html/rfc6638))
    * Reliability: Many functional tests and the "rails" for checking your caldav implementation support.
 
-# Using
+# Using CalDAV4j in your code
 
 CalDav4j is currently on Maven Central, thus to add it, you can add a dependancy by adding the following to the `pom.xml`:
 
@@ -43,7 +49,9 @@ Gradle:
 compile 'com.github.caldav4j:caldav4j:1.0-SNAPSHOT'
 ```
 
-The unit tests are the best place right now to see how to use CalDAV4j. Tutorials and more documentation are forthcoming.
+For more information on how to add CalDAV4j into your code, please refer to: https://search.maven.org/artifact/com.github.caldav4j/caldav4j/
+
+The unit tests are currently best place right now to see how to use CalDAV4j. Tutorials and more documentation are forthcoming.
 
 # Building
 
