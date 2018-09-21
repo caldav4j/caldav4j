@@ -24,9 +24,9 @@ CalDAV4j makes it easy to issue complex queries to a caldav server, supporting f
 
  - Low Level API Access: Let's you work at the Http/WebDAV/CalDAV protocol level by creating instances of HttpMethods (like GetMethod, MkCalendar, ReportMethod) and executing them.
 
- - Performance: When possible, caches (such as caches of etags and icalendar resources) are maintained so that network chatter and parsing of icalender files is minimized.
+ - _Performance_: When possible, caches (such as caches of etags and icalendar resources) are maintained so that network chatter and parsing of icalender files is minimized.
 
- - Compliance: We aim to be compliant with the following specs:
+ - _Compliance_: We aim to be compliant with the following specs:
    * CalDAV spec and updates. ([RFC 4791](https://tools.ietf.org/html/rfc4791), [RFC 7809](https://tools.ietf.org/html/rfc7809))
    * CalDAV Scheduling specs. (Work in Progress, [RFC 6638](https://tools.ietf.org/html/rfc6638))
    * Reliability: Many functional tests and the "rails" for checking your caldav implementation support.
@@ -88,75 +88,14 @@ CalDAV4j is licensed under the Apache 2.0 License
    - Par-Tec
    - OSAFoundation (No longer contributing)
  * Individuals
-   - Roberto Polli (@ioggstream)
-   - Ankush Mishra (@The_Antimist)
-   - Mark Hobson (@markhobson)
+   - Roberto Polli ([@ioggstream](https://github.com/ioggstream))
+   - Ankush Mishra ([@TheAntimist](https://github.com/TheAntimist))
+   - Mark Hobson ([@markhobson](https://github.com/markhobson))
    - Bobby Rullo
-   - @alexander233
+   - [@alexander233](https://github.com/alexander233)
 
-# Changelog
+# Current Status
 
 CalDAV4j 0.9.1 is the current (tagged) release and 1.0-SNAPSHOT is the current development branch.
 
-```
-In 1.0.x (http4client-dev):
-
-  * Migration from Apache HttpClient 3.x to HttpClient 4.x
-  * Update java version to 8, and iCal4j to v3.0.1
-  * Change the package structure from `org.osaf.caldav4j` to `com.github.caldav4j`
-  * More consistent API throughout, with Apache Jackrabbit WebDAV
-
-In 0.9.x (master):
-
-  * major cleanup, deprecated methods removal
-  * based on jackrabbit
-
-In 0.8.x includes:
-
-  * fine-grained ACL support 15%
-  * small refinement to simplify code
-  * remove redundancies 15%
-  * parametrized tests for various caldav implementation 20%
-  * support for VTODO
-  * simplify recurrent event management
-  * embedded CalDAV manager
-  * branch for jackrabbit support
-
-The 0.7 release includes:
-
-  * junit4 support
-  * free-busy query support
-  * massive refactoring to simplify code
-  * separate exceptions in a given package
-  * source jars and javadocs in maven repository
-
-The 0.6 release includes:
-
-  * basic ACL support (get/set)
-  * basic scheduling support
-  * a standard cache implementation (quick and dirty)
-
- The 0.5 release includes:
-
-  * basic google calendar support
-  * a method for easy caldav query creation
-  * example classes for connecting to bedework and google calendar
-  * better junit testing
-
-The 0.4 release includes:
-
-  * Support for <calendar-multiget> reports
-  * More and more ready-to-use <calendar-query> methods to search events
-  * Code refactoring
-  * HttpClient v3.0 support (download Slide for HttpClient v3 here!)
-  * More Slide isolation (for a future JackRabbit switch)
-  * Better Bedework support
-
-The 0.3 release features include:
-
-  * Support for <calendar-query> reports
-  * Protocol level support for MKCALENDAR, GET, REPORT, PUT
-  * High level API for accessing events within a calendar collection
-  * Caching of CalDAV resources
-  * Ticket Support
-```
+For the complete changelog, refer to this [page](https://github.com/caldav4j/caldav4j/wiki/Changelog).
