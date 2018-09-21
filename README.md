@@ -18,15 +18,15 @@ CalDAV4j makes it easy to issue complex queries to a caldav server, supporting f
 
 ## Goals
 
- - A high level API to work with CalDAV: This API works at the level of iCal4j objects, and allows for high level operations. All the "hard" protocol work that you need to do to make this happen is hidden from the end user.
+ - _High-Level CalDAV API's:_ This API works at the level of iCal4j objects, and allows for high level operations. All the "hard" protocol work that you need to do to make this happen is hidden from the end user.
 
- - A flexible query language support: An easy and flexible query language (eg. for events in a given date range); and Recurring event management (eg. updating master events and recurrence instances).
+ - _Low Level API Access:_ Let's you work at the Http/WebDAV/CalDAV protocol level by creating instances of HttpMethods (like GetMethod, MkCalendar, ReportMethod, etc.) and executing them.
 
- - Low Level API Access: Let's you work at the Http/WebDAV/CalDAV protocol level by creating instances of HttpMethods (like GetMethod, MkCalendar, ReportMethod) and executing them.
+ - _Flexible query language support:_ An easy and flexible query language (eg. for events in a given date range); and Recurring event management (eg. updating master events and recurrence instances).
 
- - _Performance_: When possible, caches (such as caches of etags and icalendar resources) are maintained so that network chatter and parsing of icalender files is minimized.
+ - _Performance:_ When possible, caches (such as caches of etags and icalendar resources) are maintained so that network chatter and parsing of icalender files is minimized.
 
- - _Compliance_: We aim to be compliant with the following specs:
+ - _Compliance:_ We aim to be compliant with the following specs:
    * CalDAV spec and updates. ([RFC 4791](https://tools.ietf.org/html/rfc4791), [RFC 7809](https://tools.ietf.org/html/rfc7809))
    * CalDAV Scheduling specs. (Work in Progress, [RFC 6638](https://tools.ietf.org/html/rfc6638))
    * Reliability: Many functional tests and the "rails" for checking your caldav implementation support.
@@ -79,8 +79,8 @@ mvn clean package -Dcaldav4jUri='http//vbede:bedework@localhost:8080/ucaldav/use
 # License
 
 CalDAV4j is licensed under the Apache 2.0 License
- - Copyright © 2005-2007 Open Source Application Foundation
- - Copyright © 2007 - Present Individual Contributors
+ - Copyright Â© 2005-2007 Open Source Application Foundation
+ - Copyright Â© 2007 - Present Individual Contributors
 
 # Contributing Organizations and Individuals
 
