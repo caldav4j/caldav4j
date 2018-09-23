@@ -386,9 +386,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	@Test
 	public void testMultigetCalendar() throws Exception {
 
-		final String baseUri = caldavCredential.protocol +"://" 
-		+ caldavCredential.host+":" +caldavCredential.port 
-		+caldavCredential.home+"/" + caldavCredential.collection;
+		final String baseUri = fixture.getCollectionPath();
 
 		List <String> calendarUris =  new ArrayList<String>();
 		calendarUris.add( baseUri +"/"+ ICS_ALL_DAY_JAN1_UID +".ics");
