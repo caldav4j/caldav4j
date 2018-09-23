@@ -1,4 +1,4 @@
-# CalDAV4j Overview
+ # CalDAV4j Overview
 
 |              |                                                                                                                                                                             |
 |--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -39,14 +39,14 @@ CalDav4j is currently on Maven Central, thus to add it, you can add a dependancy
 <dependency>
     <groupId>com.github.caldav4j</groupId>
     <artifactId>caldav4j</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-rc.1</version>
 </dependency>
 ```
 
 Gradle:
 
 ```
-compile 'com.github.caldav4j:caldav4j:1.0-SNAPSHOT'
+compile 'com.github.caldav4j:caldav4j:1.0.0-rc.1'
 ```
 
 For more information on how to add CalDAV4j into your code, please refer to: https://search.maven.org/artifact/com.github.caldav4j/caldav4j/
@@ -96,6 +96,6 @@ CalDAV4j is licensed under the Apache 2.0 License
 
 # Current Status
 
-CalDAV4j 0.9.1 is the current (tagged) release and 1.0-SNAPSHOT is the current development branch.
+CalDAV4j 0.9.2 is the current (tagged) release and 1.0-SNAPSHOT is the current development branch.
 
 For the complete changelog, refer to this [page](https://github.com/caldav4j/caldav4j/wiki/Changelog).
