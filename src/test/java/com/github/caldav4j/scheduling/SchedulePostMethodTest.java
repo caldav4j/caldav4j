@@ -1,8 +1,29 @@
+/*
+ * Copyright © 2018 Mark Hobson, Roberto Polli
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.caldav4j.scheduling;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
+import com.github.caldav4j.BaseTestCase;
+import com.github.caldav4j.exceptions.CalDAV4JException;
+import com.github.caldav4j.methods.HttpPostMethod;
+import com.github.caldav4j.methods.HttpPutMethod;
+import com.github.caldav4j.model.request.CalendarRequest;
+import com.github.caldav4j.scheduling.methods.CalDAV4JScheduleMethodFactory;
+import com.github.caldav4j.scheduling.methods.SchedulePostMethod;
+import com.github.caldav4j.scheduling.util.ITipUtils;
+import com.github.caldav4j.util.ICalendarUtils;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.DateTime;
@@ -13,7 +34,6 @@ import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.XProperty;
-
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -21,15 +41,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.Ignore;
 import org.junit.Test;
-import com.github.caldav4j.BaseTestCase;
-import com.github.caldav4j.exceptions.CalDAV4JException;
-import com.github.caldav4j.methods.HttpPostMethod;
-import com.github.caldav4j.methods.HttpPutMethod;
-import com.github.caldav4j.model.request.CalendarRequest;
-import com.github.caldav4j.scheduling.methods.CalDAV4JScheduleMethodFactory;
-import com.github.caldav4j.scheduling.methods.SchedulePostMethod;
-import com.github.caldav4j.scheduling.util.ITipUtils;
-import com.github.caldav4j.util.ICalendarUtils;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 // TODO: work in progress
 @Ignore

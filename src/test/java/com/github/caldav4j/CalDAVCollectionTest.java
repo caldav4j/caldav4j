@@ -1,30 +1,42 @@
-/**
- * TODO re-implement test using deprecated methods using current methods
+/*
+ * Copyright © 2018 Ankush Mishra, Roberto Polli
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package com.github.caldav4j;
 
-import com.github.caldav4j.functional.support.CaldavFixtureHarness;
-import com.github.caldav4j.model.response.CalendarDataProperty;
-import com.github.caldav4j.util.UrlUtils;
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.model.*;
-import net.fortuna.ical4j.model.component.CalendarComponent;
-import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.*;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import com.github.caldav4j.cache.EhCacheResourceCache;
 import com.github.caldav4j.exceptions.CalDAV4JException;
 import com.github.caldav4j.exceptions.ResourceNotFoundException;
+import com.github.caldav4j.functional.support.CaldavFixtureHarness;
 import com.github.caldav4j.model.request.CalendarData;
 import com.github.caldav4j.model.request.CalendarQuery;
 import com.github.caldav4j.util.CalDAVStatus;
 import com.github.caldav4j.util.GenerateQuery;
 import com.github.caldav4j.util.ICalendarUtils;
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.component.CalendarComponent;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Uid;
+import org.apache.http.HttpHost;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +47,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * TODO re-implement test using deprecated methods using current methods
+ */
 public class CalDAVCollectionTest extends BaseTestCase {
 	public CalDAVCollectionTest() {
 		super();

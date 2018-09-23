@@ -1,6 +1,7 @@
 /*
  * Copyright 2005 Open Source Applications Foundation
- * 
+ * Copyright © 2018 Ankush Mishra, Bobby Rullo, Roberto Polli
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,17 +16,16 @@
  */
 package com.github.caldav4j.xml;
 
+import com.github.caldav4j.exceptions.DOMValidationException;
 import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.apache.jackrabbit.webdav.xml.XmlSerializable;
-import com.github.caldav4j.exceptions.DOMValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 /**

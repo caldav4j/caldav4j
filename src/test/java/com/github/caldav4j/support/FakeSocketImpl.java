@@ -1,6 +1,7 @@
 /*
  * Copyright 2011 Open Source Applications Foundation
- * 
+ * Copyright © 2018 Ankush Mishra, Mark Hobson, Roberto Polli
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.caldav4j.support;
 
-import static org.junit.Assert.assertEquals;
+package com.github.caldav4j.support;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,6 +27,8 @@ import java.net.SocketException;
 import java.net.SocketImpl;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Fake {@code SocketImpl} test double that expects a given output and produces a stub input.

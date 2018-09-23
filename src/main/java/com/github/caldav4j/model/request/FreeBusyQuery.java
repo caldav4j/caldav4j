@@ -1,5 +1,6 @@
 /*
  * Copyright 2011 Open Source Applications Foundation
+ * Copyright © 2018 Ankush Mishra, Mark Hobson
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +16,11 @@
  */
 package com.github.caldav4j.model.request;
 
-import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
-import org.apache.jackrabbit.webdav.xml.Namespace;
-import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.exceptions.DOMValidationException;
 import com.github.caldav4j.xml.OutputsDOM;
 import com.github.caldav4j.xml.OutputsDOMBase;
+import org.apache.jackrabbit.webdav.xml.Namespace;
 
 import java.util.Collection;
 import java.util.Collections;

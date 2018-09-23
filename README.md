@@ -79,8 +79,8 @@ mvn clean package -Dcaldav4jUri='http//vbede:bedework@localhost:8080/ucaldav/use
 # License
 
 CalDAV4j is licensed under the Apache 2.0 License
- - Copyright Â© 2005-2007 Open Source Application Foundation
- - Copyright Â© 2007 - Present Individual Contributors
+ - Copyright © 2005-2011 Open Source Application Foundation
+ - Copyright © 2011 - Present Individual Contributors
 
 # Contributing Organizations and Individuals
 

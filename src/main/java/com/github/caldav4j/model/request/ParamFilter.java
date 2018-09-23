@@ -1,6 +1,7 @@
 /*
  * Copyright 2005 Open Source Applications Foundation
- * 
+ * Copyright © 2018 Ankush Mishra, Bobby Rullo, Roberto Polli
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -36,7 +37,7 @@ import java.util.Map;
  * &lt;!ATTLIST param-filter name CDATA #REQUIRED&gt;
  * </pre>
  * @author bobbyrullo
- * 
+ *
  */
 public class ParamFilter extends OutputsDOMBase {
     
