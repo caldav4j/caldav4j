@@ -1,21 +1,20 @@
 package com.github.caldav4j.methods;
 
-import java.io.StringWriter;
-import java.net.URI;
-import java.nio.charset.UnsupportedCharsetException;
-
+import com.github.caldav4j.CalDAVConstants;
+import com.github.caldav4j.model.request.CalendarRequest;
 import com.github.caldav4j.util.CalDAVStatus;
+import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import com.github.caldav4j.CalDAVConstants;
-import com.github.caldav4j.model.request.CalendarRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fortuna.ical4j.data.CalendarOutputter;
+import java.io.StringWriter;
+import java.net.URI;
+import java.nio.charset.UnsupportedCharsetException;
 
 /**
  * Extended HttpPost class to allow easy addition of the Calendar.
@@ -102,6 +101,7 @@ public class HttpPostMethod extends HttpPost {
 	 * Check the provided {@link HttpResponse} for successful execution.
 	 * This treats all 2xx status codes.
 	 * @param response Response to check
+	 * @return True if request succeeded, false otherwise
 	 */
 	public boolean succeeded(HttpResponse response) {
 		int status = response.getStatusLine().getStatusCode();

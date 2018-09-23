@@ -29,7 +29,7 @@ import java.util.Collection;
  * HttpCalDAVReport Method, which extends BaseDavRequest. Implements Section
  * 7 of RFC4791
  *
- * @author <a href="mailto:ankushmishra9@gmail.com">Ankush Mishra</a> (author of orignal apache http 3 version)
+ * @author <a href="mailto:ankushmishra9@gmail.com">Ankush Mishra</a>
  */
 
 public class HttpCalDAVReportMethod extends BaseDavRequest {

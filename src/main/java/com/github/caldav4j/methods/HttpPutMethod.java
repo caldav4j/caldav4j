@@ -1,14 +1,13 @@
 package com.github.caldav4j.methods;
 
-import com.github.caldav4j.util.CalDAVStatus;
+import com.github.caldav4j.CalDAVConstants;
+import com.github.caldav4j.model.request.CalendarRequest;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import com.github.caldav4j.CalDAVConstants;
-import com.github.caldav4j.model.request.CalendarRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +100,7 @@ public class HttpPutMethod extends HttpPut {
 	 * Check the provided {@link HttpResponse} for successful execution.
 	 * This treats all 2xx status codes.
 	 * @param response Response to check
+	 * @return True if request succeeded, false otherwise
 	 */
 	public boolean succeeded(HttpResponse response) {
 		int status = response.getStatusLine().getStatusCode();

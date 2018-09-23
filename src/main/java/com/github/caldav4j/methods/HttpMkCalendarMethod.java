@@ -1,21 +1,20 @@
 package com.github.caldav4j.methods;
 
-import java.io.IOException;
-import java.net.URI;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.http.HttpResponse;
-import org.apache.jackrabbit.webdav.client.methods.BaseDavRequest;
-import org.apache.jackrabbit.webdav.client.methods.XmlEntity;
-import org.apache.jackrabbit.webdav.xml.DomUtil;
 import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.model.request.CalendarDescription;
 import com.github.caldav4j.model.request.DisplayName;
 import com.github.caldav4j.model.request.MkCalendar;
 import com.github.caldav4j.model.request.Prop;
 import com.github.caldav4j.util.CalDAVStatus;
+import org.apache.http.HttpResponse;
+import org.apache.jackrabbit.webdav.client.methods.BaseDavRequest;
+import org.apache.jackrabbit.webdav.client.methods.XmlEntity;
+import org.apache.jackrabbit.webdav.xml.DomUtil;
 import org.w3c.dom.Document;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.net.URI;
 
 
 public class HttpMkCalendarMethod extends BaseDavRequest {
@@ -25,15 +24,31 @@ public class HttpMkCalendarMethod extends BaseDavRequest {
 	
     // --------------------------------------------------------- Public Methods
 
-
+	/**
+	 * Default Constructor, makes a calendar at URI.
+	 *
+	 * @param uri Location to the CalendarResource
+	 */
 	public HttpMkCalendarMethod(String uri) {
 		super(URI.create(uri));
 	}
 
+	/**
+	 * Default Constructor, makes a calendar at URI.
+	 *
+	 * @param uri Location to the CalendarResource
+	 */
 	public HttpMkCalendarMethod(URI uri) {
 		super(uri);
 	}
 
+	/**
+	 * Create a calendar with the MkCalendar object and properties.
+	 *
+	 * @param uri Location to the CalendarResource
+	 * @param m MkCalendar object representing the properties
+	 * @throws IOException if error occurred during parsing of parameters
+	 */
 	public HttpMkCalendarMethod(URI uri, MkCalendar m) throws IOException {
 		super(uri);
 		if(m != null)
@@ -41,6 +56,13 @@ public class HttpMkCalendarMethod extends BaseDavRequest {
 		processRequest();
 	}
 
+	/**
+	 * Create a calendar with the MkCalendar object and properties.
+	 *
+	 * @param uri Location to the CalendarResource
+	 * @param m MkCalendar object representing the properties
+	 * @throws IOException if error occurred during parsing of parameters
+	 */
 	public HttpMkCalendarMethod(String uri, MkCalendar m) throws IOException {
 		this(URI.create(uri), m);
 	}
@@ -49,17 +71,17 @@ public class HttpMkCalendarMethod extends BaseDavRequest {
 	 * Convenience method to create a calendar with the defined properties.
 	 *
 	 * @param uri             Location to the CalendarResource
-	 * @param DisplayName     Display Name of Calendar
+	 * @param displayName     Display Name of Calendar
 	 * @param description     Description of Calendar
 	 * @param descriptionLang Language of Description.
 	 * @throws IOException if error occurred during parsing of parameters
 	 */
-    public HttpMkCalendarMethod(URI uri,  String DisplayName, String description, String descriptionLang)
+    public HttpMkCalendarMethod(URI uri,  String displayName, String description, String descriptionLang)
             throws IOException {
 		super(uri);
         Prop p = new Prop();
-        if(DisplayName != null)
-            p.add(new DisplayName(DisplayName));
+        if(displayName != null)
+            p.add(new DisplayName(displayName));
 
         if(description != null)
             p.add(new CalendarDescription(description, descriptionLang));
@@ -67,16 +89,41 @@ public class HttpMkCalendarMethod extends BaseDavRequest {
         processRequest();
 	}
 
-	public HttpMkCalendarMethod(URI uri, String DisplayName, String description) throws IOException {
-		this(uri, DisplayName, description, null);
+	/**
+	 * Convenience method to create a calendar with the defined properties.
+	 *
+	 * @param uri             Location to the CalendarResource
+	 * @param displayName     Display Name of Calendar
+	 * @param description     Description of Calendar
+	 * @throws IOException if error occurred during parsing of parameters
+	 */
+	public HttpMkCalendarMethod(URI uri, String displayName, String description) throws IOException {
+		this(uri, displayName, description, null);
 	}
 
-	public HttpMkCalendarMethod(String uri,  String DisplayName, String description, String DescriptionLang) throws IOException {
-		this(URI.create(uri), DisplayName, description, DescriptionLang);
+	/**
+	 * Convenience method to create a calendar with the defined properties.
+	 *
+	 * @param uri             Location to the CalendarResource
+	 * @param displayName     Display Name of Calendar
+	 * @param description     Description of Calendar
+	 * @param descriptionLang Language of Description.
+	 * @throws IOException if error occurred during parsing of parameters
+	 */
+	public HttpMkCalendarMethod(String uri,  String displayName, String description, String descriptionLang) throws IOException {
+		this(URI.create(uri), displayName, description, descriptionLang);
 	}
-    
-	public HttpMkCalendarMethod(String uri, String DisplayName, String description) throws IOException {
-        this(uri, DisplayName, description, null);
+
+	/**
+	 * Convenience method to create a calendar with the defined properties.
+	 *
+	 * @param uri             Location to the CalendarResource
+	 * @param displayName     Display Name of Calendar
+	 * @param description     Description of Calendar
+	 * @throws IOException if error occurred during parsing of parameters
+	 */
+	public HttpMkCalendarMethod(String uri, String displayName, String description) throws IOException {
+        this(uri, displayName, description, null);
     }
 
 	/**

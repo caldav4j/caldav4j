@@ -1,23 +1,25 @@
 package com.github.caldav4j.methods;
 
+import com.github.caldav4j.CalDAVConstants;
+import com.github.caldav4j.exceptions.CalDAV4JException;
+import com.github.caldav4j.exceptions.CalDAV4JProtocolException;
+import com.github.caldav4j.util.UrlUtils;
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.model.Calendar;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URI;
 
-import com.github.caldav4j.exceptions.CalDAV4JException;
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import com.github.caldav4j.CalDAVConstants;
-import com.github.caldav4j.exceptions.CalDAV4JProtocolException;
-import com.github.caldav4j.util.UrlUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
-import net.fortuna.ical4j.model.Calendar;
-
+/**
+ * Extended GET method for Calendar Parsing.
+ */
 public class HttpGetMethod  extends HttpGet {
 	
 	private static final String HEADER_ACCEPT = "Accept";
@@ -28,6 +30,10 @@ public class HttpGetMethod  extends HttpGet {
 
 	private CalendarBuilder calendarBuilder = null;
 
+	/**
+	 * @param uri Location of the CalendarResource
+	 * @param calendarBuilder Builder Instance for constructing the response object.
+	 */
     public HttpGetMethod (URI uri, CalendarBuilder calendarBuilder){
         super(uri);
         this.calendarBuilder = calendarBuilder;
@@ -35,10 +41,20 @@ public class HttpGetMethod  extends HttpGet {
         		"text/calendar; text/html; text/xml;"); // required for bedework
     }
 
+	/**
+	 * @param uri Location of the CalendarResource
+	 * @param calendarBuilder Builder Instance for constructing the response object.
+	 */
 	public HttpGetMethod (String uri, CalendarBuilder calendarBuilder){
 		this(URI.create(uri), calendarBuilder);
 	}
 
+	/**
+	 * @param response Response object from the request
+	 * @return Returns the Calendar Object if parsed.
+	 * @throws ParserException on parsing calendar error.
+	 * @throws CalDAV4JException on error in retrieving and parsing the response.
+	 */
     public Calendar getResponseBodyAsCalendar(HttpResponse response)  throws
             ParserException, CalDAV4JException {
     	Calendar ret = null;
@@ -68,10 +84,17 @@ public class HttpGetMethod  extends HttpGet {
         }	       
     }
 
+	/**
+	 * @return Returns the associated CalendarBuilder Instance
+	 */
 	public CalendarBuilder getCalendarBuilder() {
 		return calendarBuilder;
 	}
 
+	/**
+	 * Set the CalendarBuilder Instance
+	 * @param calendarBuilder Instance to set
+	 */
 	public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
 		this.calendarBuilder = calendarBuilder;
 	}

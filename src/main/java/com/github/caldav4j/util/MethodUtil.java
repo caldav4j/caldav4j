@@ -17,9 +17,10 @@ public class MethodUtil {
 	private static final Logger log = LoggerFactory.getLogger(MethodUtil.class);
 	
 	/**
-	 * Throws various exceptions depending on the status >= 400 of the given method
+	 * Throws various exceptions depending on the status &gt;= 400 of the given method
 	 * @param method Method causing error
 	 * @param response Response containing error
+	 * @return Should not return, instead it should throw an exception.
 	 * @throws CalDAV4JException or an extended class to represent the status.
 	 */
 	public static int StatusToExceptions(HttpRequestBase method, HttpResponse response) throws CalDAV4JException {
