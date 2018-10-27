@@ -169,9 +169,9 @@ public class HttpPropFindMethod extends HttpPropfind {
 		DavProperty p = getDavProperty(httpResponse, urlPath, DavPropertyName.DISPLAYNAME);
 		if (p != null && p.getValue() != null) {
 			return p.getValue().toString();
-		} else {
-			return "";
 		}
+
+		return "";
 	}
 
 
