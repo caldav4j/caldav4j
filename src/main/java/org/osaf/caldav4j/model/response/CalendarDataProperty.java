@@ -56,7 +56,7 @@ public class CalendarDataProperty {
      * @return Returns the Calendar in the Property specified.
      */
     public static Calendar getCalendarfromProperty(DavProperty property) {
-        if (property == null) return null;
+        if (property == null || property.getValue == null) return null;
 
         Calendar calendar = null;
         String text = property.getValue().toString();
@@ -112,7 +112,7 @@ public class CalendarDataProperty {
      * @return Returns the ETag from the specified Property, null otherwise.
      */
     public static String getEtagfromProperty(DavProperty property){
-        if(property == null || !property.getName().equals(DavPropertyName.GETETAG)) return null;
+        if(property == null || property.getValue() == null || !property.getName().equals(DavPropertyName.GETETAG)) return null;
         return property.getValue().toString();
     }
 }
