@@ -70,14 +70,14 @@ mvn install -DskipTests
 During package creation, you can test your caldav server replacing the `caldav4jUri` with your own custom one.
 
 ```sh
-mvn package -Dcaldav4jUri='https//user:password@hostname.fqdn.com/base/user/collections/'
+mvn package -Dcaldav4jUri='https://user:password@hostname.fqdn.com/base/user/collections/'
 ```
 
 A Docker image of a caldav server, Bedework (~900MB) is distributed via Docker Hub:
 
 ```sh
 docker run -d -p 8080:8080 ioggstream/bedework
-mvn clean package -Dcaldav4jUri='http//vbede:bedework@localhost:8080/ucaldav/user/vbede/'
+mvn clean package -Dcaldav4jUri='http://vbede:bedework@localhost:8080/ucaldav/user/vbede/'
 ```
 
 # License
