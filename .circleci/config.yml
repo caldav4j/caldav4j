@@ -1,0 +1,36 @@
+#
+# CircleCI Integration Tests.
+# Run locally with circleci local:
+#
+#   `circleci build`
+#
+# For using anchors in circle.yml see https://circleci.com/docs/2.0/writing-yaml/#anchors-and-aliases
+#
+# NOTE: As of today 2018-11 circleci local doesn't
+#       support caching.
+#
+anchors:
+- key_cache: &key_cache v0-cache-{{ checksum "pom.xml" }}
+
+version: 2
+jobs:
+  build:
+    working_directory: ~/caldav4j
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:8-jdk-browsers # ...with this image as the primary container; this is where all `steps` will run
+    steps: # a collection of executable commands
+
+      - checkout # check out source code to working directory
+
+      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+          key: *key_cache
+
+      - run: mvn dependency:go-offline # gets the project dependencies
+
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: *key_cache
+
+      - run: mvn package -Dmaven.test.skip=true -B -V
+
