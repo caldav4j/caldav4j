@@ -10,19 +10,25 @@
 #       support caching.
 #
 anchors:
-- key_cache: &key_cache v0-cache-{{ checksum "pom.xml" }}
+- key_cache: &key_cache v1-cache-{{ checksum "pom.xml" }}
 
 version: 2
 jobs:
   build:
     working_directory: ~/caldav4j
-    docker: # run the steps with Docker
-      - image: circleci/openjdk:8-jdk-browsers # ...with this image as the primary container; this is where all `steps` will run
+    # Build in the primary docker container
+    #  and connecting to the baikal server provided
+    #  by the second container.
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+      - image: ioggstream/baikal:with-testuser
     steps: # a collection of executable commands
 
-      - checkout # check out source code to working directory
+      - checkout
 
-      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+      # restore the saved cache after the first run or if `pom.xml` has changed
+      # REMEMBER: cache doesn't affect local builds
+      - restore_cache:
           key: *key_cache
 
       - run: mvn dependency:go-offline # gets the project dependencies
@@ -32,5 +38,4 @@ jobs:
             - ~/.m2
           key: *key_cache
 
-      - run: mvn package -Dmaven.test.skip=true -B -V
-
+      - run: mvn package -B -X -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"

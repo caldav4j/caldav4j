@@ -158,7 +158,10 @@
             <excludes>
               <exclude>**/*TestCase.java</exclude>
             </excludes>
-            <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+            <threadCount>1</threadCount>
+            <forkCount>0</forkCount>
+            <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Xmx1024m</argLine>
+            <useSystemClassLoader>false</useSystemClassLoader>
           </configuration>
         </plugin>
         <plugin>
