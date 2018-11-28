@@ -2,7 +2,7 @@
 
 |              |                                                                                                                                                                             |
 |--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Build Status | [![Build Status](https://travis-ci.org/caldav4j/caldav4j.svg?branch=master)](https://travis-ci.org/caldav4j/caldav4j)                                                       |
+| Build Status | [![Build Status](https://circleci.com/gh/caldav4j/caldav4j.svg?style=shield)](https://circleci.com/gh/caldav4j/caldav4j)                                        |
 | Maven        | [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.github.caldav4j/caldav4j/badge.svg)](https://search.maven.org/artifact/com.github.caldav4j/caldav4j/) |
 | License      | [![Apache 2.0 License](https://img.shields.io/hexpm/l/plug.svg)](https://www.apache.org/licenses/LICENSE-2.0)                                                               |
 
