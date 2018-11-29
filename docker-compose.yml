@@ -1,0 +1,38 @@
+#
+# 1- start the server with
+#   docker-compose up -d baikal
+# 2- authenticate with admin:admin on https://localhost/admin
+# 3- create testuser:testuser on https://localhost/admin/?/users/
+#
+version: '3.0'
+
+services:
+  baikal:
+    image: ioggstream/baikal:with-testuser
+    ports:
+      - "80:80"
+      - "443:443"
+
+  bedework:
+    image: ioggstream/bedework
+    ports:
+      - "8080:8080"
+
+  dev:
+    image: maven:latest
+    volumes:
+    - .:/code:z
+    working_dir: /code
+    command: |
+      /usr/bin/tail -f /etc/hosts
+
+  test:
+    image: maven:latest
+    volumes:
+    - .:/code:z
+    working_dir: /code
+    command: |
+      mvn package -B -V -Dcaldav4jUri="http://testuser:testuser@baikal/cal.php/calendars/testuser/"
+     # -Dcaldav4jUri='http://vbede:bedework@bedework:8080/ucaldav/user/vbede/'
+
+
