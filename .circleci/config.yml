@@ -39,3 +39,21 @@ jobs:
           key: *key_cache
 
       - run: mvn package -B -X -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
+
+workflows:
+  version: 2
+  continuous-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+  do-test:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - master
+
