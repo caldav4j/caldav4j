@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!--
+Once you see http://central.sonatype.org/pages/apache-maven.html#deploying-to-ossrh-with-apache-maven-introduction and
+
+ * register on sonatype.org
+ * attach your user to your artifact
+ * publish your gpg key 
+
+you can use this.
+-->
+<settings>
+  <servers>
+    <server>
+      <id>ossrh</id>
+      <username>${env.SONATYPE_USER}</username>
+      <password>${env.SONATYPE_PASSWORD}</password>
+    </server>
+  </servers>
+  <profiles>
+    <profile>
+      <id>central</id>
+      <activation>
+        <property>
+          <name>central</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <gpg.executable>gpg2</gpg.executable>
+        <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+      </properties>
+      <distributionManagement>
+        <snapshotRepository>
+          <id>ossrh</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+          <id>ossrh</id>
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+      </distributionManagement>
+    </profile>
+  </profiles>
+</settings>
