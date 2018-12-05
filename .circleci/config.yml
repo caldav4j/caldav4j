@@ -8,7 +8,7 @@
 #
 # NOTE: As of today 2018-11 circleci local doesn't
 #       support caching.
-#
+# Test
 anchors:
 - key_cache: &key_cache v1-cache-{{ checksum "pom.xml" }}
 
@@ -64,7 +64,7 @@ jobs:
             - ~/.m2
           key: *key_cache
 
-      - run: mvn deploy -s settings.xml -B -X -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
+      - run: mvn package -s settings.xml -B -X -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
 
 workflows:
   version: 2
