@@ -20,7 +20,7 @@
   <name>CalDav4j</name>
   <groupId>com.github.caldav4j</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>1.0.0-rc.1</version>
+  <version>1.0.0-rc.2</version>
   <packaging>jar</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -126,8 +126,9 @@
   </issueManagement>
   <scm>
     <developerConnection>scm:git:ssh://github.com/caldav4j/caldav4j.git</developerConnection>
-    <tag>0.9.1</tag>
-    <url>https://github.com/caldav4j/caldav4j.git</url>
+    <connection>scm:git:git://github.com/caldav4j/caldav4j.git</connection>
+    <tag>1.0.0-rc.2</tag>
+    <url>https://github.com/caldav4j/caldav4j/tree/master</url>
   </scm>
   <distributionManagement>
     <snapshotRepository>
