@@ -14,6 +14,32 @@ anchors:
 
 version: 2
 jobs:
+  test:
+    working_directory: ~/caldav4j
+    # Build in the primary docker container
+    #  and connecting to the baikal server provided
+    #  by the second container.
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+      - image: ioggstream/baikal:with-testuser
+    steps: # a collection of executable commands
+
+      - checkout
+
+      # restore the saved cache after the first run or if `pom.xml` has changed
+      # REMEMBER: cache doesn't affect local builds
+      - restore_cache:
+          key: *key_cache
+
+      - run: mvn dependency:go-offline # gets the project dependencies
+
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: *key_cache
+
+      - run: mvn deploy -s settings.xml -B -X -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
+
   build:
     working_directory: ~/caldav4j
     # Build in the primary docker container
@@ -38,7 +64,7 @@ jobs:
             - ~/.m2
           key: *key_cache
 
-      - run: mvn package -B -X -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
+      - run: mvn deploy -s settings.xml -B -X -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
 
 workflows:
   version: 2
