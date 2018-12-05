@@ -114,7 +114,6 @@ public class HttpPropFindMethod extends HttpPropfind {
 	 * @param urlPath Location of the CalendarResource
 	 * @param httpResponse Response Object for the request.
 	 * @return AclProperty xml response or null if missing
-	 * @author rpolli, ankushm
 	 */
 	public AclProperty getAcl(HttpResponse httpResponse, String urlPath) {
 		DavProperty p = getDavProperty(httpResponse, urlPath, CalDAVConstants.DNAME_ACL);
@@ -133,7 +132,7 @@ public class HttpPropFindMethod extends HttpPropfind {
 	 * Return the ACL Ace returned from the PROPFIND call.
 	 * @param httpResponse Response Object for the request.
 	 * @param urlPath URL of the ACL
-	 * @return List of {@link AclProperty.Ace}
+	 * @return List of {@code AclProperty.Ace}
 	 * @throws CalDAV4JException on error retrieving them.
 	 */
 	public List<AclProperty.Ace> getAces(HttpResponse httpResponse, String urlPath) throws CalDAV4JException {

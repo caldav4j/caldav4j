@@ -208,7 +208,6 @@ public class PropFilter extends OutputsDOMBase {
      *                          param-filter*&gt;
      *  &lt;!ATTLIST prop-filter name CDATA #REQUIRED&gt;
      *  </pre>
-     * @author bobbyrullo
      */
     public void validate() throws DOMValidationException{
         if (name == null){

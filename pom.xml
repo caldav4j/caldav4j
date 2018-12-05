@@ -126,8 +126,9 @@
   </issueManagement>
   <scm>
     <developerConnection>scm:git:ssh://github.com/caldav4j/caldav4j.git</developerConnection>
-    <tag>0.9.1</tag>
-    <url>https://github.com/caldav4j/caldav4j.git</url>
+    <connection>scm:git:git://github.com/caldav4j/caldav4j.git</connection>
+    <tag>1.0.0-rc.2</tag>
+    <url>https://github.com/caldav4j/caldav4j/tree/master</url>
   </scm>
   <distributionManagement>
     <snapshotRepository>
