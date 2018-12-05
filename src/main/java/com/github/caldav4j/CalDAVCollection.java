@@ -1013,7 +1013,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 *
 	 * @see <a href="http://tools.ietf.org/html/rfc4791#section-7.9">RFC 4791 Section 7.9</a>
 	 *
-	 * @author rpolli, the_antimist
 	 * @param httpClient the httpClient which will make the request
      * @param calendarUris URI's for Multiget
 	 * @return List of Calendars based on the uris.
