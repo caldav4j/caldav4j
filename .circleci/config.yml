@@ -56,7 +56,7 @@ jobs:
         - ~/.m2
         key: *key_cache
 
-    - run: mvn deploy -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
+    - run: mvn deploy -s settings.xml -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
 
 workflows:
   version: 2
