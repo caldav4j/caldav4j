@@ -14,7 +14,7 @@ anchors:
 
 version: 2
 jobs:
-  build:
+  test: &base
     working_directory: ~/caldav4j
     # Build in the primary docker container
     #  and connecting to the baikal server provided
@@ -22,20 +22,56 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
       - image: ioggstream/baikal:with-testuser
-    steps: # a collection of executable commands
+    steps:
+    - checkout
 
-      - checkout
+    # restore the saved cache after the first run or if `pom.xml` has changed
+    # REMEMBER: cache doesn't affect local builds
+    - restore_cache:
+        key: *key_cache
 
-      # restore the saved cache after the first run or if `pom.xml` has changed
-      # REMEMBER: cache doesn't affect local builds
-      - restore_cache:
-          key: *key_cache
+    - run: mvn dependency:go-offline # gets the project dependencies
 
-      - run: mvn dependency:go-offline # gets the project dependencies
+    - save_cache: # saves the project dependencies
+        paths:
+          - ~/.m2
+        key: *key_cache
 
-      - save_cache: # saves the project dependencies
-          paths:
-            - ~/.m2
-          key: *key_cache
+    - run: mvn package -B -X -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
 
-      - run: mvn package -B -X -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
+  build:
+    <<: *base
+    steps:
+    - checkout
+
+    # restore the saved cache after the first run or if `pom.xml` has changed
+    # REMEMBER: cache doesn't affect local builds
+    - restore_cache:
+        key: *key_cache
+
+    - run: mvn dependency:go-offline # gets the project dependencies
+
+    - save_cache: # saves the project dependencies
+        paths:
+        - ~/.m2
+        key: *key_cache
+
+    - run: mvn deploy -B -X -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
+
+workflows:
+  version: 2
+  continuous-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+  do-test:
+    jobs:
+      - test:
+          filters:
+            branches:
+              ignore:
+                - master
+
