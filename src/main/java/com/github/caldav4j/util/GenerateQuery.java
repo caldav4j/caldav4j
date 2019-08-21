@@ -512,7 +512,7 @@ public class GenerateQuery  {
 	 * @return Return the xml query as string
 	 * @throws DOMValidationException on exception
 	 */
-	public static String printQuery(CalendarQuery query)
+	public static String printQuery(CalDAVReportRequest query)
 		throws DOMValidationException
 	{	
 				try {

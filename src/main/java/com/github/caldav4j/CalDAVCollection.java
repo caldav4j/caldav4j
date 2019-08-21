@@ -76,11 +76,17 @@ import java.util.Random;
  * no customized queries should be public in this class
  */
 public class CalDAVCollection extends CalDAVCalendarCollectionBase{
+    
 	private static final Logger log = LoggerFactory.getLogger(CalDAVCollection.class); 
-	// configuration settings
+	
+	private final ResponseToResource mapper;
 
+	protected CalDAVCollection(ResponseToResource mapper) {
+	    this.mapper = mapper;
+	}
+	
 	public CalDAVCollection(){
-
+	    this(new ResponseToCalendar());
 	}
 
 	/**
@@ -92,6 +98,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param uri The path to the collection
 	 */
 	public CalDAVCollection(String uri) {
+	    this();
 		setCalendarCollectionRoot(uri);
 		setMethodFactory(new CalDAV4JMethodFactory());
 		this.prodId = CalDAVConstants.PROC_ID_DEFAULT;
@@ -108,6 +115,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	public CalDAVCollection(String path,
 	                        HttpHost httpHost,
 	                        CalDAV4JMethodFactory methodFactory, String prodId) {
+        this();
 		setCalendarCollectionRoot(path);
 		this.httpHost = httpHost;
 		this.methodFactory = methodFactory;
@@ -906,11 +914,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @return List of CalDAVResource's
 	 * @throws CalDAV4JException on error
 	 */
-	protected List<CalDAVResource> getCalDAVResources(HttpClient httpClient, CalendarQuery query)
+	protected List<CalDAVResource> getCalDAVResources(HttpClient httpClient, CalDAVReportRequest query)
             throws CalDAV4JException {
 		boolean usingCache = isCacheEnabled();
-		if (usingCache) {
-			query.setCalendarDataProp(null);
+		if (usingCache && CalendarQuery.class.isAssignableFrom(query.getClass())) {
+			((CalendarQuery)query).setCalendarDataProp(null);
 			log.debug("Using cache, so I am removing calendar data");
 		}
 		log.trace("Executing query: "  + GenerateQuery.printQuery(query));
@@ -936,7 +944,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
                     cache.putResource(resource);
                 } else {
                     if (response != null) {
-                        list.add(new CalDAVResource(response));
+                        list.add(mapper.toResource(response));
                     }
                 }
             }
