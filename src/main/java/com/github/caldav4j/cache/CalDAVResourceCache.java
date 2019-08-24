@@ -1,6 +1,9 @@
 package com.github.caldav4j.cache;
 
 import com.github.caldav4j.exceptions.CacheException;
+
+import java.io.Serializable;
+
 import com.github.caldav4j.CalDAVResource;
 
 /**
@@ -10,7 +13,7 @@ import com.github.caldav4j.CalDAVResource;
  * @author bobbyrullo
  *
  */
-public interface CalDAVResourceCache {
+public interface CalDAVResourceCache<T extends Serializable> {
 
 	/**
 	 * Returns the cached CalDAVResource for the given href, or null
@@ -20,7 +23,7 @@ public interface CalDAVResourceCache {
 	 * @return CalDAVResource referred by the href, null if not found.
 	 * @throws CacheException If error is encountered.
 	 */
-	public CalDAVResource getResource(String href) throws CacheException;
+	public CalDAVResource<T> getResource(String href) throws CacheException;
 
 	/**
 	 * Adds the given resource to the cache, retrievable its href.
@@ -31,7 +34,7 @@ public interface CalDAVResourceCache {
 	 * @param calDAVResource the resource to cache
 	 * @throws CacheException If error is encountered.
 	 */
-	public void putResource(CalDAVResource calDAVResource) throws CacheException;
+	public void putResource(CalDAVResource<T> calDAVResource) throws CacheException;
 
 	/**
 	 * Returns the href for which the resource with the event with the given

@@ -1,7 +1,5 @@
 package com.github.caldav4j.methods;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.http.HttpResponse;
 import org.apache.jackrabbit.webdav.DavException;
@@ -14,6 +12,7 @@ import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertySet;
 import com.github.caldav4j.CalDAVConstants;
+import com.github.caldav4j.exceptions.ResourceParserException;
 import com.github.caldav4j.model.request.CalDAVReportRequest;
 import com.github.caldav4j.util.CalDAVStatus;
 import org.slf4j.Logger;
@@ -21,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,10 +32,10 @@ import java.util.Collection;
  * @author <a href="mailto:ankushmishra9@gmail.com">Ankush Mishra</a>
  */
 
-public class HttpCalDAVReportMethod extends BaseDavRequest {
+public class HttpCalDAVReportMethod<T extends Serializable> extends BaseDavRequest {
 
 	private static final Logger log = LoggerFactory.getLogger(HttpCalDAVReportMethod.class);
-    private CalendarBuilder calendarBuilder = null;
+    private ResourceParser<T> calendarBuilder = null;
     
     /**
     *
@@ -116,7 +116,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 	/**
 	 * @return Returns the associated CalendarBuilder Instance
 	 */
-	public CalendarBuilder getCalendarBuilder() {
+	public ResourceParser<T> getCalendarBuilder() {
 		return calendarBuilder;
 	}
 
@@ -125,7 +125,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 	 * then can't build a calendar response, when expected
 	 * @param calendarBuilder Instance to set
 	 */
-	public void setCalendarBuilder(CalendarBuilder calendarBuilder) {
+	public void setCalendarBuilder(ResourceParser<T> calendarBuilder) {
 		this.calendarBuilder = calendarBuilder;
 	}
 
@@ -140,12 +140,12 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 	 * else null is returned.
 	 * @throws IOException on error building calendar
 	 */
-   public Calendar getResponseBodyAsCalendar(HttpResponse response) throws IOException {
-	   Calendar calendarResponse = null;
+   public T getResponseBodyAsCalendar(HttpResponse response) throws IOException {
+	   T calendarResponse = null;
 	   if(this.succeeded(response)) {
 		   try(InputStream in = response.getEntity().getContent()) {
-			   calendarResponse = calendarBuilder.build(in);
-		   } catch (ParserException e) {
+			   calendarResponse = calendarBuilder.read(in);
+		   } catch (ResourceParserException e) {
 			   throw new IOException("Error parsing calendar from response", e);
 		   }
 	   }
@@ -205,4 +205,5 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
 			   return response;
 	   return null;
    }
+   
 }

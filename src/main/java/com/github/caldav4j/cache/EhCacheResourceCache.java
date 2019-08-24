@@ -9,11 +9,13 @@ import com.github.caldav4j.util.UrlUtils;
 
 import static com.github.caldav4j.util.UrlUtils.stripHost;
 
+import java.io.Serializable;
+
 /**
  * A simple implementation of the resource cache based on EhCache
  * @author bobbyrullo
  */
-public class EhCacheResourceCache implements CalDAVResourceCache {
+public class EhCacheResourceCache<T extends Serializable> implements CalDAVResourceCache<T> {
 	private Cache uidToHrefCache = null;
 	private Cache hrefToResourceCache = null;
 
@@ -120,7 +122,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	/**
 	 * @see CalDAVResourceCache#getResource(String)
 	 */
-	public synchronized CalDAVResource getResource(String href) throws com.github.caldav4j.exceptions.CacheException {
+	public synchronized CalDAVResource<T> getResource(String href) throws com.github.caldav4j.exceptions.CacheException {
 		Element e = null;
 		try {
 			href = UrlUtils.removeDoubleSlashes(href);
@@ -133,7 +135,7 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 					"Problem with the hrefToResourceCache", ce);
 		}
 
-		return e == null ? null : (CalDAVResource) e.getObjectValue();
+		return e == null ? null : (CalDAVResource<T>) e.getObjectValue();
 	}
 
 	/**
@@ -172,8 +174,8 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
 	/**
 	 * Thread safe retrieval of event ID.
 	 */
-	private synchronized String getEventUID(CalDAVResource calDAVResource) {
-		Calendar calendar = calDAVResource.getCalendar();
+	private synchronized String getEventUID(CalDAVResource<Calendar> calDAVResource) {
+		Calendar calendar = calDAVResource.getPayload();
 		VEvent vevent = ICalendarUtils.getFirstEvent(calendar);
 		if (vevent != null) {
 			return ICalendarUtils.getUIDValue(vevent);

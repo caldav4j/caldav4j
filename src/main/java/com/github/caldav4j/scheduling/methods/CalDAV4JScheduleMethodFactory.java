@@ -11,10 +11,11 @@ import java.net.URI;
 public class CalDAV4JScheduleMethodFactory extends CalDAV4JMethodFactory {
 
 	public SchedulePostMethod createSchedulePostMethod(URI uri, CalendarRequest calendarRequest) {
-		return new SchedulePostMethod(uri, calendarRequest, getCalendarOutputterInstance());
+		return new SchedulePostMethod(uri, calendarRequest, getResourceParser());
 	}
 
 	public SchedulePostMethod createSchedulePostMethod(String uri, CalendarRequest calendarRequest) {
-		return new SchedulePostMethod(uri, calendarRequest, getCalendarOutputterInstance());
+		return new SchedulePostMethod(uri, calendarRequest, getResourceParser());
 	}
+
 }

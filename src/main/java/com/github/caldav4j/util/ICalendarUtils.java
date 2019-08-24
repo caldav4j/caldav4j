@@ -151,8 +151,8 @@ public class ICalendarUtils {
 	 * @param component Component to retrieve.
 	 * @return null if not present
 	 */
-	public static CalendarComponent getFirstComponent(CalDAVResource resource, String component) {
-		return resource.getCalendar().getComponent(component);
+	public static CalendarComponent getFirstComponent(CalDAVResource<net.fortuna.ical4j.model.Calendar> resource, String component) {
+		return resource.getPayload().getComponent(component);
 	}
 
 	/**

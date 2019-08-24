@@ -1,6 +1,12 @@
 package com.github.caldav4j.scheduling.methods;
 
-import net.fortuna.ical4j.data.CalendarOutputter;
+import java.net.URI;
+
+import com.github.caldav4j.methods.CalendarResourceParser;
+import com.github.caldav4j.methods.HttpPostMethod;
+import com.github.caldav4j.methods.ResourceParser;
+import com.github.caldav4j.model.request.CalendarRequest;
+
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Property;
@@ -9,10 +15,6 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Organizer;
-import com.github.caldav4j.methods.HttpPostMethod;
-import com.github.caldav4j.model.request.CalendarRequest;
-
-import java.net.URI;
 
 /**
  * Implements the Schedule Post method as defined in
@@ -20,13 +22,13 @@ import java.net.URI;
  * <p>
  * It does so by extendind {@link HttpPostMethod}
  */
-public class SchedulePostMethod extends HttpPostMethod {
+public class SchedulePostMethod extends HttpPostMethod<Calendar> {
 
-	public SchedulePostMethod(URI uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+	public SchedulePostMethod(URI uri, CalendarRequest calendarRequest, ResourceParser<Calendar> calendarOutputter) {
 		super(uri, calendarRequest, calendarOutputter);
 	}
 
-	public SchedulePostMethod(String uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+	public SchedulePostMethod(String uri, CalendarRequest calendarRequest, ResourceParser<Calendar> calendarOutputter) {
 		super(uri, calendarRequest, calendarOutputter);
 	}
 
@@ -44,8 +46,8 @@ public class SchedulePostMethod extends HttpPostMethod {
 
 		// get ATTENDEES and ORGANIZER from ical and add 
 		// Originator and Recipient to Header
-		Calendar calendar = calendarRequest.getCalendar();
-		if ( calendar != null) {
+		Calendar calendar = calendarRequest.getRessource();
+		if (calendar != null) {
 			ComponentList cList = calendar.getComponents();
 			if (Method.REPLY.equals(calendar.getProperty(Property.METHOD))) {
 				addOrganizerToAttendees = true;

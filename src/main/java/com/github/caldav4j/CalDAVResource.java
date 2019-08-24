@@ -16,11 +16,6 @@
  */
 package com.github.caldav4j;
 
-import com.github.caldav4j.model.ContactInfo;
-import com.github.caldav4j.model.response.CalendarDataProperty;
-import net.fortuna.ical4j.model.Calendar;
-import org.apache.jackrabbit.webdav.MultiStatusResponse;
-
 import java.io.Serializable;
 
 /**
@@ -65,16 +60,12 @@ public class CalDAVResource<T extends Serializable> implements Serializable {
 		resourceMetadata = new ResourceMetadata();
 	}
 
-	public void setCalendar(Calendar calendar){
-		this.payload = (T) calendar;
+	public void setPayload(T payload){
+		this.payload = payload;
 	}
 
-    public Calendar getCalendar() {
-        return (Calendar) payload;
-    }
-
-    public ContactInfo getContact() {
-        return (ContactInfo) payload;
+    public T getPayload() {
+        return payload;
     }
 
 	public ResourceMetadata getResourceMetadata() {

@@ -85,13 +85,13 @@ public class PutGetTest extends BaseTestCase {
 		Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM_PATH);
 
 		CalendarRequest cr = new CalendarRequest(cal, false, true, true);
-		HttpPutMethod put = fixture.getMethodFactory().createPutMethod(eventPath, cr);
+		HttpPutMethod<Calendar> put = fixture.getMethodFactory().createPutMethod(eventPath, cr);
 		HttpResponse response = http.execute(hostConfig, put);
 		int statusCode = response.getStatusLine().getStatusCode();
 		assertEquals("Status code for put:", CalDAVStatus.SC_CREATED, statusCode);
 		addedEventsFile.add(BaseTestCase.ICS_DAILY_NY_5PM_UID + ".ics");
 		//ok, so we created it...let's make sure it's there!
-		HttpGetMethod get = fixture.getMethodFactory().createGetMethod(eventPath);
+		HttpGetMethod<Calendar> get = fixture.getMethodFactory().createGetMethod(eventPath);
 
 		response = http.execute(hostConfig, get);
 		statusCode = response.getStatusLine().getStatusCode();
@@ -141,7 +141,7 @@ public class PutGetTest extends BaseTestCase {
 
 		String eventPath =  BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics";
 
-		HttpPutMethod put = fixture.getMethodFactory().createPutMethod(fixture.getCollectionPath() + "/" + eventPath, new CalendarRequest(cal, false, true, true));
+		HttpPutMethod<Calendar> put = fixture.getMethodFactory().createPutMethod(fixture.getCollectionPath() + "/" + eventPath, new CalendarRequest(cal, false, true, true));
 
 		HttpResponse response = http.execute(hostConfig, put);
 		int statusCode = response.getStatusLine().getStatusCode();
@@ -149,7 +149,7 @@ public class PutGetTest extends BaseTestCase {
 		addedEventsFile.add(eventPath);
 
 		//ok, so we created it...let's make sure it's there!
-		HttpGetMethod get = fixture.getMethodFactory().createGetMethod(fixture.getCollectionPath() + "/" +eventPath);
+		HttpGetMethod<Calendar> get = fixture.getMethodFactory().createGetMethod(fixture.getCollectionPath() + "/" +eventPath);
 
 		response = http.execute(hostConfig, get);
 		statusCode = response.getStatusLine().getStatusCode();

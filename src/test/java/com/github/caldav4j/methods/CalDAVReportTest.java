@@ -174,7 +174,7 @@ public class CalDAVReportTest extends BaseTestCase{
 
         FreeBusyQuery query = new FreeBusyQuery(new TimeRange(new DateTime("20060104T140000Z"),new DateTime("20060105T220000Z")));
 
-        HttpCalDAVReportMethod method = fixture.getMethodFactory().createCalDAVReportMethod(fixture.getCollectionPath(), query, CalDAVConstants.DEPTH_1);
+        HttpCalDAVReportMethod<Calendar> method = fixture.getMethodFactory().createCalDAVReportMethod(fixture.getCollectionPath(), query, CalDAVConstants.DEPTH_1);
         HttpResponse response = client.execute(fixture.getHostConfig(), method);
         Calendar calendar = method.getResponseBodyAsCalendar(response);
         VFreeBusy freeBusy = (VFreeBusy) ICalendarUtils.getFirstComponent(calendar);

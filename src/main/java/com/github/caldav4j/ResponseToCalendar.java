@@ -19,5 +19,5 @@ public class ResponseToCalendar implements ResponseToResource<Calendar> {
 
         return new CalDAVResource<Calendar>(calendar, resourceMetadata);
     }
-    
+
 }

@@ -9,19 +9,21 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Organizer;
+
+import com.github.caldav4j.methods.CalendarResourceParser;
 import com.github.caldav4j.methods.HttpPostMethod;
 import com.github.caldav4j.model.request.CalendarRequest;
 
 import java.net.URI;
 
 /** Make sure to call addRequestHeaders() before the method is executed. */
-public class HttpSchedulePostMethod extends HttpPostMethod {
+public class HttpSchedulePostMethod extends HttpPostMethod<Calendar> {
 
-	public HttpSchedulePostMethod(URI uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+	public HttpSchedulePostMethod(URI uri, CalendarRequest calendarRequest, CalendarResourceParser calendarOutputter) {
 		super(uri, calendarRequest, calendarOutputter);
 	}
 
-	public HttpSchedulePostMethod(String uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+	public HttpSchedulePostMethod(String uri, CalendarRequest calendarRequest, CalendarResourceParser calendarOutputter) {
 		super(uri, calendarRequest, calendarOutputter);
 	}
 
@@ -31,7 +33,7 @@ public class HttpSchedulePostMethod extends HttpPostMethod {
 		boolean addOrganizerToAttendees = false;
 		boolean hasAttendees = false;
 
-		Calendar calendar = calendarRequest.getCalendar();
+		Calendar calendar = calendarRequest.getRessource();
 		// get ATTENDEES and ORGANIZER from ical and add 
 		// Originator and Recipient to Header
 		if ( calendar != null) {
