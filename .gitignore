@@ -9,3 +9,5 @@
 
 *.iml
 *.iws
+.classpath
+.settings/
