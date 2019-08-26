@@ -25,17 +25,17 @@ import org.apache.jackrabbit.webdav.xml.Namespace;
  */
 public interface CalDAVConstants {
 
-    public static final String METHOD_MKCALENDAR = "MKCALENDAR";
+	public static final String METHOD_MKCALENDAR = "MKCALENDAR";
 	public static final String METHOD_PUT = "PUT";
 	public static final String METHOD_POST = "POST";
 	public static final String METHOD_REPORT = "REPORT";
 
 	public static final String NS_CALDAV = "urn:ietf:params:xml:ns:caldav";
-    public static final String NS_CARDDAV = "urn:ietf:params:xml:ns:carddav";
+	public static final String NS_CARDDAV = "urn:ietf:params:xml:ns:carddav";
 	public static final String NS_DAV = "DAV:";
 	public static final String NS_QUAL_DAV = "D";
 	public static final String NS_QUAL_CALDAV = "C";
-    public static final String NS_QUAL_CARDDAV = "card";
+	public static final String NS_QUAL_CARDDAV = "card";
 
 	public static final String PROC_ID_DEFAULT =  "-//NONSGML CalDAV4j Client//EN";
 
@@ -61,7 +61,7 @@ public interface CalDAVConstants {
 	public static final String CALDAV_CALENDAR_QUERY = "calendar-query";
 	public static final String CALDAV_CALENDAR_DATA = "calendar-data";
 
-    public static final String CARDDAV_ADDRESS_DATA = "address-data";
+	public static final String CARDDAV_ADDRESS_DATA = "address-data";
 
 	public static final String ATTR_START = "start";
 	public static final String ATTR_END = "end";
