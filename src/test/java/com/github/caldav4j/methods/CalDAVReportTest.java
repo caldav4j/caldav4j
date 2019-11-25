@@ -16,21 +16,21 @@
 
 package com.github.caldav4j.methods;
 
-import com.github.caldav4j.BaseTestCase;
-import com.github.caldav4j.CalDAVConstants;
-import com.github.caldav4j.cache.EhCacheResourceCache;
-import com.github.caldav4j.exceptions.CalDAV4JException;
-import com.github.caldav4j.functional.support.CaldavFixtureHarness;
-import com.github.caldav4j.model.request.*;
-import com.github.caldav4j.model.response.CalendarDataProperty;
-import com.github.caldav4j.util.ICalendarUtils;
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.component.VFreeBusy;
-import net.fortuna.ical4j.model.property.DtEnd;
-import net.fortuna.ical4j.model.property.DtStart;
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.text.ParseException;
+import java.util.Collection;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -47,19 +47,28 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.text.ParseException;
-import java.util.Collection;
+import com.github.caldav4j.BaseTestCase;
+import com.github.caldav4j.CalDAVConstants;
+import com.github.caldav4j.exceptions.CalDAV4JException;
+import com.github.caldav4j.functional.support.CaldavFixtureHarness;
+import com.github.caldav4j.model.request.CalDAVProp;
+import com.github.caldav4j.model.request.CalendarData;
+import com.github.caldav4j.model.request.CalendarQuery;
+import com.github.caldav4j.model.request.Comp;
+import com.github.caldav4j.model.request.CompFilter;
+import com.github.caldav4j.model.request.FreeBusyQuery;
+import com.github.caldav4j.model.request.TimeRange;
+import com.github.caldav4j.model.response.CalendarDataProperty;
+import com.github.caldav4j.util.ICalendarUtils;
 
-import static org.junit.Assert.assertEquals;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VFreeBusy;
+import net.fortuna.ical4j.model.property.DtEnd;
+import net.fortuna.ical4j.model.property.DtStart;
 
 /**
  * @author Ankush Mishra
@@ -67,7 +76,6 @@ import static org.junit.Assert.assertEquals;
 public class CalDAVReportTest extends BaseTestCase{
 
     private static final Logger log = LoggerFactory.getLogger(CalDAVReportTest.class);
-    private EhCacheResourceCache myCache = null;
 
     @Before
     public void setUp() throws Exception {
@@ -81,7 +89,7 @@ public class CalDAVReportTest extends BaseTestCase{
         fixture.tearDown();
     }
 
-    private String ElementoString(Element node) throws TransformerException {
+    private String elemenToString(Element node) throws TransformerException {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
@@ -97,7 +105,7 @@ public class CalDAVReportTest extends BaseTestCase{
 
     public void printXml(XmlSerializable xml) throws ParserConfigurationException, TransformerException {
         Document document = DomUtil.createDocument();
-        ElementoString(xml.toXml(document));
+        elemenToString(xml.toXml(document));
     }
 
     @Test
@@ -133,17 +141,17 @@ public class CalDAVReportTest extends BaseTestCase{
 
     @Test
     public void queryPartialCalendar() throws IOException, TransformerException, ParserConfigurationException, ParseException, DavException {
+    	
         String collectionPath = fixture.getCollectionPath();
-        Calendar calendar = null;
 
         HttpClient http = fixture.getHttpClient();
         HttpHost hostConfig = fixture.getHostConfig();
 
         CalendarQuery calendarQuery = new CalendarQuery();
-        CalendarData calendarData = new CalendarData(CalendarData.EXPAND, new DateTime("20060103T000000Z"), new DateTime("20060105T230000Z"), null);//new Comp("VCALENDAR"));
+        CalendarData calendarData = new CalendarData(CalendarData.EXPAND, new DateTime("20060108T000000Z"), new DateTime("20060111T230000Z"), null);//new Comp("VCALENDAR"));
         CompFilter vcalendar = new CompFilter("VCALENDAR");
         vcalendar.addCompFilter(new CompFilter("VEVENT"));
-        vcalendar.getCompFilters().get(0).setTimeRange(new TimeRange(new DateTime("20060103T000000Z"), new DateTime("20060105T230000Z")));
+        vcalendar.getCompFilters().get(0).setTimeRange(new TimeRange(new DateTime("20060108T000000Z"), new DateTime("20060111T230000Z")));
 
         calendarQuery.setCalendarDataProp(calendarData);
         calendarQuery.setCompFilter(vcalendar);
@@ -153,14 +161,13 @@ public class CalDAVReportTest extends BaseTestCase{
         HttpResponse response = http.execute(hostConfig, calDAVReportMethod);
         log.info(response.getStatusLine().toString());
 
-        Collection<DavProperty> calendars = calDAVReportMethod.getDavProperties(response, CalDAVConstants.DNAME_CALENDAR_DATA);
+        @SuppressWarnings("rawtypes")
+		Collection<DavProperty> calendars = calDAVReportMethod.getDavProperties(response, CalDAVConstants.DNAME_CALENDAR_DATA);
+        ComponentList<VEvent> templist = new ComponentList<>();
 
-        ComponentList templist = new ComponentList();
-
-        for(DavProperty property: calendars){
+        for(@SuppressWarnings("rawtypes") DavProperty property: calendars){
             templist.addAll(CalendarDataProperty.getCalendarfromProperty(property).getComponents(Component.VEVENT));
         }
-
         assertEquals(3, templist.size());
     }
 

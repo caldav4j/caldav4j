@@ -6,6 +6,11 @@
 package com.github.caldav4j.scheduling.util;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.caldav4j.exceptions.CalDAV4JException;
+
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
@@ -15,16 +20,10 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Method;
-import com.github.caldav4j.exceptions.CalDAV4JException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.TimeZone;
 
 public class ITipUtils {
+	
 	private static final Logger log = LoggerFactory.getLogger(ITipUtils.class);
-	private static java.util.TimeZone J_TZ_GMT = TimeZone.getTimeZone("GMT");
-
 	
 	public static Calendar ReplyInvitation(Calendar invite, Attendee mySelf, PartStat replyPartStat ) throws CalDAV4JException {
 		return ManageInvitation(  invite,   mySelf, Method.REPLY, replyPartStat);

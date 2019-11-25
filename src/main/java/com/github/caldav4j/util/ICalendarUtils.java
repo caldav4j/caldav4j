@@ -17,26 +17,30 @@
 
 package com.github.caldav4j.util;
 
+import java.text.ParseException;
+import java.util.Calendar;
+
+import com.github.caldav4j.CalDAVResource;
 import com.github.caldav4j.exceptions.CalDAV4JException;
-import net.fortuna.ical4j.model.*;
+
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Date;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.PropertyList;
+import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.Uid;
-import com.github.caldav4j.CalDAVResource;
 import net.fortuna.ical4j.util.RandomUidGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.ParseException;
-import java.util.Calendar;
 
 /**
  * Calendar Utility functions
  */
 public class ICalendarUtils {
-	private static final Logger log = LoggerFactory.getLogger(ICalendarUtils.class);
 
 	private static final java.util.TimeZone J_TZ_GMT = TimeZone.getTimeZone("GMT");
 
@@ -298,7 +302,7 @@ public class ICalendarUtils {
 	 * @return Returns true if Component contains the property
 	 */
 	public static boolean hasProperty(Component c, String propName){
-		PropertyList l = c.getProperties().getProperties(propName);
+		PropertyList<?> l = c.getProperties().getProperties(propName);
 		return l != null && l.size() > 0;
 	}
 
@@ -310,9 +314,8 @@ public class ICalendarUtils {
 	 * @return VEvent that does not have Recurrence ID
 	 */
 	public static VEvent getMasterEvent(net.fortuna.ical4j.model.Calendar calendar, String uid){
-		ComponentList clist = calendar.getComponents().getComponents(Component.VEVENT);
-		for (Object o : clist){
-			VEvent curEvent = (VEvent) o;
+		ComponentList<VEvent> clist = calendar.getComponents().getComponents(Component.VEVENT);
+		for (VEvent curEvent : clist){
 			String curUid = getUIDValue(curEvent);
 			if (uid.equals(curUid) && !hasProperty(curEvent, Property.RECURRENCE_ID) ){
 				return curEvent;
@@ -328,9 +331,9 @@ public class ICalendarUtils {
 	 * @return VEvent that does not have Recurrence ID
 	 */
 	public static VTimeZone getTimezone(net.fortuna.ical4j.model.Calendar calendar){
-		ComponentList clist = calendar.getComponents().getComponents(Component.VTIMEZONE);
-		for (Object o : clist){
-			return (VTimeZone) o;
+		ComponentList<VTimeZone> clist = calendar.getComponents().getComponents(Component.VTIMEZONE);
+		for (VTimeZone o : clist) {
+			return o;
 		}
 		return null;
 	}
@@ -343,9 +346,8 @@ public class ICalendarUtils {
 	 */
 	// TODO create junit
 	public static CalendarComponent getMasterComponent(net.fortuna.ical4j.model.Calendar calendar, String uid){
-		ComponentList clist = calendar.getComponents();
-		for (Object o : clist){
-			CalendarComponent curEvent = (CalendarComponent) o;
+		ComponentList<CalendarComponent> clist = calendar.getComponents();
+		for (CalendarComponent curEvent : clist) {
 			String curUid = getUIDValue(curEvent);
 			if (uid.equals(curUid) && !hasProperty(curEvent, Property.RECURRENCE_ID)) {
 				return curEvent;
@@ -362,9 +364,8 @@ public class ICalendarUtils {
 	 */
 	// TODO create junit
 	public static CalendarComponent getComponentOccurence(net.fortuna.ical4j.model.Calendar calendar, String uid, String recurrenceId){
-		ComponentList clist = calendar.getComponents();
-		for (Object o : clist){
-			CalendarComponent curEvent = (CalendarComponent) o;
+		ComponentList<CalendarComponent> clist = calendar.getComponents();
+		for (CalendarComponent curEvent : clist){
 			String curUid = getUIDValue(curEvent);
 			String curRid = getPropertyValue(curEvent, Property.RECURRENCE_ID);
 			if (uid.equals(curUid) && UrlUtils.equalsIgnoreCase(recurrenceId, curRid) ){
@@ -384,12 +385,11 @@ public class ICalendarUtils {
 	/// TODO create junit
 	public static net.fortuna.ical4j.model.Calendar removeOccurrence(net.fortuna.ical4j.model.Calendar calendar,
 	                                                                 String uid, String recurrenceId) throws ParseException {
-		ComponentList clist = calendar.getComponents();
+		ComponentList<CalendarComponent> clist = calendar.getComponents();
 		CalendarComponent master = null;
 		CalendarComponent toBeRemoved = null;
-		for (Object o : clist){
-			CalendarComponent curEvent = (CalendarComponent) o;
-			if ( (master==null) && ! (o instanceof VTimeZone)) {
+		for (CalendarComponent curEvent : clist){
+			if ( (master==null) && ! (curEvent instanceof VTimeZone)) {
 				master = curEvent;
 			}
 			String curUid = getUIDValue(curEvent);

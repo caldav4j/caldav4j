@@ -16,22 +16,22 @@
 
 package com.github.caldav4j.methods;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.github.caldav4j.model.request.CalDAVReportRequest;
 import com.github.caldav4j.support.HttpClientTestUtils;
 import com.github.caldav4j.support.HttpMethodCallbacks;
 import com.github.caldav4j.util.CalDAVStatus;
+
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the HttpClient, by overriding the socket and verifying the output there.
@@ -39,8 +39,6 @@ import static org.junit.Assert.assertEquals;
  */
 @Ignore
 public class HttpClientTest {
-
-	private static final Logger log = LoggerFactory.getLogger(HttpClientTest.class);
 
     //Below are the merged tests from CalendarCalDAVReportMethod
 	@Test

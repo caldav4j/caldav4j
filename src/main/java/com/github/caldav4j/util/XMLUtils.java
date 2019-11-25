@@ -17,11 +17,7 @@
 
 package com.github.caldav4j.util;
 
-import org.apache.jackrabbit.webdav.xml.DomUtil;
-import org.apache.jackrabbit.webdav.xml.XmlSerializable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
+import java.io.StringWriter;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -29,13 +25,15 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
+
+import org.apache.jackrabbit.webdav.xml.DomUtil;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
+import org.w3c.dom.Document;
 
 /**
  * Class containing utility functions for XML related work.
  */
 public class XMLUtils {
-	private static final Logger log = LoggerFactory.getLogger(XMLUtils.class);
 
 	/**
 	 * Creates a new xml DOM Document using a DOM 3.0 DOM Implementation

@@ -209,19 +209,16 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * 
 	 * TODO this method should be refined with recurrenceid
 	 */
-	public void delete(HttpClient httpClient, String component, String uid)
-	throws CalDAV4JException {
-
+	public void delete(HttpClient httpClient, String component, String uid) throws CalDAV4JException {
 
 		CalDAVResource resource = getCalDAVResourceByUID(httpClient, component, uid);
 		Calendar calendar = resource.getCalendar();
-		ComponentList eventList = calendar.getComponents().getComponents(component);
+		ComponentList<CalendarComponent> eventList = calendar.getComponents().getComponents(component);
 
 		// get a list of components to remove
 		List<Component> componentsToRemove = new ArrayList<>();
 		boolean hasOtherEvents = false;
-		for (Object o : eventList){
-			CalendarComponent event = (CalendarComponent) o;
+		for (CalendarComponent event : eventList){
 			String curUID = ICalendarUtils.getUIDValue(event);
 			if (!uid.equals(curUID)){
 				hasOtherEvents = true;
@@ -229,7 +226,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				componentsToRemove.add(event);
 			}
 		}
-
 		//
 		// remove from calendar the components with the given UID
 		// and PUT the calendar
@@ -384,15 +380,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			throws CalDAV4JException {
 
 		Random random = new Random();
-		//
+		
 		// retry 3 times while caldav server returns PRECONDITION_FAILED
-		//
 		boolean didIt = false;
-		String path = "";
 		Uid uid = null;
 		for (int x = 0; x < 3 && !didIt; x++) {
-			String resourceName = null;
-
 			// Sets the UID if null.
 			uid = ICalendarUtils.setUID(c);
 

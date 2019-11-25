@@ -40,13 +40,12 @@ public class SchedulePostMethod extends HttpPostMethod {
 	protected void addRequestHeaders(CalendarRequest calendarRequest) {
 
 		boolean addOrganizerToAttendees = false;
-		boolean hasAttendees = false;
 
 		// get ATTENDEES and ORGANIZER from ical and add 
 		// Originator and Recipient to Header
 		Calendar calendar = calendarRequest.getCalendar();
 		if ( calendar != null) {
-			ComponentList cList = calendar.getComponents();
+			ComponentList<CalendarComponent> cList = calendar.getComponents();
 			if (Method.REPLY.equals(calendar.getProperty(Property.METHOD))) {
 				addOrganizerToAttendees = true;
 			}
@@ -74,7 +73,6 @@ public class SchedulePostMethod extends HttpPostMethod {
 				}
 			}
 		}
-
 		super.addRequestHeaders(calendarRequest);
 	}
 }

@@ -156,23 +156,22 @@ public class PropFindTest extends BaseTestCase {
 		try {
 			HttpResponse response = http.execute(hostConfig,propfind);
 
-			AclProperty responses= propfind.getAcl(response, path);
-
-
-				log.info("new Property element");
-				List<AclProperty.Ace> aces = propfind.getAces(response, path);
-				log.info("There are aces # "+ aces.size() );
-                print_ListAce(aces);
+			log.info("new Property element");
+			AclProperty responses = propfind.getAcl(response, path);
+			log.info("Aces from Acl # "+ responses.getValue().size() );
+			
+			log.info("new Property element");
+			List<AclProperty.Ace> aces = propfind.getAces(response, path);
+			log.info("There are aces # "+ aces.size() );
+            print_ListAce(aces);
 
             Privilege[] privileges = { Privilege.PRIVILEGE_READ };
-			AclProperty.Ace test = AclProperty.createGrantAce(Principal.getHrefPrincipal(path),
-                    privileges, false, false, null);
+			AclProperty.Ace test = AclProperty.createGrantAce(Principal.getHrefPrincipal(path), privileges, false, false, null);
 			print_Xml(test);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
     }
 
 	/**

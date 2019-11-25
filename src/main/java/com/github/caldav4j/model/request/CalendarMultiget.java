@@ -50,14 +50,29 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
     public static final String ELEM_FILTER = "filter";
     public static final String ELEM_HREF = CalDAVConstants.ELEM_HREF;
     
-    private boolean allProp = false;
-    private boolean propName = false;
-    private CalendarData calendarDataProp = null;
-    private List<String> hrefs = new ArrayList<>();
-    private Prop properties = new Prop();
+    private boolean allProp;
+    private boolean propName;
+    private List<String> hrefs;
+    private Prop<?> properties;
+    private CalendarData calendarDataProp;
+
+	/**
+	 * @param calendarData Associated Calendar Data
+	 * @param allProp To enable retrieval of all properties
+	 * @param propName Enable PropName
+	 */
+	public CalendarMultiget(CalendarData calendarData, boolean allProp, boolean propName){
+
+		this.allProp = allProp;
+		this.propName = propName;
+		this.hrefs = new ArrayList<>();
+    	this.properties = new Prop<>();
+		this.calendarDataProp = calendarData;
+	}
 
     public CalendarMultiget() {
-
+    	
+    	this(null, false, false);
     }
 
 	/**
@@ -79,22 +94,10 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
 	 * @param allProp To enable retrieval of all properties
 	 * @param propName Enable PropName
 	 */
-	@SuppressWarnings("unchecked")
-	public CalendarMultiget(Prop properties,
+	public CalendarMultiget(Prop<?> properties,
 	                        CalendarData calendarData, boolean allProp, boolean propName){
 		this(calendarData, allProp, propName);
 		this.properties.addChildren(properties);
-	}
-
-	/**
-	 * @param calendarData Associated Calendar Data
-	 * @param allProp To enable retrieval of all properties
-	 * @param propName Enable PropName
-	 */
-	public CalendarMultiget(CalendarData calendarData, boolean allProp, boolean propName){
-		this.calendarDataProp = calendarData;
-		this.allProp = allProp;
-		this.propName = propName;
 	}
 
 	/**
@@ -121,17 +124,16 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
     protected Collection<XmlSerializable> getChildren() {
         ArrayList<XmlSerializable> children = new ArrayList<>();
 
         if (allProp){
-            children.add(new PropProperty(CalDAVConstants.ELEM_ALLPROP, CalDAVConstants.NAMESPACE_WEBDAV));
+            children.add(new PropProperty<>(CalDAVConstants.ELEM_ALLPROP, CalDAVConstants.NAMESPACE_WEBDAV));
         } else if (propName){
-            children.add(new PropProperty(ELEM_PROPNAME, CalDAVConstants.NAMESPACE_WEBDAV));
+            children.add(new PropProperty<>(ELEM_PROPNAME, CalDAVConstants.NAMESPACE_WEBDAV));
         } else if ((properties != null && !properties.isEmpty())
                 || calendarDataProp != null) {
-			Prop temp = new Prop();
+			Prop<?> temp = new Prop<>();
 			temp.addChildren(properties.getChildren());
             if (calendarDataProp != null){
               temp.addChild(calendarDataProp);
@@ -171,11 +173,11 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
         this.propName = propName;
     }
 
-    public Prop getProperties() {
+    public Prop<?> getProperties() {
         return properties;
     }
 
-    public void setProperties(Collection<PropProperty> properties) {
+    public void setProperties(Collection<PropProperty<?>> properties) {
         this.properties.addChildren(properties);
     }
 
@@ -188,7 +190,7 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
     }
 
     public void addProperty(String propertyName, Namespace namespace) {
-        PropProperty propProperty = new PropProperty(propertyName, namespace);
+        PropProperty<?> propProperty = new PropProperty<>(propertyName, namespace);
         properties.add(propProperty);
     }
 

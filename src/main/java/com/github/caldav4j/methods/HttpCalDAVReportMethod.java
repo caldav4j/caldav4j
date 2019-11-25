@@ -1,8 +1,11 @@
 package com.github.caldav4j.methods;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
-import net.fortuna.ical4j.model.Calendar;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.http.HttpResponse;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavMethods;
@@ -13,17 +16,14 @@ import org.apache.jackrabbit.webdav.header.DepthHeader;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertySet;
+
 import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.model.request.CalDAVReportRequest;
 import com.github.caldav4j.util.CalDAVStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.model.Calendar;
 
 /**
  * HttpCalDAVReport Method, which extends BaseDavRequest. Implements Section
@@ -34,7 +34,6 @@ import java.util.Collection;
 
 public class HttpCalDAVReportMethod extends BaseDavRequest {
 
-	private static final Logger log = LoggerFactory.getLogger(HttpCalDAVReportMethod.class);
     private CalendarBuilder calendarBuilder = null;
     
     /**
@@ -160,6 +159,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
     * @return DavProperty
     * @throws DavException on error building Multistatus response.
     */
+   @SuppressWarnings("rawtypes")
    public DavProperty getDavProperty(HttpResponse response, String urlPath, DavPropertyName property) throws DavException {
 	   MultiStatusResponse[] responses = getResponseBodyAsMultiStatus(response).getResponses();
 	   if (responses != null && succeeded(response)) {
@@ -180,6 +180,7 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
     * @return Collection of Properties.
     * @throws DavException on error building Multistatus response.
     */
+   @SuppressWarnings("rawtypes")
    public Collection<DavProperty> getDavProperties(HttpResponse response, DavPropertyName property) throws DavException {
 	   Collection<DavProperty> set = new ArrayList<>();
 	   MultiStatusResponse[] responses = getResponseBodyAsMultiStatus(response).getResponses();

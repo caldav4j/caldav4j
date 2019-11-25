@@ -16,12 +16,8 @@
  */
 package com.github.caldav4j;
 
-import com.github.caldav4j.credential.CaldavCredential;
-import com.github.caldav4j.dialect.CalDavDialect;
-import com.github.caldav4j.functional.support.CalDavFixture;
-import com.github.caldav4j.functional.support.CaldavFixtureHarness;
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.model.Calendar;
+import java.io.InputStream;
+
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -32,18 +28,25 @@ import org.apache.http.impl.client.HttpClients;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import com.github.caldav4j.dialect.ChandlerCalDavDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
+import com.github.caldav4j.credential.CaldavCredential;
+import com.github.caldav4j.dialect.CalDavDialect;
+import com.github.caldav4j.dialect.ChandlerCalDavDialect;
+import com.github.caldav4j.functional.support.CalDavFixture;
+import com.github.caldav4j.functional.support.CaldavFixtureHarness;
 
-public abstract class BaseTestCase   implements TestConstants {
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.model.Calendar;
+
+public abstract class BaseTestCase implements TestConstants {
+	
 	protected static final Logger log = LoggerFactory.getLogger(BaseTestCase.class);
 
-protected CaldavCredential caldavCredential = new CaldavCredential(System.getProperty("caldav4jUri", null));
+	protected CaldavCredential caldavCredential;
 
-	protected CalDavDialect caldavDialect = new ChandlerCalDavDialect();
+	protected CalDavDialect caldavDialect;
 
 	protected CalDavFixture fixture;
 
@@ -53,40 +56,41 @@ protected CaldavCredential caldavCredential = new CaldavCredential(System.getPro
 
 	@Before
 	public void setUp() throws Exception {
+		
 		fixture = new CalDavFixture();
 		fixture.setUp(caldavCredential, caldavDialect);
 		
 		collection = CaldavFixtureHarness.createCollectionFromFixture(fixture);
-
     }
-    
     @After
     public void tearDown() throws Exception {
     	
     }
-    
 
-
-    // constructor
-    public BaseTestCase() {
+	public BaseTestCase() {
+		this(new CaldavCredential(System.getProperty("caldav4jUri", null)), new ChandlerCalDavDialect());
 	}
+	
 	public BaseTestCase(CaldavCredential credential, CalDavDialect dialect) {
 		this.caldavCredential = credential;
 		this.caldavDialect = dialect;	
 	}
+	
 	public HttpClient createHttpClient(){
 		return createHttpClient(this.caldavCredential);
     }
-	public static HttpClient createHttpClient(CaldavCredential caldavCredential){
+	
+	private HttpClient createHttpClient(CaldavCredential caldavCredential){
 		// HttpClient 4 requires a Cred providers, to be added during creation of client
 		CredentialsProvider credsProvider = new BasicCredentialsProvider();
 		credsProvider.setCredentials(
 				AuthScope.ANY,
 				new UsernamePasswordCredentials(caldavCredential.user, caldavCredential.password));
-
+		
 		return HttpClients.custom()
 				.setDefaultCredentialsProvider(credsProvider).build();
     }
+	
     public static HttpClient createHttpClientWithNoCredentials(){
         return HttpClients.createDefault();
     }
@@ -94,11 +98,10 @@ protected CaldavCredential caldavCredential = new CaldavCredential(System.getPro
     public HttpHost createHostConfiguration(){
         return createHostConfiguration(this.caldavCredential);
     }
+    
     public static HttpHost createHostConfiguration(CaldavCredential caldavCredential){
         return new HttpHost(caldavCredential.host,caldavCredential.port, caldavCredential.protocol);
     }
-    
-
 
     // TODO testme
     public static Calendar getCalendarResource(String resourceName) {
@@ -116,33 +119,30 @@ protected CaldavCredential caldavCredential = new CaldavCredential(System.getPro
         }
         
         return cal;
-    }    
+    }
     
+	// getter+setter
+    public String getCalDAVServerHost() {
+        return caldavCredential.host;
+    }
     
-
-		// getter+setter
-	    public String getCalDAVServerHost() {
-	        return caldavCredential.host;
-	    }
-	    
-	    public int getCalDAVServerPort(){
-	        return caldavCredential.port;
-	    }
-	    
-	    public String getCalDavSeverProtocol(){
-	        return caldavCredential.protocol;
-	    }
-	    
-	    public String getCalDavSeverWebDAVRoot(){
-	        return caldavCredential.home;
-	    }
-	    
-	    public String getCalDavSeverUsername(){
-	        return caldavCredential.user;
-	    }
-	    
-	    public String getCalDavSeverPassword(){
-	        return caldavCredential.password;
-	    }
-	        
+    public int getCalDAVServerPort(){
+        return caldavCredential.port;
+    }
+    
+    public String getCalDavSeverProtocol(){
+        return caldavCredential.protocol;
+    }
+    
+    public String getCalDavSeverWebDAVRoot(){
+        return caldavCredential.home;
+    }
+    
+    public String getCalDavSeverUsername(){
+        return caldavCredential.user;
+    }
+    
+    public String getCalDavSeverPassword(){
+        return caldavCredential.password;
+    }
 }

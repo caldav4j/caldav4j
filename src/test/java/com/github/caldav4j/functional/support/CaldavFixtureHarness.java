@@ -55,15 +55,16 @@ public class CaldavFixtureHarness implements TestConstants {
 		});
 	}
 
-	public static void provisionSimpleEvents(CalDavFixture fixture) {
-		provisionEvents(fixture, new String[] {	ICS_DAILY_NY_5PM_PATH,
-				ICS_ALL_DAY_JAN1_PATH,
-				ICS_NORMAL_PACIFIC_1PM_PATH,
-				ICS_SINGLE_EVENT_PATH,ICS_FLOATING_JAN2_7PM_PATH }        	
-		);
+	public static void provisionAllEvents(CalDavFixture fixture) {
+		provisionEvents(fixture,  new String[] {
+				ICS_GOOGLE_DAILY_NY_5PM_PATH,
+				ICS_GOOGLE_ALL_DAY_JAN1_PATH,
+				ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH,
+				ICS_GOOGLE_SINGLE_EVENT_PATH, 
+				ICS_GOOGLE_FLOATING_JAN2_7PM_PATH
+		});
 	}
-	
-	
+
 	private static void provisionEvents(CalDavFixture fixture, String[] events) {
 		for (String eventPath :events) {
 			fixture.caldavPut(eventPath);
@@ -74,10 +75,7 @@ public class CaldavFixtureHarness implements TestConstants {
 	 * 
 	 */
 	public static EhCacheResourceCache createSimpleCache() throws CacheException {
-		//initialize cache
-		CacheManager cacheManager = CacheManager.create();
-		EhCacheResourceCache myCache = EhCacheResourceCache.createSimpleCache();
-		return myCache;
+		return EhCacheResourceCache.createSimpleCache();
 	}
 	/**
 	 * 
@@ -88,5 +86,4 @@ public class CaldavFixtureHarness implements TestConstants {
 		cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
 		cacheManager.shutdown();
 	}
-
 }

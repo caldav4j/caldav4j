@@ -16,31 +16,39 @@
 
 package com.github.caldav4j.methods;
 
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.property.Summary;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
+
+import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.caldav4j.BaseTestCase;
+import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.model.request.CalendarRequest;
 import com.github.caldav4j.util.CalDAVStatus;
 import com.github.caldav4j.util.ICalendarUtils;
 import com.github.caldav4j.util.MethodUtil;
 import com.github.caldav4j.util.UrlUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.nio.charset.Charset;
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Summary;
 
 //@Ignore // to be run under functional
 public class PutGetTest extends BaseTestCase {
@@ -66,30 +74,33 @@ public class PutGetTest extends BaseTestCase {
 			fixture.tearDown();
 		}
 	}
+	
 	@Test
 	public  void testResourceBundle() {
 		// load an ICS and substitute summary with non-latin chars
 		Locale mylocale = new Locale("ru", "RU");
-		ResourceBundle messages = PropertyResourceBundle.getBundle("messages",mylocale);
-		String myLocalSummary = messages.getString("summary");
+		ResourceBundle messages = PropertyResourceBundle.getBundle("messages", mylocale);
+
+		assertNotNull(Charset.defaultCharset());
+		assertNotNull(messages.getString("summary"));
+		log.debug("Summary: " + messages.getString("summary"));
 		log.info("default charset: "+ Charset.defaultCharset());
-		assertTrue(true);
 	}
 
 	@Test
 	public void testAddRemoveCalendarResource() throws Exception{
 		HttpClient http = createHttpClient();
 		HttpHost hostConfig = createHostConfiguration();
-		String eventPath = UrlUtils.removeDoubleSlashes(String.format("%s/%s.ics", fixture.getCollectionPath(),BaseTestCase.ICS_DAILY_NY_5PM_UID));
+		String eventPath = UrlUtils.removeDoubleSlashes(String.format("%s/%s.ics", fixture.getCollectionPath(), BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID));
 
-		Calendar cal = getCalendarResource(BaseTestCase.ICS_DAILY_NY_5PM_PATH);
+		Calendar cal = getCalendarResource(BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_PATH);
 
 		CalendarRequest cr = new CalendarRequest(cal, false, true, true);
 		HttpPutMethod put = fixture.getMethodFactory().createPutMethod(eventPath, cr);
 		HttpResponse response = http.execute(hostConfig, put);
 		int statusCode = response.getStatusLine().getStatusCode();
 		assertEquals("Status code for put:", CalDAVStatus.SC_CREATED, statusCode);
-		addedEventsFile.add(BaseTestCase.ICS_DAILY_NY_5PM_UID + ".ics");
+		addedEventsFile.add(BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics");
 		//ok, so we created it...let's make sure it's there!
 		HttpGetMethod get = fixture.getMethodFactory().createGetMethod(eventPath);
 
@@ -102,21 +113,20 @@ public class PutGetTest extends BaseTestCase {
 		Calendar calendar = get.getResponseBodyAsCalendar(response);
 		VEvent event = ICalendarUtils.getFirstEvent(calendar);
 		String uid = ICalendarUtils.getUIDValue(event);
-		assertEquals(ICS_DAILY_NY_5PM_UID, uid);
+		assertEquals(ICS_GOOGLE_DAILY_NY_5PM_UID, uid);
 
 		//let's make sure that a subsequent put with "if-none-match: *" fails
-
 		put = fixture.getMethodFactory().createPutMethod(eventPath, new CalendarRequest(cal, false, true, true));
 
 		response = http.execute(hostConfig, put);
+		Header header = put.getFirstHeader(CalDAVConstants.HEADER_IF_NONE_MATCH);
+	    assertNotNull(header.getValue());
+	    
 		statusCode = response.getStatusLine().getStatusCode();
 		assertEquals("Status code for put:",
 				CalDAVStatus.SC_PRECONDITION_FAILED, statusCode);
 	}
 
-	/**
-	 * TODO test PUT with non-latin characters
-	 */
 	@Test
 	public void testPutNonLatin()
 	throws Exception {
@@ -128,14 +138,13 @@ public class PutGetTest extends BaseTestCase {
 		Locale mylocale = new Locale("ru", "RU");
 		messages = PropertyResourceBundle.getBundle("messages",mylocale);
 		String myLocalSummary = messages.getString("summary"); 
+		assertNotNull(myLocalSummary);
 		log.info("default charset: "+ Charset.defaultCharset());
 
 		Calendar cal = getCalendarResource(BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_PATH);
 		Component calendarComponent =  cal.getComponent(Component.VEVENT);
-		ICalendarUtils.addOrReplaceProperty(calendarComponent, 
-				new Summary(myLocalSummary));
-		assertEquals(myLocalSummary, 
-				ICalendarUtils.getPropertyValue(calendarComponent, Property.SUMMARY));
+		ICalendarUtils.addOrReplaceProperty(calendarComponent, new Summary(myLocalSummary));
+		assertEquals(myLocalSummary, ICalendarUtils.getPropertyValue(calendarComponent, Property.SUMMARY));
 
 		// create a PUT request with the given ICS
 
@@ -160,20 +169,18 @@ public class PutGetTest extends BaseTestCase {
 		VEvent event = ICalendarUtils.getFirstEvent(calendar);
 		String uid = ICalendarUtils.getUIDValue(event);
 		String summary = ICalendarUtils.getPropertyValue(event, Property.SUMMARY);
-		assertEquals(ICS_DAILY_NY_5PM_UID, uid);
+		
+		assertEquals(ICS_GOOGLE_DAILY_NY_5PM_UID, uid);
 		assertEquals(myLocalSummary, summary);
-
 
 		//let's make sure that a subsequent put with "if-none-match: *" fails
 		put = fixture.getMethodFactory().createPutMethod(fixture.getCollectionPath() + "/" +eventPath, new CalendarRequest(cal, false, true, true));
 
 		response = http.execute(hostConfig, put);
+		Header header = put.getFirstHeader(CalDAVConstants.HEADER_IF_NONE_MATCH);
+	    assertNotNull(header.getValue());
 		statusCode = response.getStatusLine().getStatusCode();
-		assertEquals("Status code for put:",
-				CalDAVStatus.SC_PRECONDITION_FAILED, statusCode);
-
-
-
+		assertEquals("Status code for put:", CalDAVStatus.SC_PRECONDITION_FAILED, statusCode);
 		// test for exceptions
 		// moreover: try a GET to see if event is changed
 	}

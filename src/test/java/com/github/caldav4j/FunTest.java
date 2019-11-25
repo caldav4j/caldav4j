@@ -38,18 +38,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FunTest extends BaseTestCase {
-	public FunTest() {
-		super();
-	}
-
+	
 	private static final Logger log = LoggerFactory.getLogger(FunTest.class);
-
 
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 
-		CaldavFixtureHarness.provisionSimpleEvents(fixture);
+		CaldavFixtureHarness.provisionAllEvents(fixture);
 	}
 
 	@After
@@ -58,6 +54,7 @@ public class FunTest extends BaseTestCase {
 	}
 
 	@Test
+	@SuppressWarnings("rawtypes")
 	public void testFun() throws Exception{
 		HttpClient http = createHttpClient();
 		HttpHost hostConfig = createHostConfiguration();
@@ -74,7 +71,7 @@ public class FunTest extends BaseTestCase {
         for(MultiStatusResponse response : e){
             DavPropertySet properties = response.getProperties(CalDAVStatus.SC_OK);
             log.info("HREF: " + response.getHref());
-            for(DavProperty property: properties) {
+            for(DavProperty property : properties) {
                 String nodeName = property.getName().toString();
                 log.info("nodename: " + nodeName + "\n"
                         + "value: " + property.getValue());
@@ -98,8 +95,4 @@ public class FunTest extends BaseTestCase {
 			throw new RuntimeException(e);
 		}
 	}
-
-
-
-
 }

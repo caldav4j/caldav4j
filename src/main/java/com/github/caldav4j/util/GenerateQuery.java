@@ -141,7 +141,6 @@ public class GenerateQuery  {
 		
 		this(c, cProp != null ? Arrays.asList(cProp) : null,
 				cFilter, pFilter != null ? Arrays.asList(pFilter) : null);
-		
 	}
 
 	/**

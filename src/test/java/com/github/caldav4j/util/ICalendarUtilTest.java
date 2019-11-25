@@ -16,52 +16,44 @@
 
 package com.github.caldav4j.util;
 
-import com.github.caldav4j.methods.PutGetTest;
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.component.VToDo;
-import net.fortuna.ical4j.model.property.Uid;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import com.github.caldav4j.BaseTestCase;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ICalendarUtilTest extends BaseTestCase{
+import com.github.caldav4j.BaseTestCase;
+import com.github.caldav4j.exceptions.CalDAV4JException;
+import com.github.caldav4j.methods.PutGetTest;
+
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VToDo;
+import net.fortuna.ical4j.model.property.Uid;
+
+public class ICalendarUtilTest extends BaseTestCase {
 	private static final Logger log = LoggerFactory.getLogger(PutGetTest.class);
-
-	// list of different components
-	private List<String> calendarList = new ArrayList<>();
 
 	@Before
 	@Override
 	public void setUp() throws Exception {
 		log.trace("setUp");
-		calendarList.add("icalendar/DAY-VTODO-123123.ics");
-		calendarList.add(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
-
 	}
-
-	@After
-	public void tearDown() throws Exception {}
-
-
-	//
-	// methods
-	//
-
 
 	/**
 	 * update a master event or a recurring one
@@ -84,28 +76,21 @@ public class ICalendarUtilTest extends BaseTestCase{
 	 *  as .ics is not a valid caldav one
 	 * @throws Exception
 	 */
-	@Test
-	@Ignore
+	@Test(expected=CalDAV4JException.class)
 	public void testSetIcsUid() throws Exception {
-		// test variable
-		Component component = null; 
 
 		// create a mixed VEVENT VTODO Calendar    	
-		Calendar mixedCalendar = this.parseICS(calendarList.get(0));
-		Calendar tmp = this.parseICS(calendarList.get(1));
+		Calendar mixedCalendar = this.parseICS(ICS_DAY_VTODO_PATH);
+		Calendar tmp = this.parseICS(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
 
 		mixedCalendar.getComponents().add(ICalendarUtils.getFirstComponent(tmp));
 		log.debug(mixedCalendar.toString());
 		assertNotNull(mixedCalendar);
 
 		// check that getFirstComponent rejects those kind of calendar
-		try {
-			component = ICalendarUtils.getFirstComponent(mixedCalendar);			
-		} catch (Exception e) {	
-			log.debug(e.getMessage());
-		}
-		assertNull(component);
-
+		ICalendarUtils.getFirstComponent(mixedCalendar);
+		
+		fail("Should've thrown exception finding first component as calendar contains different kinds of components");
 	}
 
 	@Test
@@ -115,8 +100,13 @@ public class ICalendarUtilTest extends BaseTestCase{
 		//CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
 		//CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
 
-		Calendar strangeIcs =  this.parseICS("icalendar/Recurrent_with_timezone.ics");
-		log.info(strangeIcs.toString());
+		Calendar strangeIcs =  this.parseICS(ICS_RECURRENT_TZ_PATH);
+		assertEquals(ICS_RECURRENT_TZ_UID, ICalendarUtils.getUIDValue(strangeIcs));
+		
+		VEvent vevent = ICalendarUtils.getFirstEvent(strangeIcs);
+		assertNotNull(vevent);
+		String summary = ICalendarUtils.getSummaryValue(vevent);
+		assertEquals(ICS_RECURRENT_TZ_SUMMARY, summary);
 	}
 
 	/**
@@ -125,19 +115,25 @@ public class ICalendarUtilTest extends BaseTestCase{
 	 * @throws IOException 
 	 */
 	@Test
-	public void testGetComponentFromCalendarWithTimezone() 
-	throws Exception{
-		// get a calendar from file  
-		// or create one
-		for (String resource : this.calendarList) {
+	public void testGetComponentFromCalendarWithTimezone()  throws Exception{
+		
+		List<String> calendarList = new ArrayList<>();
+		calendarList.add(ICS_DAY_VTODO_PATH);
+		calendarList.add(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
+		
+		// get a calendar from file or create one
+		for (String resource : calendarList) {
 
 			log.info("testing with: " + resource);
+			
 			Calendar cal = this.parseICS(resource);
-
 			// get first component
 			Component firstComponent = ICalendarUtils.getFirstComponent(cal);
 
-			// print it | test if matches	
+			assertNotNull(firstComponent);
+			assertNotNull(ICalendarUtils.getUIDValue(cal));
+			assertNotNull(ICalendarUtils.getPropertyValue(firstComponent, Property.SUMMARY));
+			
 			log.debug(cal.toString());
 			log.debug(firstComponent.toString());
 		}
@@ -160,15 +156,13 @@ public class ICalendarUtilTest extends BaseTestCase{
 	 * append an uid to a Component from an one-component calendar
 	 */
 	@Test
-	@Ignore
 	public void testSetCalendarUid() throws Exception {
 		// get a calendar from file  
 		// or create one
-		String resource = "icalendar/Google_NOUID_Daily_NY_5pm.ics";
 		String newUid = "newUid";
 
-		log.info("testing with: " + resource);
-		Calendar cal = this.parseICS(resource);
+		log.info("testing with: " + ICS_GOOGLE_NOUID_DAYLY_5PM_PATH);
+		Calendar cal = this.parseICS(ICS_GOOGLE_NOUID_DAYLY_5PM_PATH);
 
 		// get first component
 		Component firstComponent = ICalendarUtils.getFirstComponent(cal);
@@ -176,18 +170,12 @@ public class ICalendarUtilTest extends BaseTestCase{
 		// check that UID is not present
 		String uid = ICalendarUtils.getUIDValue(cal);
 		log.trace("uid=" + uid);
-		if ("".equals(uid)) {
-			uid = null;
-		}
-		assertNull(uid);
+		assertTrue(StringUtils.isBlank(uid));
 
 		// create one, add then retrieve from calendar
 		ICalendarUtils.addOrReplaceProperty(firstComponent, new Uid(newUid));
 		uid = ICalendarUtils.getUIDValue(cal);
 		log.trace("uid=" + uid);
-		if ("".equals(uid)) {
-			uid = null;
-		}
 
 		// print it | test if matches
 		assertEquals(newUid, uid);		
@@ -201,40 +189,30 @@ public class ICalendarUtilTest extends BaseTestCase{
 	public void testReplaceCalendarUid() throws Exception{
 		// get a calendar from file  
 		// or create one
-		String resource = "icalendar/Google_Daily_NY_5pm.ics";
 		String newUid = "newUid";
 
-		log.info("testing with: " + resource);
-		Calendar cal = this.parseICS(resource);
+		log.info("testing with: " + ICS_GOOGLE_DAILY_NY_5PM_PATH);
+		Calendar cal = this.parseICS(ICS_GOOGLE_DAILY_NY_5PM_PATH);
 
 		// check that UID is present
 		String uid = ICalendarUtils.getUIDValue(cal);
 		log.trace("uid=" + uid);
-		if ("".equals(uid)) {
-			uid = null;
-		}
 		assertNotNull(uid);
 
 		// create one, replace, then retrieve from calendar
 		ICalendarUtils.setUIDValue(cal, newUid);
 		uid = ICalendarUtils.getUIDValue(cal);
 		log.trace("uid=" + uid);
-		if ("".equals(uid)) {
-			uid = null;
-		}
 
 		// print it | test if matches
 		assertEquals(newUid, uid);		
 		log.debug(cal.toString());		
-
 	}
-
 
 	//
 	// private
 	//
-	private Calendar parseICS(String resource) 
-	throws Exception {
+	private Calendar parseICS(String resource) throws Exception {
 		InputStream stream = this.getClass().getClassLoader()
 		.getResourceAsStream(resource);
 
@@ -246,12 +224,11 @@ public class ICalendarUtilTest extends BaseTestCase{
 		Component firstComponent =ICalendarUtils.getFirstComponent(cal); 
 		if (firstComponent instanceof VToDo) {
 			VToDo new_name = (VToDo) firstComponent;
-			log.info("resource type of is: VTODO");
+			log.info("resource type of is: VTODO - " + new_name);
 		} else if (firstComponent instanceof VEvent) {
 			VEvent new_name = (VEvent) firstComponent;
-			log.info("resource is: VEVENT");
+			log.info("resource is: VEVENT - " + new_name);
 		}
 		return cal;
 	}
-
 }
