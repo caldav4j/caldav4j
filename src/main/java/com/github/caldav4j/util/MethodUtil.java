@@ -1,20 +1,19 @@
 package com.github.caldav4j.util;
 
-import com.github.caldav4j.exceptions.*;
-import com.github.caldav4j.exceptions.ResourceNotFoundException.IdentifierType;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import com.github.caldav4j.exceptions.AuthorizationException;
+import com.github.caldav4j.exceptions.BadStatusException;
+import com.github.caldav4j.exceptions.CalDAV4JException;
+import com.github.caldav4j.exceptions.ResourceNotFoundException;
+import com.github.caldav4j.exceptions.ResourceNotFoundException.IdentifierType;
+import com.github.caldav4j.exceptions.ResourceOutOfDateException;
 
 /**
  * Method Utilities
  */
 public class MethodUtil {
-	private static final Logger log = LoggerFactory.getLogger(MethodUtil.class);
 	
 	/**
 	 * Throws various exceptions depending on the status &gt;= 400 of the given method
@@ -26,13 +25,6 @@ public class MethodUtil {
 	public static int StatusToExceptions(HttpRequestBase method, HttpResponse response) throws CalDAV4JException {
 		if (method != null && response != null) {
 			int status = response.getStatusLine().getStatusCode();
-			if (log.isDebugEnabled()) {
-				try {
-					log.debug("Server returned " + EntityUtils.toString(response.getEntity(),"UTF-8"));
-				} catch (IOException e) {
-					throw new CalDAV4JException("Error retrieving server response", e);
-				}
-			}
 			if (status >= 300) {				
 				switch (status) {
 				case CalDAVStatus.SC_CONFLICT:

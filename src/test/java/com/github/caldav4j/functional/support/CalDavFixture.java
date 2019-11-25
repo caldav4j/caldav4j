@@ -41,6 +41,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.apache.jackrabbit.webdav.client.methods.HttpMkcol;
 import com.github.caldav4j.BaseTestCase;
+import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.TestConstants;
 import com.github.caldav4j.credential.CaldavCredential;
 import com.github.caldav4j.dialect.CalDavDialect;
@@ -99,10 +100,10 @@ public class CalDavFixture
 	 * @param dialect
 	 * @throws IOException
 	 */
-	public void setUp(CaldavCredential credential, CalDavDialect dialect) throws IOException
-	{
+	public void setUp(CaldavCredential credential, CalDavDialect dialect) throws IOException {
 		setUp(credential, dialect, false);
 	}
+	
 	public void setUp(CaldavCredential credential, CalDavDialect dialect, boolean skipCreateCollection) throws IOException
 	{
 		hostConfig = new HttpHost(credential.host, credential.port, credential.protocol);
@@ -134,7 +135,8 @@ public class CalDavFixture
 	{
 		// Note Google Calendar Doesn't support creating a calendar
 		HttpMkCalendarMethod method = methodFactory.createMkCalendarMethod(relativePath);
-
+		method.setHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_CALENDAR);
+		
 		executeMethod(CalDAVStatus.SC_CREATED, method, true);
 	}
 	public void makeCollection(String relativePath) throws IOException
@@ -281,6 +283,8 @@ public class CalDavFixture
 	 */
 	public void put(String resourceFileName, String path) {
 	    HttpPutMethod put = methodFactory.createPutMethod(path, new CalendarRequest());
+		put.setHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_CALENDAR);
+
 	    InputStream stream = this.getClass().getClassLoader()
 	    .getResourceAsStream(resourceFileName);
 	    String event = UrlUtils.parseISToString(stream);
