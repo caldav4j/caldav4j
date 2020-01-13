@@ -60,6 +60,7 @@ public class MkCalendarTest extends BaseTestCase {
 		for (String p : addedItems) {
 			fixture.delete(p, false);			
 		}
+		fixture.tearDown();
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class MkCalendarTest extends BaseTestCase {
 		HttpMkCalendarMethod mk = new HttpMkCalendarMethod(collectionPath,
 				"My Display Name", "This is my Default Calendar", "en");
 
-		fixture.executeMethod(CalDAVStatus.SC_CREATED, mk, true, null, true);
+		fixture.executeMethod(CalDAVStatus.SC_CREATED, mk, false, null, true);
 
 		// Get collection to make sure it's there.
 		HttpGetMethod get = fixture.getMethodFactory().createGetMethod(collectionPath);
