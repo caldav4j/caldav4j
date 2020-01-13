@@ -55,5 +55,4 @@ public interface TestConstants {
      String ICS_SINGLE_EVENT_PATH = ICS_RESOURCE_PATH + "singleEvent.ics";
 
      String CALENDAR_DESCRIPTION = "My sample calendar description";
-    
 }

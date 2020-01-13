@@ -51,5 +51,4 @@ public class MethodUtil {
 		}
 		throw new CalDAV4JException("Null method or null response");
 	}
-	
 }

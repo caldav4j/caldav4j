@@ -90,7 +90,6 @@ public class ICalendarUtils {
 		DateTime dateTime = new DateTime();
 		setFields(dateTime, year, month, day, hour, minutes, 0, 0, tz, utc);
 		return dateTime;
-
 	}
 
 	/**
@@ -441,5 +440,4 @@ public class ICalendarUtils {
 		}
 		return uid;
 	}
-
 }

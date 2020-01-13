@@ -51,17 +51,14 @@ public class ICalendarUtilTest extends BaseTestCase{
 		log.trace("setUp");
 		calendarList.add("icalendar/DAY-VTODO-123123.ics");
 		calendarList.add(ICS_GOOGLE_NORMAL_PACIFIC_1PM_PATH);
-
 	}
 
 	@After
 	public void tearDown() throws Exception {}
 
-
 	//
 	// methods
 	//
-
 
 	/**
 	 * update a master event or a recurring one
@@ -105,7 +102,6 @@ public class ICalendarUtilTest extends BaseTestCase{
 			log.debug(e.getMessage());
 		}
 		assertNull(component);
-
 	}
 
 	@Test
@@ -180,7 +176,6 @@ public class ICalendarUtilTest extends BaseTestCase{
 			uid = null;
 		}
 		assertNull(uid);
-
 		// create one, add then retrieve from calendar
 		ICalendarUtils.addOrReplaceProperty(firstComponent, new Uid(newUid));
 		uid = ICalendarUtils.getUIDValue(cal);
@@ -188,7 +183,6 @@ public class ICalendarUtilTest extends BaseTestCase{
 		if ("".equals(uid)) {
 			uid = null;
 		}
-
 		// print it | test if matches
 		assertEquals(newUid, uid);		
 		log.debug(cal.toString());		
@@ -222,13 +216,10 @@ public class ICalendarUtilTest extends BaseTestCase{
 		if ("".equals(uid)) {
 			uid = null;
 		}
-
 		// print it | test if matches
 		assertEquals(newUid, uid);		
 		log.debug(cal.toString());		
-
 	}
-
 
 	//
 	// private
@@ -253,5 +244,4 @@ public class ICalendarUtilTest extends BaseTestCase{
 		}
 		return cal;
 	}
-
 }

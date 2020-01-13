@@ -62,8 +62,7 @@ public class CaldavFixtureHarness implements TestConstants {
 				ICS_SINGLE_EVENT_PATH,ICS_FLOATING_JAN2_7PM_PATH }        	
 		);
 	}
-	
-	
+
 	private static void provisionEvents(CalDavFixture fixture, String[] events) {
 		for (String eventPath :events) {
 			fixture.caldavPut(eventPath);
@@ -88,5 +87,4 @@ public class CaldavFixtureHarness implements TestConstants {
 		cacheManager.removeCache(HREF_TO_RESOURCE_CACHE);
 		cacheManager.shutdown();
 	}
-
 }

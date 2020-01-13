@@ -26,8 +26,6 @@ public class CalendarDataPropertyTest {
         davProperty = new DefaultDavProperty("calendar-data", null, Namespace.getNamespace("urn:ietf:params:xml:ns:caldav"));
         calendar = CalendarDataProperty.getCalendarfromProperty(davProperty);
         assertNull("Calendar object for a property with null value should be null object", calendar);
-
-
     }
 
     @Test
@@ -48,6 +46,5 @@ public class CalendarDataPropertyTest {
         davProperty = new DefaultDavProperty(DavPropertyName.GETETAG, value);
         etag = CalendarDataProperty.getEtagfromProperty(davProperty);
         assertEquals("etag value is not correct", value, etag);
-
     }
 }

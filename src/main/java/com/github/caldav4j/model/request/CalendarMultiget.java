@@ -138,7 +138,6 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
             }
             children.add(temp);
         }
-        
         // remove double "//" from paths
         if ( hrefs != null && !hrefs.isEmpty()) {
 	        for (String uri : hrefs) {
@@ -232,5 +231,4 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
         }
         
     }
-
 }

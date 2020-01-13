@@ -66,6 +66,7 @@ public class PutGetTest extends BaseTestCase {
 			fixture.tearDown();
 		}
 	}
+
 	@Test
 	public  void testResourceBundle() {
 		// load an ICS and substitute summary with non-latin chars
@@ -172,10 +173,7 @@ public class PutGetTest extends BaseTestCase {
 		assertEquals("Status code for put:",
 				CalDAVStatus.SC_PRECONDITION_FAILED, statusCode);
 
-
-
 		// test for exceptions
 		// moreover: try a GET to see if event is changed
 	}
-
 }

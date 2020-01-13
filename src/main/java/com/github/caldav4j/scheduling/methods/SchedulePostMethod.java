@@ -74,7 +74,6 @@ public class SchedulePostMethod extends HttpPostMethod {
 				}
 			}
 		}
-
 		super.addRequestHeaders(calendarRequest);
 	}
 }

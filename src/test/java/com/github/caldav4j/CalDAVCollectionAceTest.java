@@ -33,10 +33,6 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 
 	protected static final Logger log = LoggerFactory.getLogger(CalDAVCollectionAceTest.class);
 
-
-
-
-
 	// cache
 	private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";
 	private static final String UID_TO_HREF_CACHE = "uidToHrefCache";
@@ -89,14 +85,4 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 			log.info("NOOP exists");
 		}
 	}*/
-
-
-	//
-	// private
-	//
-
-
-
-
-
 }

@@ -160,7 +160,6 @@ public class CalDAVReportTest extends BaseTestCase{
         for(DavProperty property: calendars){
             templist.addAll(CalendarDataProperty.getCalendarfromProperty(property).getComponents(Component.VEVENT));
         }
-
         assertEquals(3, templist.size());
     }
 

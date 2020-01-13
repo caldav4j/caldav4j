@@ -82,7 +82,6 @@ public class PropFindTest extends BaseTestCase {
 
         HttpPropFindMethod propfind = new HttpPropFindMethod(path, set, CalDAVConstants.DEPTH_0);
 
-
 		try {
 			HttpResponse response = http.execute(hostConfig,propfind);
 
@@ -104,7 +103,6 @@ public class PropFindTest extends BaseTestCase {
 			 *            ace
 			 *            ,,,      
 			 */
-
 				print_Xml(aclProperty);
 				List<AclProperty.Ace> aces =  propfind.getAces(response, path);
 				print_Xml(aces.get(0));
@@ -128,7 +126,6 @@ public class PropFindTest extends BaseTestCase {
                     log.info("further elements: " +"ns:" + priv.getNamespace().toString() +":"+ priv.getName() +
 								"; ");
 				}
-
         } catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -172,7 +169,6 @@ public class PropFindTest extends BaseTestCase {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
     }
 
 	/**
@@ -230,16 +226,12 @@ public class PropFindTest extends BaseTestCase {
 				}*/
 				print_Xml(ace);
 			}
-
 		} catch (IOException | TransformerException e) {
 			e.printStackTrace();
 		}
-
     }
 
 	/**
-	 * 
-	 * 
 	 * FIXME This test won't check for the result, just run some ACL methods
 	 */
 	@Test
@@ -253,9 +245,6 @@ public class PropFindTest extends BaseTestCase {
                 privileges, false, false, null);
         AclProperty aclProperty = new AclProperty(new AclProperty.Ace[] { ace });
 		HttpAclMethod method = new HttpAclMethod(fixture.getCollectionPath(), aclProperty);
-
-
-
 
 		try {
 			http.execute(hostConfig, method);
@@ -276,7 +265,6 @@ public class PropFindTest extends BaseTestCase {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
-
 	}
 
 	//

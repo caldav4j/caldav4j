@@ -44,7 +44,6 @@ public class FunTest extends BaseTestCase {
 
 	private static final Logger log = LoggerFactory.getLogger(FunTest.class);
 
-
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
@@ -98,8 +97,4 @@ public class FunTest extends BaseTestCase {
 			throw new RuntimeException(e);
 		}
 	}
-
-
-
-
 }

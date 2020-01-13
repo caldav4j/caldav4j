@@ -114,7 +114,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		this.prodId = prodId;
 	}
 
-
 	//Configuration Methods
 
 	/**
@@ -197,7 +196,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		return queryCalendars(httpClient,  gq.generate());
 	}
 
-	
 	/**
 	 * Delete every component with the given UID. As UID is unique in the
 	 * collection  it should remove only one Calendar resource
@@ -229,7 +227,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				componentsToRemove.add(event);
 			}
 		}
-
 		//
 		// remove from calendar the components with the given UID
 		// and PUT the calendar
@@ -250,7 +247,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			delete(httpClient, UrlUtils.stripHost(resource.getResourceMetadata().getHref()));
 		}
 	}
-
 
 	/**
 	 * Creates a calendar at the specified path 
@@ -433,8 +429,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				default:
 					MethodUtil.StatusToExceptions(putMethod, response);
 			}
-
-		} //for
+		}
 		return uid.getValue();
 	}
 
@@ -531,7 +526,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				resource = null;
 			}			
 		}
-
 		// then check by calendar query
 		GenerateQuery gq;		
 		gq = new GenerateQuery(null, component + " : UID=="+uid );
@@ -550,12 +544,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		} catch (Exception e) {			
 			throw new ResourceNotFoundException(
 					ResourceNotFoundException.IdentifierType.UID, uid);
-
 		}
-
 	}
-
-
 
 
 	/**
@@ -609,7 +599,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		//either the etag was old, or it wasn't in the cache so let's get it
 		//from the server       
 		return getCalDAVResourceFromServer(httpClient, path);
-
 	}
 
 	/**
@@ -646,8 +635,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, false);
 			}
 			calendar = getMethod.getResponseBodyAsCalendar(response);
-
-
             calDAVResource = new CalDAVResource();
             calDAVResource.setCalendar(calendar);
             calDAVResource.getResourceMetadata().setETag(etag);
@@ -662,10 +649,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		} finally {
             getMethod.reset();
         }
-
-		return calDAVResource;			
+		return calDAVResource;
 	}
-
 
 	/**
 	 * Deletes a resource at a given path. Also removes it from cache.
@@ -701,7 +686,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		return (getCalendarCollectionRoot() + relativePath).replaceAll("/+", "/");
 	}
 
-
 	/**
 	 * Retrieve etags using HEAD /path/to/resource.ics
 	 *
@@ -728,7 +712,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		} catch (IOException e) {
 			throw new CalDAV4JException("Problem executing HEAD method on: " + getDefaultHttpHost(headMethod.getURI()), e);
 		}
-
 		Header h = headMethod.getFirstHeader(CalDAVConstants.HEADER_ETAG);
 		String etag = null;
 		if (h != null) {
@@ -760,10 +743,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				etag = CalendarDataProperty.getEtagfromResponse(response);
 			}
 		}
-
 		return etag;
 	}
-
 
 	/**
 	 * Useful for retrieving a list of UIDs of all events
@@ -791,11 +772,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 					)
 			);
 		}
-
 		return propertyList;
 	}
-
-
 
 	/**
 	 * Return a list of components using REPORT
@@ -861,7 +839,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
             if(reportMethod != null)
                 reportMethod.reset();
         }
-
 		return list;
 	}
 
@@ -888,7 +865,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
             if(reportMethod != null)
                 reportMethod.reset();
         }
-
 		return null;
 	}
 
@@ -940,7 +916,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
                     }
                 }
             }
-
 		} catch (ConnectException connEx) {
 			throw new CalDAV4JException("Can't connecto to "+
 					getDefaultHttpHost(reportMethod.getURI()), connEx.getCause());
@@ -950,13 +925,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
             if(reportMethod != null)
                 reportMethod.reset();
         }
-
 		return list;
 	}
+
 	//
 	// MultiGet queries
 	//
-
 
 	/**
 	 *
@@ -997,14 +971,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
                     list.add(CalendarDataProperty.getCalendarfromResponse(response));
                 }
             }
-
 		} catch (Exception he) {
 			throw new CalDAV4JException("Problem executing method", he);
 		} finally {
             if(reportMethod != null)
                 reportMethod.reset();
         }
-
 		return list;
 	}
 
@@ -1062,7 +1034,6 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			throws CalDAV4JException {
 
 		HttpCalDAVReportMethod reportMethod = null;
-
 		try {
 			reportMethod = methodFactory.createCalDAVReportMethod(getCalendarCollectionRoot(), freeBusyQuery, CalDAVConstants.DEPTH_1);
 			HttpResponse response = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
@@ -1076,10 +1047,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			if(reportMethod != null)
 				reportMethod.reset();
 		}
-
 		return null;
 	}
-
 
 	//
 	// HEAD method, useful for testing connection
@@ -1151,14 +1120,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				MethodUtil.StatusToExceptions(method, response);
 				return null;
 			}
-
 		} catch (Exception e) {
 			throw new CalDAV4JException("Error in PROPFIND " +  getCalendarCollectionRoot(), e);
 		} finally {
 			if(method != null)
 				method.reset();
 		}
-
 	}
 
 	/**
@@ -1185,14 +1152,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				default:
 					throw new BadStatusException(status, method.getMethod(),  getCalendarCollectionRoot());
 			}
-
 		} catch (IOException e) {
 			throw new CalDAV4JException("Error in ACL " +  getCalendarCollectionRoot(), e);
 		} finally {
 			if(method != null)
 				method.reset();
 		}
-
 	}
-
-} //end of class
+}

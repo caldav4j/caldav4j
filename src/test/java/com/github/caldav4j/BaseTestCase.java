@@ -57,15 +57,11 @@ protected CaldavCredential caldavCredential = new CaldavCredential(System.getPro
 		fixture.setUp(caldavCredential, caldavDialect);
 		
 		collection = CaldavFixtureHarness.createCollectionFromFixture(fixture);
-
     }
     
     @After
     public void tearDown() throws Exception {
-    	
     }
-    
-
 
     // constructor
     public BaseTestCase() {
@@ -97,8 +93,6 @@ protected CaldavCredential caldavCredential = new CaldavCredential(System.getPro
     public static HttpHost createHostConfiguration(CaldavCredential caldavCredential){
         return new HttpHost(caldavCredential.host,caldavCredential.port, caldavCredential.protocol);
     }
-    
-
 
     // TODO testme
     public static Calendar getCalendarResource(String resourceName) {
@@ -118,31 +112,28 @@ protected CaldavCredential caldavCredential = new CaldavCredential(System.getPro
         return cal;
     }    
     
-    
+	// getter+setter
+	public String getCalDAVServerHost() {
+		return caldavCredential.host;
+	}
 
-		// getter+setter
-	    public String getCalDAVServerHost() {
-	        return caldavCredential.host;
-	    }
-	    
-	    public int getCalDAVServerPort(){
-	        return caldavCredential.port;
-	    }
-	    
-	    public String getCalDavSeverProtocol(){
-	        return caldavCredential.protocol;
-	    }
-	    
-	    public String getCalDavSeverWebDAVRoot(){
-	        return caldavCredential.home;
-	    }
-	    
-	    public String getCalDavSeverUsername(){
-	        return caldavCredential.user;
-	    }
-	    
-	    public String getCalDavSeverPassword(){
-	        return caldavCredential.password;
-	    }
-	        
+	public int getCalDAVServerPort(){
+		return caldavCredential.port;
+	}
+
+	public String getCalDavSeverProtocol(){
+		return caldavCredential.protocol;
+	}
+
+	public String getCalDavSeverWebDAVRoot(){
+		return caldavCredential.home;
+	}
+
+	public String getCalDavSeverUsername(){
+		return caldavCredential.user;
+	}
+
+	public String getCalDavSeverPassword(){
+		return caldavCredential.password;
+	}
 }

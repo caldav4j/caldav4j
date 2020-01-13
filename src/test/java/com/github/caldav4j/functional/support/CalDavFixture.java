@@ -218,7 +218,6 @@ public class CalDavFixture
 				AuthScope.ANY,
 				new UsernamePasswordCredentials(credential.user, credential.password));
 
-
 		// Default Host setting
 		HttpRoutePlanner routePlanner = new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE) {
 
@@ -231,9 +230,7 @@ public class CalDavFixture
 						target != null ? target : new HttpHost(credential.host, credential.port,
 								credential.protocol), request, context);
 			}
-
 		};
-
 		HttpClientBuilder builder = HttpClients.custom()
 				.setDefaultCredentialsProvider(credsProvider)
 				.setRoutePlanner(routePlanner);
@@ -271,7 +268,6 @@ public class CalDavFixture
 	    } catch (Exception e){
 	        throw new RuntimeException(e);
 	    }
-	
 	}
 
 	/***
@@ -313,13 +309,11 @@ public class CalDavFixture
 				String respBody = EntityUtils.toString(response.getEntity());
 	            log.error(respBody);
 				throw new Exception("trouble executing PUT of " +resourceFileName + "\nresponse:" + respBody);
-	
 			}
 	    } catch (Exception e){
 	    	log.info("Error while put():" + e.getMessage());
 	        throw new RuntimeException(e);
 	    }
-	
 	}
 
 	/**
@@ -384,5 +378,4 @@ public class CalDavFixture
 	public void setHostConfig(HttpHost hostConfig) {
 		this.hostConfig = hostConfig;
 	}
-	
 }

@@ -29,8 +29,7 @@ public class ITipUtils {
 	public static Calendar ReplyInvitation(Calendar invite, Attendee mySelf, PartStat replyPartStat ) throws CalDAV4JException {
 		return ManageInvitation(  invite,   mySelf, Method.REPLY, replyPartStat);
 	}
-	
-	
+
 	/**
 	 * Manage an invitation to a meeting (VCOMPONENT), setting
 	 *  METHOD:REPLY

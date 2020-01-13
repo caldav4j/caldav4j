@@ -80,8 +80,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		uncachedCollection = CaldavFixtureHarness.createCollectionFromFixture(fixture);
 	}
 
-
-
 	@After
 	public void tearDown() throws Exception {
 		CaldavFixtureHarness.removeSimpleCache();		
@@ -111,9 +109,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 			// do nothing, it should except
 			assertNotNull("Server shouldn't connect now", e);
 		}
-
-
-
 	}
 
 	//
@@ -130,7 +125,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		// remove the VEVENT by UID
 
 	}
-
 
 	// get a Calendar by uid, then by summary, then by recurrence-id
 	@Test
@@ -154,7 +148,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		calendar = calendars.get(0);
 		assertEquals(ICalendarUtils.getUIDValue(calendar), ICS_GOOGLE_NORMAL_PACIFIC_1PM_UID);
 		//check if is in cache
-
 	}
 
 	// TODO: this is work in progress; see issue 48
@@ -175,7 +168,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 			assertNotNull(ICalendarUtils.getPropertyValue(c.getComponent(Component.VEVENT), Property.RECURRENCE_ID));
 		}
 		//check if is in cache
-
 	}
 
 	@Test
@@ -201,7 +193,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		} catch (CalDAV4JException ce) {
 			calDAV4JException = ce;
 		}
-
 		assertNotNull(calDAV4JException);
 	}
 
@@ -234,17 +225,13 @@ public class CalDAVCollectionTest extends BaseTestCase {
 			} else if (ICS_FLOATING_JAN2_7PM_UID.equals(uid)) {
 				correctNumberOfEvents = 0;
 			} else {
-				fail(uid
-						+ " is not the uid of any event that should have been returned");
+				fail(uid + " is not the uid of any event that should have been returned");
 			}
-
 			assertEquals(correctNumberOfEvents, vevents.size());
 		}
-
 		// 3 calendars - one for each resource (not including expanded
 		// recurrences)
 		assertEquals(3, l.size());
-
 	}
 
 	// TODO wait on floating test until we can pass timezones
@@ -284,7 +271,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		String newEvent = "NEW_EVENT";
 		VEvent ve = newEvent(newUid, newEvent);
 
-
 		collection.add(fixture.getHttpClient(), ve, null);
 		Calendar calendar = collection.queryCalendar(fixture.getHttpClient(), Component.VEVENT, newUid, null);
 		assertNotNull(calendar);
@@ -296,12 +282,11 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		calendar = null;
 		try {
 			calendar = collection.queryCalendar(fixture.getHttpClient(), Component.VEVENT, newUid, null);
-		} catch (ResourceNotFoundException e) {}
+		} catch (ResourceNotFoundException e) {
 
+		}
 		assertNull(calendar);
 	}
-
-
 
 	/**
 	 * @param newUid
@@ -320,6 +305,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		ve.getProperties().add(uid);
 		return ve;
 	}
+
 	/**
 	 * @throws Exception
 	 */
@@ -352,6 +338,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		}
 		assertNull(e);
 	}
+
 	/**
 	 * @throws Exception
 	 */
@@ -377,7 +364,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
 		ve = ICalendarUtils.getFirstEvent(calendar);
 		assertEquals("NEW", ICalendarUtils.getSummaryValue(ve));
-
 	}
 
 	/**
@@ -398,9 +384,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		// sanity
 		assertNotNull(calendarList);
 		assertEquals( ICS_ALL_DAY_JAN1_UID, ICalendarUtils.getUIDValue(calendarList.get(0).getComponent(CalendarComponent.VEVENT)) );
-
 	}
-
 
 	@Test
 	public void testReportCalendarWithTimezone() throws Exception {
@@ -416,7 +400,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		} catch (CalDAV4JException ce) {
 			assertNull(ce);
 		}
-
 		assertNotNull(calendar);
 		VEvent vevent = ICalendarUtils.getFirstEvent(calendar);
 		assertNotNull(vevent);
@@ -430,10 +413,8 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		} catch (CalDAV4JException ce) {
 			calDAV4JException = ce;
 		}
-
 		assertNotNull(calDAV4JException);
 	}
-
 
 	@Test
 	public void getHref() {
@@ -471,12 +452,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 				return true;
 			}
 		}
-
 		return false;
 	}
-
-
-
-
-
 }
