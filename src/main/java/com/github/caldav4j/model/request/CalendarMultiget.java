@@ -45,8 +45,11 @@ import java.util.Map;
 public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequest{
     
     public static final String ELEMENT_NAME = "calendar-multiget";
+    public static final String ELEM_ALLPROP = "allprop";
     public static final String ELEM_PROPNAME = "propname";
-    
+    public static final String ELEM_FILTER = "filter";
+    public static final String ELEM_HREF = CalDAVConstants.ELEM_HREF;
+
     private boolean allProp = false;
     private boolean propName = false;
     private CalendarData calendarDataProp = null;
@@ -130,7 +133,9 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
                 || calendarDataProp != null) {
 			Prop temp = new Prop();
 			temp.addChildren(properties.getChildren());
-			temp.addChild(calendarDataProp);
+			if (calendarDataProp != null) {
+			    temp.addChild(calendarDataProp);
+            }
             children.add(temp);
         }
         
