@@ -17,9 +17,6 @@
 package com.github.caldav4j.methods;
 
 import com.github.caldav4j.functional.support.CalDavFixture;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.jackrabbit.webdav.client.methods.HttpMkcol;
 import org.junit.After;
 import org.junit.Before;
@@ -34,8 +31,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -98,49 +93,19 @@ public class MkCalendarTest extends BaseTestCase {
 		String collectionPath = caldavCredential.home + caldavCredential.collection;
 
 		HttpMkCalendarMethod mk = new HttpMkCalendarMethod(collectionPath,
-				"My Display Name", "This is my Default Calendar",
-				"en");
+				"My Display Name", "This is my Default Calendar", "en");
 
-		HttpClient http = createHttpClient();
-		HttpHost hostConfig = createHostConfiguration();
-		HttpResponse response = http.execute(hostConfig, mk);
+		fixture.executeMethod(CalDAVStatus.SC_CREATED, mk, true, null, true);
 
-		int statusCode = response.getStatusLine().getStatusCode();
-		// whatever successful status code the caldav server returns,
-		//   the base collection is created, and should be removed.
-		//   TODO CaldavFixture may handle it automagically
-		if ((statusCode < 300) && (statusCode >=200)) {
-			addedItems.add("");			
-		}
-		// if resource already exists, remove it on teardown
-
-		switch (statusCode) {
-		case CalDAVStatus.SC_METHOD_NOT_ALLOWED:
-		case CalDAVStatus.SC_FORBIDDEN:
-			addedItems.add("");			
-			break;
-		default:
-			break;
-		}
-
-		/// Test if the caldav server return the right status code
-		assertEquals("Status code for mk:", CalDAVStatus.SC_CREATED, statusCode);
-
-		//now let's try and get it, make sure it's there
+		// Get collection to make sure it's there.
 		HttpGetMethod get = fixture.getMethodFactory().createGetMethod(collectionPath);
+		fixture.executeMethod(CalDAVStatus.SC_OK, get, false, null, true);
 
-		statusCode = http.execute(hostConfig, get).getStatusLine().getStatusCode();
-		assertEquals("Status code for get:", CalDAVStatus.SC_OK, statusCode);
-
+		// Delete collection.
 		HttpDeleteMethod delete = new HttpDeleteMethod(collectionPath);
+		fixture.executeMethod(CalDAVStatus.SC_NO_CONTENT, delete, false, null, true);
 
-		statusCode = http.execute(hostConfig, delete).getStatusLine().getStatusCode();
-		assertEquals("Status code for delete:", CalDAVStatus.SC_NO_CONTENT, statusCode);
-		addedItems.remove("");
-
-		//Now make sure that it goes away
-		get = fixture.getMethodFactory().createGetMethod(collectionPath);
-		statusCode = http.execute(hostConfig, get).getStatusLine().getStatusCode();
-		assertEquals("Status code for get:", CalDAVStatus.SC_NOT_FOUND, statusCode);
+		// Make sure the collection goes away.
+		fixture.executeMethod(CalDAVStatus.SC_NOT_FOUND, get, false, null, true);
 	}
 }
