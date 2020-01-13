@@ -26,8 +26,6 @@ import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -40,7 +38,6 @@ import static org.junit.Assert.assertEquals;
 @Ignore
 public class HttpClientTest {
 
-	private static final Logger log = LoggerFactory.getLogger(HttpClientTest.class);
 
     //Below are the merged tests from CalendarCalDAVReportMethod
 	@Test

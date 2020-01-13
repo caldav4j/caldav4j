@@ -29,7 +29,6 @@ public class HttpSchedulePostMethod extends HttpPostMethod {
 	protected void addRequestHeaders(CalendarRequest calendarRequest) {
 
 		boolean addOrganizerToAttendees = false;
-		boolean hasAttendees = false;
 
 		Calendar calendar = calendarRequest.getCalendar();
 		// get ATTENDEES and ORGANIZER from ical and add 

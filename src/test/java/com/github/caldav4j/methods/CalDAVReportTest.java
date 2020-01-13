@@ -67,7 +67,6 @@ import static org.junit.Assert.assertEquals;
 public class CalDAVReportTest extends BaseTestCase{
 
     private static final Logger log = LoggerFactory.getLogger(CalDAVReportTest.class);
-    private EhCacheResourceCache myCache = null;
 
     @Before
     public void setUp() throws Exception {
@@ -134,7 +133,6 @@ public class CalDAVReportTest extends BaseTestCase{
     @Test
     public void queryPartialCalendar() throws IOException, TransformerException, ParserConfigurationException, ParseException, DavException {
         String collectionPath = fixture.getCollectionPath();
-        Calendar calendar = null;
 
         HttpClient http = fixture.getHttpClient();
         HttpHost hostConfig = fixture.getHostConfig();

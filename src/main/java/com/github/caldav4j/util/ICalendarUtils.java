@@ -26,8 +26,6 @@ import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.Uid;
 import com.github.caldav4j.CalDAVResource;
 import net.fortuna.ical4j.util.RandomUidGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -36,7 +34,6 @@ import java.util.Calendar;
  * Calendar Utility functions
  */
 public class ICalendarUtils {
-	private static final Logger log = LoggerFactory.getLogger(ICalendarUtils.class);
 
 	private static final java.util.TimeZone J_TZ_GMT = TimeZone.getTimeZone("GMT");
 

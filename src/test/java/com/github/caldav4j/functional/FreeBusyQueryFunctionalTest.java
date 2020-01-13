@@ -166,10 +166,6 @@ public class FreeBusyQueryFunctionalTest
 		return calendar;
 	}
 	
-	private static void assertEqualsIgnoringUidAndDtStamp(Calendar expected, Calendar actual)
-	{
-		assertEqualsIgnoring(expected, actual, Property.UID, Property.DTSTAMP);
-	}
 	private static void assertEqualsIgnoringUidAndDtStampAndAttendee(Calendar expected, Calendar actual)
 	{
 		assertEqualsIgnoring(expected, actual, Property.UID, Property.DTSTAMP, Property.ATTENDEE);

@@ -38,16 +38,8 @@ public class CalDAVCollectionAceTest extends BaseTestCase {
 
 
 	// cache
-	private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";
-	private static final String UID_TO_HREF_CACHE = "uidToHrefCache";
-	private EhCacheResourceCache myCache = null;
 
-	public static final Integer TEST_TIMEOUT = 3600;
-	public static final boolean TEST_READ = true;
-	public static final boolean TEST_WRITE = true;
-	public static final Integer TEST_VISITS = CalDAVConstants.INFINITY;
 
-	public static final String  TEST_TIMEOUT_UNITS = "Second";
 
 	@Before
 	public void setUp() throws Exception {

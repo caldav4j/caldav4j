@@ -23,7 +23,6 @@ import java.util.TimeZone;
 
 public class ITipUtils {
 	private static final Logger log = LoggerFactory.getLogger(ITipUtils.class);
-	private static java.util.TimeZone J_TZ_GMT = TimeZone.getTimeZone("GMT");
 
 	
 	public static Calendar ReplyInvitation(Calendar invite, Attendee mySelf, PartStat replyPartStat ) throws CalDAV4JException {

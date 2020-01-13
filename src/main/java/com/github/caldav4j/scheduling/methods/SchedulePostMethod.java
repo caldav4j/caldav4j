@@ -40,7 +40,6 @@ public class SchedulePostMethod extends HttpPostMethod {
 	protected void addRequestHeaders(CalendarRequest calendarRequest) {
 
 		boolean addOrganizerToAttendees = false;
-		boolean hasAttendees = false;
 
 		// get ATTENDEES and ORGANIZER from ical and add 
 		// Originator and Recipient to Header

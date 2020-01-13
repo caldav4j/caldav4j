@@ -60,14 +60,9 @@ public class CalDAVCollectionTest extends BaseTestCase {
 	// cache should be visible to be used in assertions
 	private EhCacheResourceCache myCache = null;
 
-	public static final Integer TEST_TIMEOUT = 3600;
-	public static final boolean TEST_READ = true;
-	public static final boolean TEST_WRITE = true;
-	public static final Integer TEST_VISITS = CalDAVConstants.INFINITY;
 
-	public static final String  TEST_TIMEOUT_UNITS = "Second";
 
-	
+
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
@@ -146,7 +141,6 @@ public class CalDAVCollectionTest extends BaseTestCase {
 		assertNotNull(collection.getCache().getHrefForEventUID(ICS_GOOGLE_DAILY_NY_5PM_UID));		
 
 		//query by SUMMARY
-		calendar = null;
 		gq.setFilter("VEVENT : SUMMARY=="+ICS_GOOGLE_NORMAL_PACIFIC_1PM_SUMMARY );
 		List<Calendar>calendars = collection.queryCalendars(fixture.getHttpClient(), gq.generate());		
 		assertNotNull(calendars);
@@ -425,7 +419,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
 		CalDAV4JException calDAV4JException = null;
 		try {
-			calendar = collection.getCalendarForEventUID(fixture.getHttpClient(),
+			collection.getCalendarForEventUID(fixture.getHttpClient(),
 			"NON_EXISTENT_RESOURCE");
 		} catch (CalDAV4JException ce) {
 			calDAV4JException = ce;

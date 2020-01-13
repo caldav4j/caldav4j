@@ -75,7 +75,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 	 */
 	@Test
 	@Ignore
-	public void testUpdateMasterComponent () throws Exception {
+	public void testUpdateMasterComponent () {
 		// TODO writeme
 	}
 
@@ -121,8 +121,7 @@ public class ICalendarUtilTest extends BaseTestCase{
 
 	/**
 	 * retrieve a component from a calendar with timezone
-	 * @throws ParserException 
-	 * @throws IOException 
+	 * @throws Exception
 	 */
 	@Test
 	public void testGetComponentFromCalendarWithTimezone() 
@@ -246,10 +245,10 @@ public class ICalendarUtilTest extends BaseTestCase{
 		Component firstComponent =ICalendarUtils.getFirstComponent(cal); 
 		if (firstComponent instanceof VToDo) {
 			VToDo new_name = (VToDo) firstComponent;
-			log.info("resource type of is: VTODO");
+			log.info("resource type of is: VTODO - " + new_name);
 		} else if (firstComponent instanceof VEvent) {
 			VEvent new_name = (VEvent) firstComponent;
-			log.info("resource is: VEVENT");
+			log.info("resource is: VEVENT - " + new_name);
 		}
 		return cal;
 	}

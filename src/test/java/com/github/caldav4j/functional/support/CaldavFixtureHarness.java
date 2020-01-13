@@ -75,9 +75,8 @@ public class CaldavFixtureHarness implements TestConstants {
 	 */
 	public static EhCacheResourceCache createSimpleCache() throws CacheException {
 		//initialize cache
-		CacheManager cacheManager = CacheManager.create();
-		EhCacheResourceCache myCache = EhCacheResourceCache.createSimpleCache();
-		return myCache;
+		CacheManager.create();
+		return EhCacheResourceCache.createSimpleCache();
 	}
 	/**
 	 * 

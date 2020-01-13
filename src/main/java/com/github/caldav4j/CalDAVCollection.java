@@ -388,10 +388,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		// retry 3 times while caldav server returns PRECONDITION_FAILED
 		//
 		boolean didIt = false;
-		String path = "";
 		Uid uid = null;
 		for (int x = 0; x < 3 && !didIt; x++) {
-			String resourceName = null;
 
 			// Sets the UID if null.
 			uid = ICalendarUtils.setUID(c);
