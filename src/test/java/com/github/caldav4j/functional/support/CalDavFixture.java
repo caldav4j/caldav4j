@@ -17,6 +17,7 @@
 
 package com.github.caldav4j.functional.support;
 
+import com.github.caldav4j.CalDAVConstants;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -134,6 +135,7 @@ public class CalDavFixture
 	{
 		// Note Google Calendar Doesn't support creating a calendar
 		HttpMkCalendarMethod method = methodFactory.createMkCalendarMethod(relativePath);
+		method.setHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_CALENDAR);
 
 		executeMethod(CalDAVStatus.SC_CREATED, method, true);
 	}
@@ -281,6 +283,7 @@ public class CalDavFixture
 	 */
 	public void put(String resourceFileName, String path) {
 	    HttpPutMethod put = methodFactory.createPutMethod(path, new CalendarRequest());
+		put.setHeader(CalDAVConstants.HEADER_CONTENT_TYPE, CalDAVConstants.CONTENT_TYPE_CALENDAR);
 	    InputStream stream = this.getClass().getClassLoader()
 	    .getResourceAsStream(resourceFileName);
 	    String event = UrlUtils.parseISToString(stream);
