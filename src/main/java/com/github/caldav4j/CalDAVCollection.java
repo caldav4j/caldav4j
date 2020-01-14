@@ -215,13 +215,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
 		CalDAVResource resource = getCalDAVResourceByUID(httpClient, component, uid);
 		Calendar calendar = resource.getCalendar();
-		ComponentList eventList = calendar.getComponents().getComponents(component);
+		ComponentList<CalendarComponent> eventList = calendar.getComponents().getComponents(component);
 
 		// get a list of components to remove
 		List<Component> componentsToRemove = new ArrayList<>();
 		boolean hasOtherEvents = false;
-		for (Object o : eventList){
-			CalendarComponent event = (CalendarComponent) o;
+		for (CalendarComponent event : eventList){
 			String curUID = ICalendarUtils.getUIDValue(event);
 			if (!uid.equals(curUID)){
 				hasOtherEvents = true;

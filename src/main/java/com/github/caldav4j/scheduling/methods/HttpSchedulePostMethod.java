@@ -35,14 +35,13 @@ public class HttpSchedulePostMethod extends HttpPostMethod {
 		// get ATTENDEES and ORGANIZER from ical and add 
 		// Originator and Recipient to Header
 		if ( calendar != null) {
-			ComponentList cList = calendar.getComponents(); 
+			ComponentList<CalendarComponent> cList = calendar.getComponents();
 			if (Method.REPLY.equals(calendar.getProperty(Property.METHOD))) {
 				addOrganizerToAttendees = true;
 			}
-			for (Object obj : cList) {
-				if (! (obj  instanceof VTimeZone)) {
-					CalendarComponent event = (CalendarComponent) obj;
-					Organizer organizer = (Organizer) event.getProperty(Property.ORGANIZER); 
+			for (CalendarComponent event : cList) {
+				if (! (event  instanceof VTimeZone)) {
+					Organizer organizer = event.getProperty(Property.ORGANIZER);
 
 					if ((organizer != null) && (organizer.getValue() != null) &&
 							(organizer.getValue().startsWith("mailto:"))
