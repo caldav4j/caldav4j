@@ -22,10 +22,12 @@ import com.github.caldav4j.exceptions.ResourceNotFoundException;
 import com.github.caldav4j.functional.support.CaldavFixtureHarness;
 import com.github.caldav4j.model.request.CalendarData;
 import com.github.caldav4j.model.request.CalendarQuery;
+import com.github.caldav4j.model.request.PropProperty;
 import com.github.caldav4j.util.CalDAVStatus;
 import com.github.caldav4j.util.GenerateQuery;
 import com.github.caldav4j.util.ICalendarUtils;
 import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -33,6 +35,7 @@ import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import org.apache.http.HttpHost;
+import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -479,4 +482,84 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
 
 
+	/**
+	 * Asserts over the {@code resource} retrieved from the request made to the server.
+	 * @param resource Resource to assert.
+	 * @param expectedUid Expected UID value found in the VEVENT component.
+	 */
+	private void checkCalendarResource(CalDAVResource resource, String expectedUid) {
+		assertNotNull(resource.getCalendar());
+		assertNotNull(resource.getCalendar().getComponents());
+		CalendarComponent vevent = resource.getCalendar().getComponent(Component.VEVENT);
+		assertNotNull(vevent);
+		assertEquals(expectedUid, vevent.getProperty(Property.UID).getValue());
+		assertNotNull(resource.getCalendar().getComponent(Component.VTIMEZONE));
+	}
+
+	/**
+	 * Validates the resource is retrieved from the cache when it's Etag matches the one sent as parameter.
+	 * @throws CalDAV4JException
+	 */
+	@Test
+	public void testGetResourceUsingCacheWhenETagMatches() throws CalDAV4JException {
+		String path = collection.getAbsolutePath(ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics");
+		String eTag = collection.getETag(fixture.getHttpClient(), path);
+		// Add UID to cache.
+		CalDAVResource calendar = collection.getCalDAVResourceByUID(fixture.getHttpClient(), Component.VEVENT, ICS_GOOGLE_DAILY_NY_5PM_UID);
+		assertNotNull(calendar);
+
+		CalDAVResource resource = collection.getCalDAVResource(fixture.getHttpClient(), path, eTag, null);
+
+		assertNotNull(resource);
+		checkCalendarResource(resource, ICS_GOOGLE_DAILY_NY_5PM_UID);
+	}
+
+	/**
+	 * Retrieves resource by making another request to the server when response sent is null.
+	 * @throws CalDAV4JException
+	 */
+	@Test
+	public void testGetResourceFromRequestWhenResponseIsNull() throws CalDAV4JException {
+		String path = collection.getAbsolutePath(ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics");
+
+		CalDAVResource resource = collection.getCalDAVResource(fixture.getHttpClient(), path, null, null);
+
+		assertNotNull(resource);
+		checkCalendarResource(resource, ICS_GOOGLE_DAILY_NY_5PM_UID);
+	}
+
+	/**
+	 * Retrieves resource by making another request to the server when response sent doesn't have a calendar component.
+	 * @throws CalDAV4JException
+	 */
+	@Test
+	public void testGetResourceFromRequestWhenResponseWithoutCalendarComponent() throws CalDAV4JException {
+		String path = collection.getAbsolutePath(ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics");
+		MultiStatusResponse response = new MultiStatusResponse("HREF", CalDAVStatus.SC_NO_CONTENT);
+
+		CalDAVResource resource = collection.getCalDAVResource(fixture.getHttpClient(), path, null, response);
+
+		assertNotNull(resource);
+		checkCalendarResource(resource, ICS_GOOGLE_DAILY_NY_5PM_UID);
+	}
+
+	/**
+	 * Retrieves resource directly from the response sent as it contains a valid calendar component.
+	 * Loads a different resource into the mock response to ensure the mock is used instead of the server request.
+	 * @throws CalDAV4JException Possible exception when requesting the resource from the CalDAV server.
+	 */
+	@Test
+	public void testGetResourceUsingExistentResponseWhenAvailable() throws CalDAV4JException, IOException, ParserException {
+		String path = collection.getAbsolutePath(ICS_GOOGLE_DAILY_NY_5PM_PATH + ".ics");
+		MultiStatusResponse mockResponse = new MultiStatusResponse("HREF", "");
+		InputStream stream = this.getClass().getClassLoader().getResourceAsStream(ICS_GOOGLE_ALL_DAY_JAN1_PATH);
+		PropProperty<Calendar> property = new PropProperty<>(CalDAVConstants.CALDAV_CALENDAR_DATA,
+				(new CalendarBuilder()).build(stream), CalDAVConstants.NAMESPACE_CALDAV);
+		mockResponse.add(property, CalDAVStatus.SC_OK);
+
+		CalDAVResource resource = collection.getCalDAVResource(fixture.getHttpClient(), path, null, mockResponse);
+
+		assertNotNull(resource);
+		checkCalendarResource(resource, ICS_GOOGLE_ALL_DAY_JAN1_UID);
+	}
 }

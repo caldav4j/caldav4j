@@ -609,10 +609,8 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 		// ETag was old or it wasn't in the cache so let's get it from the server if we don't have it.
 		if (response != null && CalendarDataProperty.getCalendarfromResponse(response) != null) {
 			return new CalDAVResource(response);
-		} else {
-			return getCalDAVResourceFromServer(httpClient, path);
 		}
-
+		return getCalDAVResourceFromServer(httpClient, path);
 	}
 
 	/**
