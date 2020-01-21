@@ -1,3 +1,5 @@
+package org.osaf.caldav4j.example;
+
 import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.methods.HttpCalDAVReportMethod;
 import com.github.caldav4j.model.request.CalendarData;

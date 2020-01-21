@@ -1,4 +1,5 @@
-import com.github.caldav4j.methods.CalDAV4JMethodFactory;
+package org.osaf.caldav4j.example;
+
 import com.github.caldav4j.methods.HttpCalDAVReportMethod;
 import com.github.caldav4j.model.request.FreeBusyQuery;
 import com.github.caldav4j.model.request.TimeRange;
