@@ -43,6 +43,6 @@ public class CalDAV4JMethodFactoryTest
 		HttpGetMethod method = factory.createGetMethod("url");
 		
 		assertNotNull("Method", method);
-		assertNotNull("Calendar builder", method.getCalendarBuilder());
+		assertNotNull("Calendar builder", method.getResourceParser());
 	}
 }

@@ -10,7 +10,9 @@ import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Organizer;
 import com.github.caldav4j.methods.HttpPostMethod;
+import com.github.caldav4j.methods.ResourceParser;
 import com.github.caldav4j.model.request.CalendarRequest;
+import com.github.caldav4j.model.request.ResourceRequest;
 
 import java.net.URI;
 
@@ -20,13 +22,13 @@ import java.net.URI;
  * <p>
  * It does so by extendind {@link HttpPostMethod}
  */
-public class SchedulePostMethod extends HttpPostMethod {
+public class SchedulePostMethod extends HttpPostMethod<Calendar> {
 
-	public SchedulePostMethod(URI uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+	public SchedulePostMethod(URI uri, CalendarRequest calendarRequest, ResourceParser<Calendar> calendarOutputter) {
 		super(uri, calendarRequest, calendarOutputter);
 	}
 
-	public SchedulePostMethod(String uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+	public SchedulePostMethod(String uri, CalendarRequest calendarRequest, ResourceParser<Calendar> calendarOutputter) {
 		super(uri, calendarRequest, calendarOutputter);
 	}
 
@@ -34,8 +36,8 @@ public class SchedulePostMethod extends HttpPostMethod {
 
 	/**
 	 * We have to set the Attendees and Organize headers taken from Calendar.
-	 *
-	 * @see HttpPostMethod#addRequestHeaders(CalendarRequest)
+	 * @see HttpPostMethod#addRequestHeaders(ResourceRequest)
+     * @param calendarRequest calendar request information
 	 */
 	protected void addRequestHeaders(CalendarRequest calendarRequest) {
 

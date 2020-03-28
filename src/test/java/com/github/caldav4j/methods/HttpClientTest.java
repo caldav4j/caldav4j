@@ -81,7 +81,7 @@ public class HttpClientTest {
 	private static HttpCalDAVReportMethod createMethod(String path, CalDAVReportRequest reportRequest) throws IOException {
 		HttpCalDAVReportMethod method = new HttpCalDAVReportMethod(path, reportRequest);
 
-		method.setCalendarBuilder(new CalendarBuilder());
+		method.setCalendarBuilder(new CalendarResourceParser(false));
 
 		return method;
 	}

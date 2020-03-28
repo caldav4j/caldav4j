@@ -2,8 +2,8 @@ package com.github.caldav4j.methods;
 
 import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.model.request.CalendarRequest;
-import net.fortuna.ical4j.data.CalendarOutputter;
-import net.fortuna.ical4j.model.Calendar;
+import com.github.caldav4j.model.request.ResourceRequest;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
@@ -11,6 +11,7 @@ import org.apache.http.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.URI;
 import java.nio.charset.UnsupportedCharsetException;
@@ -20,7 +21,7 @@ import java.nio.charset.UnsupportedCharsetException;
  *
  * @see HttpPut
  */
-public class HttpPutMethod extends HttpPut {
+public class HttpPutMethod<T extends Serializable> extends HttpPut {
 
 	private static final Logger log = LoggerFactory.getLogger(HttpPutMethod.class);
 
@@ -31,7 +32,7 @@ public class HttpPutMethod extends HttpPut {
 	 *                          Only required if {@link CalendarRequest}
 	 *                          contains a calendar
 	 */
-	public HttpPutMethod(URI uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+	public HttpPutMethod(URI uri, ResourceRequest<T> calendarRequest, ResourceParser<T> calendarOutputter) {
 		super(uri);
 		addRequestHeaders(calendarRequest);
 		generateRequestBody(calendarRequest, calendarOutputter);
@@ -44,7 +45,7 @@ public class HttpPutMethod extends HttpPut {
 	 *                          Only required if {@link CalendarRequest}
 	 *                          contains a calendar
 	 */
-	public HttpPutMethod(String uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+	public HttpPutMethod(String uri, ResourceRequest<T> calendarRequest, ResourceParser<T> calendarOutputter) {
 		this(URI.create(uri), calendarRequest, calendarOutputter);
 	}
 
@@ -54,14 +55,14 @@ public class HttpPutMethod extends HttpPut {
 	 *                        of the request
 	 * @param calendarOutputter Outputter object to generate the calendar string output
 	 */
-	protected void generateRequestBody(CalendarRequest calendarRequest, CalendarOutputter calendarOutputter)  {
-		Calendar calendar = calendarRequest.getCalendar();
+	protected void generateRequestBody(ResourceRequest<T> calendarRequest, ResourceParser<T> calendarOutputter)  {
+		T calendar = calendarRequest.getResource();
 		if ( calendar != null){
 			StringWriter writer = new StringWriter();
 			try{
-				calendarOutputter.output(calendar, writer);
+				calendarOutputter.write(calendar, writer);
 
-				ContentType ct = ContentType.create(CalDAVConstants.CONTENT_TYPE_CALENDAR, calendarRequest.getCharset());
+				ContentType ct = ContentType.create(calendarOutputter.getResponseContentType(), calendarRequest.getCharset());
 
 				setEntity(new StringEntity(writer.toString(), ct));
 			} catch (UnsupportedCharsetException e) {
@@ -78,7 +79,7 @@ public class HttpPutMethod extends HttpPut {
 	 * Adds the respective Request headers based on the provided flags.
 	 * @param calendarRequest Object representing the marshalled properties of the request
 	 */
-	protected void addRequestHeaders(CalendarRequest calendarRequest) {
+	protected void addRequestHeaders(ResourceRequest<T> calendarRequest) {
 		boolean ifMatch = calendarRequest.isIfMatch(), ifNoneMatch = calendarRequest.isIfNoneMatch();
 		if (ifMatch || ifNoneMatch){
 			String name = ifMatch ? CalDAVConstants.HEADER_IF_MATCH : CalDAVConstants.HEADER_IF_NONE_MATCH;
