@@ -83,7 +83,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase<Calendar> {
 	 * Creates a new CalDAVCalendar collection with the calendar collection root.
 	 * This is a convenience constructor which sets the host, based on the URI
 	 * provided, through {@link #getDefaultHttpHost(URI)}. It also sets
-	 * the methodfactory, through {@link #setMethodFactory(CalDAV4JMethodFactory)}
+	 * the method factory, through {@link #setMethodFactory(DAVMethodFactory)}
 	 *
 	 * @param uri The path to the collection
 	 */
@@ -130,7 +130,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase<Calendar> {
             throws CalDAV4JException {
 		// implement it using a simplequery: here we don't need meta-data/tags
 
-		return getCalDAVResourceForEventUID(httpClient, uid).getPayload();
+		return getCalDAVResourceForEventUID(httpClient, uid).getCalendar();
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase<Calendar> {
 	 */
 	public Calendar getCalendar(HttpClient httpClient, String icsRelativePath) 
 	throws CalDAV4JException{
-		return getCalDAVResource(httpClient, getAbsolutePath(icsRelativePath)).getPayload();
+		return getCalDAVResource(httpClient, getAbsolutePath(icsRelativePath)).getCalendar();
 	}
 	
 	/**
@@ -212,14 +212,13 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase<Calendar> {
 
 
 		CalDAVResource<Calendar> resource = getCalDAVResourceByUID(httpClient, component, uid);
-		Calendar calendar = resource.getPayload();
-		ComponentList eventList = calendar.getComponents().getComponents(component);
+		Calendar calendar = resource.getCalendar();
+		ComponentList<CalendarComponent> eventList = calendar.getComponents().getComponents(component);
 
 		// get a list of components to remove
 		List<Component> componentsToRemove = new ArrayList<>();
 		boolean hasOtherEvents = false;
-		for (Object o : eventList){
-			CalendarComponent event = (CalendarComponent) o;
+		for (CalendarComponent event : eventList){
 			String curUID = ICalendarUtils.getUIDValue(event);
 			if (!uid.equals(curUID)){
 				hasOtherEvents = true;

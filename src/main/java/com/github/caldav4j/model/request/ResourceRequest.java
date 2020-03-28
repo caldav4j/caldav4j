@@ -22,7 +22,7 @@ public class ResourceRequest<T> {
 	 *
 	 * Note: If both, ifMatch and ifNoneMatch are set to true, then ifMatch will be selected.
 	 *
-	 * @param calendar Calendar body of the request to set
+	 * @param resource Resource body of the request to set
 	 * @param etags The set of eTags to match, that will be used in "if-none-match" or "if-match" if the ifMatch or ifNoneMatch properties are set. Note a quoted string should be provided.
 	 * @param ifMatch If true the "if-match" conditional header is set
 	 * @param ifNoneMatch If true the "if-none-match" conditional header

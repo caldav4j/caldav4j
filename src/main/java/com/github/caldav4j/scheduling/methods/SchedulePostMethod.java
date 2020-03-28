@@ -1,12 +1,6 @@
 package com.github.caldav4j.scheduling.methods;
 
-import java.net.URI;
-
-import com.github.caldav4j.methods.CalendarResourceParser;
-import com.github.caldav4j.methods.HttpPostMethod;
-import com.github.caldav4j.methods.ResourceParser;
-import com.github.caldav4j.model.request.CalendarRequest;
-
+import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Property;
@@ -15,6 +9,12 @@ import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.Organizer;
+import com.github.caldav4j.methods.HttpPostMethod;
+import com.github.caldav4j.methods.ResourceParser;
+import com.github.caldav4j.model.request.CalendarRequest;
+import com.github.caldav4j.model.request.ResourceRequest;
+
+import java.net.URI;
 
 /**
  * Implements the Schedule Post method as defined in
@@ -36,8 +36,8 @@ public class SchedulePostMethod extends HttpPostMethod<Calendar> {
 
 	/**
 	 * We have to set the Attendees and Organize headers taken from Calendar.
-	 *
-	 * @see HttpPostMethod#addRequestHeaders(CalendarRequest)
+	 * @see HttpPostMethod#addRequestHeaders(ResourceRequest)
+     * @param calendarRequest calendar request information
 	 */
 	protected void addRequestHeaders(CalendarRequest calendarRequest) {
 
@@ -46,16 +46,15 @@ public class SchedulePostMethod extends HttpPostMethod<Calendar> {
 
 		// get ATTENDEES and ORGANIZER from ical and add 
 		// Originator and Recipient to Header
-		Calendar calendar = calendarRequest.getRessource();
-		if (calendar != null) {
-			ComponentList cList = calendar.getComponents();
+		Calendar calendar = calendarRequest.getCalendar();
+		if ( calendar != null) {
+			ComponentList<CalendarComponent> cList = calendar.getComponents();
 			if (Method.REPLY.equals(calendar.getProperty(Property.METHOD))) {
 				addOrganizerToAttendees = true;
 			}
-			for (Object obj : cList) {
-				if (! (obj  instanceof VTimeZone)) {
-					CalendarComponent event = (CalendarComponent) obj;
-					Organizer organizer = (Organizer) event.getProperty(Property.ORGANIZER);
+			for (CalendarComponent event : cList) {
+				if (! (event  instanceof VTimeZone)) {
+					Organizer organizer = event.getProperty(Property.ORGANIZER);
 
 					if ((organizer != null) && (organizer.getValue() != null) &&
 							(organizer.getValue().startsWith("mailto:"))

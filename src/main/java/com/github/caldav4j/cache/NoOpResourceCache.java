@@ -1,7 +1,5 @@
 package com.github.caldav4j.cache;
 
-import java.io.Serializable;
-
 import com.github.caldav4j.CalDAVResource;
 
 /**
@@ -9,7 +7,7 @@ import com.github.caldav4j.CalDAVResource;
  * 
  * @author bobbyrullo
  */
-public class NoOpResourceCache<T extends Serializable> implements CalDAVResourceCache<T> {
+public class NoOpResourceCache implements CalDAVResourceCache {
 
 	/**
 	 * Singleton class.
@@ -51,14 +49,14 @@ public class NoOpResourceCache<T extends Serializable> implements CalDAVResource
 	/**
 	 * @see CalDAVResourceCache#getResource(String)
 	 */
-	public CalDAVResource<T> getResource(String href) {
+	public CalDAVResource getResource(String href) {
 		return null;
 	}
 
 	/**
 	 * @see CalDAVResourceCache#putResource(CalDAVResource)
 	 */
-	public void putResource(CalDAVResource<T> calDAVResource) {
+	public void putResource(CalDAVResource calDAVResource) {
 	}
 
 	/**

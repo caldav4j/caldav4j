@@ -54,7 +54,7 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
     private boolean propName = false;
     private CalendarData calendarDataProp = null;
     private List<String> hrefs = new ArrayList<>();
-    private Prop properties = new Prop();
+    private Prop<?> properties = new Prop();
 
     public CalendarMultiget() {
 
@@ -79,8 +79,7 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
 	 * @param allProp To enable retrieval of all properties
 	 * @param propName Enable PropName
 	 */
-	@SuppressWarnings("unchecked")
-	public CalendarMultiget(Prop properties,
+	public CalendarMultiget(Prop<?> properties,
 	                        CalendarData calendarData, boolean allProp, boolean propName){
 		this(calendarData, allProp, propName);
 		this.properties.addChildren(properties);
@@ -121,7 +120,6 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
     protected Collection<XmlSerializable> getChildren() {
         ArrayList<XmlSerializable> children = new ArrayList<>();
 
@@ -131,7 +129,7 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
             children.add(new PropProperty(ELEM_PROPNAME, CalDAVConstants.NAMESPACE_WEBDAV));
         } else if ((properties != null && !properties.isEmpty())
                 || calendarDataProp != null) {
-			Prop temp = new Prop();
+			Prop<?> temp = new Prop<>();
 			temp.addChildren(properties.getChildren());
             if (calendarDataProp != null){
               temp.addChild(calendarDataProp);
@@ -171,11 +169,11 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
         this.propName = propName;
     }
 
-    public Prop getProperties() {
+    public Prop<?> getProperties() {
         return properties;
     }
 
-    public void setProperties(Collection<PropProperty> properties) {
+    public void setProperties(Collection<PropProperty<?>> properties) {
         this.properties.addChildren(properties);
     }
 
@@ -188,7 +186,7 @@ public class CalendarMultiget extends OutputsDOMBase implements CalDAVReportRequ
     }
 
     public void addProperty(String propertyName, Namespace namespace) {
-        PropProperty propProperty = new PropProperty(propertyName, namespace);
+        PropProperty<?> propProperty = new PropProperty<>(propertyName, namespace);
         properties.add(propProperty);
     }
 

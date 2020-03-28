@@ -28,6 +28,7 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VFreeBusy;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
@@ -155,7 +156,7 @@ public class CalDAVReportTest extends BaseTestCase{
 
         Collection<DavProperty> calendars = calDAVReportMethod.getDavProperties(response, CalDAVConstants.DNAME_CALENDAR_DATA);
 
-        ComponentList templist = new ComponentList();
+        ComponentList<VEvent> templist = new ComponentList<>();
 
         for(DavProperty property: calendars){
             templist.addAll(CalendarDataProperty.getCalendarfromProperty(property).getComponents(Component.VEVENT));
@@ -174,9 +175,9 @@ public class CalDAVReportTest extends BaseTestCase{
 
         FreeBusyQuery query = new FreeBusyQuery(new TimeRange(new DateTime("20060104T140000Z"),new DateTime("20060105T220000Z")));
 
-        HttpCalDAVReportMethod<Calendar> method = fixture.getMethodFactory().createCalDAVReportMethod(fixture.getCollectionPath(), query, CalDAVConstants.DEPTH_1);
+        HttpCalDAVReportMethod method = fixture.getMethodFactory().createCalDAVReportMethod(fixture.getCollectionPath(), query, CalDAVConstants.DEPTH_1);
         HttpResponse response = client.execute(fixture.getHostConfig(), method);
-        Calendar calendar = method.getResponseBodyAsCalendar(response);
+        Calendar calendar = (Calendar) method.getResponseBodyAsCalendar(response);
         VFreeBusy freeBusy = (VFreeBusy) ICalendarUtils.getFirstComponent(calendar);
 
         /// Check returned Calendar

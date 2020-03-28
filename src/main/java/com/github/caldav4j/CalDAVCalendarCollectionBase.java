@@ -66,7 +66,7 @@ public abstract class CalDAVCalendarCollectionBase<T extends Serializable> {
 	protected String calendarCollectionRoot = null;
 	protected HttpHost httpHost = null;
 	protected String prodId = null;
-	protected CalDAVResourceCache<T> cache = NoOpResourceCache.getCacheInstance();
+	protected CalDAVResourceCache cache = NoOpResourceCache.getCacheInstance();
 	private final ResponseToResource<T> mapper;
 
 	public CalDAVCalendarCollectionBase(ResponseToResource<T> mapper) {
@@ -119,11 +119,11 @@ public abstract class CalDAVCalendarCollectionBase<T extends Serializable> {
 	}
 
 
-	public CalDAVResourceCache<T> getCache() {
+	public CalDAVResourceCache getCache() {
 		return cache;
 	}
 
-	public void setCache(CalDAVResourceCache<T> cache) {
+	public void setCache(CalDAVResourceCache cache) {
 		this.cache = cache;
 	}
 
@@ -159,7 +159,7 @@ public abstract class CalDAVCalendarCollectionBase<T extends Serializable> {
 	 */
 	// XXX create test method
 	public void enableSimpleCache() {
-		EhCacheResourceCache<T> cache = null;
+		EhCacheResourceCache cache = null;
 		if (!isCacheEnabled()) {
 			try {
 				cache = EhCacheResourceCache.createSimpleCache();

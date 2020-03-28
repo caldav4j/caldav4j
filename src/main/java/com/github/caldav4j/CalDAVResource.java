@@ -18,6 +18,8 @@ package com.github.caldav4j;
 
 import java.io.Serializable;
 
+import net.fortuna.ical4j.model.Calendar;
+
 /**
  * A serializable class representing the Calendar along with the associated metadata. Used for
  * storing into the cache.
@@ -46,7 +48,6 @@ public class CalDAVResource<T extends Serializable> implements Serializable {
      * Construct Resource based on the parameters.
      * @param payload Calendar
      * @param resourceMetadata Metadata of the Calendar Resource
-     * @param href Href of the Calendar Resource
      */
     public CalDAVResource(T payload, ResourceMetadata resourceMetadata){
         this.payload = payload;
@@ -70,6 +71,10 @@ public class CalDAVResource<T extends Serializable> implements Serializable {
 
 	public ResourceMetadata getResourceMetadata() {
 		return resourceMetadata;
+	}
+	
+	public Calendar getCalendar() {
+		return (Calendar) getPayload();
 	}
 
 }

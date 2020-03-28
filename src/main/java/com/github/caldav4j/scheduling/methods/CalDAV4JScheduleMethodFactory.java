@@ -1,6 +1,7 @@
 package com.github.caldav4j.scheduling.methods;
 
 import com.github.caldav4j.methods.CalDAV4JMethodFactory;
+import com.github.caldav4j.methods.CalendarResourceParser;
 import com.github.caldav4j.model.request.CalendarRequest;
 
 import java.net.URI;

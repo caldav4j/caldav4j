@@ -219,7 +219,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 				beginDate, endDate);
 
 		for (Calendar calendar : l) {
-			ComponentList vevents = calendar.getComponents().getComponents(
+			ComponentList<CalendarComponent> vevents = calendar.getComponents().getComponents(
 					Component.VEVENT);
 			VEvent ve = (VEvent) vevents.get(0);
 			String uid = ICalendarUtils.getUIDValue(ve);
