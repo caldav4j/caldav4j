@@ -48,7 +48,7 @@ public class CalendarRequest extends ResourceRequest<Calendar> {
 	}
 
 	public Calendar getCalendar() {
-		return getRessource();
+		return getResource();
 	}
 
 	public void setCalendar(Calendar calendar) {

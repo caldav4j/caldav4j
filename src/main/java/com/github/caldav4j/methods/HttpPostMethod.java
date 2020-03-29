@@ -56,7 +56,7 @@ public class HttpPostMethod<T extends Serializable> extends HttpPost {
 	 * @param calendarOutputter Outputter object to generate the calendar string output
 	 */
 	protected void generateRequestBody(ResourceRequest<T> calendarRequest, ResourceParser<T> calendarOutputter)  {
-	    T calendar = calendarRequest.getRessource();
+	    T calendar = calendarRequest.getResource();
         if ( calendar != null){
             StringWriter writer = new StringWriter();
             try{

@@ -56,7 +56,7 @@ public class ResourceRequest<T> {
 		this.allEtags = allEtags;
 	}
 
-	public T getRessource() {
+	public T getResource() {
 		return resource;
 	}
 

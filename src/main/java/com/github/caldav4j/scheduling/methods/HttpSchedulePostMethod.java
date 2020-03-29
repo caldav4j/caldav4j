@@ -33,7 +33,7 @@ public class HttpSchedulePostMethod extends HttpPostMethod<Calendar> {
 		boolean addOrganizerToAttendees = false;
 		boolean hasAttendees = false;
 
-		Calendar calendar = calendarRequest.getRessource();
+		Calendar calendar = calendarRequest.getResource();
 		// get ATTENDEES and ORGANIZER from ical and add 
 		// Originator and Recipient to Header
 		if ( calendar != null) {
