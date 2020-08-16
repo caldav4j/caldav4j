@@ -1,4 +1,5 @@
-import com.github.caldav4j.methods.CalDAV4JMethodFactory;
+package org.osaf.caldav4j.example;
+
 import com.github.caldav4j.methods.HttpCalDAVReportMethod;
 import com.github.caldav4j.model.request.FreeBusyQuery;
 import com.github.caldav4j.model.request.TimeRange;
@@ -21,14 +22,16 @@ public class FreeBusyQueryExample {
 		System.setProperty("net.fortuna.ical4j.timezone.cache.impl", MapTimeZoneCache.class.getName());
 	}
 	public static void main(String[] args) throws Exception {
+		// Create default http client
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
+		// Query creation
 		FreeBusyQuery fb = new FreeBusyQuery();
 		Date start = new DateTime("20000101T000000Z"); // ical4j Date objects
 		Date end = new DateTime("20000201T000000Z");
 		fb.setTimeRange(new TimeRange(start, end)); // Set the time range
 
-		// Print the XML to STDOUT
+		// Print the XML Query to STDOUT
 		System.out.println(XMLUtils.toPrettyXML(fb.createNewDocument()));
 
 		// Initialize the method, with the report, query
@@ -37,7 +40,9 @@ public class FreeBusyQueryExample {
 
 		HttpResponse response = httpclient.execute(method);
 		if (method.succeeded(response)) {
-			Calendar calendar = method.getResponseBodyAsCalendar(response)
+			Calendar calendar = method.getResponseBodyAsCalendar(response);
+			// Print the response calendar
+			System.out.println(calendar);
 		}
 	}
 }
