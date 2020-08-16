@@ -26,14 +26,7 @@ public class MethodUtil {
 	public static int StatusToExceptions(HttpRequestBase method, HttpResponse response) throws CalDAV4JException {
 		if (method != null && response != null) {
 			int status = response.getStatusLine().getStatusCode();
-			if (log.isDebugEnabled()) {
-				try {
-					log.debug("Server returned " + EntityUtils.toString(response.getEntity(),"UTF-8"));
-				} catch (IOException e) {
-					throw new CalDAV4JException("Error retrieving server response", e);
-				}
-			}
-			if (status >= 300) {				
+			if (status >= 300) {
 				switch (status) {
 				case CalDAVStatus.SC_CONFLICT:
 					throw new ResourceOutOfDateException("Conflict accessing: " + method.getURI() );
