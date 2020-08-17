@@ -24,7 +24,8 @@ jobs:
 
     - name: Google Java Format
       uses: axel-op/googlejavaformat-action@v3.2.0
-      with:
+      with: 
+        args:   --set-exit-if-changed
         #args: # optional, default is --replace
         #files: # optional, default is **/*.java
         # Set to true to not commit the changes
