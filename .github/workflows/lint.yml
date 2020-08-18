@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Google Java Format
-      uses: axel-op/googlejavaformat-action@v3.2.0
+      uses: axel-op/googlejavaformat-action@v3.1.0
       with: 
         args:   --set-exit-if-changed
         #args: # optional, default is --replace
