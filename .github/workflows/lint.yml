@@ -21,9 +21,11 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
+    - uses: actions/setup-java@v1
+      with:
+        java-version: "11"
     - name: Google Java Format
-      uses: axel-op/googlejavaformat-action@v3.1.0
+      uses: axel-op/googlejavaformat-action@v3.2.0
       with: 
         args:   --set-exit-if-changed
         #args: # optional, default is --replace
