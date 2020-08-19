@@ -644,7 +644,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 				CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
 				CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, false);
 			}
-			calendar = getMethod.getResponseBodyAsCalendar(response);
+			calendar = (Calendar) getMethod.getResponseBodyAsCalendar(response);
 
 
             calDAVResource = new CalDAVResource();
@@ -1067,7 +1067,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			HttpResponse response = httpClient.execute(getDefaultHttpHost(reportMethod.getURI()), reportMethod);
 
 			if(reportMethod.succeeded(response))
-				return reportMethod.getResponseBodyAsCalendar(response);
+				return (Calendar) reportMethod.getResponseBodyAsCalendar(response);
 
 		} catch (Exception he) {
 			throw new CalDAV4JException("Problem executing method", he);

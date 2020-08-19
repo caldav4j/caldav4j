@@ -177,7 +177,7 @@ public class CalDAVReportTest extends BaseTestCase{
 
         HttpCalDAVReportMethod method = fixture.getMethodFactory().createCalDAVReportMethod(fixture.getCollectionPath(), query, CalDAVConstants.DEPTH_1);
         HttpResponse response = client.execute(fixture.getHostConfig(), method);
-        Calendar calendar = method.getResponseBodyAsCalendar(response);
+        Calendar calendar = (Calendar) method.getResponseBodyAsCalendar(response);
         VFreeBusy freeBusy = (VFreeBusy) ICalendarUtils.getFirstComponent(calendar);
 
         /// Check returned Calendar

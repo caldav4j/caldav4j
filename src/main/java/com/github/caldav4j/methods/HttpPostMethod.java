@@ -2,9 +2,8 @@ package com.github.caldav4j.methods;
 
 import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.model.request.CalendarRequest;
+import com.github.caldav4j.model.request.ResourceRequest;
 import com.github.caldav4j.util.CalDAVStatus;
-import net.fortuna.ical4j.data.CalendarOutputter;
-import net.fortuna.ical4j.model.Calendar;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -12,6 +11,7 @@ import org.apache.http.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.URI;
 import java.nio.charset.UnsupportedCharsetException;
@@ -21,7 +21,7 @@ import java.nio.charset.UnsupportedCharsetException;
  *
  * @see HttpPost
  */
-public class HttpPostMethod extends HttpPost {
+public class HttpPostMethod<T extends Serializable> extends HttpPost {
 
     private static final Logger log = LoggerFactory.getLogger(HttpPostMethod.class);
 
@@ -32,7 +32,7 @@ public class HttpPostMethod extends HttpPost {
 	 *                          Only required if {@link CalendarRequest}
 	 *                          contains a calendar
 	 */
-	public HttpPostMethod(URI uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+	public HttpPostMethod(URI uri, ResourceRequest<T> calendarRequest, ResourceParser<T> calendarOutputter) {
 		super(uri);
 		addRequestHeaders(calendarRequest);
 		generateRequestBody(calendarRequest, calendarOutputter);
@@ -45,7 +45,7 @@ public class HttpPostMethod extends HttpPost {
 	 *                          Only required if {@link CalendarRequest}
 	 *                          contains a calendar
 	 */
-	public HttpPostMethod(String uri, CalendarRequest calendarRequest, CalendarOutputter calendarOutputter) {
+	public HttpPostMethod(String uri, ResourceRequest<T> calendarRequest, ResourceParser<T> calendarOutputter) {
 		this(URI.create(uri), calendarRequest, calendarOutputter);
 	}
 
@@ -55,12 +55,12 @@ public class HttpPostMethod extends HttpPost {
 	 *                        of the request
 	 * @param calendarOutputter Outputter object to generate the calendar string output
 	 */
-	protected void generateRequestBody(CalendarRequest calendarRequest, CalendarOutputter calendarOutputter)  {
-	    Calendar calendar = calendarRequest.getCalendar();
+	protected void generateRequestBody(ResourceRequest<T> calendarRequest, ResourceParser<T> calendarOutputter)  {
+	    T calendar = calendarRequest.getResource();
         if ( calendar != null){
             StringWriter writer = new StringWriter();
             try{
-                calendarOutputter.output(calendar, writer);
+                calendarOutputter.write(calendar, writer);
                 
                 ContentType ct = ContentType.create(CalDAVConstants.CONTENT_TYPE_CALENDAR, calendarRequest.getCharset());
 
@@ -77,18 +77,18 @@ public class HttpPostMethod extends HttpPost {
 
 	/**
 	 * Adds the respective Request headers based on the provided flags.
-	 * @param calendarRequest Object representing the marshalled properties of the request
+	 * @param request Object representing the marshalled properties of the request
 	 */
-    protected void addRequestHeaders(CalendarRequest calendarRequest) {
-		boolean ifMatch = calendarRequest.isIfMatch(), ifNoneMatch = calendarRequest.isIfNoneMatch();
+    protected void addRequestHeaders(ResourceRequest<T> request) {
+		boolean ifMatch = request.isIfMatch(), ifNoneMatch = request.isIfNoneMatch();
         if (ifMatch || ifNoneMatch){
             String name = ifMatch ? CalDAVConstants.HEADER_IF_MATCH : CalDAVConstants.HEADER_IF_NONE_MATCH;
             String value = null;
-            if (calendarRequest.isAllEtags()){
+            if (request.isAllEtags()){
                 value = "*";
             } else {
                 StringBuilder buf = new StringBuilder();
-                for (String etag : calendarRequest.getEtags()){
+                for (String etag : request.getEtags()){
                     buf.append(etag);
                 }
                 value = buf.toString();

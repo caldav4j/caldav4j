@@ -38,7 +38,7 @@ public final class HttpMethodCallbacks
 			(method, response) -> response;
 
 	private static final HttpMethodCallback<Calendar, HttpCalDAVReportMethod, Exception> CALENDAR_REPORT_CALLBACK =
-			HttpCalDAVReportMethod::getResponseBodyAsCalendar;
+			HttpCalDAVReportMethod<Calendar>::getResponseBodyAsCalendar;
 		
 	// constructors -----------------------------------------------------------
 	
