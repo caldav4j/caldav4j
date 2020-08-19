@@ -39,11 +39,6 @@ jobs:
 
     - run: mvn package -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
 
-    - persist_to_workspace:
-        root: .
-        paths:
-          - .
-
   build:
     <<: *base
     steps:
@@ -61,16 +56,13 @@ jobs:
         - ~/.m2
         key: *key_cache
 
-    - run: mvn deploy -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"  -s .circleci/settings.xml
-
-  sign:
-    <<: *base
-    steps:
     - run:
         name: import GPG key
-        command: echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes
+        command: echo -e "$GPG_KEY" | gpg --import
 
     - run: gpg --list-keys
+    
+    # - run: mvn deploy -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"  -s .circleci/settings.xml -Pcentral
 
 workflows:
   version: 2
@@ -80,19 +72,4 @@ workflows:
           filters:
             branches:
               only:
-                - master
-  sign:
-    jobs:
-      - sign:
-          filters:
-            branches:
-              only:
-                - /test.*/
-  do-test:
-    jobs:
-      - test:
-          filters:
-            branches:
-              ignore:
-                - master
-
+                - tags
