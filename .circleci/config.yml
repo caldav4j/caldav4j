@@ -15,6 +15,10 @@ anchors:
 version: 2.1
 
 references:
+  all_tags: &all_tags
+    # CircleCI does not run workflows for tags unless you explicitly specify tag filters
+    tags:
+      only: /.*/
   restore_cache: &restore_cache
     # restore the saved cache after the first run or if `pom.xml` has changed
     # REMEMBER: cache doesn't affect local builds
@@ -101,9 +105,9 @@ jobs:
       # Tests are run before signing.
     - run:
         command: |-
-          mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version |& grep 'SNAPSHOT$' && MOPTS+=" -Dgpg.skip=true -Pcentral " || true
+          mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version |& grep 'SNAPSHOT$' && MOPTS+=" -Dgpg.skip=true " || true
           echo MOPTS=$MOPTS
-          mvn deploy -B -V -Dmaven.test.skip -Ddependency-check.skip=true $MOPTS -s .circleci/settings.xml
+          mvn deploy -B -V -Dmaven.test.skip -Ddependency-check.skip=true $MOPTS -s .circleci/settings.xml -Pcentral
 
 
 workflows:
@@ -112,26 +116,30 @@ workflows:
     jobs:
       - build:
           filters:
-            tags:
-              only: /.*/
+            <<: *all_tags
             branches:
               only:
                 - master
       - lint:
+          filters:
+            <<: *all_tags
           requires:
             - build
       - test:
+          filters:
+            <<: *all_tags
           requires:
             - build
       - owasp:
+         filters:
+           <<: *all_tags
          requires:
           - build
       - deploy:
           requires:
             - owasp
           filters:
-            tags:
-              only: /.*/
+            <<: *all_tags
             branches:
               only:
                 - master
