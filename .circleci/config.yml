@@ -75,7 +75,14 @@ jobs:
 
     - run: gpg --list-keys
 
-    # Tests are run before signing.
+    - run:
+        command: |
+          echo use-agent >> ~/.gnupg/gpg.conf
+          echo pinentry-mode loopback >> ~/.gnupg/gpg.conf
+          echo allow-loopback-pinentry >> ~/.gnupg/gpg-agent.conf
+          echo RELOADAGENT | gpg-connect-agent
+
+      # Tests are run before signing.
     - run: mvn package gpg:sign -s .circleci/settings.xml -Dmaven.test.skip -Pcentral
 
 workflows:
