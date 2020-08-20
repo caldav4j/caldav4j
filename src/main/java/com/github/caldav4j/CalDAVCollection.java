@@ -575,7 +575,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			return getCalDAVResourceFromServer(httpClient, path);
 		} else {
 			String currentEtag = getETag(httpClient, path);
-			return getCalDAVResource(httpClient, path, currentEtag);
+			return getCalDAVResource(httpClient, path, currentEtag, null);
 		}
 	}
 
@@ -587,11 +587,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 	 * @param httpClient the httpClient which will make the request
 	 * @param path Path to Resource
 	 * @param currentEtag Current Etag of the resource
+	 * @param response Response retrieved by a previous request.
 	 * @return Corresponding CalDAVResource
 	 * @throws CalDAV4JException on error
 	 */
-	protected CalDAVResource getCalDAVResource(HttpClient httpClient,
-			String path, String currentEtag) throws CalDAV4JException {
+	protected CalDAVResource getCalDAVResource(HttpClient httpClient, String path,
+			String currentEtag, MultiStatusResponse response) throws CalDAV4JException {
 
 		//first try getting from the cache
 		CalDAVResource calDAVResource = cache.getResource(getHref(path));
@@ -605,10 +606,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 			}
 		}
 
-		//either the etag was old, or it wasn't in the cache so let's get it
-		//from the server       
+		// ETag was old or it wasn't in the cache so let's get it from the server if we don't have it.
+		if (response != null && CalendarDataProperty.getCalendarfromResponse(response) != null) {
+			return new CalDAVResource(response);
+		}
 		return getCalDAVResourceFromServer(httpClient, path);
-
 	}
 
 	/**
@@ -841,7 +843,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
                 if (isCacheEnabled()) {
                     CalDAVResource resource = getCalDAVResource(httpClient,
-                            UrlUtils.stripHost(response.getHref()), etag);
+                            UrlUtils.stripHost(response.getHref()), etag, response);
 
                     list.add(resource.getCalendar());
 
@@ -930,13 +932,11 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
 
                 if (usingCache) {
                     CalDAVResource resource = getCalDAVResource(httpClient,
-                            UrlUtils.stripHost(response.getHref()), etag);
+                            UrlUtils.stripHost(response.getHref()), etag, response);
                     list.add(resource);
                     cache.putResource(resource);
-                } else {
-                    if (response != null) {
-                        list.add(new CalDAVResource(response));
-                    }
+                } else if (response != null) {
+					list.add(new CalDAVResource(response));
                 }
             }
 
@@ -985,7 +985,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase{
                     String etag = CalendarDataProperty.getEtagfromResponse(response);
                     try{
                         resource =
-                                getCalDAVResource(httpClient, UrlUtils.stripHost(response.getHref()), etag);
+                                getCalDAVResource(httpClient, UrlUtils.stripHost(response.getHref()), etag, response);
 
                         list.add(resource.getCalendar());
                     } catch(Exception e1) {
