@@ -16,47 +16,43 @@
  */
 package com.github.caldav4j;
 
-import com.github.caldav4j.model.response.CalendarDataProperty;
-import net.fortuna.ical4j.model.Calendar;
-import org.apache.jackrabbit.webdav.MultiStatusResponse;
-
 import java.io.Serializable;
+
+import net.fortuna.ical4j.model.Calendar;
 
 /**
  * A serializable class representing the Calendar along with the associated metadata. Used for
  * storing into the cache.
  */
-public class CalDAVResource implements Serializable{
+public class CalDAVResource<T extends Serializable> implements Serializable {
+    
 	private static final long serialVersionUID = -2607152240683030192L;
 	private ResourceMetadata resourceMetadata = null;
-	private Calendar calendar = null;
+	private T payload = null;
 
-	/**
-	 * Construct a Resource based on the Response.
-	 *
-	 * @param response Response to contruct from.
-	 */
-	public CalDAVResource(MultiStatusResponse response) {
-		this.calendar = CalendarDataProperty.getCalendarfromResponse(response);
-		this.resourceMetadata = new ResourceMetadata();
-		this.resourceMetadata.setETag(CalendarDataProperty.getEtagfromResponse(response));
-		this.resourceMetadata.setHref(response.getHref());
+    /**
+     * Construct Resource based on the parameters.
+     * @param payload Calendar
+     * @param etag ETag of the Calendar Resource
+     * @param href Href of the Calendar Resource
+     */
+    public CalDAVResource(T payload, String etag, String href){
+        this.payload = payload;
+        ResourceMetadata rm = new ResourceMetadata();
+        rm.setETag(etag);
+        rm.setHref(href);
+        this.resourceMetadata = rm;
+    }
 
-	}
-
-	/**
-	 * Construct Resource based on the parameters.
-	 * @param calendar Calendar
-	 * @param etag ETag of the Calendar Resource
-	 * @param href Href of the Calendar Resource
-	 */
-	public CalDAVResource(Calendar calendar, String etag, String href){
-		this.calendar = calendar;
-		ResourceMetadata rm = new ResourceMetadata();
-		rm.setETag(etag);
-		rm.setHref(href);
-		this.resourceMetadata = rm;
-	}
+    /**
+     * Construct Resource based on the parameters.
+     * @param payload Calendar
+     * @param resourceMetadata Metadata of the Calendar Resource
+     */
+    public CalDAVResource(T payload, ResourceMetadata resourceMetadata){
+        this.payload = payload;
+        this.resourceMetadata = resourceMetadata;
+    }
 
 	/**
 	 * Default constructor
@@ -65,15 +61,20 @@ public class CalDAVResource implements Serializable{
 		resourceMetadata = new ResourceMetadata();
 	}
 
-	public void setCalendar(Calendar calendar){
-		this.calendar = calendar;
+	public void setPayload(T payload){
+		this.payload = payload;
 	}
 
-	public Calendar getCalendar() {
-		return calendar;
-	}
+    public T getPayload() {
+        return payload;
+    }
 
 	public ResourceMetadata getResourceMetadata() {
 		return resourceMetadata;
 	}
+	
+	public Calendar getCalendar() {
+		return (Calendar) getPayload();
+	}
+
 }

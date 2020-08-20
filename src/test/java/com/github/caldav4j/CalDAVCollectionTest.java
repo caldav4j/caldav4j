@@ -338,7 +338,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
 			// set only etag for given resource
 			CalendarQuery query = new GenerateQuery("VEVENT", "VEVENT : UID=="+newUid).generate();
 			query.setCalendarDataProp(null);
-			List<CalDAVResource> res = uncachedCollection.getCalDAVResources(fixture.getHttpClient(), query);
+			List<CalDAVResource<Calendar>> res = uncachedCollection.getCalDAVResources(fixture.getHttpClient(), query);
 			assertTrue(res.size()>0);
 			CalDAVResource r = res.get(0);
 			assertNotNull(r);
