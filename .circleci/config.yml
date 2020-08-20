@@ -103,7 +103,12 @@ workflows:
   version: 2
   continuous-deploy:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only:
+                - tags
+                - master
       - lint:
           requires:
             - build
@@ -120,7 +125,6 @@ workflows:
             branches:
               only:
                 - tags
-                - /test.*/
       - deploy-unsigned:
           requires:
             - owasp
@@ -128,13 +132,20 @@ workflows:
             branches:
               only:
                 - master
-                - tags
-                - /test.*/
   test-only:
     jobs:
-      - test:
+      - build:
           filters:
             branches:
               ignore:
                 - master
-
+                - tags
+      - lint:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
+      - owasp:
+          requires:
+            - build
