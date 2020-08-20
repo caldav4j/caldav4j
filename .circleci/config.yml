@@ -55,13 +55,6 @@ jobs:
         at: .
     - run: mvn package -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
 
-  deploy-no-test:
-    <<: *base
-    steps:
-    - attach_workspace:
-        at: .
-    - run: mvn deploy -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"  -D maven.test.skip -s .circleci/settings.xml
-
   owasp:
     docker:
       - image: circleci/openjdk:8-jdk-browsers
@@ -76,7 +69,7 @@ jobs:
       - attach_workspace:
           at: .
       - run: mvn spotless:check -s .circleci/settings.xml -Dmaven.test.skip
-  sign-no-test:
+  deploy-signed:
     <<: *base
     steps:
     # Reuse the workspace from the build job
@@ -97,7 +90,14 @@ jobs:
           echo RELOADAGENT | gpg-connect-agent
 
       # Tests are run before signing.
-    - run: mvn package gpg:sign -B -V -s .circleci/settings.xml -Dmaven.test.skip -Pcentral
+    - run: mvn package gpg:sign deploy -B -V -s .circleci/settings.xml -Dmaven.test.skip -Ddependency-check.skip=true -Pcentral
+
+  deploy-unsigned:
+    <<: *base
+    steps:
+    - attach_workspace:
+        at: .
+    - run: mvn deploy -B -V -Dmaven.test.skip -Ddependency-check.skip=true -s .circleci/settings.xml -Pcentral
 
 workflows:
   version: 2
@@ -113,26 +113,23 @@ workflows:
       - owasp:
          requires:
           - build
-      - sign-no-test:
+      - deploy-signed:
           requires:
             - owasp
-            - test
-            - lint
           filters:
             branches:
               only:
                 - tags
-      - deploy-no-test:
+                - /test.*/
+      - deploy-unsigned:
           requires:
             - owasp
-            - sign-no-test
-            - test
-            - lint
           filters:
             branches:
               only:
                 - master
                 - tags
+                - /test.*/
   test-only:
     jobs:
       - test:
@@ -140,5 +137,4 @@ workflows:
             branches:
               ignore:
                 - master
-                - /test.*/
 
