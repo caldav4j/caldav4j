@@ -44,7 +44,7 @@ jobs:
         paths:
           - .
 
-  build:
+  deploy:
     <<: *base
     steps:
     - checkout
@@ -63,27 +63,37 @@ jobs:
 
     - run: mvn deploy -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"  -s .circleci/settings.xml
 
-  sign:
+  sign-no-test:
     <<: *base
     steps:
+    # Reuse the workspace from the build job
+    - attach_workspace:
+        at: .
+
     - run:
         name: import GPG key
         command: echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes
 
     - run: gpg --list-keys
 
+    # Tests are run before signing.
+    - run: mvn package gpg:sign -s .circleci/settings.xml -Dmaven.test.skip -Pcentral
+
 workflows:
   version: 2
   continuous-deploy:
     jobs:
-      - build:
+      - deploy:
           filters:
             branches:
               only:
                 - master
   sign:
     jobs:
-      - sign:
+      - test
+      - sign-no-test:
+          requires:
+            - test
           filters:
             branches:
               only:
@@ -95,4 +105,5 @@ workflows:
             branches:
               ignore:
                 - master
+                - /test.*/
 
