@@ -69,13 +69,22 @@ jobs:
       - attach_workspace:
           at: .
       - run: mvn spotless:check -s .circleci/settings.xml -Dmaven.test.skip
-  deploy-signed:
+  deploy:
     <<: *base
     steps:
     # Reuse the workspace from the build job
     - attach_workspace:
         at: .
 
+    - run:
+        name: "If a release is not tagged, exit: only tagged release should be deployed"
+        command: |-
+          IS_SNAPSHOT=$(mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate \
+            -Dexpression=project.version |& grep -o 'SNAPSHOT$' | head -1) || true
+          echo "$IS_SNAPSHOT"
+          if [ "$CIRCLE_BRANCH" == "master" -a "$IS_SNAPSHOT" == "" ]; then
+            circleci step halt
+          fi
     - run:
         name: import GPG key
         command: echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes
@@ -90,14 +99,12 @@ jobs:
           echo RELOADAGENT | gpg-connect-agent
 
       # Tests are run before signing.
-    - run: mvn package gpg:sign deploy -B -V -s .circleci/settings.xml -Dmaven.test.skip -Ddependency-check.skip=true -Pcentral
+    - run:
+        command: |-
+          mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version |& grep 'SNAPSHOT$' && MOPTS+=" -Dgpg.skip=true -Pcentral " || true
+          echo MOPTS=$MOPTS
+          mvn deploy -B -V -Dmaven.test.skip -Ddependency-check.skip=true $MOPTS -s .circleci/settings.xml
 
-  deploy-unsigned:
-    <<: *base
-    steps:
-    - attach_workspace:
-        at: .
-    - run: mvn deploy -B -V -Dmaven.test.skip -Ddependency-check.skip=true -Dgpg.skip=true -s .circleci/settings.xml
 
 workflows:
   version: 2
@@ -119,16 +126,12 @@ workflows:
       - owasp:
          requires:
           - build
-      - deploy-signed:
+      - deploy:
           requires:
             - owasp
           filters:
             tags:
               only: /.*/
-      - deploy-unsigned:
-          requires:
-            - owasp
-          filters:
             branches:
               only:
                 - master
