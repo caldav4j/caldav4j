@@ -12,9 +12,24 @@
 anchors:
 - key_cache: &key_cache v1-cache-{{ checksum "pom.xml" }}
 
-version: 2
+version: 2.1
+
+references:
+  restore_cache: &restore_cache
+    # restore the saved cache after the first run or if `pom.xml` has changed
+    # REMEMBER: cache doesn't affect local builds
+    restore_cache:
+      key: *key_cache
+  install_dependencies: &install_dependencies
+     run: mvn dependency:go-offline # gets the project dependencies
+  save_cache: &save_cache
+    save_cache: # saves the project dependencies
+      paths:
+        - ~/.m2
+      key: *key_cache
+
 jobs:
-  test: &base
+  build: &base
     working_directory: ~/caldav4j
     # Build in the primary docker container
     #  and connecting to the baikal server provided
@@ -24,39 +39,65 @@ jobs:
       - image: ioggstream/baikal:with-testuser
     steps:
     - checkout
-
-    # restore the saved cache after the first run or if `pom.xml` has changed
-    # REMEMBER: cache doesn't affect local builds
-    - restore_cache:
-        key: *key_cache
-
-    - run: mvn dependency:go-offline # gets the project dependencies
-
-    - save_cache: # saves the project dependencies
+    - <<: *restore_cache
+    - <<: *install_dependencies
+    - <<: *save_cache
+    - run: mvn test-compile -B -V
+    - persist_to_workspace:
+        root: .
         paths:
-          - ~/.m2
-        key: *key_cache
+          - .
 
-    - run: mvn package -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
-
-  build:
+  test:
     <<: *base
     steps:
-    - checkout
+    - attach_workspace:
+        at: .
+    - run: mvn package -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
 
-    # restore the saved cache after the first run or if `pom.xml` has changed
-    # REMEMBER: cache doesn't affect local builds
-    - restore_cache:
-        key: *key_cache
+  owasp:
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    steps:
+      - attach_workspace:
+            at: .
+      - run: mvn org.owasp:dependency-check-maven:check -s .circleci/settings.xml -Dmaven.test.skip
+  lint:
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    steps:
+      - attach_workspace:
+          at: .
+      - run: mvn spotless:check -s .circleci/settings.xml -Dmaven.test.skip
+  deploy-signed:
+    <<: *base
+    steps:
+    # Reuse the workspace from the build job
+    - attach_workspace:
+        at: .
 
-    - run: mvn dependency:go-offline # gets the project dependencies
+    - run:
+        name: import GPG key
+        command: echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes
 
-    - save_cache: # saves the project dependencies
-        paths:
-        - ~/.m2
-        key: *key_cache
+    - run: gpg --list-keys
 
-    - run: mvn deploy -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"  -s .circleci/settings.xml
+    - run:
+        command: |
+          echo use-agent >> ~/.gnupg/gpg.conf
+          echo pinentry-mode loopback >> ~/.gnupg/gpg.conf
+          echo allow-loopback-pinentry >> ~/.gnupg/gpg-agent.conf
+          echo RELOADAGENT | gpg-connect-agent
+
+      # Tests are run before signing.
+    - run: mvn package gpg:sign deploy -B -V -s .circleci/settings.xml -Dmaven.test.skip -Ddependency-check.skip=true -Pcentral
+
+  deploy-unsigned:
+    <<: *base
+    steps:
+    - attach_workspace:
+        at: .
+    - run: mvn deploy -B -V -Dmaven.test.skip -Ddependency-check.skip=true -Dgpg.skip=true -s .circleci/settings.xml
 
 workflows:
   version: 2
@@ -66,12 +107,45 @@ workflows:
           filters:
             branches:
               only:
+                - tags
                 - master
-  do-test:
-    jobs:
+      - lint:
+          requires:
+            - build
       - test:
+          requires:
+            - build
+      - owasp:
+         requires:
+          - build
+      - deploy-signed:
+          requires:
+            - owasp
+          filters:
+            branches:
+              only:
+                - tags
+      - deploy-unsigned:
+          requires:
+            - owasp
+          filters:
+            branches:
+              only:
+                - master
+  test-only:
+    jobs:
+      - build:
           filters:
             branches:
               ignore:
                 - master
-
+                - tags
+      - lint:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
+      - owasp:
+          requires:
+            - build
