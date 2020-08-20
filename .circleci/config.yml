@@ -105,9 +105,10 @@ workflows:
     jobs:
       - build:
           filters:
+            tags:
+              only: /.*/
             branches:
               only:
-                - tags
                 - master
       - lint:
           requires:
@@ -122,9 +123,8 @@ workflows:
           requires:
             - owasp
           filters:
-            branches:
-              only:
-                - tags
+            tags:
+              only: /.*/
       - deploy-unsigned:
           requires:
             - owasp
