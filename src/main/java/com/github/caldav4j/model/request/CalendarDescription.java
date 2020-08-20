@@ -18,11 +18,11 @@ package com.github.caldav4j.model.request;
 
 import com.github.caldav4j.CalDAVConstants;
 
-
 /**
  * Defines the Calendar Description, along with an optional language parameter.
- * <p>
- * Example:
+ *
+ * <p>Example:
+ *
  * <pre>
  *     &lt;C:calendar-description xml:lang="fr-CA" xmlns:C="urn:ietf:params:xml:ns:caldav"&gt;
  *          Roberto's Calendar
@@ -34,28 +34,25 @@ import com.github.caldav4j.CalDAVConstants;
  */
 public class CalendarDescription extends PropProperty<String> {
 
-	public static final String CALENDAR_DESCRIPTION = "calendar-description";
+    public static final String CALENDAR_DESCRIPTION = "calendar-description";
 
-	public CalendarDescription(){
+    public CalendarDescription() {
         this(null);
     }
 
-	/**
-	 * @param value Calendar Description
-	 */
-	public CalendarDescription(String value) {
-		this(value, null);
+    /** @param value Calendar Description */
+    public CalendarDescription(String value) {
+        this(value, null);
+    }
 
-	}
-
-	/**
-	 * @param value Calendar Description
-	 * @param lang Language
-	 */
-	public CalendarDescription(String value, String lang) {
-		super(CalDAVConstants.CALDAV_CALENDAR_DESCRIPTION, value, CalDAVConstants.NAMESPACE_CALDAV);
-		if (lang != null) {
-			this.addAttribute("xml:lang", lang);
-		}
-	}
+    /**
+     * @param value Calendar Description
+     * @param lang Language
+     */
+    public CalendarDescription(String value, String lang) {
+        super(CalDAVConstants.CALDAV_CALENDAR_DESCRIPTION, value, CalDAVConstants.NAMESPACE_CALDAV);
+        if (lang != null) {
+            this.addAttribute("xml:lang", lang);
+        }
+    }
 }

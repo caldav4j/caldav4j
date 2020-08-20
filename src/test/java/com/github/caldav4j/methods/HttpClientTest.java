@@ -16,10 +16,13 @@
 
 package com.github.caldav4j.methods;
 
+import static org.junit.Assert.assertEquals;
+
 import com.github.caldav4j.model.request.CalDAVReportRequest;
 import com.github.caldav4j.support.HttpClientTestUtils;
 import com.github.caldav4j.support.HttpMethodCallbacks;
 import com.github.caldav4j.util.CalDAVStatus;
+import java.io.IOException;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.property.ProdId;
@@ -29,72 +32,69 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-
 /**
- * Tests the HttpClient, by overriding the socket and verifying the output there.
- * Ignored, because this test will set the Socket for the whole JVM.
+ * Tests the HttpClient, by overriding the socket and verifying the output there. Ignored, because
+ * this test will set the Socket for the whole JVM.
  */
 @Ignore
 public class HttpClientTest {
 
-	private static final Logger log = LoggerFactory.getLogger(HttpClientTest.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpClientTest.class);
 
-    //Below are the merged tests from CalendarCalDAVReportMethod
-	@Test
-	public void executeCalendarReportMethod() throws Exception
-	{
-		HttpCalDAVReportMethod method = createMethod("/path", new FakeCalDAVReportRequest());
+    // Below are the merged tests from CalendarCalDAVReportMethod
+    @Test
+    public void executeCalendarReportMethod() throws Exception {
+        HttpCalDAVReportMethod method = createMethod("/path", new FakeCalDAVReportRequest());
 
-		method.setHeader("User-Agent", "Apache-HttpClient/CalDAV4j");
-		String expectedRequest = "REPORT /path HTTP/1.1\r\n"
-				+ "Depth: 1\r\n"
-				+ "User-Agent: Apache-HttpClient/CalDAV4j\r\n"
-				+ "Content-Length: 67\r\n"
-				+ "Content-Type: application/xml; charset=UTF-8\r\n"
-				+ "Host: localhost:80\r\n"
-				+ "Connection: Keep-Alive\r\n"
-				+ "Accept-Encoding: gzip,deflate\r\n"
-				+ "\r\n"
-				+ "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><fake-query/>";
+        method.setHeader("User-Agent", "Apache-HttpClient/CalDAV4j");
+        String expectedRequest =
+                "REPORT /path HTTP/1.1\r\n"
+                        + "Depth: 1\r\n"
+                        + "User-Agent: Apache-HttpClient/CalDAV4j\r\n"
+                        + "Content-Length: 67\r\n"
+                        + "Content-Type: application/xml; charset=UTF-8\r\n"
+                        + "Host: localhost:80\r\n"
+                        + "Connection: Keep-Alive\r\n"
+                        + "Accept-Encoding: gzip,deflate\r\n"
+                        + "\r\n"
+                        + "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><fake-query/>";
 
-		String response = "HTTP/1.1 200 OK\r\n"
-				+ "Content-Type: text/calendar"
-				+ "Content-Length: 189\r\n"
-				+ "\r\n"
-				+ "BEGIN:VCALENDAR\n"
-				+ "PRODID:fake\n"
-				+ "VERSION:2.0\n"
-				+ "END:VCALENDAR\n";
+        String response =
+                "HTTP/1.1 200 OK\r\n"
+                        + "Content-Type: text/calendar"
+                        + "Content-Length: 189\r\n"
+                        + "\r\n"
+                        + "BEGIN:VCALENDAR\n"
+                        + "PRODID:fake\n"
+                        + "VERSION:2.0\n"
+                        + "END:VCALENDAR\n";
 
-		HttpClientTestUtils.setFakeSocketImplFactory();
-		HttpClientTestUtils.setFakeSocketImpl(expectedRequest, response);
-		Calendar actual = HttpClientTestUtils.executeMethod(CalDAVStatus.SC_OK, method, HttpMethodCallbacks.calendarReportCallback());
+        HttpClientTestUtils.setFakeSocketImplFactory();
+        HttpClientTestUtils.setFakeSocketImpl(expectedRequest, response);
+        Calendar actual =
+                HttpClientTestUtils.executeMethod(
+                        CalDAVStatus.SC_OK, method, HttpMethodCallbacks.calendarReportCallback());
 
-		assertEquals("Calendar", createCalendar(), actual);
-	}
+        assertEquals("Calendar", createCalendar(), actual);
+    }
 
-	// private methods --------------------------------------------------------
+    // private methods --------------------------------------------------------
 
-	private static HttpCalDAVReportMethod createMethod(String path, CalDAVReportRequest reportRequest) throws IOException {
-		HttpCalDAVReportMethod method = new HttpCalDAVReportMethod(path, reportRequest);
+    private static HttpCalDAVReportMethod createMethod(
+            String path, CalDAVReportRequest reportRequest) throws IOException {
+        HttpCalDAVReportMethod method = new HttpCalDAVReportMethod(path, reportRequest);
 
-		method.setCalendarBuilder(new CalendarBuilder());
+        method.setCalendarBuilder(new CalendarBuilder());
 
-		return method;
-	}
+        return method;
+    }
 
-	private static Calendar createCalendar()
-	{
-		Calendar calendar = new Calendar();
+    private static Calendar createCalendar() {
+        Calendar calendar = new Calendar();
 
-		calendar.getProperties().add(new ProdId("fake"));
-		calendar.getProperties().add(Version.VERSION_2_0);
+        calendar.getProperties().add(new ProdId("fake"));
+        calendar.getProperties().add(Version.VERSION_2_0);
 
-		return calendar;
-	}
-
-
+        return calendar;
+    }
 }

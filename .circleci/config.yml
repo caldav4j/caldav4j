@@ -57,14 +57,14 @@ jobs:
 
   owasp:
     docker:
-      - image: circleci/openjdk:8-jdk-browsers
+      - image: circleci/openjdk:11-jdk-browsers
     steps:
       - attach_workspace:
             at: .
       - run: mvn org.owasp:dependency-check-maven:check -s .circleci/settings.xml -Dmaven.test.skip
   lint:
     docker:
-      - image: circleci/openjdk:8-jdk-browsers
+      - image: circleci/openjdk:11-jdk-browsers
     steps:
       - attach_workspace:
           at: .

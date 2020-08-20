@@ -19,20 +19,18 @@ import com.github.caldav4j.CalDAVConstants;
 
 /**
  * This property defines the human-readable name of the calendar.
+ *
  * @author rpolli, Ankush Mishra
  */
 public class DisplayName extends PropProperty<String> {
-	public static final String DISPLAY_NAME = "displayname" ;
+    public static final String DISPLAY_NAME = "displayname";
 
-	public DisplayName(){
-		this(null);
-	}
+    public DisplayName() {
+        this(null);
+    }
 
-	/**
-	 * @param displayName Display name of the calendar
-	 */
-	public DisplayName(String displayName) {
-		super(DISPLAY_NAME, displayName, CalDAVConstants.NAMESPACE_WEBDAV);
-	}
+    /** @param displayName Display name of the calendar */
+    public DisplayName(String displayName) {
+        super(DISPLAY_NAME, displayName, CalDAVConstants.NAMESPACE_WEBDAV);
+    }
 }
-
