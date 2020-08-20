@@ -1,5 +1,8 @@
 package com.github.caldav4j.model.response;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.jackrabbit.webdav.property.DavProperty;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -7,13 +10,7 @@ import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-/**
- * Created by Mehdi Teymourlouie (mehdi.teymourlouie@gmail.com)
- * on 11/12/18.
- */
+/** Created by Mehdi Teymourlouie (mehdi.teymourlouie@gmail.com) on 11/12/18. */
 public class CalendarDataPropertyTest {
 
     @Test
@@ -22,12 +19,14 @@ public class CalendarDataPropertyTest {
         Calendar calendar = CalendarDataProperty.getCalendarfromProperty(davProperty);
         assertNull("Calendar object for null property should be null object", calendar);
 
-
-        davProperty = new DefaultDavProperty<>("calendar-data", null, Namespace.getNamespace("urn:ietf:params:xml:ns:caldav"));
+        davProperty =
+                new DefaultDavProperty<>(
+                        "calendar-data",
+                        null,
+                        Namespace.getNamespace("urn:ietf:params:xml:ns:caldav"));
         calendar = CalendarDataProperty.getCalendarfromProperty(davProperty);
-        assertNull("Calendar object for a property with null value should be null object", calendar);
-
-
+        assertNull(
+                "Calendar object for a property with null value should be null object", calendar);
     }
 
     @Test
@@ -48,6 +47,5 @@ public class CalendarDataPropertyTest {
         davProperty = new DefaultDavProperty<>(DavPropertyName.GETETAG, value);
         etag = CalendarDataProperty.getEtagfromProperty(davProperty);
         assertEquals("etag value is not correct", value, etag);
-
     }
 }

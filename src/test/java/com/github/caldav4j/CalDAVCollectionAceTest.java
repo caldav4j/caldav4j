@@ -16,87 +16,76 @@
 
 package com.github.caldav4j;
 
+import com.github.caldav4j.cache.EhCacheResourceCache;
 import com.github.caldav4j.functional.support.CaldavFixtureHarness;
 import org.junit.After;
 import org.junit.Before;
-import com.github.caldav4j.cache.EhCacheResourceCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * TODO re-implement test using deprecated methods using current methods
- */
+/** TODO re-implement test using deprecated methods using current methods */
 public class CalDAVCollectionAceTest extends BaseTestCase {
-	public CalDAVCollectionAceTest() {
-		super();
-	}
+    public CalDAVCollectionAceTest() {
+        super();
+    }
 
-	protected static final Logger log = LoggerFactory.getLogger(CalDAVCollectionAceTest.class);
+    protected static final Logger log = LoggerFactory.getLogger(CalDAVCollectionAceTest.class);
 
+    // cache
+    private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";
+    private static final String UID_TO_HREF_CACHE = "uidToHrefCache";
+    private EhCacheResourceCache myCache = null;
 
+    public static final Integer TEST_TIMEOUT = 3600;
+    public static final boolean TEST_READ = true;
+    public static final boolean TEST_WRITE = true;
+    public static final Integer TEST_VISITS = CalDAVConstants.INFINITY;
 
+    public static final String TEST_TIMEOUT_UNITS = "Second";
 
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
 
-	// cache
-	private static final String HREF_TO_RESOURCE_CACHE = "hrefToResourceCache";
-	private static final String UID_TO_HREF_CACHE = "uidToHrefCache";
-	private EhCacheResourceCache myCache = null;
+        CaldavFixtureHarness.provisionGoogleEvents(fixture);
 
-	public static final Integer TEST_TIMEOUT = 3600;
-	public static final boolean TEST_READ = true;
-	public static final boolean TEST_WRITE = true;
-	public static final Integer TEST_VISITS = CalDAVConstants.INFINITY;
+        // TODO: Not Entirely sure, why uncachedCollection is required
+        uncachedCollection = CaldavFixtureHarness.createCollectionFromFixture(fixture);
+        uncachedCollection.disableSimpleCache();
+    }
 
-	public static final String  TEST_TIMEOUT_UNITS = "Second";
+    @After
+    public void tearDown() throws Exception {
+        CaldavFixtureHarness.removeSimpleCache();
 
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
+        fixture.tearDown();
+    }
 
-		CaldavFixtureHarness.provisionGoogleEvents(fixture);
+    /*
+     * make a OPTIONS  requesto to caldav server
+     * @throws Exception
+     *
+    @Test
+    public void testGetOptions() throws Exception {
+    	List<Header> headerList = uncachedCollection.getOptions(fixture.getHttpClient());
 
-		//TODO: Not Entirely sure, why uncachedCollection is required
-		uncachedCollection = CaldavFixtureHarness.createCollectionFromFixture(fixture);
-		uncachedCollection.disableSimpleCache();
-	}
+    	for (Header h : headerList) {
+    		log.info(h.getName() + ":" + h.getValue());
+    	}
 
-	@After
-	public void tearDown() throws Exception {
-		CaldavFixtureHarness.removeSimpleCache();
+    	if (uncachedCollection.allows(fixture.getHttpClient(), "MKCOL", headerList)) {
+    		log.info("MKCOL exists");
+    	}
+    	if (uncachedCollection.allows(fixture.getHttpClient(), "REPORT", headerList)) {
+    		log.info("REPORT exists");
+    	}
+    	if (uncachedCollection.allows(fixture.getHttpClient(), "NOOP", headerList)) {
+    		log.info("NOOP exists");
+    	}
+    }*/
 
-		fixture.tearDown();
-	}
-
-	/*
-	 * make a OPTIONS  requesto to caldav server
-	 * @throws Exception
-	 *
-	@Test
-	public void testGetOptions() throws Exception {
-		List<Header> headerList = uncachedCollection.getOptions(fixture.getHttpClient());
-
-		for (Header h : headerList) {
-			log.info(h.getName() + ":" + h.getValue());
-		}
-
-		if (uncachedCollection.allows(fixture.getHttpClient(), "MKCOL", headerList)) {
-			log.info("MKCOL exists");
-		}
-		if (uncachedCollection.allows(fixture.getHttpClient(), "REPORT", headerList)) {
-			log.info("REPORT exists");
-		}
-		if (uncachedCollection.allows(fixture.getHttpClient(), "NOOP", headerList)) {
-			log.info("NOOP exists");
-		}
-	}*/
-
-
-	//
-	// private
-	//
-
-
-
-
+    //
+    // private
+    //
 
 }
