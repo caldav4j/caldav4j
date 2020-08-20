@@ -29,7 +29,7 @@ references:
       key: *key_cache
 
 jobs:
-  test: &base
+  build: &base
     working_directory: ~/caldav4j
     # Build in the primary docker container
     #  and connecting to the baikal server provided
@@ -42,13 +42,20 @@ jobs:
     - <<: *restore_cache
     - <<: *install_dependencies
     - <<: *save_cache
-    - run: mvn package -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
+    - run: mvn test-compile -B -V
     - persist_to_workspace:
         root: .
         paths:
           - .
 
-  deploy:
+  test:
+    <<: *base
+    steps:
+    - attach_workspace:
+        at: .
+    - run: mvn package -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
+
+  deploy-no-test:
     <<: *base
     steps:
     - attach_workspace:
@@ -62,6 +69,13 @@ jobs:
       - attach_workspace:
             at: .
       - run: mvn org.owasp:dependency-check-maven:check -s .circleci/settings.xml -Dmaven.test.skip
+  lint:
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    steps:
+      - attach_workspace:
+          at: .
+      - run: mvn spotless:check -s .circleci/settings.xml -Dmaven.test.skip
   sign-no-test:
     <<: *base
     steps:
@@ -83,33 +97,42 @@ jobs:
           echo RELOADAGENT | gpg-connect-agent
 
       # Tests are run before signing.
-    - run: mvn package gpg:sign -s .circleci/settings.xml -Dmaven.test.skip -Pcentral
+    - run: mvn package gpg:sign -B -V -s .circleci/settings.xml -Dmaven.test.skip -Pcentral
 
 workflows:
   version: 2
   continuous-deploy:
     jobs:
-      - test
+      - build
+      - lint:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
       - owasp:
          requires:
-          - test
-      - deploy:
+          - build
+      - sign-no-test:
           requires:
+            - owasp
             - test
+            - lint
+          filters:
+            branches:
+              only:
+                - tags
+      - deploy-no-test:
+          requires:
+            - owasp
+            - sign-no-test
+            - test
+            - lint
           filters:
             branches:
               only:
                 - master
-  sign:
-    jobs:
-      - test
-      - sign-no-test:
-          requires:
-            - test
-          filters:
-            branches:
-              only:
-                - /test.*/
+                - tags
   test-only:
     jobs:
       - test:
