@@ -97,7 +97,7 @@ jobs:
     steps:
     - attach_workspace:
         at: .
-    - run: mvn deploy -B -V -Dmaven.test.skip -Ddependency-check.skip=true -s .circleci/settings.xml -Pcentral
+    - run: mvn deploy -B -V -Dmaven.test.skip -Ddependency-check.skip=true -Dgpg.skip=true -s .circleci/settings.xml
 
 workflows:
   version: 2
