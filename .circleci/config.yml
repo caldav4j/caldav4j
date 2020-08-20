@@ -12,7 +12,22 @@
 anchors:
 - key_cache: &key_cache v1-cache-{{ checksum "pom.xml" }}
 
-version: 2
+version: 2.1
+
+references:
+  restore_cache: &restore_cache
+    # restore the saved cache after the first run or if `pom.xml` has changed
+    # REMEMBER: cache doesn't affect local builds
+    restore_cache:
+      key: *key_cache
+  install_dependencies: &install_dependencies
+     run: mvn dependency:go-offline # gets the project dependencies
+  save_cache: &save_cache
+    save_cache: # saves the project dependencies
+      paths:
+        - ~/.m2
+      key: *key_cache
+
 jobs:
   test: &base
     working_directory: ~/caldav4j
@@ -24,21 +39,10 @@ jobs:
       - image: ioggstream/baikal:with-testuser
     steps:
     - checkout
-
-    # restore the saved cache after the first run or if `pom.xml` has changed
-    # REMEMBER: cache doesn't affect local builds
-    - restore_cache:
-        key: *key_cache
-
-    - run: mvn dependency:go-offline # gets the project dependencies
-
-    - save_cache: # saves the project dependencies
-        paths:
-          - ~/.m2
-        key: *key_cache
-
+    - <<: *restore_cache
+    - <<: *install_dependencies
+    - <<: *save_cache
     - run: mvn package -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"
-
     - persist_to_workspace:
         root: .
         paths:
@@ -47,22 +51,17 @@ jobs:
   deploy:
     <<: *base
     steps:
-    - checkout
+    - attach_workspace:
+        at: .
+    - run: mvn deploy -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"  -D maven.test.skip -s .circleci/settings.xml
 
-    # restore the saved cache after the first run or if `pom.xml` has changed
-    # REMEMBER: cache doesn't affect local builds
-    - restore_cache:
-        key: *key_cache
-
-    - run: mvn dependency:go-offline # gets the project dependencies
-
-    - save_cache: # saves the project dependencies
-        paths:
-        - ~/.m2
-        key: *key_cache
-
-    - run: mvn deploy -B -V -Dcaldav4jUri="http://testuser:testuser@localhost/cal.php/calendars/testuser/"  -s .circleci/settings.xml
-
+  owasp:
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    steps:
+      - attach_workspace:
+            at: .
+      - run: mvn org.owasp:dependency-check-maven:check -s .circleci/settings.xml -Dmaven.test.skip
   sign-no-test:
     <<: *base
     steps:
@@ -83,7 +82,13 @@ workflows:
   version: 2
   continuous-deploy:
     jobs:
+      - test
+      - owasp:
+         requires:
+          - test
       - deploy:
+          requires:
+            - test
           filters:
             branches:
               only:
@@ -98,7 +103,7 @@ workflows:
             branches:
               only:
                 - /test.*/
-  do-test:
+  test-only:
     jobs:
       - test:
           filters:
