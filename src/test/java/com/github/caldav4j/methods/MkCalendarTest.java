@@ -16,97 +16,100 @@
 
 package com.github.caldav4j.methods;
 
+import com.github.caldav4j.BaseTestCase;
 import com.github.caldav4j.functional.support.CalDavFixture;
+import com.github.caldav4j.util.CalDAVStatus;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.jackrabbit.webdav.client.methods.HttpMkcol;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import com.github.caldav4j.BaseTestCase;
-import com.github.caldav4j.util.CalDAVStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * 
  * @author rpolli
- *
- * TODO This whole class can be fixturized and shortened. The only reason not to do so
- * 				is to keep things simple when testing bare methods.
+ *     <p>TODO This whole class can be fixturized and shortened. The only reason not to do so is to
+ *     keep things simple when testing bare methods.
  */
-//@Ignore
+// @Ignore
 public class MkCalendarTest extends BaseTestCase {
 
-	private static final Logger log = LoggerFactory.getLogger(MkCalendarTest.class);
+    private static final Logger log = LoggerFactory.getLogger(MkCalendarTest.class);
 
-	private List<String> addedItems = new ArrayList<String>();
-	@Override
+    private List<String> addedItems = new ArrayList<String>();
+
+    @Override
     @Before
-	//skip collection creation while initializing
-	public void setUp() throws Exception {
-		fixture = new CalDavFixture();
-		fixture.setUp(caldavCredential, caldavDialect, true);
-	}
+    // skip collection creation while initializing
+    public void setUp() throws Exception {
+        fixture = new CalDavFixture();
+        fixture.setUp(caldavCredential, caldavDialect, true);
+    }
 
-	@After
-	@Override
-	public void tearDown() throws Exception {
-		log.debug("Removing base collection created during this test.");    	
-		for (String p : addedItems) {
-			fixture.delete(p, false);			
-		}
-		fixture.tearDown();
-	}
+    @After
+    @Override
+    public void tearDown() throws Exception {
+        log.debug("Removing base collection created during this test.");
+        for (String p : addedItems) {
+            fixture.delete(p, false);
+        }
+        fixture.tearDown();
+    }
 
-	/**
-	 * this should return something like
-	 * @see <a href='http://tools.ietf.org/html/rfc4791#section-5.3.1.2'>RFC4791 Section 5.3.1.2</a>
-	 */
-	@Test
-	public void testPrintMkCalendar() throws IOException {
-		HttpMkCalendarMethod mk = new HttpMkCalendarMethod(caldavCredential.home + caldavCredential.collection,
-				"My display Name", "this is my default calendar", "en");
+    /**
+     * this should return something like
+     *
+     * @see <a href='http://tools.ietf.org/html/rfc4791#section-5.3.1.2'>RFC4791 Section 5.3.1.2</a>
+     */
+    @Test
+    public void testPrintMkCalendar() throws IOException {
+        HttpMkCalendarMethod mk =
+                new HttpMkCalendarMethod(
+                        caldavCredential.home + caldavCredential.collection,
+                        "My display Name",
+                        "this is my default calendar",
+                        "en");
 
-		mk.getEntity().writeTo(System.out);
+        mk.getEntity().writeTo(System.out);
+    }
 
-	}
+    @Test
+    @Ignore
+    public void testCreateSubCollection() throws Exception {
+        String collectionPath = fixture.getCollectionPath();
+        addedItems.add("root1/");
 
-	@Test
-	@Ignore
-	public void testCreateSubCollection() throws Exception {
-		String collectionPath = fixture.getCollectionPath();
-		addedItems.add("root1/");
+        HttpMkcol mk = new HttpMkcol(collectionPath + "root1/");
+        fixture.executeMethod(CalDAVStatus.SC_CREATED, mk, true, null, true);
 
-		HttpMkcol mk = new HttpMkcol(collectionPath + "root1/");
-		fixture.executeMethod(CalDAVStatus.SC_CREATED, mk, true, null, true);
+        mk.setURI(URI.create(collectionPath + "root1/sub/"));
+        fixture.executeMethod(CalDAVStatus.SC_CREATED, mk, false, null, true);
+    }
 
-		mk.setURI(URI.create(collectionPath + "root1/sub/"));
-		fixture.executeMethod(CalDAVStatus.SC_CREATED, mk, false, null, true );
-	}
+    @Test
+    public void testCreateRemoveCalendarCollection() throws Exception {
+        String collectionPath = caldavCredential.home + caldavCredential.collection;
 
-	@Test
-	public void testCreateRemoveCalendarCollection() throws Exception{
-		String collectionPath = caldavCredential.home + caldavCredential.collection;
+        HttpMkCalendarMethod mk =
+                new HttpMkCalendarMethod(
+                        collectionPath, "My Display Name", "This is my Default Calendar", "en");
 
-		HttpMkCalendarMethod mk = new HttpMkCalendarMethod(collectionPath,
-				"My Display Name", "This is my Default Calendar", "en");
+        fixture.executeMethod(CalDAVStatus.SC_CREATED, mk, false, null, true);
 
-		fixture.executeMethod(CalDAVStatus.SC_CREATED, mk, false, null, true);
+        // Get collection to make sure it's there.
+        HttpGetMethod get = fixture.getMethodFactory().createGetMethod(collectionPath);
+        fixture.executeMethod(CalDAVStatus.SC_OK, get, false, null, true);
 
-		// Get collection to make sure it's there.
-		HttpGetMethod get = fixture.getMethodFactory().createGetMethod(collectionPath);
-		fixture.executeMethod(CalDAVStatus.SC_OK, get, false, null, true);
+        // Delete collection.
+        HttpDeleteMethod delete = new HttpDeleteMethod(collectionPath);
+        fixture.executeMethod(CalDAVStatus.SC_NO_CONTENT, delete, false, null, true);
 
-		// Delete collection.
-		HttpDeleteMethod delete = new HttpDeleteMethod(collectionPath);
-		fixture.executeMethod(CalDAVStatus.SC_NO_CONTENT, delete, false, null, true);
-
-		// Make sure the collection goes away.
-		fixture.executeMethod(CalDAVStatus.SC_NOT_FOUND, get, false, null, true);
-	}
+        // Make sure the collection goes away.
+        fixture.executeMethod(CalDAVStatus.SC_NOT_FOUND, get, false, null, true);
+    }
 }
