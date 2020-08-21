@@ -5,9 +5,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,45 +17,43 @@
 
 package com.github.caldav4j.methods;
 
+import java.net.URI;
 import net.fortuna.ical4j.model.Calendar;
 
-import java.net.URI;
-
 /**
- * Method factory for creating instances of CalDAV related Methods.
- * This automatically handles, any basic configuration required.
+ * Method factory for creating instances of CalDAV related Methods. This automatically handles, any
+ * basic configuration required.
  */
 public class CalDAV4JMethodFactory extends DAVMethodFactory<Calendar> {
 
-	private static final String HEADER_ACCEPT = "Accept";
-	
-	private boolean validatingOutputter = false;
+    private static final String HEADER_ACCEPT = "Accept";
 
-	/**
-	 * @return True or False based on the Calendar Validating Outputter setting.
-	 */
-	public boolean isCalendarValidatingOutputter() {
-		return validatingOutputter;
-	}
+    private boolean validatingOutputter = false;
 
-	/**
-	 * Set whether the CalendarBuilder is Validating or not.
-	 * @param validatingOutputter Value to set.
-	 */
-	public void setCalendarValidatingOutputter(boolean validatingOutputter) {
-		this.validatingOutputter = validatingOutputter;
-	}
+    /** @return True or False based on the Calendar Validating Outputter setting. */
+    public boolean isCalendarValidatingOutputter() {
+        return validatingOutputter;
+    }
 
-	@Override
-	protected ResourceParser<Calendar> buildResourceParser() {
-		return new CalendarResourceParser(validatingOutputter);
-	}
-	
-	@Override
-	public HttpGetMethod<Calendar> createGetMethod(URI uri) {
-		HttpGetMethod<Calendar> request = super.createGetMethod(uri);
-        request.addHeader(HEADER_ACCEPT, "text/calendar; text/html; text/xml;"); // required for bedework
-		return request;
-	}
+    /**
+     * Set whether the CalendarBuilder is Validating or not.
+     *
+     * @param validatingOutputter Value to set.
+     */
+    public void setCalendarValidatingOutputter(boolean validatingOutputter) {
+        this.validatingOutputter = validatingOutputter;
+    }
 
+    @Override
+    protected ResourceParser<Calendar> buildResourceParser() {
+        return new CalendarResourceParser(validatingOutputter);
+    }
+
+    @Override
+    public HttpGetMethod<Calendar> createGetMethod(URI uri) {
+        HttpGetMethod<Calendar> request = super.createGetMethod(uri);
+        request.addHeader(
+                HEADER_ACCEPT, "text/calendar; text/html; text/xml;"); // required for bedework
+        return request;
+    }
 }

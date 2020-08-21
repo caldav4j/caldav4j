@@ -80,6 +80,12 @@ docker run -d -p 8080:8080 ioggstream/bedework
 mvn clean package -Dcaldav4jUri='http://vbede:bedework@localhost:8080/ucaldav/user/vbede/'
 ```
 
+Before committing, always reformat your code
+
+```sh
+mvn -e spotless:apply
+```
+
 # License
 
 CalDAV4j is licensed under the Apache 2.0 License

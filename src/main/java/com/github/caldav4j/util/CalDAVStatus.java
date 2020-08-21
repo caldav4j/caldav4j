@@ -17,9 +17,7 @@ package com.github.caldav4j.util;
 import org.apache.jackrabbit.webdav.DavServletResponse;
 
 /**
- * Interface containing all the HTTP Status Codes, by extending the {@link DavServletResponse}
- * which in turn extends {@link javax.servlet.http.HttpServletResponse}
+ * Interface containing all the HTTP Status Codes, by extending the {@link DavServletResponse} which
+ * in turn extends {@link javax.servlet.http.HttpServletResponse}
  */
-public interface CalDAVStatus extends DavServletResponse{
-
-}
+public interface CalDAVStatus extends DavServletResponse {}

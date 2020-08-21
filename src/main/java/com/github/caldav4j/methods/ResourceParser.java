@@ -7,10 +7,9 @@ import java.io.Writer;
 
 public interface ResourceParser<T extends Serializable> {
 
-	T read(InputStream in) throws IOException;
-	
-	void write(T resource, Writer writer) throws IOException;
+    T read(InputStream in) throws IOException;
 
-	String getResponseContentType();
-	
+    void write(T resource, Writer writer) throws IOException;
+
+    String getResponseContentType();
 }

@@ -26,40 +26,33 @@ import net.fortuna.ical4j.util.CompatibilityHints;
  * @author <a href="mailto:markhobson@gmail.com">Mark Hobson</a>
  * @version $Id$
  */
-public class ChandlerCalDavDialect implements CalDavDialect
-{
-	// constants --------------------------------------------------------------
+public class ChandlerCalDavDialect implements CalDavDialect {
+    // constants --------------------------------------------------------------
 
-	private static final String PROD_ID_VALUE = "-//Open Source Applications Foundation//NONSGML Chandler Server//EN";
+    private static final String PROD_ID_VALUE =
+            "-//Open Source Applications Foundation//NONSGML Chandler Server//EN";
 
-	// constructors -----------------------------------------------------------
+    // constructors -----------------------------------------------------------
 
-	public ChandlerCalDavDialect()
-	{
-		// Chandler returns invalid newlines on wrapped properties
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
-	}
+    public ChandlerCalDavDialect() {
+        // Chandler returns invalid newlines on wrapped properties
+        CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
+    }
 
-	// CalDavDialect methods --------------------------------------------------
+    // CalDavDialect methods --------------------------------------------------
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ProdId getProdId()
-	{
-		return new ProdId(PROD_ID_VALUE);
-	}
+    /** {@inheritDoc} */
+    public ProdId getProdId() {
+        return new ProdId(PROD_ID_VALUE);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public CalScale getDefaultCalScale()
-	{
-		return CalScale.GREGORIAN;
-	}
+    /** {@inheritDoc} */
+    public CalScale getDefaultCalScale() {
+        return CalScale.GREGORIAN;
+    }
 
-	@Override
-	public boolean isCreateCollection() {
-		return true;
-	}
+    @Override
+    public boolean isCreateCollection() {
+        return true;
+    }
 }

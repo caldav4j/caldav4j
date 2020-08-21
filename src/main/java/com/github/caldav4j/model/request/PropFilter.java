@@ -5,9 +5,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,29 +17,28 @@
 
 package com.github.caldav4j.model.request;
 
-import net.fortuna.ical4j.model.Date;
-import org.apache.jackrabbit.webdav.xml.Namespace;
-import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 import com.github.caldav4j.CalDAVConstants;
 import com.github.caldav4j.exceptions.DOMValidationException;
 import com.github.caldav4j.xml.OutputsDOMBase;
-
 import java.util.*;
+import net.fortuna.ical4j.model.Date;
+import org.apache.jackrabbit.webdav.xml.Namespace;
+import org.apache.jackrabbit.webdav.xml.XmlSerializable;
 
 /**
- * The CALDAV:prop-filter XML element specifies a query targeted at a specific calendar
- * property (e.g., CATEGORIES) scope of the enclosing calendar component.
+ * The CALDAV:prop-filter XML element specifies a query targeted at a specific calendar property
+ * (e.g., CATEGORIES) scope of the enclosing calendar component.
  *
  * <pre>
  *  &lt;!ELEMENT prop-filter (is-defined | time-range | text-match)?
  *                          param-filter*&gt;
  *  &lt;!ATTLIST prop-filter name CDATA #REQUIRED&gt;
  * </pre>
+ *
  * @author bobbyrullo
- * 
  */
 public class PropFilter extends OutputsDOMBase {
-    
+
     public static final String ELEMENT_NAME = "prop-filter";
     public static final String ELEM_IS_DEFINED = "is-defined";
     public static final String ELEM_IS_NOT_DEFINED = "is-not-defined";
@@ -51,46 +50,55 @@ public class PropFilter extends OutputsDOMBase {
     private TimeRange timeRange = null;
     private TextMatch textMatch = null;
     private List<ParamFilter> paramFilters = new ArrayList<>();
-    
-    public PropFilter() {
 
-    }
+    public PropFilter() {}
 
-	/**
-	 * Create a ParamFilter based on the parameters
-	 * @param name               a calendar property name (e.g., ATTENDEE)
-	 * @param isDefined          if true check for existence of property
-	 * @param timeRangeStart     Start date of time range
-	 * @param timeRangeEnd       End date of time range.
-	 * @param textmatchCaseless  Caseless matching of properties
-	 * @param negateCondition    Negate
-	 * @param textMatchCollation Collation, could be "i;ascii-casemap" or "i;octet"
-	 * @param textMatchString    String to match
-	 * @param paramFilters       Param Filters if any.
-	 */
-	public PropFilter(String name,
-            Boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
-            Boolean textmatchCaseless, boolean negateCondition,
-            String textMatchCollation, String textMatchString, List<ParamFilter> paramFilters){
+    /**
+     * Create a ParamFilter based on the parameters
+     *
+     * @param name a calendar property name (e.g., ATTENDEE)
+     * @param isDefined if true check for existence of property
+     * @param timeRangeStart Start date of time range
+     * @param timeRangeEnd End date of time range.
+     * @param textmatchCaseless Caseless matching of properties
+     * @param negateCondition Negate
+     * @param textMatchCollation Collation, could be "i;ascii-casemap" or "i;octet"
+     * @param textMatchString String to match
+     * @param paramFilters Param Filters if any.
+     */
+    public PropFilter(
+            String name,
+            Boolean isDefined,
+            Date timeRangeStart,
+            Date timeRangeEnd,
+            Boolean textmatchCaseless,
+            boolean negateCondition,
+            String textMatchCollation,
+            String textMatchString,
+            List<ParamFilter> paramFilters) {
 
         this.name = name;
 
-        
         if (isDefined != null) {
             this.isDefined = isDefined;
-        } else if (timeRangeStart != null || timeRangeEnd != null){
+        } else if (timeRangeStart != null || timeRangeEnd != null) {
             this.timeRange = new TimeRange(timeRangeStart, timeRangeEnd);
-        } else if (textMatchString != null){
-            this.textMatch = new TextMatch(textmatchCaseless, negateCondition, textMatchCollation,
-            		textMatchString);
+        } else if (textMatchString != null) {
+            this.textMatch =
+                    new TextMatch(
+                            textmatchCaseless,
+                            negateCondition,
+                            textMatchCollation,
+                            textMatchString);
         }
-        if (paramFilters != null){
+        if (paramFilters != null) {
             this.paramFilters = paramFilters;
         }
     }
-    
+
     /**
      * Create a ParamFilter based on the parameters
+     *
      * @deprecated The Full constructor should be used
      * @param name a calendar property name (e.g., ATTENDEE)
      * @param isDefined if true check for existence of property
@@ -100,24 +108,26 @@ public class PropFilter extends OutputsDOMBase {
      * @param textMatchString String to match
      * @param paramFilters Param Filters if any.
      */
-    public PropFilter(String name,
-            boolean isDefined, Date timeRangeStart, Date timeRangeEnd, 
-            Boolean textmatchCaseless, String textMatchString, List<ParamFilter> paramFilters){
+    public PropFilter(
+            String name,
+            boolean isDefined,
+            Date timeRangeStart,
+            Date timeRangeEnd,
+            Boolean textmatchCaseless,
+            String textMatchString,
+            List<ParamFilter> paramFilters) {
 
         this.name = name;
         this.isDefined = isDefined;
-        if (timeRangeStart != null && timeRangeEnd != null){
+        if (timeRangeStart != null && timeRangeEnd != null) {
             this.timeRange = new TimeRange(timeRangeStart, timeRangeEnd);
-        } else if (textMatchString != null){
-            this.textMatch = new TextMatch(textmatchCaseless, false, null,
-            		textMatchString);
+        } else if (textMatchString != null) {
+            this.textMatch = new TextMatch(textmatchCaseless, false, null, textMatchString);
         }
-        if (paramFilters != null){
+        if (paramFilters != null) {
             this.paramFilters = paramFilters;
-        }    	
-
+        }
     }
-     
 
     protected String getElementName() {
         return ELEMENT_NAME;
@@ -129,25 +139,28 @@ public class PropFilter extends OutputsDOMBase {
 
     protected Collection<XmlSerializable> getChildren() {
         ArrayList<XmlSerializable> children = new ArrayList<>();
-        
+
         if (isDefined != null) {
-            children.add(new PropProperty(isDefined ? ELEM_IS_DEFINED :  ELEM_IS_NOT_DEFINED, CalDAVConstants.NAMESPACE_CALDAV));
-        } else if (timeRange != null){
+            children.add(
+                    new PropProperty(
+                            isDefined ? ELEM_IS_DEFINED : ELEM_IS_NOT_DEFINED,
+                            CalDAVConstants.NAMESPACE_CALDAV));
+        } else if (timeRange != null) {
             children.add(timeRange);
-        } else if (textMatch != null){
+        } else if (textMatch != null) {
             children.add(textMatch);
         }
-        
-        if (paramFilters != null && paramFilters.size() > 0){
+
+        if (paramFilters != null && paramFilters.size() > 0) {
             children.addAll(paramFilters);
         }
         return children;
     }
-    
+
     protected String getTextContent() {
         return null;
     }
-    
+
     protected Map<String, String> getAttributes() {
         Map<String, String> m = new HashMap<>();
         m.put(ATTR_NAME, name);
@@ -169,16 +182,16 @@ public class PropFilter extends OutputsDOMBase {
     public void setParamFilters(List<ParamFilter> paramFilters) {
         this.paramFilters = paramFilters;
     }
-    
-    public void addParamFilter(ParamFilter paramFilter){
+
+    public void addParamFilter(ParamFilter paramFilter) {
         paramFilters.add(paramFilter);
     }
 
     public TimeRange getTimeRange() {
         return timeRange;
     }
-    
-    public void setTimeRange(Date start, Date end){
+
+    public void setTimeRange(Date start, Date end) {
         this.timeRange = new TimeRange(start, end);
     }
 
@@ -201,36 +214,38 @@ public class PropFilter extends OutputsDOMBase {
     public void setTextMatch(TextMatch textMatch) {
         this.textMatch = textMatch;
     }
-    
+
     /**
+     *
+     *
      * <pre>
      *  &lt;!ELEMENT prop-filter (is-defined | time-range | text-match)?
      *                          param-filter*&gt;
      *  &lt;!ATTLIST prop-filter name CDATA #REQUIRED&gt;
      *  </pre>
      */
-    public void validate() throws DOMValidationException{
-        if (name == null){
+    public void validate() throws DOMValidationException {
+        if (name == null) {
             throwValidationException("Name is a required property");
         }
-        
-        if ( (isDefined != null) && (timeRange != null || textMatch != null)){
+
+        if ((isDefined != null) && (timeRange != null || textMatch != null)) {
             throwValidationException("isDefined, timeRange and textMatch are mutually exclusive");
         }
-        
+
         if (timeRange != null) {
-            if (textMatch != null){
-                throwValidationException("isDefined, timeRange and textMatch are mutually exclusive");
-            } 
-            
+            if (textMatch != null) {
+                throwValidationException(
+                        "isDefined, timeRange and textMatch are mutually exclusive");
+            }
+
             timeRange.validate();
-        } else if (textMatch != null){
+        } else if (textMatch != null) {
             textMatch.validate();
         }
 
-        if (paramFilters != null){
+        if (paramFilters != null) {
             validate(paramFilters);
         }
-
     }
 }
