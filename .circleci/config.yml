@@ -138,6 +138,7 @@ workflows:
       - deploy:
           requires:
             - owasp
+            - test
           filters:
             <<: *all_tags
             branches:
