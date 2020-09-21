@@ -20,7 +20,7 @@
   <name>CalDav4j</name>
   <groupId>com.github.caldav4j</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -229,7 +229,7 @@
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
-        <version>5.2.1</version>
+        <version>6.0.1</version>
         <executions>
           <execution>
             <goals>
