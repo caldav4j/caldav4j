@@ -8,7 +8,6 @@ import com.github.caldav4j.model.request.*;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -177,7 +176,8 @@ public class GenerateQuery {
     public void setComponent(String component, List<String> props) {
         if (component != null) {
             setRequestedComponent(component);
-            this.requestedComponentProperties = Optional.ofNullable( props ).orElse( new ArrayList<>() );
+            this.requestedComponentProperties =
+                    Optional.ofNullable(props).orElse(new ArrayList<>());
         }
     }
 
@@ -517,13 +517,14 @@ public class GenerateQuery {
             throw new DOMValidationException(e.getMessage(), e);
         }
     }
-    
+
     /**
      * Check whether all properties shall be retrieved
+     *
      * @return <code>true</code> if no component properties are set
      */
     protected boolean isAllProp() {
-    	return this.requestedComponentProperties.isEmpty();
+        return this.requestedComponentProperties.isEmpty();
     }
 
     /**

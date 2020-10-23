@@ -33,7 +33,6 @@ import java.util.List;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -319,28 +318,28 @@ public class GenerateQueryTest extends BaseTestCase {
         s = XMLUtils.prettyPrint(gq.generate());
         log.info(s);
     }
-    
+
     @Test
     public void testSetComponentProperties() {
-    	GenerateQuery generator = new GenerateQuery();
-    	generator.setComponent( Component.VEVENT );
-    	assertTrue( generator.isAllProp() );
-    	
-    	generator = new GenerateQuery();
-    	generator.setComponent( Component.VEVENT + ":" + Property.UID );
-    	generator.setComponent( Component.VEVENT );
-    	assertFalse( generator.isAllProp() );
-    	
-    	generator = new GenerateQuery();
-    	generator.setComponent( Component.VEVENT, null );
-    	assertTrue( generator.isAllProp() );
-    	
-    	generator = new GenerateQuery();
-    	generator.setComponent( Component.VEVENT, Collections.emptyList() );
-    	assertTrue( generator.isAllProp() );
-    	
-    	generator = new GenerateQuery();
-    	generator.setComponent( Component.VEVENT, Arrays.asList( Property.UID, Property.DTSTART ) );
-    	assertFalse( generator.isAllProp() );
+        GenerateQuery generator = new GenerateQuery();
+        generator.setComponent(Component.VEVENT);
+        assertTrue(generator.isAllProp());
+
+        generator = new GenerateQuery();
+        generator.setComponent(Component.VEVENT + ":" + Property.UID);
+        generator.setComponent(Component.VEVENT);
+        assertFalse(generator.isAllProp());
+
+        generator = new GenerateQuery();
+        generator.setComponent(Component.VEVENT, null);
+        assertTrue(generator.isAllProp());
+
+        generator = new GenerateQuery();
+        generator.setComponent(Component.VEVENT, Collections.emptyList());
+        assertTrue(generator.isAllProp());
+
+        generator = new GenerateQuery();
+        generator.setComponent(Component.VEVENT, Arrays.asList(Property.UID, Property.DTSTART));
+        assertFalse(generator.isAllProp());
     }
 }
