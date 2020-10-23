@@ -16,6 +16,7 @@
 
 package com.github.caldav4j.util;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.github.caldav4j.BaseTestCase;
@@ -26,9 +27,13 @@ import com.github.caldav4j.methods.PutGetTest;
 import com.github.caldav4j.model.request.*;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Property;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -313,5 +318,29 @@ public class GenerateQueryTest extends BaseTestCase {
 
         s = XMLUtils.prettyPrint(gq.generate());
         log.info(s);
+    }
+    
+    @Test
+    public void testSetComponentProperties() {
+    	GenerateQuery generator = new GenerateQuery();
+    	generator.setComponent( Component.VEVENT );
+    	assertTrue( generator.isAllProp() );
+    	
+    	generator = new GenerateQuery();
+    	generator.setComponent( Component.VEVENT + ":" + Property.UID );
+    	generator.setComponent( Component.VEVENT );
+    	assertFalse( generator.isAllProp() );
+    	
+    	generator = new GenerateQuery();
+    	generator.setComponent( Component.VEVENT, null );
+    	assertTrue( generator.isAllProp() );
+    	
+    	generator = new GenerateQuery();
+    	generator.setComponent( Component.VEVENT, Collections.emptyList() );
+    	assertTrue( generator.isAllProp() );
+    	
+    	generator = new GenerateQuery();
+    	generator.setComponent( Component.VEVENT, Arrays.asList( Property.UID, Property.DTSTART ) );
+    	assertFalse( generator.isAllProp() );
     }
 }
