@@ -190,11 +190,15 @@ public class GenerateQuery {
             Comp vEventComp = new Comp();
             vEventComp.setName(requestedComponent);
 
-            for (String propertyName : requestedComponentProperties) {
-                // add properties to VCALENDAR.VEVENT
-                vEventComp.addProp(
-                        new CalDAVProp(
-                                propertyName, false, false)); // @see modification to CalDAVProp
+            if (requestedComponentProperties.isEmpty()) {
+                vEventComp.setAllProp(true);
+            } else {
+                for (String propertyName : requestedComponentProperties) {
+                    // add properties to VCALENDAR.VEVENT
+                    vEventComp.addProp(
+                            new CalDAVProp(
+                                    propertyName, false, false)); // @see modification to CalDAVProp
+                }
             }
             // add only one component...maybe more ;)
             List<Comp> comps = new ArrayList<>();
@@ -206,7 +210,10 @@ public class GenerateQuery {
                 log.warn("Comp not valid");
             }
             vCalendarComp.setComps(comps);
+        } else {
+            vCalendarComp.setAllProp(true);
         }
+
         return vCalendarComp;
     }
 
@@ -377,9 +384,7 @@ public class GenerateQuery {
 
         CalendarQuery query = new CalendarQuery();
         query.addProperty(CalDAVConstants.DNAME_GETETAG);
-        if (allProp) {
-            query.addProperty(CalDAVConstants.DNAME_ALLPROP);
-        }
+
         if (!noCalendarData) {
             // TODO limit-recurrence-set
             CalendarData calendarData = new CalendarData();
@@ -392,6 +397,12 @@ public class GenerateQuery {
 
             query.setCalendarDataProp(calendarData);
         } else {
+            if (allProp) {
+                // only set the allprop tag if no calendar-data is included, otherwise it's
+                // set on the calendar-data comp if needed
+                query.addProperty(CalDAVConstants.DNAME_ALLPROP);
+            }
+
             if (this.recurrenceSetEnd != null || this.recurrenceSetStart != null) {
                 throw new CalDAV4JProtocolException(
                         "Bad query: you set noCalendarData but you have limit-recurrence-set");
