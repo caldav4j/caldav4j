@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.fortuna.ical4j.model.Calendar;
@@ -59,7 +60,6 @@ public class GenerateQuery {
     private List<String> filterComponentProperties = new ArrayList<>();
     private Date timeRangeStart = null;
     private Date timeRangeEnd = null;
-    private boolean allProp = true;
     private boolean noCalendarData = false;
 
     public void setNoCalendarData(boolean p) {
@@ -161,7 +161,6 @@ public class GenerateQuery {
 
             // if a list of properties is specified, then remove the allprop tag
             if (c.length > 1) {
-                allProp = false;
                 cl = c[1].trim().split("\\s*,\\s*");
                 this.requestedComponentProperties = Arrays.asList(cl);
             }
@@ -177,7 +176,8 @@ public class GenerateQuery {
     public void setComponent(String component, List<String> props) {
         if (component != null) {
             setRequestedComponent(component);
-            this.requestedComponentProperties = props;
+            this.requestedComponentProperties =
+                    Optional.ofNullable(props).orElse(new ArrayList<>());
         }
     }
 
@@ -377,7 +377,7 @@ public class GenerateQuery {
 
         CalendarQuery query = new CalendarQuery();
         query.addProperty(CalDAVConstants.DNAME_GETETAG);
-        if (allProp) {
+        if (isAllProp()) {
             query.addProperty(CalDAVConstants.DNAME_ALLPROP);
         }
         if (!noCalendarData) {
@@ -516,6 +516,15 @@ public class GenerateQuery {
         } catch (DOMException e) {
             throw new DOMValidationException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Check whether all properties shall be retrieved
+     *
+     * @return <code>true</code> if no component properties are set
+     */
+    protected boolean isAllProp() {
+        return this.requestedComponentProperties.isEmpty();
     }
 
     /**
