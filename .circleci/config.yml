@@ -89,6 +89,11 @@ jobs:
           if [ "$CIRCLE_BRANCH" == "master" -a "$IS_SNAPSHOT" == "" ]; then
             circleci step halt
           fi
+    # To generate and import the key, run:
+    #   gpg --generate-key
+    #   add the output of the following command as the GPG_KEY environment variable to the CI:
+    #     gpg --armor --export-secret-keys $KEY_ID --output | sed -e ':a;N;$!ba;s/\n/\\n/g'
+    #   add the GPG_PASSPHRASE environment variable to the CI.
     - run:
         name: import GPG key
         command: echo -e "$GPG_KEY" | gpg --import --no-tty --batch --yes
