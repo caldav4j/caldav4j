@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
@@ -622,7 +621,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase {
                 // DavMail may send a null etag - use a random uuid to disable caching.
                 etag = UUID.randomUUID().toString();
             }
-            
+
             Calendar calendar = null;
 
             if (isTolerantParsing()) {
