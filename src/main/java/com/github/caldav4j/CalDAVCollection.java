@@ -33,6 +33,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
@@ -611,7 +612,16 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase {
             }
 
             String href = getHref(path);
-            String etag = response.getFirstHeader(CalDAVConstants.HEADER_ETAG).getValue();
+
+            Header etagHeader = response.getFirstHeader(CalDAVConstants.HEADER_ETAG);
+            String etag;
+            if (etagHeader != null) {
+                etag = etagHeader.getValue();
+            } else {
+                // DavMail may send a null etag - use a random uuid to disable caching.
+                etag = UUID.randomUUID().toString();
+            }
+
             Calendar calendar = null;
 
             if (isTolerantParsing()) {
