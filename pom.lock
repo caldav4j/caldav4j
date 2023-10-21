@@ -4,14 +4,10 @@ The following files have been resolved:
    org.apache.logging.log4j:log4j-api:jar:2.17.1:test[36m -- module org.apache.logging.log4j[m
    org.apache.logging.log4j:log4j-core:jar:2.17.1:test[36m -- module org.apache.logging.log4j.core[0;1m [auto][m
    org.apache.logging.log4j:log4j-slf4j-impl:jar:2.17.1:test[36m -- module org.apache.logging.log4j.slf4j[0;1m [auto][m
-   org.mnode.ical4j:ical4j:jar:3.2.13:compile[36m -- module org.mnode.ical4j.core[0;1m [auto][m
-   commons-codec:commons-codec:jar:1.15:compile[36m -- module org.apache.commons.codec[0;1m [auto][m
-   org.apache.commons:commons-lang3:jar:3.12.0:compile[36m -- module org.apache.commons.lang3[0;1m [auto][m
-   org.apache.commons:commons-collections4:jar:4.4:compile[36m -- module org.apache.commons.collections4[0;1m [auto][m
-   commons-validator:commons-validator:jar:1.7:compile[36m -- module commons.validator[0;1;33m (auto)[m
-   commons-beanutils:commons-beanutils:jar:1.9.4:compile[36m -- module commons.beanutils[0;1;33m (auto)[m
-   commons-digester:commons-digester:jar:2.1:compile[36m -- module commons.digester[0;1;33m (auto)[m
-   commons-logging:commons-logging:jar:1.2:compile[36m -- module commons.logging[0;1;33m (auto)[m
+   org.mnode.ical4j:ical4j:jar:3.0.1:compile
+   commons-codec:commons-codec:jar:1.10:compile[36m -- module commons.codec[0;1;33m (auto)[m
+   org.apache.commons:commons-lang3:jar:3.6:compile[36m -- module org.apache.commons.lang3[0;1m [auto][m
+   org.apache.commons:commons-collections4:jar:4.1:compile[36m -- module commons.collections4[0;1;33m (auto)[m
    javax.servlet:javax.servlet-api:jar:4.0.1:provided[36m -- module javax.servlet.api[0;1;33m (auto)[m
    org.apache.jackrabbit:jackrabbit-webdav:jar:2.20.12:compile[36m -- module jackrabbit.webdav[0;1;33m (auto)[m
    org.apache.httpcomponents:httpcore:jar:4.4.16:compile[36m -- module org.apache.httpcomponents.httpcore[0;1m [auto][m
