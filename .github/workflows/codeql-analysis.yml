@@ -12,7 +12,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [master, devel]
   schedule:
-    - cron: '0 20 * * 0'
+  - cron: '0 20 * * 0'
 
 jobs:
   analyze:
@@ -27,7 +27,7 @@ jobs:
         # language: ['java']
         language: ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
         # Learn more...
-        # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
+    # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
     - name: Checkout repository
@@ -48,13 +48,15 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file. 
-        # Prefix the list here with "+" to use these queries and those in the config file.
-        # queries: ./path/to/local/query, your-org/your-repo/queries@main
-
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
+    - name: action-maven
+      # You may pin to the exact commit or the version.
+      # uses: comchangs/action-maven@54db702e085ac767dad94c87e84499afb9d77162
+      uses: comchangs/action-maven@v0.4-beta
+      with:
+        action-maven: mvn install -DskipTests
     - name: Autobuild
+      # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
+      # If this step fails, then you should remove it and run the build manually (see below)
       uses: github/codeql-action/autobuild@v2
 
     # ℹ️ Command-line programs to run using the OS shell.
