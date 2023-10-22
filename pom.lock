@@ -1,0 +1,19 @@
+
+The following files have been resolved:
+   org.slf4j:slf4j-api:jar:1.7.25:compile[36m -- module slf4j.api[0;1;33m (auto)[m
+   org.apache.logging.log4j:log4j-api:jar:2.17.1:test[36m -- module org.apache.logging.log4j[m
+   org.apache.logging.log4j:log4j-core:jar:2.17.1:test[36m -- module org.apache.logging.log4j.core[0;1m [auto][m
+   org.apache.logging.log4j:log4j-slf4j-impl:jar:2.17.1:test[36m -- module org.apache.logging.log4j.slf4j[0;1m [auto][m
+   org.mnode.ical4j:ical4j:jar:3.0.1:compile
+   commons-codec:commons-codec:jar:1.10:compile[36m -- module commons.codec[0;1;33m (auto)[m
+   org.apache.commons:commons-lang3:jar:3.6:compile[36m -- module org.apache.commons.lang3[0;1m [auto][m
+   org.apache.commons:commons-collections4:jar:4.1:compile[36m -- module commons.collections4[0;1;33m (auto)[m
+   javax.servlet:javax.servlet-api:jar:4.0.1:provided[36m -- module javax.servlet.api[0;1;33m (auto)[m
+   org.apache.jackrabbit:jackrabbit-webdav:jar:2.20.12:compile[36m -- module jackrabbit.webdav[0;1;33m (auto)[m
+   org.apache.httpcomponents:httpcore:jar:4.4.16:compile[36m -- module org.apache.httpcomponents.httpcore[0;1m [auto][m
+   org.slf4j:jcl-over-slf4j:jar:2.0.9:compile[36m -- module org.apache.commons.logging[m
+   org.apache.httpcomponents:httpclient:jar:4.5.13:compile[36m -- module org.apache.httpcomponents.httpclient[0;1m [auto][m
+   net.sf.ehcache:ehcache:jar:2.10.6:compile[36m -- module ehcache[0;1;33m (auto)[m
+   junit:junit:jar:4.13.2:test[36m -- module junit[0;1m [auto][m
+   org.hamcrest:hamcrest-core:jar:1.3:test[36m -- module hamcrest.core[0;1;33m (auto)[m
+
