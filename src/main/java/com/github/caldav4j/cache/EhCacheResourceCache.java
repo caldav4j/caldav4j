@@ -121,7 +121,9 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         this.uidToHrefCache = uidToPathCache;
     }
 
-    /** @see CalDAVResourceCache#getHrefForEventUID(String) */
+    /**
+     * @see CalDAVResourceCache#getHrefForEventUID(String)
+     */
     public synchronized String getHrefForEventUID(String uid)
             throws com.github.caldav4j.exceptions.CacheException {
         Element e = null;
@@ -135,7 +137,9 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         return e == null ? null : (String) e.getObjectValue();
     }
 
-    /** @see CalDAVResourceCache#getResource(String) */
+    /**
+     * @see CalDAVResourceCache#getResource(String)
+     */
     public synchronized CalDAVResource getResource(String href)
             throws com.github.caldav4j.exceptions.CacheException {
         Element e = null;
@@ -172,7 +176,9 @@ public class EhCacheResourceCache implements CalDAVResourceCache {
         }
     }
 
-    /** @see CalDAVResourceCache#removeResource(String) */
+    /**
+     * @see CalDAVResourceCache#removeResource(String)
+     */
     public synchronized void removeResource(String href)
             throws com.github.caldav4j.exceptions.CacheException {
         CalDAVResource resource = getResource(href);

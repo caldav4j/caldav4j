@@ -26,7 +26,7 @@ import java.io.IOException;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -92,8 +92,8 @@ public class HttpClientTest {
     private static Calendar createCalendar() {
         Calendar calendar = new Calendar();
 
-        calendar.getProperties().add(new ProdId("fake"));
-        calendar.getProperties().add(Version.VERSION_2_0);
+        calendar.add(new ProdId("fake"));
+        calendar.add(ImmutableVersion.VERSION_2_0);
 
         return calendar;
     }

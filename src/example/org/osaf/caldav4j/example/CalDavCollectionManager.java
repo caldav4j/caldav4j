@@ -210,7 +210,7 @@ public class CalDavCollectionManager extends CalDAVCalendarCollection {
 					+"-" + UUID.randomUUID().toString()
 					+"-" + getUsername() );
 			
-			ve.getProperties().add(uid);
+			ve.add(uid);
 		}
 
 		addEvent(client, ve, null);

@@ -35,6 +35,7 @@ public class OptionsTest extends BaseTestCase {
 
     public static final String OUTBOX = "/Outbox/";
     public static final String INBOX = "/Inbox/";
+
     // private CalDAV4JMethodFactory methodFactory = new CalDAV4JMethodFactory();
 
     @Before

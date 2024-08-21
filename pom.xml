@@ -20,7 +20,7 @@
   <name>CalDav4j</name>
   <groupId>com.github.caldav4j</groupId>
   <artifactId>caldav4j</artifactId>
-  <version>1.0.5-SNAPSHOT</version>
+  <version>2.0.1</version>
   <packaging>jar</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -77,7 +77,7 @@
     <dependency>
       <groupId>org.mnode.ical4j</groupId>
       <artifactId>ical4j</artifactId>
-      <version>3.0.1</version>
+      <version>4.0.2</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -146,14 +146,14 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
+            <source>11</source>
+            <target>11</target>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.0</version>
+          <version>3.3.1</version>
           <configuration>
             <excludes>
               <exclude>**/*TestCase.java</exclude>
@@ -174,13 +174,13 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.0.2</version>
+        <version>2.43.0</version>
         <configuration>
           <java>
             <!-- no need to specify files, inferred automatically, but you can if you want -->
             <!-- apply a specific flavor of google-java-format -->
             <googleJavaFormat>
-              <version>1.8</version>
+              <version>1.23.0</version>
               <style>AOSP</style>
             </googleJavaFormat>
           </java>

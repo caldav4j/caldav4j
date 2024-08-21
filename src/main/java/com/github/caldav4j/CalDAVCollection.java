@@ -35,15 +35,14 @@ import java.util.List;
 import java.util.Random;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Uid;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.immutable.ImmutableCalScale;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
@@ -68,6 +67,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CalDAVCollection extends CalDAVCalendarCollectionBase {
     private static final Logger log = LoggerFactory.getLogger(CalDAVCollection.class);
+
     // configuration settings
 
     public CalDAVCollection() {}
@@ -198,11 +198,10 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase {
 
         CalDAVResource resource = getCalDAVResourceByUID(httpClient, component, uid);
         Calendar calendar = resource.getCalendar();
-        ComponentList<CalendarComponent> eventList =
-                calendar.getComponents().getComponents(component);
+        List<CalendarComponent> eventList = calendar.getComponents(component);
 
         // get a list of components to remove
-        List<Component> componentsToRemove = new ArrayList<>();
+        List<CalendarComponent> componentsToRemove = new ArrayList<>();
         boolean hasOtherEvents = false;
         for (CalendarComponent event : eventList) {
             String curUID = ICalendarUtils.getUIDValue(event);
@@ -218,13 +217,13 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase {
         // and PUT the calendar
         //
         if (hasOtherEvents) {
-            if (componentsToRemove.size() == 0) {
+            if (componentsToRemove.isEmpty()) {
                 throw new ResourceNotFoundException(
                         ResourceNotFoundException.IdentifierType.UID, uid);
             }
 
-            for (Component removeMe : componentsToRemove) {
-                calendar.getComponents().remove(removeMe);
+            for (CalendarComponent removeMe : componentsToRemove) {
+                calendar.remove(removeMe);
             }
             put(
                     httpClient,
@@ -327,13 +326,13 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase {
     public String add(HttpClient httpClient, CalendarComponent vevent, VTimeZone timezone)
             throws CalDAV4JException {
         Calendar calendar = new Calendar();
-        calendar.getProperties().add(new ProdId(prodId));
-        calendar.getProperties().add(Version.VERSION_2_0);
-        calendar.getProperties().add(CalScale.GREGORIAN);
+        calendar.add(new ProdId(prodId));
+        calendar.add(ImmutableVersion.VERSION_2_0);
+        calendar.add(ImmutableCalScale.GREGORIAN);
         if (timezone != null) {
-            calendar.getComponents().add(timezone);
+            calendar.add(timezone);
         }
-        calendar.getComponents().add(vevent);
+        calendar.add(vevent);
 
         return add(httpClient, calendar);
     }
@@ -350,6 +349,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase {
     public String add(HttpClient httpClient, Calendar c) throws CalDAV4JException {
         return add(httpClient, c, true);
     }
+
     /**
      * Adds a calendar object to caldav collection using "UID.ics" as file name. <br>
      * <br>
@@ -406,12 +406,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase {
 
             int statusCode = response.getStatusLine().getStatusCode();
             switch (statusCode) {
-                    // Succeeded
+                // Succeeded
                 case CalDAVStatus.SC_CREATED:
                 case CalDAVStatus.SC_NO_CONTENT:
                     didIt = true;
                     break;
-                    // Another calendar with the same UID exists. Thus, retry.
+                // Another calendar with the same UID exists. Thus, retry.
                 case CalDAVStatus.SC_PRECONDITION_FAILED:
                     if (attemptRetry) continue;
                 default:
@@ -440,13 +440,13 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase {
         // let's find the master event first!
         VEvent originalVEvent = ICalendarUtils.getMasterEvent(calendar, uid);
 
-        calendar.getComponents().remove(originalVEvent);
-        calendar.getComponents().add(vevent);
+        calendar.remove(originalVEvent);
+        calendar.add(vevent);
 
         if (timezone != null) {
             VTimeZone originalVTimeZone = ICalendarUtils.getTimezone(calendar);
-            if (originalVTimeZone != null) calendar.getComponents().remove(originalVTimeZone);
-            calendar.getComponents().add(timezone);
+            if (originalVTimeZone != null) calendar.remove(originalVTimeZone);
+            calendar.add(timezone);
         }
 
         put(
@@ -758,8 +758,12 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase {
         List<Calendar> calendarList = getCalendarLight(httpClient, query);
 
         for (Calendar cal : calendarList) {
-            propertyList.add(
-                    ICalendarUtils.getPropertyValue(cal.getComponent(componentName), propertyName));
+            cal.getComponent(componentName)
+                    .ifPresent(
+                            component ->
+                                    propertyList.add(
+                                            ICalendarUtils.getPropertyValue(
+                                                    component, propertyName)));
         }
 
         return propertyList;
@@ -931,6 +935,7 @@ public class CalDAVCollection extends CalDAVCalendarCollectionBase {
 
         return list;
     }
+
     //
     // MultiGet queries
     //

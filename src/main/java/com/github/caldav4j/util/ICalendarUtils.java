@@ -21,6 +21,8 @@ import com.github.caldav4j.CalDAVResource;
 import com.github.caldav4j.exceptions.CalDAV4JException;
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Optional;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -138,7 +140,8 @@ public class ICalendarUtils {
      * @return VEvent Object representing the first event, else null if not present.
      */
     public static VEvent getFirstEvent(net.fortuna.ical4j.model.Calendar calendar) {
-        return (VEvent) calendar.getComponents().getComponent(Component.VEVENT);
+        Optional<CalendarComponent> component = calendar.getComponent(Component.VEVENT);
+        return (VEvent) component.orElse(null);
     }
 
     /**
@@ -149,7 +152,7 @@ public class ICalendarUtils {
      * @return null if not present
      */
     public static CalendarComponent getFirstComponent(CalDAVResource resource, String component) {
-        return resource.getCalendar().getComponent(component);
+        return resource.getCalendar().getComponent(component).orElse(null);
     }
 
     /**
@@ -251,8 +254,7 @@ public class ICalendarUtils {
      * @return Return the Property represented by the name, null if not found.
      */
     public static String getPropertyValue(Component component, String propertyName) {
-        Property property = component.getProperties().getProperty(propertyName);
-        return property == null ? null : property.getValue();
+        return component.getProperty(propertyName).map(Property::getValue).orElse(null);
     }
 
     /**
@@ -307,8 +309,7 @@ public class ICalendarUtils {
      * @return Returns true if Component contains the property
      */
     public static boolean hasProperty(Component c, String propName) {
-        PropertyList<?> l = c.getProperties().getProperties(propName);
-        return !l.isEmpty();
+        return !c.getProperties(propName).isEmpty();
     }
 
     /**
@@ -319,8 +320,7 @@ public class ICalendarUtils {
      * @return VEvent that does not have Recurrence ID
      */
     public static VEvent getMasterEvent(net.fortuna.ical4j.model.Calendar calendar, String uid) {
-        ComponentList<CalendarComponent> clist =
-                calendar.getComponents().getComponents(Component.VEVENT);
+        List<CalendarComponent> clist = calendar.getComponents(Component.VEVENT);
         for (CalendarComponent o : clist) {
             VEvent curEvent = (VEvent) o;
             String curUid = getUIDValue(curEvent);
@@ -338,8 +338,7 @@ public class ICalendarUtils {
      * @return VEvent that does not have Recurrence ID
      */
     public static VTimeZone getTimezone(net.fortuna.ical4j.model.Calendar calendar) {
-        ComponentList<CalendarComponent> clist =
-                calendar.getComponents().getComponents(Component.VTIMEZONE);
+        List<CalendarComponent> clist = calendar.getComponents(Component.VTIMEZONE);
         for (CalendarComponent o : clist) {
             return (VTimeZone) o;
         }
@@ -356,7 +355,7 @@ public class ICalendarUtils {
     // TODO create junit
     public static CalendarComponent getMasterComponent(
             net.fortuna.ical4j.model.Calendar calendar, String uid) {
-        ComponentList<CalendarComponent> clist = calendar.getComponents();
+        List<CalendarComponent> clist = calendar.getComponents();
         for (CalendarComponent curEvent : clist) {
             String curUid = getUIDValue(curEvent);
             if (uid.equals(curUid) && !hasProperty(curEvent, Property.RECURRENCE_ID)) {
@@ -375,7 +374,7 @@ public class ICalendarUtils {
     // TODO create junit
     public static CalendarComponent getComponentOccurence(
             net.fortuna.ical4j.model.Calendar calendar, String uid, String recurrenceId) {
-        ComponentList<CalendarComponent> clist = calendar.getComponents();
+        List<CalendarComponent> clist = calendar.getComponents();
         for (CalendarComponent curEvent : clist) {
             String curUid = getUIDValue(curEvent);
             String curRid = getPropertyValue(curEvent, Property.RECURRENCE_ID);
@@ -397,7 +396,7 @@ public class ICalendarUtils {
     public static net.fortuna.ical4j.model.Calendar removeOccurrence(
             net.fortuna.ical4j.model.Calendar calendar, String uid, String recurrenceId)
             throws ParseException {
-        ComponentList<CalendarComponent> clist = calendar.getComponents();
+        List<CalendarComponent> clist = calendar.getComponents();
         CalendarComponent master = null;
         CalendarComponent toBeRemoved = null;
         for (CalendarComponent curEvent : clist) {
@@ -417,7 +416,7 @@ public class ICalendarUtils {
         if (master != null) {
             ExDate x = new ExDate();
             x.setValue(recurrenceId);
-            master.getProperties().add(x);
+            master.add(x);
         }
         return calendar;
     }
@@ -429,12 +428,9 @@ public class ICalendarUtils {
      * @param property Property to add or update.
      */
     public static void addOrReplaceProperty(Component component, Property property) {
-        Property oldProp = component.getProperties().getProperty(property.getName());
-        if (oldProp != null) {
-            component.getProperties().remove(oldProp);
-        }
+        component.getProperty(property.getName()).ifPresent(component::remove);
 
-        component.getProperties().add(property);
+        component.add(property);
     }
 
     /**
@@ -446,11 +442,11 @@ public class ICalendarUtils {
      */
     public static Uid setUID(net.fortuna.ical4j.model.Calendar calendar) throws CalDAV4JException {
         Component comp = getFirstComponent(calendar);
-        Uid uid = comp.getProperties().getProperty(Property.UID);
+        Uid uid = (Uid) comp.getProperty(Property.UID).orElse(null);
         if (uid == null) {
             RandomUidGenerator generator = new RandomUidGenerator();
             uid = generator.generateUid();
-            comp.getProperties().add(uid);
+            comp.add(uid);
         }
         return uid;
     }

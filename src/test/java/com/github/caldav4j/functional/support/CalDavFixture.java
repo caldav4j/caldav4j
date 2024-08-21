@@ -40,8 +40,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
@@ -359,12 +362,29 @@ public class CalDavFixture {
     }
 
     /** put an event on a caldav store using UID.ics This method returns the path assocuated. */
-    public String getCaldavPutPath(String s) {
+    /*public String getCaldavPutPath(String s) {
         Calendar cal = BaseTestCase.getCalendarResource(s);
 
         String resPath = // collectionPath + "/" +
                 cal.getComponent("VEVENT").getProperty("UID").getValue() + ".ics";
         return resPath;
+    }*/
+
+    public String getCaldavPutPath(String s) {
+        Calendar cal = BaseTestCase.getCalendarResource(s);
+
+        // Safely unwrap the Optional and handle the case where the component is not present
+        Optional<CalendarComponent> optionalComponent = cal.getComponent("VEVENT");
+
+        if (optionalComponent.isPresent()) {
+            Optional<Property> property = optionalComponent.get().getProperty("UID");
+
+            if (property.isPresent()) {
+                return property.get().getValue() + ".ics";
+            }
+        }
+
+        return null;
     }
 
     public CalDAV4JMethodFactory getMethodFactory() {

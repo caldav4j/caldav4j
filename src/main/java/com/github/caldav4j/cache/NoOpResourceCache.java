@@ -36,19 +36,27 @@ public class NoOpResourceCache implements CalDAVResourceCache {
 
     private NoOpResourceCache() {}
 
-    /** @see CalDAVResourceCache#getHrefForEventUID(String) */
+    /**
+     * @see CalDAVResourceCache#getHrefForEventUID(String)
+     */
     public String getHrefForEventUID(String uid) {
         return null;
     }
 
-    /** @see CalDAVResourceCache#getResource(String) */
+    /**
+     * @see CalDAVResourceCache#getResource(String)
+     */
     public CalDAVResource getResource(String href) {
         return null;
     }
 
-    /** @see CalDAVResourceCache#putResource(CalDAVResource) */
+    /**
+     * @see CalDAVResourceCache#putResource(CalDAVResource)
+     */
     public void putResource(CalDAVResource calDAVResource) {}
 
-    /** @see CalDAVResourceCache#removeResource(String) */
+    /**
+     * @see CalDAVResourceCache#removeResource(String)
+     */
     public void removeResource(String href) {}
 }

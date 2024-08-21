@@ -62,7 +62,9 @@ public class Prop<T> extends PropProperty<T> {
         super(ELEMENT_NAME, null, CalDAVConstants.NAMESPACE_WEBDAV, null, children);
     }
 
-    /** @return Return true if children are empty, false otherwise. */
+    /**
+     * @return Return true if children are empty, false otherwise.
+     */
     public boolean isEmpty() {
         return this.isChildrenEmpty();
     }

@@ -374,6 +374,7 @@ public class GenerateQuery {
     public CalendarQuery generateQuery() throws CalDAV4JException {
         return generate();
     }
+
     /**
      * This should parse QueryGenerator attributes and create the CalendarQuery
      *
@@ -438,21 +439,27 @@ public class GenerateQuery {
 
     //  remove trailing spaces from queries and get better input
 
-    /** @param c Set the component, also this removes the trailing spaces */
+    /**
+     * @param c Set the component, also this removes the trailing spaces
+     */
     public void setRequestedComponent(String c) {
         if (c != null) {
             this.requestedComponent = c.trim();
         }
     }
 
-    /** @param c Set the Filter Component, after removing trailing spaces. */
+    /**
+     * @param c Set the Filter Component, after removing trailing spaces.
+     */
     public void setFilterComponent(String c) {
         if (c != null) {
             this.filterComponent = c.trim();
         }
     }
 
-    /** @param a Set Filter Properties */
+    /**
+     * @param a Set Filter Properties
+     */
     public void setFilterComponentProperties(List<String> a) {
         // if passed variable is null, a new ArrayList<String> remains
         if (a != null) {
@@ -460,7 +467,9 @@ public class GenerateQuery {
         }
     }
 
-    /** @param requestedComponentProperties Set Component Properties */
+    /**
+     * @param requestedComponentProperties Set Component Properties
+     */
     public void setRequestedComponentProperties(List<String> requestedComponentProperties) {
         if (requestedComponentProperties != null) {
             this.requestedComponentProperties = requestedComponentProperties;

@@ -19,10 +19,9 @@ package com.github.caldav4j;
 import com.github.caldav4j.functional.support.CaldavFixtureHarness;
 import com.github.caldav4j.methods.HttpPropFindMethod;
 import com.github.caldav4j.util.CalDAVStatus;
-import net.fortuna.ical4j.model.DateList;
-import net.fortuna.ical4j.model.DateTime;
+import java.time.LocalDateTime;
+import java.util.List;
 import net.fortuna.ical4j.model.Recur;
-import net.fortuna.ical4j.model.parameter.Value;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -84,13 +83,12 @@ public class FunTest extends BaseTestCase {
 
     public static void main(String args[]) {
         try {
-            Recur recur = new Recur("FREQ=HOURLY");
-            DateTime startDate = new DateTime("20060101T010000Z");
-            DateTime endDate = new DateTime("20060105T050000Z");
-            DateTime baseDate = new DateTime("20050101T033300");
-            DateList dateList = recur.getDates(baseDate, startDate, endDate, Value.DATE_TIME);
-            for (int x = 0; x < dateList.size(); x++) {
-                DateTime d = (DateTime) dateList.get(x);
+            Recur<LocalDateTime> recur = new Recur<>("FREQ=HOURLY");
+            LocalDateTime startDate = LocalDateTime.parse("20060101T010000Z");
+            LocalDateTime endDate = LocalDateTime.parse("20060105T050000Z");
+            LocalDateTime baseDate = LocalDateTime.parse("20050101T033300");
+            List<LocalDateTime> dateList = recur.getDates(baseDate, startDate, endDate);
+            for (LocalDateTime d : dateList) {
                 log.info(d.toString());
             }
         } catch (Exception e) {

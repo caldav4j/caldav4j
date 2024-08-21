@@ -25,9 +25,9 @@ import java.util.Set;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.immutable.ImmutableCalScale;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 
 /**
  * This class is a wrapper for the all the properties of the POST and PUT Method requests.
@@ -109,12 +109,12 @@ public class CalendarRequest {
         if (prodId == null) prodId = CalDAVConstants.PROC_ID_DEFAULT;
 
         Calendar calendar = new Calendar();
-        calendar.getProperties().add(new ProdId(prodId));
-        calendar.getProperties().add(Version.VERSION_2_0);
-        calendar.getProperties().add(CalScale.GREGORIAN);
-        calendar.getComponents().add(vevent);
+        calendar.add(new ProdId(prodId));
+        calendar.add(ImmutableVersion.VERSION_2_0);
+        calendar.add(ImmutableCalScale.GREGORIAN);
+        calendar.add(vevent);
         if (vtimeZone != null) {
-            calendar.getComponents().add(vtimeZone);
+            calendar.add(vtimeZone);
         }
         this.calendar = calendar;
     }

@@ -329,7 +329,7 @@ public class CalDAV4JMethodFactory {
      * @return the instance
      */
     public HttpGetMethod createGetMethod(String uri) {
-        return new HttpGetMethod(uri, getCalendarBuilderInstance());
+        return new HttpGetMethod(uri, new CalendarBuilder());
     }
 
     /**
@@ -398,7 +398,9 @@ public class CalDAV4JMethodFactory {
         return new HttpDeleteMethod(uri, etag);
     }
 
-    /** @return True or False based on the Calendar Validating Outputter setting. */
+    /**
+     * @return True or False based on the Calendar Validating Outputter setting.
+     */
     public boolean isCalendarValidatingOutputter() {
         return validatingOutputter;
     }

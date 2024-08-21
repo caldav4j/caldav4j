@@ -52,7 +52,9 @@ public class CompFilter extends OutputsDOMBase {
     private List<PropFilter> propFilters = new ArrayList<>();
     private String name = null;
 
-    /** @param name a calendar object or calendar component type (e.g., VEVENT) */
+    /**
+     * @param name a calendar object or calendar component type (e.g., VEVENT)
+     */
     public CompFilter(String name) {
         this.name = name;
     }

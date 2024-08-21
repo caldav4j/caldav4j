@@ -170,7 +170,9 @@ public class PropProperty<T> extends DefaultDavProperty<T> {
         this.addChildren(children);
     }
 
-    /** @return Return the map of attributes of the property */
+    /**
+     * @return Return the map of attributes of the property
+     */
     public Map<String, String> getAttributes() {
         return attributes;
     }
@@ -243,7 +245,9 @@ public class PropProperty<T> extends DefaultDavProperty<T> {
         this.children.addAll(prop.getChildren());
     }
 
-    /** @return Returns the Collection of children. */
+    /**
+     * @return Returns the Collection of children.
+     */
     public Collection<? extends XmlSerializable> getChildren() {
         return children;
     }
@@ -287,7 +291,9 @@ public class PropProperty<T> extends DefaultDavProperty<T> {
         children.removeAll(props);
     }
 
-    /** @return Return true, if no children exist, else false. */
+    /**
+     * @return Return true, if no children exist, else false.
+     */
     public boolean isChildrenEmpty() {
         return (children == null || children.isEmpty());
     }
@@ -393,7 +399,9 @@ public class PropProperty<T> extends DefaultDavProperty<T> {
         return elem;
     }
 
-    /** @return Return the Property Iterator to iterate through all the children */
+    /**
+     * @return Return the Property Iterator to iterate through all the children
+     */
     public PropPropertyIterator Iterator() {
         return new PropPropertyIterator();
     }

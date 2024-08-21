@@ -27,7 +27,7 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
-import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -59,6 +59,7 @@ public class ITipUtilsTest extends BaseTestCase {
             assertTrue(false);
         }
     }
+
     /**
      * given a meeting REQUEST, create the given REPLY
      *
@@ -74,7 +75,10 @@ public class ITipUtilsTest extends BaseTestCase {
 
             reply =
                     ITipUtils.ManageInvitation(
-                            inviteComplexWithTimezone, mySelf, Method.REPLY, PartStat.ACCEPTED);
+                            inviteComplexWithTimezone,
+                            mySelf,
+                            ImmutableMethod.REPLY,
+                            PartStat.ACCEPTED);
 
             // check if reply is ok, other attendees stripped off, redundant data removed...
             log.trace("REPLY: " + reply);
@@ -83,7 +87,10 @@ public class ITipUtilsTest extends BaseTestCase {
             try {
                 reply =
                         ITipUtils.ManageInvitation(
-                                inviteComplexWithTimezone, nobody, Method.REPLY, PartStat.ACCEPTED);
+                                inviteComplexWithTimezone,
+                                nobody,
+                                ImmutableMethod.REPLY,
+                                PartStat.ACCEPTED);
             } catch (CalDAV4JException e) {
                 // TODO Auto-generated catch block
                 assertTrue(e.getCause().equals(new Throwable("Missing attendee")));
@@ -108,15 +115,19 @@ public class ITipUtilsTest extends BaseTestCase {
         try {
             reply =
                     ITipUtils.ManageInvitation(
-                            inviteComplexWithTimezone, mySelf, Method.REPLY, PartStat.DECLINED);
+                            inviteComplexWithTimezone,
+                            mySelf,
+                            ImmutableMethod.REPLY,
+                            PartStat.DECLINED);
 
             // check if reply is ok, other attendees stripped off, redundant data removed...
             if (ICalendarUtils.getFirstComponent(reply).getProperties(Property.ATTENDEE).size()
                     > 1) {
                 assertTrue("Too many attendees in reply", false);
             } else if (!reply.getProperty(Property.METHOD)
+                    .get()
                     .getValue()
-                    .equals(Method.REPLY.getValue())) {
+                    .equals(ImmutableMethod.REPLY.getValue())) {
                 assertTrue("bad METHOD in REPLY" + reply.getProperty(Property.METHOD), false);
             }
 

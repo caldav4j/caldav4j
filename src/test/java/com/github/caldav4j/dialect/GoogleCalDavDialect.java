@@ -18,6 +18,7 @@ package com.github.caldav4j.dialect;
 
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.immutable.ImmutableCalScale;
 
 /**
  * A {@code CalDavDialect} for Google CalDAV server.
@@ -44,7 +45,7 @@ public class GoogleCalDavDialect implements CalDavDialect {
 
     /** {@inheritDoc} */
     public CalScale getDefaultCalScale() {
-        return CalScale.GREGORIAN;
+        return ImmutableCalScale.GREGORIAN;
     }
 
     @Override

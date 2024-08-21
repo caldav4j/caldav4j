@@ -75,22 +75,30 @@ public class CalDAVProp extends OutputsDOMBase {
         this(name, novalue, true);
     }
 
-    /** @param name specifies the name of the calendar property to return */
+    /**
+     * @param name specifies the name of the calendar property to return
+     */
     public CalDAVProp(String name) {
         this(name, false, false);
     }
 
-    /** @see OutputsDOMBase#getElementName() */
+    /**
+     * @see OutputsDOMBase#getElementName()
+     */
     protected String getElementName() {
         return ELEMENT_NAME;
     }
 
-    /** @see OutputsDOMBase#getNamespace() */
+    /**
+     * @see OutputsDOMBase#getNamespace()
+     */
     protected Namespace getNamespace() {
         return CalDAVConstants.NAMESPACE_CALDAV;
     }
 
-    /** @see OutputsDOMBase#getAttributes() */
+    /**
+     * @see OutputsDOMBase#getAttributes()
+     */
     protected Map<String, String> getAttributes() {
         Map<String, String> m = new HashMap<>();
         m.put(ATTR_NAME, name);

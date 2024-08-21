@@ -29,7 +29,9 @@ public class DisplayName extends PropProperty<String> {
         this(null);
     }
 
-    /** @param displayName Display name of the calendar */
+    /**
+     * @param displayName Display name of the calendar
+     */
     public DisplayName(String displayName) {
         super(DISPLAY_NAME, displayName, CalDAVConstants.NAMESPACE_WEBDAV);
     }

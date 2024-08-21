@@ -142,6 +142,7 @@ public class GenerateQueryTest extends BaseTestCase {
             log.info((new DateTime(d)).toString());
         }
     }
+
     // Creating Calendar-Query like the RFC's one
     @Test
     public void testQuery_TODO() {
@@ -255,7 +256,9 @@ public class GenerateQueryTest extends BaseTestCase {
         }
     }
 
-    /** @see <a href='http://tools.ietf.org/html/rfc4791#section-7.8.7'>RFC4791 7.8.7</a> */
+    /**
+     * @see <a href='http://tools.ietf.org/html/rfc4791#section-7.8.7'>RFC4791 7.8.7</a>
+     */
     @Test
     public void testParamFilterProperties() {
         try {

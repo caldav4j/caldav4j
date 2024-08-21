@@ -40,7 +40,9 @@ public class DavHref extends OutputsDOMBase {
 
     private String uri = null;
 
-    /** @param uri URI to the component */
+    /**
+     * @param uri URI to the component
+     */
     public DavHref(String uri) {
         this.uri = uri;
     }

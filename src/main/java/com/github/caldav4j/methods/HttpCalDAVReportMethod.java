@@ -113,7 +113,9 @@ public class HttpCalDAVReportMethod extends BaseDavRequest {
         return statusCode == CalDAVStatus.SC_OK || statusCode == CalDAVStatus.SC_MULTI_STATUS;
     }
 
-    /** @return Returns the associated CalendarBuilder Instance */
+    /**
+     * @return Returns the associated CalendarBuilder Instance
+     */
     public CalendarBuilder getCalendarBuilder() {
         return calendarBuilder;
     }

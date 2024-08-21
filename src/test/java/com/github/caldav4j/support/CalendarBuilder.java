@@ -21,7 +21,7 @@ import com.github.caldav4j.dialect.CalDavDialect;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 
 /**
  * Builder for constructing calendar models using a dialect.
@@ -46,13 +46,13 @@ public class CalendarBuilder {
         Calendar calendar = new Calendar();
 
         // ProdId
-        addIfNotNull(calendar.getProperties(), dialect.getProdId());
+        addIfNotNull(calendar.getPropertyList(), dialect.getProdId());
 
         // Version
-        calendar.getProperties().add(Version.VERSION_2_0);
+        calendar.add(ImmutableVersion.VERSION_2_0);
 
         // CalScale
-        addIfNotNull(calendar.getProperties(), dialect.getDefaultCalScale());
+        addIfNotNull(calendar.getPropertyList(), dialect.getDefaultCalScale());
 
         return calendar;
     }

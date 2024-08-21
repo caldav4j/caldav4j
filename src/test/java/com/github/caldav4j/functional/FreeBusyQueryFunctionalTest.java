@@ -32,9 +32,10 @@ import com.github.caldav4j.util.CalDAVStatus;
 import com.github.caldav4j.util.ICalendarUtils;
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.Period;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VFreeBusy;
@@ -131,7 +132,7 @@ public class FreeBusyQueryFunctionalTest {
     private static VEvent createEvent(String uid, String start, String duration, String summary)
             throws ParseException {
 
-        VEvent e = new VEvent(new DateTime(start), new Dur(duration), summary);
+        VEvent e = new VEvent(LocalDateTime.parse(start), Period.parse(duration), summary);
         ICalendarUtils.addOrReplaceProperty(e, new Uid(uid));
         return e;
     }
@@ -149,7 +150,7 @@ public class FreeBusyQueryFunctionalTest {
             throws ParseException {
         Calendar calendar = builder.createCalendar();
 
-        VFreeBusy vFreeBusy = new VFreeBusy(new DateTime(start), new DateTime(end));
+        VFreeBusy vFreeBusy = new VFreeBusy(LocalDateTime.parse(start), LocalDateTime.parse(end));
 
         if (busyPeriods != null) {
             FreeBusy freeBusy = new FreeBusy(busyPeriods);
@@ -157,10 +158,10 @@ public class FreeBusyQueryFunctionalTest {
             // TODO: perhaps move this decision to the dialect?
             freeBusy.getParameters().add(FbType.BUSY);
 
-            vFreeBusy.getProperties().add(freeBusy);
+            vFreeBusy.add(freeBusy);
         }
 
-        calendar.getComponents().add(vFreeBusy);
+        calendar.add(vFreeBusy);
 
         return calendar;
     }

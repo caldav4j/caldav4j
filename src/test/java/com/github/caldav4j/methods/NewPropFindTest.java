@@ -47,7 +47,9 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** @author Ankush Mishra */
+/**
+ * @author Ankush Mishra
+ */
 public class NewPropFindTest extends BaseTestCase {
     private static final Logger log = LoggerFactory.getLogger(NewPropFindTest.class);
 

@@ -29,8 +29,10 @@ import com.github.caldav4j.util.GenerateQuery;
 import com.github.caldav4j.util.ICalendarUtils;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.component.CalendarComponent;
@@ -166,9 +168,11 @@ public class CalDAVCollectionTest extends BaseTestCase {
         assertEquals("bad number of responses: ", 3, calendars.size());
         for (Calendar c : calendars) {
             assertEquals(ICalendarUtils.getUIDValue(c), ICS_GOOGLE_DAILY_NY_5PM_UID);
+            Optional<CalendarComponent> calendarComponent = c.getComponent(Component.VEVENT);
+            assertTrue(calendarComponent.isPresent());
             assertNotNull(
                     ICalendarUtils.getPropertyValue(
-                            c.getComponent(Component.VEVENT), Property.RECURRENCE_ID));
+                            calendarComponent.get(), Property.RECURRENCE_ID));
         }
         // check if is in cache
 
@@ -177,13 +181,10 @@ public class CalDAVCollectionTest extends BaseTestCase {
     @Test
     public void testGetCalendarByPath() throws Exception {
         Calendar calendar = null;
-        try {
-            calendar =
-                    uncachedCollection.getCalendar(
-                            fixture.getHttpClient(), ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics");
-        } catch (CalDAV4JException ce) {
-            assertNull(ce);
-        }
+
+        calendar =
+                uncachedCollection.getCalendar(
+                        fixture.getHttpClient(), ICS_GOOGLE_DAILY_NY_5PM_UID + ".ics");
 
         assertNotNull(calendar);
         VEvent vevent = ICalendarUtils.getFirstEvent(calendar);
@@ -217,8 +218,7 @@ public class CalDAVCollectionTest extends BaseTestCase {
                 collection.getEventResources(fixture.getHttpClient(), beginDate, endDate);
 
         for (Calendar calendar : l) {
-            ComponentList<CalendarComponent> vevents =
-                    calendar.getComponents().getComponents(Component.VEVENT);
+            List<CalendarComponent> vevents = calendar.getComponents(Component.VEVENT);
             VEvent ve = (VEvent) vevents.get(0);
             String uid = ICalendarUtils.getUIDValue(ve);
             int correctNumberOfEvents = -1;
@@ -244,7 +244,9 @@ public class CalDAVCollectionTest extends BaseTestCase {
     }
 
     // TODO wait on floating test until we can pass timezones
-    /** @throws Exception */
+    /**
+     * @throws Exception
+     */
     @Test
     @Ignore
     public void testGetEventResourcesFloatingIssues() throws Exception {
@@ -301,16 +303,19 @@ public class CalDAVCollectionTest extends BaseTestCase {
     public VEvent newEvent(String newUid, String newEvent) {
         VEvent ve = new VEvent();
 
-        DtStart dtStart = new DtStart(new DateTime());
+        DtStart dtStart = new DtStart(ZonedDateTime.now());
         Summary summary = new Summary(newEvent);
         Uid uid = new Uid(newUid);
 
-        ve.getProperties().add(dtStart);
-        ve.getProperties().add(summary);
-        ve.getProperties().add(uid);
+        ve.add(dtStart);
+        ve.add(summary);
+        ve.add(uid);
         return ve;
     }
-    /** @throws Exception */
+
+    /**
+     * @throws Exception
+     */
     @Test
     public void testGetWithoutCacheThenWithCache() throws IOException {
         String newUid = "NEW_UID";
@@ -342,7 +347,10 @@ public class CalDAVCollectionTest extends BaseTestCase {
         }
         assertNull(e);
     }
-    /** @throws Exception */
+
+    /**
+     * @throws Exception
+     */
     @Test
     public void testUpdateEvent() throws Exception {
 
@@ -383,10 +391,10 @@ public class CalDAVCollectionTest extends BaseTestCase {
 
         // sanity
         assertNotNull(calendarList);
-        assertEquals(
-                ICS_ALL_DAY_JAN1_UID,
-                ICalendarUtils.getUIDValue(
-                        calendarList.get(0).getComponent(CalendarComponent.VEVENT)));
+        Optional<CalendarComponent> component =
+                calendarList.get(0).getComponent(CalendarComponent.VEVENT);
+        assertTrue(component.isPresent());
+        assertEquals(ICS_ALL_DAY_JAN1_UID, ICalendarUtils.getUIDValue(component.get()));
     }
 
     @Test
@@ -449,8 +457,8 @@ public class CalDAVCollectionTest extends BaseTestCase {
     //
     private boolean hasEventWithUID(List<Calendar> cals, String uid) {
         for (Calendar cal : cals) {
-            ComponentList vEvents = cal.getComponents().getComponents(Component.VEVENT);
-            if (vEvents.size() == 0) {
+            List vEvents = cal.getComponents(Component.VEVENT);
+            if (vEvents.isEmpty()) {
                 return false;
             }
             VEvent ve = (VEvent) vEvents.get(0);

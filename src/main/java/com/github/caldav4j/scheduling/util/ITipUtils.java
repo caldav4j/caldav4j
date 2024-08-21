@@ -5,16 +5,17 @@
 package com.github.caldav4j.scheduling.util;
 
 import com.github.caldav4j.exceptions.CalDAV4JException;
+import java.util.List;
 import java.util.TimeZone;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.immutable.ImmutableMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ public class ITipUtils {
 
     public static Calendar ReplyInvitation(Calendar invite, Attendee mySelf, PartStat replyPartStat)
             throws CalDAV4JException {
-        return ManageInvitation(invite, mySelf, Method.REPLY, replyPartStat);
+        return ManageInvitation(invite, mySelf, ImmutableMethod.REPLY, replyPartStat);
     }
 
     /**
@@ -32,8 +33,8 @@ public class ITipUtils {
      *
      * @param invite Calendar containing the invitation
      * @param mySelf Attendee User to check
-     * @param responseMethod Type of Response, could be {@link Method#REPLY} or {@link
-     *     Method#REQUEST}
+     * @param responseMethod Type of Response, could be {@link ImmutableMethod#REPLY} or {@link
+     *     ImmutableMethod#REQUEST}
      * @param responsePartStat The PartStat object for reponse
      * @return a Calendar object
      * @throws CalDAV4JException on error
@@ -45,15 +46,16 @@ public class ITipUtils {
         try {
             reply = new Calendar(invite);
 
+            Method method = (Method) reply.getProperty(Property.METHOD).orElse(null);
             //  if it's not a REQUEST, throw Exception
-            if (reply.getProperty(Property.METHOD) != null) {
-                if (compareMethod(Method.REQUEST, reply.getMethod())) {
+            if (method != null) {
+                if (compareMethod(ImmutableMethod.REQUEST, method)) {
 
                     // if REPLY
-                    if (compareMethod(Method.REPLY, responseMethod)) {
+                    if (compareMethod(ImmutableMethod.REPLY, responseMethod)) {
                         // use REPLY to event
-                        reply.getProperties().remove(Method.REQUEST);
-                        reply.getProperties().add(Method.REPLY);
+                        reply.remove(ImmutableMethod.REQUEST);
+                        reply.add(ImmutableMethod.REPLY);
 
                         processAttendees(reply, mySelf, responsePartStat);
                     }
@@ -95,12 +97,11 @@ public class ITipUtils {
     private static void processAttendees(Calendar c, Attendee user, PartStat action)
             throws CalDAV4JException {
         int numAttendees = 0;
-        for (Object o : c.getComponents()) {
+        for (CalendarComponent o : c.getComponents()) {
             if (!(o instanceof VTimeZone)) {
 
-                CalendarComponent cc = (CalendarComponent) o;
-                PropertyList attendees = cc.getProperties(Property.ATTENDEE);
-                cc.getProperties().removeAll(attendees);
+                List<Property> attendees = o.getProperties(Property.ATTENDEE);
+                o.removeAll(Property.ATTENDEE);
 
                 // remove attendees unmatching user
                 while (attendees.size() > numAttendees) {
@@ -108,13 +109,13 @@ public class ITipUtils {
                     if (!a.getValue().equals(user.getValue())) {
                         attendees.remove(numAttendees);
                     } else {
-                        a.getParameters().remove(a.getParameter(Parameter.PARTSTAT));
+                        a.getParameters().remove(a.getParameter(Parameter.PARTSTAT).orElse(null));
                         a.getParameters().add(action);
                         numAttendees++;
                     }
                 } // attendees
 
-                cc.getProperties().addAll(attendees);
+                o.addAll(attendees);
             }
         } // for
 

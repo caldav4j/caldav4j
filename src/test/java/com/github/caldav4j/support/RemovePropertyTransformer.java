@@ -17,9 +17,6 @@
 
 package com.github.caldav4j.support;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import net.fortuna.ical4j.model.Calendar;
@@ -52,8 +49,8 @@ class RemovePropertyTransformer implements Transformer<Calendar> {
     public Calendar transform(Calendar calendar) {
         Calendar newCalendar = deepCopy(calendar);
 
-        apply(newCalendar.getProperties());
-        apply(newCalendar.getComponents());
+        apply(newCalendar.getPropertyList());
+        apply(newCalendar.getPropertyList());
 
         return newCalendar;
     }
@@ -61,29 +58,29 @@ class RemovePropertyTransformer implements Transformer<Calendar> {
     // private methods --------------------------------------------------------
 
     private static Calendar deepCopy(Calendar calendar) {
-        try {
-            return new Calendar(calendar);
-        } catch (ParseException | IOException | URISyntaxException exception) {
-            throw new IllegalStateException("Cannot copy calendar", exception);
-        }
+        return new Calendar(calendar);
     }
 
     @SuppressWarnings("unchecked")
     private void apply(PropertyList properties) {
         for (String propertyName : propertyNames) {
-            PropertyList namedProperties = properties.getProperties(propertyName);
-
-            properties.removeAll(namedProperties);
+            properties.removeAll(propertyName);
         }
     }
 
-    private void apply(ComponentList components) {
-        for (Object component : components) {
-            apply((Component) component);
+    private void apply(ComponentList<Component> components) {
+        for (Component component : components.getAll()) {
+            apply(component);
         }
     }
 
     private void apply(Component component) {
-        apply(component.getProperties());
+        apply(component.getPropertyList());
+    }
+
+    @Override
+    public Calendar apply(Calendar calendar) {
+        apply(calendar.getPropertyList());
+        return calendar;
     }
 }

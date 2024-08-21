@@ -40,7 +40,10 @@ public class CaldavFixtureHarness implements TestConstants {
                 fixture.getMethodFactory(),
                 CalDAVConstants.PROC_ID_DEFAULT);
     }
-    /** @param fixture */
+
+    /**
+     * @param fixture
+     */
     public static void provisionGoogleEvents(CalDavFixture fixture) {
         provisionEvents(
                 fixture,
@@ -77,6 +80,7 @@ public class CaldavFixtureHarness implements TestConstants {
         EhCacheResourceCache myCache = EhCacheResourceCache.createSimpleCache();
         return myCache;
     }
+
     /** */
     public static void removeSimpleCache() {
         CacheManager cacheManager = CacheManager.create();

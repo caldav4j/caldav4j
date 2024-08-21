@@ -40,7 +40,9 @@ public class CalendarDescription extends PropProperty<String> {
         this(null);
     }
 
-    /** @param value Calendar Description */
+    /**
+     * @param value Calendar Description
+     */
     public CalendarDescription(String value) {
         this(value, null);
     }

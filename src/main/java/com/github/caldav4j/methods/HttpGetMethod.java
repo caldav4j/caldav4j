@@ -82,7 +82,9 @@ public class HttpGetMethod extends HttpGet {
         }
     }
 
-    /** @return Returns the associated CalendarBuilder Instance */
+    /**
+     * @return Returns the associated CalendarBuilder Instance
+     */
     public CalendarBuilder getCalendarBuilder() {
         return calendarBuilder;
     }

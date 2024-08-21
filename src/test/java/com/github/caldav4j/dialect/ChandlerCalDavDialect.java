@@ -18,6 +18,7 @@ package com.github.caldav4j.dialect;
 
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.immutable.ImmutableCalScale;
 import net.fortuna.ical4j.util.CompatibilityHints;
 
 /**
@@ -48,7 +49,7 @@ public class ChandlerCalDavDialect implements CalDavDialect {
 
     /** {@inheritDoc} */
     public CalScale getDefaultCalScale() {
-        return CalScale.GREGORIAN;
+        return ImmutableCalScale.GREGORIAN;
     }
 
     @Override

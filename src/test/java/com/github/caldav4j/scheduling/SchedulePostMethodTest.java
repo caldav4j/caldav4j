@@ -55,15 +55,28 @@ public class SchedulePostMethodTest extends BaseTestCase {
     HttpHost hostConfig = createHostConfiguration();
 
     public static final String BEDEWORK_RTSVC_URL = "/pubcaldav/rtsvc";
+
     /** create a simple meeting POSTing to /Outbox and process a response */
     @Test
     public void testSimpeMeetingInvite_Accept() {
 
         Calendar invite = getCalendarResource("scheduling/meeting_invitation.ics");
         Uid myUid = new Uid(new DateTime().toString());
-        ICalendarUtils.addOrReplaceProperty(invite.getComponent(Component.VEVENT), myUid);
+        invite.getComponent(Component.VEVENT)
+                .ifPresentOrElse(
+                        vEvent -> ICalendarUtils.addOrReplaceProperty(vEvent, myUid),
+                        () -> {
+                            throw new IllegalStateException("Missing invite component");
+                        });
+
         Calendar refreshEvent = getCalendarResource("scheduling/meeting_reply.ics");
-        ICalendarUtils.addOrReplaceProperty(refreshEvent.getComponent(Component.VEVENT), myUid);
+        refreshEvent
+                .getComponent(Component.VEVENT)
+                .ifPresentOrElse(
+                        vEvent -> ICalendarUtils.addOrReplaceProperty(vEvent, myUid),
+                        () -> {
+                            throw new IllegalStateException("Missing refreshEvent component");
+                        });
 
         CalendarRequest cr = new CalendarRequest(invite);
         SchedulePostMethod request =
@@ -115,14 +128,15 @@ public class SchedulePostMethodTest extends BaseTestCase {
         Calendar invite = getCalendarResource("scheduling/meeting_invitation.ics");
 
         // replace fields from template
-        VEvent event = (VEvent) invite.getComponent(Component.VEVENT);
+        VEvent event = (VEvent) invite.getComponent(Component.VEVENT).orElse(null);
+        assert event != null;
         ICalendarUtils.addOrReplaceProperty(event, new Organizer("mailto:rpolli@babel.it"));
         ParameterList plist = new ParameterList();
         plist.add(new PartStat("NEED-ACTION"));
 
         ICalendarUtils.addOrReplaceProperty(event, new Attendee(plist, "mailto:g@r.it"));
-        event.getProperties().add(new Attendee(plist, "mailto:roberto.polli@babel.it"));
-        event.getProperties().add(new Attendee(plist, "mailto:robipolli@gmail.com"));
+        event.add(new Attendee(plist, "mailto:roberto.polli@babel.it"));
+        event.add(new Attendee(plist, "mailto:robipolli@gmail.com"));
 
         ICalendarUtils.addOrReplaceProperty(event, new Uid(new DateTime().toString()));
 
@@ -157,7 +171,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
             throws URISyntaxException, HttpException, IOException, CalDAV4JException {
         Calendar invite = BaseTestCase.getCalendarResource("scheduling/meeting_invitation.ics");
 
-        VEvent event = (VEvent) invite.getComponent(Component.VEVENT);
+        VEvent event = (VEvent) invite.getComponent(Component.VEVENT).orElse(null);
 
         // r@r.it invites GMAIL
         ICalendarUtils.addOrReplaceProperty(event, new Organizer("mailto:r@r.it"));
@@ -169,14 +183,14 @@ public class SchedulePostMethodTest extends BaseTestCase {
             log.info("PUT...");
 
             CalendarRequest cr = new CalendarRequest(invite);
+            String uidValue =
+                    event.getUid()
+                            .orElseThrow(() -> new IllegalStateException("UID is missing"))
+                            .getValue();
             HttpPutMethod request =
                     fixture.getMethodFactory()
                             .createPutMethod(
-                                    caldavCredential.home
-                                            + "/calendar/"
-                                            + event.getUid().getValue()
-                                            + ".ics",
-                                    cr);
+                                    caldavCredential.home + "/calendar/" + uidValue + ".ics", cr);
 
             HttpResponse response = http.execute(hostConfig, request);
             if (response.getStatusLine().getStatusCode() != 200) {
@@ -218,7 +232,7 @@ public class SchedulePostMethodTest extends BaseTestCase {
 
         Calendar invite = getCalendarResource("scheduling/meeting_invitation.ics");
 
-        VEvent event = (VEvent) invite.getComponent(Component.VEVENT);
+        VEvent event = (VEvent) invite.getComponent(Component.VEVENT).orElse(null);
         ICalendarUtils.addOrReplaceProperty(event, new Organizer("mailto:rpolli@babel.it"));
         ParameterList plist = new ParameterList();
         plist.add(new PartStat("NEED-ACTION"));

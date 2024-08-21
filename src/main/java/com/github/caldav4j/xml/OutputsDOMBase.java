@@ -32,18 +32,26 @@ public abstract class OutputsDOMBase implements OutputsDOM {
 
     private static final Logger log = LoggerFactory.getLogger(OutputsDOMBase.class);
 
-    /** @return Element Name of representative class */
+    /**
+     * @return Element Name of representative class
+     */
     protected abstract String getElementName();
 
-    /** @return Namespace of the current Element */
+    /**
+     * @return Namespace of the current Element
+     */
     protected abstract Namespace getNamespace();
 
-    /** @return Return the associated Namespace URI */
+    /**
+     * @return Return the associated Namespace URI
+     */
     protected String getNamespaceURI() {
         return getNamespace().getURI();
     }
 
-    /** @return Returns the Namespace Qualifier */
+    /**
+     * @return Returns the Namespace Qualifier
+     */
     protected String getNamespaceQualifier() {
         return getNamespace().getPrefix();
     }
@@ -62,7 +70,9 @@ public abstract class OutputsDOMBase implements OutputsDOM {
      */
     protected abstract Map<String, String> getAttributes();
 
-    /** @return Returns the Text Content of the Element */
+    /**
+     * @return Returns the Text Content of the Element
+     */
     protected abstract String getTextContent();
 
     /**
@@ -72,7 +82,9 @@ public abstract class OutputsDOMBase implements OutputsDOM {
      */
     public void validate() throws DOMValidationException {}
 
-    /** @return Return Qualified name */
+    /**
+     * @return Return Qualified name
+     */
     public String getQualifiedName() {
         return getNamespaceQualifier() + ":" + getElementName();
     }

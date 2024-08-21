@@ -71,7 +71,9 @@ public class PropFindTest extends BaseTestCase {
     @Test
     @Ignore
     public void testGetAcl()
-            throws CalDAV4JException, IOException, TransformerException,
+            throws CalDAV4JException,
+                    IOException,
+                    TransformerException,
                     ParserConfigurationException {
         // TODO here we should use fixture.getHttpClient()
         String path = fixture.getCollectionPath();
@@ -188,7 +190,9 @@ public class PropFindTest extends BaseTestCase {
         }
     }
 
-    /** @throws CalDAV4JException */
+    /**
+     * @throws CalDAV4JException
+     */
     // TODO: this test will work only on bedework which has a set of permission set
     @Ignore
     @Test

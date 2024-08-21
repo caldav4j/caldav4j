@@ -65,17 +65,23 @@ public abstract class CalDAVCalendarCollectionBase {
         this.methodFactory = methodFactory;
     }
 
-    /** @return Whether Tolerant Parsing for Calendars is enabled or not. */
+    /**
+     * @return Whether Tolerant Parsing for Calendars is enabled or not.
+     */
     public boolean isTolerantParsing() {
         return tolerantParsing;
     }
 
-    /** @param tolerantParsing Value used to enable or disable tolerant parsing of Calendars */
+    /**
+     * @param tolerantParsing Value used to enable or disable tolerant parsing of Calendars
+     */
     public void setTolerantParsing(boolean tolerantParsing) {
         this.tolerantParsing = tolerantParsing;
     }
 
-    /** @return CalendarCollectionRoot */
+    /**
+     * @return CalendarCollectionRoot
+     */
     public String getCalendarCollectionRoot() {
         return calendarCollectionRoot;
     }

@@ -30,6 +30,7 @@ import java.util.*;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Summary;
 import org.apache.http.HttpHost;
@@ -133,11 +134,12 @@ public class PutGetTest extends BaseTestCase {
         log.info("default charset: " + Charset.defaultCharset());
 
         Calendar cal = getCalendarResource(BaseTestCase.ICS_GOOGLE_DAILY_NY_5PM_PATH);
-        Component calendarComponent = cal.getComponent(Component.VEVENT);
-        ICalendarUtils.addOrReplaceProperty(calendarComponent, new Summary(myLocalSummary));
+        Optional<CalendarComponent> calendarComponent = cal.getComponent(Component.VEVENT);
+        assertTrue(calendarComponent.isPresent());
+        ICalendarUtils.addOrReplaceProperty(calendarComponent.get(), new Summary(myLocalSummary));
         assertEquals(
                 myLocalSummary,
-                ICalendarUtils.getPropertyValue(calendarComponent, Property.SUMMARY));
+                ICalendarUtils.getPropertyValue(calendarComponent.get(), Property.SUMMARY));
 
         // create a PUT request with the given ICS
 

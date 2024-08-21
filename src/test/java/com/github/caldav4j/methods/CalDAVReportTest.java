@@ -29,6 +29,7 @@ import com.github.caldav4j.util.ICalendarUtils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.ParseException;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -61,7 +62,9 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** @author Ankush Mishra */
+/**
+ * @author Ankush Mishra
+ */
 public class CalDAVReportTest extends BaseTestCase {
 
     private static final Logger log = LoggerFactory.getLogger(CalDAVReportTest.class);
@@ -131,7 +134,10 @@ public class CalDAVReportTest extends BaseTestCase {
 
     @Test
     public void queryPartialCalendar()
-            throws IOException, TransformerException, ParserConfigurationException, ParseException,
+            throws IOException,
+                    TransformerException,
+                    ParserConfigurationException,
+                    ParseException,
                     DavException {
         String collectionPath = fixture.getCollectionPath();
         Calendar calendar = null;
@@ -176,7 +182,7 @@ public class CalDAVReportTest extends BaseTestCase {
                             .getComponents(Component.VEVENT));
         }
 
-        assertEquals(3, templist.size());
+        assertEquals(3, templist.getAll().size());
     }
 
     /**
@@ -203,9 +209,11 @@ public class CalDAVReportTest extends BaseTestCase {
         /// Check returned Calendar
         assertEquals(
                 "Start Dates are not equal",
-                freeBusy.getStartDate(),
-                new DtStart("20060104T140000Z"));
+                freeBusy.getDateTimeStart().orElse(null),
+                new DtStart<OffsetDateTime>("20060104T140000Z"));
         assertEquals(
-                "End Dates are not equal", freeBusy.getEndDate(), new DtEnd("20060105T220000Z"));
+                "End Dates are not equal",
+                freeBusy.getDateTimeEnd().orElse(null),
+                new DtEnd<OffsetDateTime>("20060105T220000Z"));
     }
 }

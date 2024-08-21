@@ -87,7 +87,7 @@ public class ICalendarUtilTest extends BaseTestCase {
         Calendar mixedCalendar = this.parseICS(calendarList.get(0));
         Calendar tmp = this.parseICS(calendarList.get(1));
 
-        mixedCalendar.getComponents().add(ICalendarUtils.getFirstComponent(tmp));
+        mixedCalendar.add(ICalendarUtils.getFirstComponent(tmp));
         log.debug(mixedCalendar.toString());
         assertNotNull(mixedCalendar);
 
