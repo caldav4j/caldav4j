@@ -20,7 +20,7 @@ jobs:
     #  and connecting to the baikal server provided
     #  by the second container.
     docker:
-      - image: circleci/openjdk:8-jdk-browsers
+      - image: circleci/openjdk:11-jdk-browsers
       - image: ioggstream/baikal:with-testuser
     steps:
     - checkout
